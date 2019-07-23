@@ -1,2 +1,4 @@
 # Rowel Atienza, PhD
-Compilation of my research work
+Selected Publications
+* 2019
+
