@@ -2,7 +2,8 @@
 I am currently an Associate Professor at the [University of the Philippines](http://www.eee.upd.edu.ph). I like solving difficult but high-impact problems in computer vision and deep learning.
 
 ## Book
-1. [Advanced Deep Learning with Keras](https://www.amazon.com/Advanced-Deep-Learning-Keras-reinforcement/dp/1788629418/) Packt Publishing, 2018
+1. [Advanced Deep Learning with TensorFlow 2 and Keras (2nd Ed)](https://amzn.to/2wotTnN) Packt Publishing, 2020
+2. [Advanced Deep Learning with Keras](https://www.amazon.com/Advanced-Deep-Learning-Keras-reinforcement/dp/1788629418/) Packt Publishing, 2018
 
 ## Recent Publications
 Code available on [Github](https://github.com/roatienza)
