@@ -1,5 +1,6 @@
 # Rowel Atienza, PhD
-I am currently an Associate Professor at the [University of the Philippines](http://www.eee.upd.edu.ph). I like solving difficult but high-impact problems in computer vision and deep learning.
+[University of the Philippines](https://www.eee.upd.edu.ph/faculty/rowel-atienza)
+Research interests: AI, Vision, Speech, Language, and Robotics
 
 ## Book
 1. [Advanced Deep Learning with TensorFlow 2 and Keras (2nd Ed)](https://amzn.to/2wotTnN) Packt Publishing, 2020
