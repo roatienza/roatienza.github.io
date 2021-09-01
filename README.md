@@ -11,8 +11,15 @@
 ## Recent Publications
 Code available on [Github](https://github.com/roatienza)
 
+### 2021
+1. [GOO: A Dataset for Gaze Object Prediction in Retail Environments](https://openaccess.thecvf.com/content/CVPR2021W/GAZE/papers/Tomas_GOO_A_Dataset_for_Gaze_Object_Prediction_in_Retail_Environments_CVPRW_2021_paper.pdf), CVPR 2021 Workshops
+2. [Vision Transformer for Fast and Efficient Scene Text Recognition](https://arxiv.org/pdf/2105.08582), ICDAR 2021
+3. [Data Augmentation for Scene Text Recognition](https://arxiv.org/pdf/2108.06949), ICCV 2021 Workshops
+4. [Vision Transformer and its Applications](https://opendatascience.com/vision-transformer-and-its-applications/), ODSC 2021
+
 ### 2020
-1. [REIN: Flexible Mesh Generation from Point Clouds](https://openaccess.thecvf.com/content_CVPRW_2020/papers/w22/Daroya_REIN_Flexible_Mesh_Generation_From_Point_Clouds_CVPRW_2020_paper.pdf), CVPR 2020 Workshops
+1. [Next-best view policy for 3D reconstruction](https://arxiv.org/pdf/2008.12664), ECCV 2020 Workshops
+2. [REIN: Flexible Mesh Generation from Point Clouds](https://openaccess.thecvf.com/content_CVPRW_2020/papers/w22/Daroya_REIN_Flexible_Mesh_Generation_From_Point_Clouds_CVPRW_2020_paper.pdf), CVPR 2020 Workshops
 
 ### 2019
 1. [A Conditional Generative Adversarial Network for Rendering Point Clouds](http://openaccess.thecvf.com/content_CVPRW_2019/papers/3D-WidDGET/Atienza_A_Conditional_Generative_Adversarial_Network_for_Rendering_Point_Clouds_CVPRW_2019_paper.pdf), CVPR 2019 Workshops 
