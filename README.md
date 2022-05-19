@@ -12,7 +12,7 @@
 Code available on [Github](https://github.com/roatienza)
 
 ### 2022
-1. Depth Pruning with Auxiliary Networks for TinyML, ICASSP 2022
+1. [Depth Pruning with Auxiliary Networks for TinyML](https://arxiv.org/abs/2204.10546), ICASSP 2022
 2. [Improving Model Generalization by Agreement of Learned Representations from Data Augmentation](https://openaccess.thecvf.com/content/WACV2022/papers/Atienza_Improving_Model_Generalization_by_Agreement_of_Learned_Representations_From_Data_WACV_2022_paper.pdf), WACV 2022
 
 ### 2021
