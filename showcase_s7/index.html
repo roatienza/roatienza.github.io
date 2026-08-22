@@ -68,11 +68,8 @@ footer .wrap{padding:26px 24px 60px}
     <button class="tog" type="button" data-set="S7.1" aria-pressed="false">S7.1</button>
     <button class="tog" type="button" data-set="S7.2" aria-pressed="false">S7.2</button>
     <button class="tog" type="button" data-set="S7.3" aria-pressed="false">S7.3</button>
-    <button class="tog" type="button" data-set="S7.3+" aria-pressed="false">S7.3+</button>
-    <button class="tog" type="button" data-set="S7.3++" aria-pressed="false">S7.3++</button>
-    <button class="tog" type="button" data-set="S7.3+++" aria-pressed="false">S7.3+++</button>
     <button class="tog" type="button" data-set="S7.4" aria-pressed="true">S7.4</button>
-    <p class="note">Eight checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.3+ is S7.3 with speaker reference audio from the highest-sample-count speaker per voice class: female (erica, 16k samples), male (hifi-tts:6097, 15k samples), child (hifi-tts:92, 462 samples — the 4th-ranked child speaker). S7.3++ is S7.3 with speaker reference audio from the second-most-sample-count speaker per voice class: female (hifi-tts:12787, 15.5k samples), male (hifi-tts:6670, 15.3k samples), child (hifi-tts:9136, 513 samples). S7.3+++ is S7.3 with speaker reference audio from the third-most-sample-count speaker per voice class: female (hifi-tts:92, 15.5k samples), male (hifi-tts:6671, 14.8k samples), child (hifi-tts:12787, 477 samples). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622), using the same speaker references as S7.3+ (erica female, hifi-tts:6097 male, hifi-tts:92 child). Speaker CFG 5.0. All eight use the English text tower.</p>
+    <p class="note">Five checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). Speaker CFG 5.0. All five use the English text tower.</p>
   </div>
 </div></header>
 <main class="wrap"><div class="grid">
@@ -84,9 +81,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/grief_woman_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/grief_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/grief_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/grief_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/grief_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/grief_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/grief_woman_s74_spk.flac"></audio>
     <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, halting, lots of space between phrases</p>
   </article>
@@ -98,9 +92,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/grief_oldman_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/grief_oldman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/grief_oldman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/grief_oldman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/grief_oldman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/grief_oldman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/grief_oldman_s74_spk.flac"></audio>
     <p class="cond">performed narration, grieving, heavy, holding back tears, slow, drawn out</p>
   </article>
@@ -112,9 +103,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/grief_young_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/grief_young_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/grief_young_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/grief_young_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/grief_young_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/grief_young_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/grief_young_s74_spk.flac"></audio>
     <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, breathy, much air and little phonation</p>
   </article>
@@ -126,9 +114,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/rage_man_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/rage_man_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/rage_man_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/rage_man_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/rage_man_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/rage_man_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/rage_man_s74_spk.flac"></audio>
     <p class="cond">expressive performance, angry, sharp, raised voice, relentless, no room to breathe</p>
   </article>
@@ -140,9 +125,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/rage_woman_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/rage_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/rage_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/rage_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/rage_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/rage_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/rage_woman_s74_spk.flac"></audio>
     <p class="cond">expressive performance, angry, sharp, raised voice, fast, rapid-fire</p>
   </article>
@@ -154,9 +136,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/command_deep_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/command_deep_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/command_deep_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/command_deep_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/command_deep_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/command_deep_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/command_deep_s74_spk.flac"></audio>
     <p class="cond">performed narration, deadpan, almost no pitch movement, slow, drawn out</p>
   </article>
@@ -167,9 +146,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7" src="audio/fear_woman_s7.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/fear_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/fear_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/fear_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/fear_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/fear_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/fear_woman_s74_spk.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, whispered, mostly breath</p>
@@ -182,9 +158,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/fear_child_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/fear_child_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/fear_child_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/fear_child_s73_spk_s7child.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/fear_child_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/fear_child_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/fear_child_s74_spk.flac"></audio>
     <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, halting, lots of space between phrases</p>
   </article>
@@ -196,9 +169,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/joy_woman_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/joy_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/joy_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/joy_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/joy_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/joy_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/joy_woman_s74_spk.flac"></audio>
     <p class="cond">expressive performance, delighted, bright, buoyant, wildly expressive pitch</p>
   </article>
@@ -210,9 +180,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/laugh_man_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/laugh_man_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/laugh_man_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/laugh_man_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/laugh_man_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/laugh_man_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/laugh_man_s74_spk.flac"></audio>
     <p class="cond">expressive performance, laughing, amused, breathless, fast, rapid-fire</p>
   </article>
@@ -224,9 +191,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/tender_woman_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/tender_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/tender_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/tender_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/tender_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/tender_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/tender_woman_s74_spk.flac"></audio>
     <p class="cond">intimate close-mic performance, tender, soft, close, whispered, mostly breath</p>
   </article>
@@ -238,9 +202,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/awe_deep_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/awe_deep_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/awe_deep_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/awe_deep_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/awe_deep_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/awe_deep_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/awe_deep_s74_spk.flac"></audio>
     <p class="cond">performed narration, wildly expressive pitch, slow, drawn out</p>
   </article>
@@ -252,9 +213,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/flat_man_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/flat_man_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/flat_man_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/flat_man_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/flat_man_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/flat_man_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/flat_man_s74_spk.flac"></audio>
     <p class="cond">performed narration, deadpan, almost no pitch movement, continuous, few pauses</p>
   </article>
@@ -266,9 +224,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/sly_woman_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/sly_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/sly_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/sly_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/sly_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/sly_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/sly_woman_s74_spk.flac"></audio>
     <p class="cond">expressive performance, delighted, bright, buoyant, halting, lots of space between phrases</p>
   </article>
@@ -280,9 +235,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/long_female_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/long_female_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/long_female_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/long_female_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/long_female_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/long_female_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/long_female_s74_spk.flac"></audio>
     <p class="cond">intimate close-mic performance, slow, drawn out</p>
   </article>
@@ -293,9 +245,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7" src="audio/tired_woman_s7.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/tired_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/tired_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/tired_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/tired_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/tired_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/tired_woman_s74_spk.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">intimate close-mic performance, deadpan, almost no pitch movement, slow, drawn out</p>
@@ -308,9 +257,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/shift_woman_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/shift_woman_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/shift_woman_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/shift_woman_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/shift_woman_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/shift_woman_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/shift_woman_s74_spk.flac"></audio>
     <p class="cond">expressive performance, crying, tearful, voice breaking, wildly expressive pitch</p>
   </article>
@@ -321,9 +267,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7" src="audio/shift_man_s7.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/shift_man_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/shift_man_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/shift_man_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/shift_man_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/shift_man_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/shift_man_s74_spk.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">expressive performance, grieving, heavy, holding back tears, halting, lots of space between phrases</p>
@@ -336,9 +279,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/long_deep_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/long_deep_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/long_deep_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/long_deep_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/long_deep_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/long_deep_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/long_deep_s74_spk.flac"></audio>
     <p class="cond">performed narration, continuous, few pauses</p>
   </article>
@@ -350,9 +290,6 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.1" src="audio/tender_man_s71.flac"></audio>
     <audio controls preload="none" data-set="S7.2" src="audio/tender_man_s72.flac"></audio>
     <audio controls preload="none" data-set="S7.3" src="audio/tender_man_s73.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+" src="audio/tender_man_s73_spk.flac"></audio>
-    <audio controls preload="none" data-set="S7.3++" src="audio/tender_man_s73_spk2.flac"></audio>
-    <audio controls preload="none" data-set="S7.3+++" src="audio/tender_man_s73_spk3.flac"></audio>
     <audio controls preload="none" data-set="S7.4" src="audio/tender_man_s74_spk.flac"></audio>
     <p class="cond">intimate close-mic performance, tender, soft, close, breathy, much air and little phonation</p>
   </article>
