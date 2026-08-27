@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SelfiTTS — AetherTTS Champion vs Baseline</title>
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b23; --panel2: #1c2330;
+    --text: #e6ebf2; --dim: #8b98ab; --accent: #4da3ff;
+    --gold: #f5b942; --green: #3ecf8e; --line: #2a3342;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 80px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  .sub { color: var(--dim); margin-bottom: 20px; }
+  .cards { display: flex; gap: 12px; flex-wrap: wrap; margin: 18px 0 26px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+          padding: 12px 16px; min-width: 150px; flex: 1; }
+  .card .k { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .card .v { font-size: 20px; font-weight: 650; margin-top: 2px; }
+  .card .v small { font-size: 13px; color: var(--dim); font-weight: 400; }
+  .card.champ .v { color: var(--gold); }
+  .card.base .v { color: var(--dim); }
+  .tabs { display: flex; gap: 8px; margin: 22px 0 14px; flex-wrap: wrap; }
+  .tab { padding: 9px 18px; border-radius: 9px; border: 1px solid var(--line);
+         background: var(--panel); color: var(--dim); cursor: pointer; font-size: 14px; font-weight: 600; }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #08111f; }
+  .tab.champ.active { background: var(--gold); border-color: var(--gold); }
+  .splitbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; color: var(--dim); font-size: 13px; }
+  .splitbar button { padding: 5px 14px; border-radius: 7px; border: 1px solid var(--line);
+                     background: transparent; color: var(--dim); cursor: pointer; font-size: 13px; }
+  .splitbar button.on { background: var(--panel2); color: var(--text); border-color: var(--accent); }
+  .utt { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+         padding: 14px 16px; margin-bottom: 10px; }
+  .utt .idx { color: var(--dim); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .utt .txt { margin: 4px 0 10px; font-size: 15.5px; }
+  .row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .row .who { width: 92px; font-size: 12.5px; font-weight: 700; letter-spacing: .03em; }
+  .who.champ { color: var(--gold); } .who.base { color: var(--dim); }
+  audio { height: 36px; flex: 1; min-width: 220px; }
+  .dur { color: var(--dim); font-size: 12px; font-variant-numeric: tabular-nums; width: 52px; text-align: right; }
+  .note { color: var(--dim); font-size: 13px; background: var(--panel); border: 1px solid var(--line);
+          border-radius: 10px; padding: 12px 16px; margin-top: 26px; }
+  .note b { color: var(--text); }
+  .pill { display: inline-block; padding: 1px 9px; border-radius: 20px; font-size: 12px;
+          font-weight: 700; margin-left: 8px; vertical-align: 1px; }
+  .pill.gold { background: rgba(245,185,66,.15); color: var(--gold); }
+  .pill.dim { background: rgba(139,152,171,.15); color: var(--dim); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SelfiTTS <span style="color:var(--dim);font-weight:400">— AetherTTS self-improvement demo</span></h1>
+  <div class="sub">
+    Champion <b style="color:var(--gold)">c003</b> (w_adv 4 · n_disc 1 · 20 ep) vs the pre-campaign
+    baseline (manual Stage-B ep299). 30 utterances per split, synthesized with the frozen eval protocol:
+    <b>n_steps=1, temp 0.8, length_scale 0.9</b>, 24 kHz.
+  </div>
+
+  <div class="cards">
+    <div class="card champ"><div class="k">Champion holdout</div>
+      <div class="v">0.86106 <small>+0.057 vs SOTA</small></div></div>
+    <div class="card"><div class="k">Champion dev</div>
+      <div class="v">0.83777 <small>WER .0826 · UTMOS 3.758</small></div></div>
+    <div class="card base"><div class="k">Baseline holdout</div>
+      <div class="v">0.77827 <small>WER .0516 · UTMOS 2.895</small></div></div>
+    <div class="card base"><div class="k">Baseline dev</div>
+      <div class="v">0.77797 <small>WER .0699 · UTMOS 2.988</small></div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab champ active" data-tab="champion">Champion (c003)</button>
+    <button class="tab" data-tab="baseline">Baseline</button>
+    <button class="tab" data-tab="compare">Compare</button>
+  </div>
+
+  <div class="splitbar">
+    Split:
+    <button id="sp-dev" class="on" data-split="dev">Dev</button>
+    <button id="sp-holdout" data-split="holdout">Holdout (unseen)</button>
+    <span id="split-note" style="margin-left:10px"></span>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="note">
+    <b>How to listen:</b> same utterance index = same text within a split. In <b>Compare</b> mode play
+    champion and baseline back to back — the UTMOS jump 2.9 → 3.8 should be audible as cleaner, more
+    natural prosody. Dev and holdout are different sentences; compare quality, not content, across splits.
+    <br><br>
+    <b>Protocol:</b> composite = mean(WER, WER2, UTMOS) — SOTA target 0.80363, win target 0.81363.
+    Champion c003: w_adv 4, w_fm 2, anchor 1.0, n_disc 1, disc_lr 5e-5, voc_lr 2e-4, lr 5e-6,
+    unfreeze@5, floor 0.1, 20 ep, seed 1237, warm-started from the baseline Stage-B ep299.
+    Vocoder: nanovocos student (1.53M) fine-tuned jointly. Model: 5.25M acoustic + 1.53M vocoder.
+    <br><br>
+    Generated 2026-08-27 from
+    <code>outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt</code>
+    (champion) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
+  </div>
+</div>
+
+<script>
+const DATA = {
+  champion: {
+    label: "Champion", cls: "champ",
+    dev:     { utts: [] },
+    holdout: { utts: [] },
+  },
+  baseline: {
+    label: "Baseline", cls: "base",
+    dev:     { utts: [] },
+    holdout: { utts: [] },
+  },
+};
+
+const SPLIT_NOTES = {
+  dev: "Dev set — 30 utterances from LJSpeech eval.txt (seen by the dev-eval loop).",
+  holdout: "Holdout set — 30 utterances carved from train, never in the dev loop (the gate set).",
+};
+
+let curTab = "champion", curSplit = "dev";
+
+function esc(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function playerRow(model, u) {
+  return `<div class="row">
+    <span class="who ${DATA[model].cls}">${DATA[model].label}</span>
+    <audio controls preload="none" src="audio/${model}_${curSplit}/syn_${String(u.i).padStart(3, "0")}.wav"></audio>
+    <span class="dur">${u.duration.toFixed(1)}s</span>
+  </div>`;
+}
+
+function render() {
+  const list = document.getElementById("list");
+  document.getElementById("split-note").textContent = SPLIT_NOTES[curSplit];
+  const n = DATA.champion[curSplit].utts.length;
+  if (!n) { list.innerHTML = "<div class='note'>Loading samples…</div>"; return; }
+  let html = "";
+  for (let i = 0; i < n; i++) {
+    const uc = DATA.champion[curSplit].utts[i];
+    const ub = DATA.baseline[curSplit].utts[i];
+    const rows = curTab === "champion" ? playerRow("champion", uc)
+                 : curTab === "baseline" ? playerRow("baseline", ub)
+                 : playerRow("champion", uc) + playerRow("baseline", ub);
+    html += `<div class="utt">
+      <span class="idx">${String(i).padStart(3, "0")}</span>
+      <div class="txt">${esc(uc.text)}</div>
+      ${rows}
+    </div>`;
+  }
+  list.innerHTML = html;
+}
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  curTab = t.dataset.tab;
+  render();
+}));
+document.querySelectorAll(".splitbar button[data-split]").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".splitbar button[data-split]").forEach(x => x.classList.remove("on"));
+  b.classList.add("on");
+  curSplit = b.dataset.split;
+  render();
+}));
+
+fetch("manifest.json").then(r => r.json()).then(m => {
+  for (const model of ["champion", "baseline"]) {
+    for (const split of ["dev", "holdout"]) {
+      DATA[model][split].utts = m.sets[split][model].utts;
+    }
+  }
+  render();
+}).catch(e => {
+  document.getElementById("list").innerHTML =
+    "<div class='note'>Could not load manifest.json: " + esc(String(e)) + "</div>";
+});
+</script>
+</body>
+</html>

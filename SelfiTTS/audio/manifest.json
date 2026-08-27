@@ -1,0 +1,887 @@
+{
+ "generated_at": "2026-08-27 20:00:11",
+ "protocol": {
+  "n_steps": 1,
+  "temperature": 0.8,
+  "length_scale": 0.9,
+  "sample_rate": 24000
+ },
+ "models": {
+  "champion": {
+   "checkpoint": "/home/rowel/sandbox/AetherTTS/outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt"
+  },
+  "baseline": {
+   "checkpoint": "/home/rowel/sandbox/AetherTTS/baseline/logs_stage_b/lightning_logs/version_0/ema_epoch-last.ckpt"
+  }
+ },
+ "sets": {
+  "dev": {
+   "champion": {
+    "n": 30,
+    "total_duration": 193.9,
+    "utts": [
+     {
+      "i": 0,
+      "src": "LJ001-0022.wav",
+      "text": "of the more formal ecclesiastical writing which obtained at that time; this has since been called \"missal type,\"",
+      "wav": "champion_dev/syn_000.wav",
+      "duration": 6.219
+     },
+     {
+      "i": 1,
+      "src": "LJ001-0087.wav",
+      "text": "for the seventeenth-century letters are at least pure and simple in line. The Italian, Bodoni, and the Frenchman, Didot,",
+      "wav": "champion_dev/syn_001.wav",
+      "duration": 7.093
+     },
+     {
+      "i": 2,
+      "src": "LJ002-0031.wav",
+      "text": "The jail at that date was divided into eight separate and more or less distinct departments, each of which had its own wards and yard.",
+      "wav": "champion_dev/syn_002.wav",
+      "duration": 7.68
+     },
+     {
+      "i": 3,
+      "src": "LJ002-0066.wav",
+      "text": "The master felons' side consisted of a yard the same size as the preceding, appropriated nominally to the most decent and better-behaved prisoners,",
+      "wav": "champion_dev/syn_003.wav",
+      "duration": 8.565
+     },
+     {
+      "i": 4,
+      "src": "LJ004-0102.wav",
+      "text": "were to be kept in every jail, and the prisoners directed to wash in them before release. These provisions were almost a dead letter.",
+      "wav": "champion_dev/syn_004.wav",
+      "duration": 7.861
+     },
+     {
+      "i": 5,
+      "src": "LJ007-0014.wav",
+      "text": "The admission of a crowd of visitors to assist in these lay services has already been remarked upon; as the inspectors pointed out,",
+      "wav": "champion_dev/syn_005.wav",
+      "duration": 7.52
+     },
+     {
+      "i": 6,
+      "src": "LJ007-0048.wav",
+      "text": "so subversive of meditation, so disturbing to the thoughts;",
+      "wav": "champion_dev/syn_006.wav",
+      "duration": 3.904
+     },
+     {
+      "i": 7,
+      "src": "LJ010-0165.wav",
+      "text": "but he came as a lad to London, and took service as a pot-boy to a publican.",
+      "wav": "champion_dev/syn_007.wav",
+      "duration": 4.608
+     },
+     {
+      "i": 8,
+      "src": "LJ010-0254.wav",
+      "text": "At the Italian Opera in the evening the audience, on the Queen's appearance, greeted her with loud cheers, and called for the national anthem.",
+      "wav": "champion_dev/syn_008.wav",
+      "duration": 7.637
+     },
+     {
+      "i": 9,
+      "src": "LJ012-0117.wav",
+      "text": "By-and-by the occupant of the room noticed something glittering in the center of the fire, which, to inspect more closely, he took out with the tongs.",
+      "wav": "champion_dev/syn_009.wav",
+      "duration": 8.192
+     },
+     {
+      "i": 10,
+      "src": "LJ014-0141.wav",
+      "text": "and stretching out her hand, she gathered up a quantity of the rue which, following ancient custom dating from the days of the jail fever,",
+      "wav": "champion_dev/syn_010.wav",
+      "duration": 7.499
+     },
+     {
+      "i": 11,
+      "src": "LJ015-0007.wav",
+      "text": "This affected Cole's credit, and ugly reports were in circulation charging him with the issue of simulated warrants.",
+      "wav": "champion_dev/syn_011.wav",
+      "duration": 7.029
+     },
+     {
+      "i": 12,
+      "src": "LJ019-0101.wav",
+      "text": "In eighteen fifty Sir George Grey brought forward a new motion to the same effect,",
+      "wav": "champion_dev/syn_012.wav",
+      "duration": 4.971
+     },
+     {
+      "i": 13,
+      "src": "LJ026-0021.wav",
+      "text": "nitrogen is obtained from simple salts and the nutritive processes result in deoxidation;",
+      "wav": "champion_dev/syn_013.wav",
+      "duration": 5.707
+     },
+     {
+      "i": 14,
+      "src": "LJ028-0065.wav",
+      "text": "Eleven years later, in five eighty-six, he destroyed the sacred Hebrew city,",
+      "wav": "champion_dev/syn_014.wav",
+      "duration": 4.672
+     },
+     {
+      "i": 15,
+      "src": "LJ029-0152.wav",
+      "text": "to inspect buildings along the motorcade route since the Secret Service did not normally request or make such a check.",
+      "wav": "champion_dev/syn_015.wav",
+      "duration": 6.912
+     },
+     {
+      "i": 16,
+      "src": "LJ031-0023.wav",
+      "text": "four anesthesiologists, Drs. Marion T. Jenkins, Adolph H. Giesecke, Jr., Jackie H. Hunt,",
+      "wav": "champion_dev/syn_016.wav",
+      "duration": 7.168
+     },
+     {
+      "i": 17,
+      "src": "LJ032-0167.wav",
+      "text": "He concluded, quote, There is no doubt in my mind that these fibers could have come from this shirt.",
+      "wav": "champion_dev/syn_017.wav",
+      "duration": 5.451
+     },
+     {
+      "i": 18,
+      "src": "LJ034-0168.wav",
+      "text": "Ronald Fischer and Robert Edwards were standing on the curb at the southwest corner of Elm and Houston Streets,",
+      "wav": "champion_dev/syn_018.wav",
+      "duration": 6.347
+     },
+     {
+      "i": 19,
+      "src": "LJ035-0066.wav",
+      "text": "In an effort to determine whether Oswald could have descended to the lunchroom",
+      "wav": "champion_dev/syn_019.wav",
+      "duration": 3.947
+     },
+     {
+      "i": 20,
+      "src": "LJ036-0141.wav",
+      "text": "[east side of the street]. Of course, the traffic was moving through there and I put it in gear and moved on, that is the last I saw of him.",
+      "wav": "champion_dev/syn_020.wav",
+      "duration": 8.181
+     },
+     {
+      "i": 21,
+      "src": "LJ037-0002.wav",
+      "text": "Chapter four. The Assassin: Part six.",
+      "wav": "champion_dev/syn_021.wav",
+      "duration": 2.997
+     },
+     {
+      "i": 22,
+      "src": "LJ038-0136.wav",
+      "text": "In concluding that Oswald was carrying a rifle in the paper bag on the morning of November twenty-two, nineteen sixty-three,",
+      "wav": "champion_dev/syn_022.wav",
+      "duration": 6.891
+     },
+     {
+      "i": 23,
+      "src": "LJ039-0096.wav",
+      "text": "This is a definite advantage to the shooter, the vehicle moving directly away from him and the downgrade of the street, and he being in an elevated position",
+      "wav": "champion_dev/syn_023.wav",
+      "duration": 8.704
+     },
+     {
+      "i": 24,
+      "src": "LJ042-0098.wav",
+      "text": "The subsidy, apparently similar to those sometimes given to foreigners allowed to remain in the Soviet Union, together with his salary,",
+      "wav": "champion_dev/syn_024.wav",
+      "duration": 7.328
+     },
+     {
+      "i": 25,
+      "src": "LJ046-0019.wav",
+      "text": "In this part of its inquiry the Commission has had full access to a major study of all phases of protective activities",
+      "wav": "champion_dev/syn_025.wav",
+      "duration": 7.008
+     },
+     {
+      "i": 26,
+      "src": "LJ046-0029.wav",
+      "text": "It is unlikely that measures can be devised to eliminate entirely the multitude of diverse dangers that may arise,",
+      "wav": "champion_dev/syn_026.wav",
+      "duration": 6.699
+     },
+     {
+      "i": 27,
+      "src": "LJ046-0224.wav",
+      "text": "The State Department advised the Secret Service of all crank and threat letter mail",
+      "wav": "champion_dev/syn_027.wav",
+      "duration": 4.661
+     },
+     {
+      "i": 28,
+      "src": "LJ049-0189.wav",
+      "text": "but expand both the scope and the operations of the existing agencies, particularly those of the Secret Service and the FBI.",
+      "wav": "champion_dev/syn_028.wav",
+      "duration": 7.552
+     },
+     {
+      "i": 29,
+      "src": "LJ050-0038.wav",
+      "text": "In attempting to identify those individuals who might prove a danger to the President,",
+      "wav": "champion_dev/syn_029.wav",
+      "duration": 4.864
+     }
+    ]
+   },
+   "baseline": {
+    "n": 30,
+    "total_duration": 193.3,
+    "utts": [
+     {
+      "i": 0,
+      "src": "LJ001-0022.wav",
+      "text": "of the more formal ecclesiastical writing which obtained at that time; this has since been called \"missal type,\"",
+      "wav": "baseline_dev/syn_000.wav",
+      "duration": 6.229
+     },
+     {
+      "i": 1,
+      "src": "LJ001-0087.wav",
+      "text": "for the seventeenth-century letters are at least pure and simple in line. The Italian, Bodoni, and the Frenchman, Didot,",
+      "wav": "baseline_dev/syn_001.wav",
+      "duration": 7.179
+     },
+     {
+      "i": 2,
+      "src": "LJ002-0031.wav",
+      "text": "The jail at that date was divided into eight separate and more or less distinct departments, each of which had its own wards and yard.",
+      "wav": "baseline_dev/syn_002.wav",
+      "duration": 7.605
+     },
+     {
+      "i": 3,
+      "src": "LJ002-0066.wav",
+      "text": "The master felons' side consisted of a yard the same size as the preceding, appropriated nominally to the most decent and better-behaved prisoners,",
+      "wav": "baseline_dev/syn_003.wav",
+      "duration": 8.448
+     },
+     {
+      "i": 4,
+      "src": "LJ004-0102.wav",
+      "text": "were to be kept in every jail, and the prisoners directed to wash in them before release. These provisions were almost a dead letter.",
+      "wav": "baseline_dev/syn_004.wav",
+      "duration": 7.829
+     },
+     {
+      "i": 5,
+      "src": "LJ007-0014.wav",
+      "text": "The admission of a crowd of visitors to assist in these lay services has already been remarked upon; as the inspectors pointed out,",
+      "wav": "baseline_dev/syn_005.wav",
+      "duration": 7.552
+     },
+     {
+      "i": 6,
+      "src": "LJ007-0048.wav",
+      "text": "so subversive of meditation, so disturbing to the thoughts;",
+      "wav": "baseline_dev/syn_006.wav",
+      "duration": 3.819
+     },
+     {
+      "i": 7,
+      "src": "LJ010-0165.wav",
+      "text": "but he came as a lad to London, and took service as a pot-boy to a publican.",
+      "wav": "baseline_dev/syn_007.wav",
+      "duration": 4.619
+     },
+     {
+      "i": 8,
+      "src": "LJ010-0254.wav",
+      "text": "At the Italian Opera in the evening the audience, on the Queen's appearance, greeted her with loud cheers, and called for the national anthem.",
+      "wav": "baseline_dev/syn_008.wav",
+      "duration": 7.637
+     },
+     {
+      "i": 9,
+      "src": "LJ012-0117.wav",
+      "text": "By-and-by the occupant of the room noticed something glittering in the center of the fire, which, to inspect more closely, he took out with the tongs.",
+      "wav": "baseline_dev/syn_009.wav",
+      "duration": 8.181
+     },
+     {
+      "i": 10,
+      "src": "LJ014-0141.wav",
+      "text": "and stretching out her hand, she gathered up a quantity of the rue which, following ancient custom dating from the days of the jail fever,",
+      "wav": "baseline_dev/syn_010.wav",
+      "duration": 7.456
+     },
+     {
+      "i": 11,
+      "src": "LJ015-0007.wav",
+      "text": "This affected Cole's credit, and ugly reports were in circulation charging him with the issue of simulated warrants.",
+      "wav": "baseline_dev/syn_011.wav",
+      "duration": 6.976
+     },
+     {
+      "i": 12,
+      "src": "LJ019-0101.wav",
+      "text": "In eighteen fifty Sir George Grey brought forward a new motion to the same effect,",
+      "wav": "baseline_dev/syn_012.wav",
+      "duration": 4.96
+     },
+     {
+      "i": 13,
+      "src": "LJ026-0021.wav",
+      "text": "nitrogen is obtained from simple salts and the nutritive processes result in deoxidation;",
+      "wav": "baseline_dev/syn_013.wav",
+      "duration": 5.664
+     },
+     {
+      "i": 14,
+      "src": "LJ028-0065.wav",
+      "text": "Eleven years later, in five eighty-six, he destroyed the sacred Hebrew city,",
+      "wav": "baseline_dev/syn_014.wav",
+      "duration": 4.683
+     },
+     {
+      "i": 15,
+      "src": "LJ029-0152.wav",
+      "text": "to inspect buildings along the motorcade route since the Secret Service did not normally request or make such a check.",
+      "wav": "baseline_dev/syn_015.wav",
+      "duration": 6.891
+     },
+     {
+      "i": 16,
+      "src": "LJ031-0023.wav",
+      "text": "four anesthesiologists, Drs. Marion T. Jenkins, Adolph H. Giesecke, Jr., Jackie H. Hunt,",
+      "wav": "baseline_dev/syn_016.wav",
+      "duration": 7.061
+     },
+     {
+      "i": 17,
+      "src": "LJ032-0167.wav",
+      "text": "He concluded, quote, There is no doubt in my mind that these fibers could have come from this shirt.",
+      "wav": "baseline_dev/syn_017.wav",
+      "duration": 5.472
+     },
+     {
+      "i": 18,
+      "src": "LJ034-0168.wav",
+      "text": "Ronald Fischer and Robert Edwards were standing on the curb at the southwest corner of Elm and Houston Streets,",
+      "wav": "baseline_dev/syn_018.wav",
+      "duration": 6.315
+     },
+     {
+      "i": 19,
+      "src": "LJ035-0066.wav",
+      "text": "In an effort to determine whether Oswald could have descended to the lunchroom",
+      "wav": "baseline_dev/syn_019.wav",
+      "duration": 3.947
+     },
+     {
+      "i": 20,
+      "src": "LJ036-0141.wav",
+      "text": "[east side of the street]. Of course, the traffic was moving through there and I put it in gear and moved on, that is the last I saw of him.",
+      "wav": "baseline_dev/syn_020.wav",
+      "duration": 8.117
+     },
+     {
+      "i": 21,
+      "src": "LJ037-0002.wav",
+      "text": "Chapter four. The Assassin: Part six.",
+      "wav": "baseline_dev/syn_021.wav",
+      "duration": 2.987
+     },
+     {
+      "i": 22,
+      "src": "LJ038-0136.wav",
+      "text": "In concluding that Oswald was carrying a rifle in the paper bag on the morning of November twenty-two, nineteen sixty-three,",
+      "wav": "baseline_dev/syn_022.wav",
+      "duration": 6.965
+     },
+     {
+      "i": 23,
+      "src": "LJ039-0096.wav",
+      "text": "This is a definite advantage to the shooter, the vehicle moving directly away from him and the downgrade of the street, and he being in an elevated position",
+      "wav": "baseline_dev/syn_023.wav",
+      "duration": 8.683
+     },
+     {
+      "i": 24,
+      "src": "LJ042-0098.wav",
+      "text": "The subsidy, apparently similar to those sometimes given to foreigners allowed to remain in the Soviet Union, together with his salary,",
+      "wav": "baseline_dev/syn_024.wav",
+      "duration": 7.317
+     },
+     {
+      "i": 25,
+      "src": "LJ046-0019.wav",
+      "text": "In this part of its inquiry the Commission has had full access to a major study of all phases of protective activities",
+      "wav": "baseline_dev/syn_025.wav",
+      "duration": 6.955
+     },
+     {
+      "i": 26,
+      "src": "LJ046-0029.wav",
+      "text": "It is unlikely that measures can be devised to eliminate entirely the multitude of diverse dangers that may arise,",
+      "wav": "baseline_dev/syn_026.wav",
+      "duration": 6.592
+     },
+     {
+      "i": 27,
+      "src": "LJ046-0224.wav",
+      "text": "The State Department advised the Secret Service of all crank and threat letter mail",
+      "wav": "baseline_dev/syn_027.wav",
+      "duration": 4.587
+     },
+     {
+      "i": 28,
+      "src": "LJ049-0189.wav",
+      "text": "but expand both the scope and the operations of the existing agencies, particularly those of the Secret Service and the FBI.",
+      "wav": "baseline_dev/syn_028.wav",
+      "duration": 7.616
+     },
+     {
+      "i": 29,
+      "src": "LJ050-0038.wav",
+      "text": "In attempting to identify those individuals who might prove a danger to the President,",
+      "wav": "baseline_dev/syn_029.wav",
+      "duration": 4.939
+     }
+    ]
+   }
+  },
+  "holdout": {
+   "champion": {
+    "n": 30,
+    "total_duration": 171.5,
+    "utts": [
+     {
+      "i": 0,
+      "src": "LJ013-0180.wav",
+      "text": "The intention of the real murderer to shift the crime to burglars was evident although futile,",
+      "wav": "champion_holdout/syn_000.wav",
+      "duration": 4.896
+     },
+     {
+      "i": 1,
+      "src": "LJ038-0022.wav",
+      "text": "I don't know if this is the man they want. But he is running from them for some reason, end quote, She then called the police.",
+      "wav": "champion_holdout/syn_001.wav",
+      "duration": 7.307
+     },
+     {
+      "i": 2,
+      "src": "LJ039-0204.wav",
+      "text": "Frazier later fired four groups of three shots at a distance of one hundred yards in five point nine, six point two,",
+      "wav": "champion_holdout/syn_002.wav",
+      "duration": 7.541
+     },
+     {
+      "i": 3,
+      "src": "LJ039-0016.wav",
+      "text": "he finished reading a morning newspaper, quote, and put on a good suit. I saw that he took a pistol.",
+      "wav": "champion_holdout/syn_003.wav",
+      "duration": 6.037
+     },
+     {
+      "i": 4,
+      "src": "LJ016-0158.wav",
+      "text": "It was that of a \"Long Firm\" swindler, by name Johnson,",
+      "wav": "champion_holdout/syn_004.wav",
+      "duration": 3.157
+     },
+     {
+      "i": 5,
+      "src": "LJ048-0115.wav",
+      "text": "to determine what matters require attention in making advance preparations and to decide what action to take.",
+      "wav": "champion_holdout/syn_005.wav",
+      "duration": 6.315
+     },
+     {
+      "i": 6,
+      "src": "LJ003-0305.wav",
+      "text": "The provision of more baths was also suggested, and the daily sweeping out of the prison.",
+      "wav": "champion_holdout/syn_006.wav",
+      "duration": 5.056
+     },
+     {
+      "i": 7,
+      "src": "LJ015-0088.wav",
+      "text": "To his wife, poor soul, he made no pretense of fidelity, and she enjoyed only so much of his company as was necessarily spent",
+      "wav": "champion_holdout/syn_007.wav",
+      "duration": 7.893
+     },
+     {
+      "i": 8,
+      "src": "LJ015-0044.wav",
+      "text": "with money enough to retrieve the position of the bank. But that passed from bad to worse;",
+      "wav": "champion_holdout/syn_008.wav",
+      "duration": 4.885
+     },
+     {
+      "i": 9,
+      "src": "LJ048-0239.wav",
+      "text": "The lobby of the hotel and the areas adjacent to the quarters of the President were guarded during the night",
+      "wav": "champion_holdout/syn_009.wav",
+      "duration": 5.536
+     },
+     {
+      "i": 10,
+      "src": "LJ017-0228.wav",
+      "text": "till every feature was obliterated, and then, still living, flung him into the sea.",
+      "wav": "champion_holdout/syn_010.wav",
+      "duration": 5.099
+     },
+     {
+      "i": 11,
+      "src": "LJ034-0126.wav",
+      "text": "shows three employees looking out of the fifth-floor window directly below the window from which the shots were fired.",
+      "wav": "champion_holdout/syn_011.wav",
+      "duration": 6.336
+     },
+     {
+      "i": 12,
+      "src": "LJ039-0216.wav",
+      "text": "It should be noted, however, that the President's car was curving slightly to the right when the third shot was fired.",
+      "wav": "champion_holdout/syn_012.wav",
+      "duration": 6.304
+     },
+     {
+      "i": 13,
+      "src": "LJ006-0013.wav",
+      "text": "Sir Frederick Roe was of the same opinion as regards the appointment, but he would give the inspectors the power of acting as well as reporting.",
+      "wav": "champion_holdout/syn_013.wav",
+      "duration": 7.915
+     },
+     {
+      "i": 14,
+      "src": "LJ047-0176.wav",
+      "text": "shortly after Oswald rented the room on October fourteen.",
+      "wav": "champion_holdout/syn_014.wav",
+      "duration": 3.669
+     },
+     {
+      "i": 15,
+      "src": "LJ018-0363.wav",
+      "text": "She was found guilty.",
+      "wav": "champion_holdout/syn_015.wav",
+      "duration": 1.291
+     },
+     {
+      "i": 16,
+      "src": "LJ014-0077.wav",
+      "text": "It came out in the husband's confession that Mrs. Manning induced O'Connor to go down to the kitchen to wash his hands, that she followed him to the basement,",
+      "wav": "champion_holdout/syn_016.wav",
+      "duration": 8.491
+     },
+     {
+      "i": 17,
+      "src": "LJ032-0182.wav",
+      "text": "were clean, they had good color to them, there was no grease on them and they were not fragmented. They looked as if they had just been picked up, end quote.",
+      "wav": "champion_holdout/syn_017.wav",
+      "duration": 8.907
+     },
+     {
+      "i": 18,
+      "src": "LJ020-0023.wav",
+      "text": "If too stiff, warm water, a spoonful at a time until you can handle the paste easily. The danger is in getting it too stiff. Now.",
+      "wav": "champion_holdout/syn_018.wav",
+      "duration": 8.619
+     },
+     {
+      "i": 19,
+      "src": "LJ038-0269.wav",
+      "text": "Frazier testified, however, that he found no microscopic characteristics or other evidence",
+      "wav": "champion_holdout/syn_019.wav",
+      "duration": 5.685
+     },
+     {
+      "i": 20,
+      "src": "LJ045-0193.wav",
+      "text": "en route from Dallas Love Field, end quote, on its way to the Trade Mart on Stemmons Freeway.",
+      "wav": "champion_holdout/syn_020.wav",
+      "duration": 5.579
+     },
+     {
+      "i": 21,
+      "src": "LJ015-0289.wav",
+      "text": "As each transaction was carried out from a different address, and a different messenger always employed,",
+      "wav": "champion_holdout/syn_021.wav",
+      "duration": 5.984
+     },
+     {
+      "i": 22,
+      "src": "LJ015-0152.wav",
+      "text": "His name headed every subscription list; his purse was always open.",
+      "wav": "champion_holdout/syn_022.wav",
+      "duration": 4.331
+     },
+     {
+      "i": 23,
+      "src": "LJ042-0115.wav",
+      "text": "The best description of Oswald's state of mind, however, is set forth in his own \"Historic Diary.\"",
+      "wav": "champion_holdout/syn_023.wav",
+      "duration": 5.696
+     },
+     {
+      "i": 24,
+      "src": "LJ033-0055.wav",
+      "text": "and he could disassemble it more rapidly.",
+      "wav": "champion_holdout/syn_024.wav",
+      "duration": 2.229
+     },
+     {
+      "i": 25,
+      "src": "LJ049-0056.wav",
+      "text": "The first duty of the agents in the motorcade is to attempt to cover the President as closely as possible and practicable",
+      "wav": "champion_holdout/syn_025.wav",
+      "duration": 6.795
+     },
+     {
+      "i": 26,
+      "src": "LJ008-0013.wav",
+      "text": "As regards the first, I find that in seventeen eighty-six",
+      "wav": "champion_holdout/syn_026.wav",
+      "duration": 3.872
+     },
+     {
+      "i": 27,
+      "src": "LJ017-0203.wav",
+      "text": "This fact was referred to by the judge in his summing up,",
+      "wav": "champion_holdout/syn_027.wav",
+      "duration": 3.008
+     },
+     {
+      "i": 28,
+      "src": "LJ010-0227.wav",
+      "text": "He went from Newgate first to Bethlehem, from which he was removed to Broadmoor on the opening of the great criminal lunatic asylum at that place.",
+      "wav": "champion_holdout/syn_028.wav",
+      "duration": 8.096
+     },
+     {
+      "i": 29,
+      "src": "LJ045-0180.wav",
+      "text": "and which he was to take to the School Book Depository. The Unanswered Questions.",
+      "wav": "champion_holdout/syn_029.wav",
+      "duration": 5.003
+     }
+    ]
+   },
+   "baseline": {
+    "n": 30,
+    "total_duration": 171.4,
+    "utts": [
+     {
+      "i": 0,
+      "src": "LJ013-0180.wav",
+      "text": "The intention of the real murderer to shift the crime to burglars was evident although futile,",
+      "wav": "baseline_holdout/syn_000.wav",
+      "duration": 4.885
+     },
+     {
+      "i": 1,
+      "src": "LJ038-0022.wav",
+      "text": "I don't know if this is the man they want. But he is running from them for some reason, end quote, She then called the police.",
+      "wav": "baseline_holdout/syn_001.wav",
+      "duration": 7.36
+     },
+     {
+      "i": 2,
+      "src": "LJ039-0204.wav",
+      "text": "Frazier later fired four groups of three shots at a distance of one hundred yards in five point nine, six point two,",
+      "wav": "baseline_holdout/syn_002.wav",
+      "duration": 7.435
+     },
+     {
+      "i": 3,
+      "src": "LJ039-0016.wav",
+      "text": "he finished reading a morning newspaper, quote, and put on a good suit. I saw that he took a pistol.",
+      "wav": "baseline_holdout/syn_003.wav",
+      "duration": 6.069
+     },
+     {
+      "i": 4,
+      "src": "LJ016-0158.wav",
+      "text": "It was that of a \"Long Firm\" swindler, by name Johnson,",
+      "wav": "baseline_holdout/syn_004.wav",
+      "duration": 3.232
+     },
+     {
+      "i": 5,
+      "src": "LJ048-0115.wav",
+      "text": "to determine what matters require attention in making advance preparations and to decide what action to take.",
+      "wav": "baseline_holdout/syn_005.wav",
+      "duration": 6.304
+     },
+     {
+      "i": 6,
+      "src": "LJ003-0305.wav",
+      "text": "The provision of more baths was also suggested, and the daily sweeping out of the prison.",
+      "wav": "baseline_holdout/syn_006.wav",
+      "duration": 5.035
+     },
+     {
+      "i": 7,
+      "src": "LJ015-0088.wav",
+      "text": "To his wife, poor soul, he made no pretense of fidelity, and she enjoyed only so much of his company as was necessarily spent",
+      "wav": "baseline_holdout/syn_007.wav",
+      "duration": 7.819
+     },
+     {
+      "i": 8,
+      "src": "LJ015-0044.wav",
+      "text": "with money enough to retrieve the position of the bank. But that passed from bad to worse;",
+      "wav": "baseline_holdout/syn_008.wav",
+      "duration": 4.843
+     },
+     {
+      "i": 9,
+      "src": "LJ048-0239.wav",
+      "text": "The lobby of the hotel and the areas adjacent to the quarters of the President were guarded during the night",
+      "wav": "baseline_holdout/syn_009.wav",
+      "duration": 5.664
+     },
+     {
+      "i": 10,
+      "src": "LJ017-0228.wav",
+      "text": "till every feature was obliterated, and then, still living, flung him into the sea.",
+      "wav": "baseline_holdout/syn_010.wav",
+      "duration": 5.045
+     },
+     {
+      "i": 11,
+      "src": "LJ034-0126.wav",
+      "text": "shows three employees looking out of the fifth-floor window directly below the window from which the shots were fired.",
+      "wav": "baseline_holdout/syn_011.wav",
+      "duration": 6.443
+     },
+     {
+      "i": 12,
+      "src": "LJ039-0216.wav",
+      "text": "It should be noted, however, that the President's car was curving slightly to the right when the third shot was fired.",
+      "wav": "baseline_holdout/syn_012.wav",
+      "duration": 6.229
+     },
+     {
+      "i": 13,
+      "src": "LJ006-0013.wav",
+      "text": "Sir Frederick Roe was of the same opinion as regards the appointment, but he would give the inspectors the power of acting as well as reporting.",
+      "wav": "baseline_holdout/syn_013.wav",
+      "duration": 7.883
+     },
+     {
+      "i": 14,
+      "src": "LJ047-0176.wav",
+      "text": "shortly after Oswald rented the room on October fourteen.",
+      "wav": "baseline_holdout/syn_014.wav",
+      "duration": 3.659
+     },
+     {
+      "i": 15,
+      "src": "LJ018-0363.wav",
+      "text": "She was found guilty.",
+      "wav": "baseline_holdout/syn_015.wav",
+      "duration": 1.269
+     },
+     {
+      "i": 16,
+      "src": "LJ014-0077.wav",
+      "text": "It came out in the husband's confession that Mrs. Manning induced O'Connor to go down to the kitchen to wash his hands, that she followed him to the basement,",
+      "wav": "baseline_holdout/syn_016.wav",
+      "duration": 8.437
+     },
+     {
+      "i": 17,
+      "src": "LJ032-0182.wav",
+      "text": "were clean, they had good color to them, there was no grease on them and they were not fragmented. They looked as if they had just been picked up, end quote.",
+      "wav": "baseline_holdout/syn_017.wav",
+      "duration": 8.928
+     },
+     {
+      "i": 18,
+      "src": "LJ020-0023.wav",
+      "text": "If too stiff, warm water, a spoonful at a time until you can handle the paste easily. The danger is in getting it too stiff. Now.",
+      "wav": "baseline_holdout/syn_018.wav",
+      "duration": 8.512
+     },
+     {
+      "i": 19,
+      "src": "LJ038-0269.wav",
+      "text": "Frazier testified, however, that he found no microscopic characteristics or other evidence",
+      "wav": "baseline_holdout/syn_019.wav",
+      "duration": 5.696
+     },
+     {
+      "i": 20,
+      "src": "LJ045-0193.wav",
+      "text": "en route from Dallas Love Field, end quote, on its way to the Trade Mart on Stemmons Freeway.",
+      "wav": "baseline_holdout/syn_020.wav",
+      "duration": 5.589
+     },
+     {
+      "i": 21,
+      "src": "LJ015-0289.wav",
+      "text": "As each transaction was carried out from a different address, and a different messenger always employed,",
+      "wav": "baseline_holdout/syn_021.wav",
+      "duration": 5.909
+     },
+     {
+      "i": 22,
+      "src": "LJ015-0152.wav",
+      "text": "His name headed every subscription list; his purse was always open.",
+      "wav": "baseline_holdout/syn_022.wav",
+      "duration": 4.277
+     },
+     {
+      "i": 23,
+      "src": "LJ042-0115.wav",
+      "text": "The best description of Oswald's state of mind, however, is set forth in his own \"Historic Diary.\"",
+      "wav": "baseline_holdout/syn_023.wav",
+      "duration": 5.749
+     },
+     {
+      "i": 24,
+      "src": "LJ033-0055.wav",
+      "text": "and he could disassemble it more rapidly.",
+      "wav": "baseline_holdout/syn_024.wav",
+      "duration": 2.272
+     },
+     {
+      "i": 25,
+      "src": "LJ049-0056.wav",
+      "text": "The first duty of the agents in the motorcade is to attempt to cover the President as closely as possible and practicable",
+      "wav": "baseline_holdout/syn_025.wav",
+      "duration": 6.773
+     },
+     {
+      "i": 26,
+      "src": "LJ008-0013.wav",
+      "text": "As regards the first, I find that in seventeen eighty-six",
+      "wav": "baseline_holdout/syn_026.wav",
+      "duration": 3.915
+     },
+     {
+      "i": 27,
+      "src": "LJ017-0203.wav",
+      "text": "This fact was referred to by the judge in his summing up,",
+      "wav": "baseline_holdout/syn_027.wav",
+      "duration": 3.115
+     },
+     {
+      "i": 28,
+      "src": "LJ010-0227.wav",
+      "text": "He went from Newgate first to Bethlehem, from which he was removed to Broadmoor on the opening of the great criminal lunatic asylum at that place.",
+      "wav": "baseline_holdout/syn_028.wav",
+      "duration": 8.117
+     },
+     {
+      "i": 29,
+      "src": "LJ045-0180.wav",
+      "text": "and which he was to take to the School Book Depository. The Unanswered Questions.",
+      "wav": "baseline_holdout/syn_029.wav",
+      "duration": 4.939
+     }
+    ]
+   }
+  }
+ }
+}
