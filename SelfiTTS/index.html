@@ -170,7 +170,7 @@ document.querySelectorAll(".splitbar button[data-split]").forEach(b => b.addEven
   render();
 }));
 
-fetch("manifest.json").then(r => r.json()).then(m => {
+fetch("audio/manifest.json").then(r => r.json()).then(m => {
   for (const model of ["champion", "baseline"]) {
     for (const split of ["dev", "holdout"]) {
       DATA[model][split].utts = m.sets[split][model].utts;
