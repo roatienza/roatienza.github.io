@@ -599,8 +599,9 @@ footer .wrap{padding:26px 24px 60px}
   </details>
 
 <section id="earcheck2" class="wrap">
-  <h2 class="ear-h2">Ear check 2 &mdash; <em>the patched renders</em></h2>
+  <h2 class="ear-h2">Ear check 2 &mdash; <em>the patched renders</em> &middot; update: long_deep fixed by clause chunking</h2>
   <p class="standfirst">The owner heard arm F win on expressiveness but flagged three long-form defects: missed words, repeated words, and a breath-like tail. Phase A patched the engine (breath-tail trim, sentence-splitter fix) and re-rendered everything. This section is the before/after for the ear. <strong>Every &ldquo;after&rdquo; clip is the patched champion, defaults on, serve-identical.</strong> WER beside each row is the granite ASR score for that exact clip &mdash; trim is WER-neutral, so the numbers you see are the text-fidelity story, not the trim&rsquo;s.</p>
+  <p class="standfirst"><strong>Owner verdict (2026-08-28):</strong> repeats gone, breath tails gone &mdash; one residual on <strong>long_deep</strong> (missing words + repetitions). Diagnosed: its second sentence is 33 words (~8&ndash;9&nbsp;s, 200+ latent frames) vs a corpus median of 93 frames &mdash; deep in the measured length-curve regime; the repeat sat at 77% of the window. <strong>Fixed same-day (A4, engine @3bf597c):</strong> <em>clause chunking</em> &mdash; windows longer than 18 words are split at the comma/conjunction nearest the midpoint. long_deep: 14.6% with repeats &rarr; <strong>2.4%, word-perfect, all 3 seeds</strong> (the &ldquo;after &middot; clause&rdquo; rows below). long_form 1.5% &rarr; 0.3%, long_female 0.0% unchanged. The clause renders are the new shipping long-form path.</p>
 
   <h3 class="ear-h3">Long forms &mdash; before / after, 3 seeds each (before &middot; 1 chunk / after &middot; 1 chunk / after &middot; sent.)</h3>
   <div class="grid">
@@ -611,26 +612,32 @@ footer .wrap{padding:26px 24px 60px}
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_g_s42.flac"></audio><span class="wer">42.7% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_i_s42.flac"></audio><span class="wer">42.7% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_form_j_s42.flac"></audio><span class="wer">1.8%</span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_form_k_s42.flac"></audio><span class="wer">1.8%</span></div>
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_g_s43.flac"></audio><span class="wer">43.6% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_i_s43.flac"></audio><span class="wer">43.6% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_form_j_s43.flac"></audio><span class="wer">0.0%</span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_form_k_s43.flac"></audio><span class="wer">0.0%</span></div>
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_g_s44.flac"></audio><span class="wer">41.8% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_i_s44.flac"></audio><span class="wer">41.8% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_form_j_s44.flac"></audio><span class="wer">2.7%</span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_form_k_s44.flac"></audio><span class="wer">2.7%</span></div>
   </article>
   <article class="chip violet">
     <div class="vox"><span class="dot"></span>patched &middot; long_deep</div>
-    <p class="who">the 41-word line the splitter used to swallow whole</p>
+    <p class="who">the 41-word line &mdash; now fixed: clause chunking splits the 33-word second sentence (the repeat sat at 77% of that window)</p>
     <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_g_s42.flac"></audio><span class="wer">17.1% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_i_s42.flac"></audio><span class="wer">17.1% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_deep_j_s42.flac"></audio><span class="wer">14.6% <span class='rep'>repeats</span></span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_deep_k_s42.flac"></audio><span class="wer">2.4%</span></div>
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_g_s43.flac"></audio><span class="wer">29.3% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_i_s43.flac"></audio><span class="wer">29.3% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_deep_j_s43.flac"></audio><span class="wer">14.6% <span class='rep'>repeats</span></span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_deep_k_s43.flac"></audio><span class="wer">2.4%</span></div>
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_g_s44.flac"></audio><span class="wer">24.4% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_i_s44.flac"></audio><span class="wer">24.4% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_deep_j_s44.flac"></audio><span class="wer">4.9%</span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_deep_k_s44.flac"></audio><span class="wer">2.4%</span></div>
   </article>
   <article class="chip ">
     <div class="vox"><span class="dot"></span>patched &middot; long_female</div>
@@ -639,12 +646,15 @@ footer .wrap{padding:26px 24px 60px}
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_g_s42.flac"></audio><span class="wer">11.8%</span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_i_s42.flac"></audio><span class="wer">11.8%</span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_female_j_s42.flac"></audio><span class="wer">0.0%</span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_female_k_s42.flac"></audio><span class="wer">0.0%</span></div>
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_g_s43.flac"></audio><span class="wer">5.9%</span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_i_s43.flac"></audio><span class="wer">5.9%</span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_female_j_s43.flac"></audio><span class="wer">0.0%</span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_female_k_s43.flac"></audio><span class="wer">0.0%</span></div>
       <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_g_s44.flac"></audio><span class="wer">11.8% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_i_s44.flac"></audio><span class="wer">11.8% <span class='rep'>repeats</span></span></div>
       <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_female_j_s44.flac"></audio><span class="wer">0.0%</span></div>
+      <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_female_k_s44.flac"></audio><span class="wer">0.0%</span></div>
   </article>
   </div>
 
@@ -781,8 +791,9 @@ footer .wrap{padding:26px 24px 60px}
         <tr><td>i</td><td>patched hq()</td><td>single chunk</td><td>breath-tail trim only &mdash; repeats remain, by design: trim is WER-neutral</td><td>same as g (identical WERs, 100&ndash;320 ms of tail removed)</td></tr>
         <tr><td>j</td><td>patched hq()</td><td>sentence-chunked</td><td>splitter fix + breath-tail trim &mdash; the shipping path for long text</td><td>long_form 1.8/0.0/2.7 &middot; long_deep 14.6/14.6/4.9 &middot; long_female 0/0/0</td></tr>
         <tr><td>F2</td><td>patched hq()</td><td>roster at scale</td><td>the 20-prompt gate re-run on the patched engine</td><td>gate PASSES: granite 2.46% / qwen 1.66% (was 2.65/2.06); repeat rows 3/40 &rarr; 2/40</td></tr>
+        <tr><td>k (A4)</td><td>patched hq() + clause chunking (engine @3bf597c)</td><td>clause-chunked</td><td>windows &gt;18 words split at the comma/conjunction nearest the midpoint &mdash; every window stays near the corpus-median 93-frame regime</td><td>long_deep 14.6/14.6/4.9 &rarr; <strong>2.4/2.4/2.4, word-perfect, 0 repeats</strong> &middot; long_form 1.8/0.0/2.7 &rarr; 0.9/0.0/0.0 &middot; long_female 0/0/0</td></tr>
       </table>
-      <p class="cond">What to listen for: (1) the <strong>tail</strong> &mdash; every &ldquo;after&rdquo; clip ends after the last word, no breath (100&ndash;1080 ms cut per clip, 17/18 clips trimmed, mean 442 ms); (2) the <strong>repeats</strong> &mdash; gone in every &ldquo;after &middot; sent.&rdquo; row of long_form; (3) <strong>long_deep</strong> &mdash; the sentence path now actually splits (WER 23.6% &rarr; 11.4% mean, seed 44 clean at 4.9%). Single-chunk long-form text-position drift is NOT fixed &mdash; that is the Phase B training arm&rsquo;s target, not a render patch. Renders: g/h &mdash; eval/oplad_lf_20260828/a1_diagnosis/renders; i/j &mdash; a23_validation_v2/renders/trim; F2 &mdash; champ_scale_v2 (seeds 42/43). All 48 kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ 1628470, trim_tail_breath + splitter fix default-on in StreamSettings.hq().</p>
+      <p class="cond">What to listen for: (1) the <strong>tail</strong> &mdash; every &ldquo;after&rdquo; clip ends after the last word, no breath (100&ndash;1080 ms cut per clip, 17/18 clips trimmed, mean 442 ms); (2) the <strong>repeats</strong> &mdash; gone in every &ldquo;after &middot; sent.&rdquo; row of long_form; (3) <strong>long_deep</strong> &mdash; the sentence path now actually splits (WER 23.6% &rarr; 11.4% mean, seed 44 clean at 4.9%). Single-chunk long-form text-position drift is NOT fixed &mdash; that is the Phase B training arm&rsquo;s target, not a render patch. <strong>A4 update (after the owner&rsquo;s ear check 2):</strong> the long_deep residual (missed + repeated words in the 33-word second sentence) is fixed by clause chunking &mdash; listen to the &ldquo;after &middot; clause&rdquo; rows: word-perfect on all 3 seeds, 2.4% WER, no repeats, natural clause pauses at the joins. Renders: k &mdash; eval/oplad_lf_20260828/a4_clause/renders/clause. Renders: g/h &mdash; eval/oplad_lf_20260828/a1_diagnosis/renders; i/j &mdash; a23_validation_v2/renders/trim; F2 &mdash; champ_scale_v2 (seeds 42/43). All 48 kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ 1628470, trim_tail_breath + splitter fix default-on in StreamSettings.hq().</p>
     </div>
   </details>
 </section>
