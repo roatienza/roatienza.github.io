@@ -86,6 +86,16 @@ footer .wrap{padding:26px 24px 60px}
 }
 .wer{font:600 10.5px/1 var(--mono);color:var(--faint);border:1px dashed var(--line);border-radius:6px;padding:5px 7px;white-space:nowrap}
 .rep{color:var(--amber)}
+.tr{margin:10px 0 14px;padding:10px 14px;border-left:3px solid var(--line);
+  background:rgba(255,255,255,.025);max-width:72ch}
+.tr .trlab{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 6px}
+.tr p{margin:4px 0;color:var(--paper);font-size:15px;line-height:1.55}
+.tr .win{color:var(--faint)}
+.tr .win b{color:var(--amber);font-weight:600}
+.tr .cue{font:600 10px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--dim);border:1px solid var(--line);border-radius:5px;padding:2px 6px;
+  white-space:nowrap;margin-right:6px}
 
 </style></head><body>
 <header class="top"><div class="wrap">
@@ -951,6 +961,11 @@ footer .wrap{padding:26px 24px 60px}
   <p class="standfirst"><strong>Owner verdict on ear check 5 (2026-08-28):</strong> word-final fricatives still vanish on long_female &mdash; &ldquo;once&rdquo; &rarr; &ldquo;one&rdquo;, &ldquo;afternoons&rdquo; &rarr; &ldquo;afternoon&rdquo;. Owner hypothesis: <em>the trimming algorithm</em>. <strong>Verdict: the trim is exonerated &mdash; byte-for-byte.</strong> The breath trim only ever touches a window&rsquo;s final segment, and &ldquo;once&rdquo; ends window 1 of 7 (mid-clip, 1.6&nbsp;s in). Renders with the trim fully disabled are <em>byte-identical</em> to the shipped ones on all 3 seeds; early-stop disabled is byte-identical too. The fricatives are physically present in the audio (HI-ZCR bursts) &mdash; just short and soft.</p>
   <p class="standfirst"><strong>The real cause, by dose-response (A7, 21 renders + full-prompt re-render):</strong> <code>duration_scale</code> &mdash; the 1.1&times; allocation stretch pinned for pace in ear check 4 &mdash; squeezes unvoiced tails below perceptibility on some seeds. At <code>duration_scale=1.0</code> the &ldquo;once&rdquo; /s/ appears on <strong>all 3 seeds</strong> (140&ndash;170&nbsp;ms, &minus;14 to &minus;17&nbsp;dB) where the shipped 1.1 drops it on seed 43; 1.2 regresses again. The vendor offline reference misses the same /s/ on seed 43 too &mdash; the weakness is in the base model, and the 1.1&times; stretch amplifies it. ASR never catches any of this (granite+qwen transcribe &ldquo;once&rdquo;/&ldquo;afternoons&rdquo; 3/3 on every arm, WER 0.000) &mdash; the ear is the only instrument that hears a devoiced fricative.</p>
   <h3>Full long_female, duration_scale=1.0 (candidate fix) &mdash; 3 seeds</h3>
+  <div class="tr"><p class="trlab">transcript &mdash; read along (every row below renders this text)</p>
+    <p><span class="cue">0:00</span> the thing nobody tells you is that it doesn&#x27;t arrive all <b>at once.</b> <span class="win">&larr; window 1 ends at ~3.7&ndash;4.1&nbsp;s &mdash; the /s/ of &ldquo;once&rdquo; is the sound to judge</span></p>
+    <p><span class="cue">~3.7&nbsp;s</span> it comes in small pieces, on ordinary <b>afternoons,</b> <span class="win">&larr; window 2 ends at ~7.2&ndash;7.4&nbsp;s &mdash; the /z/ of &ldquo;afternoons&rdquo;</span></p>
+    <p><span class="cue">~7.2&nbsp;s</span> when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+  </div>
   <div class="ear-row"><span class="ear-tag">ds1.0 &middot; s42</span><audio controls preload="none" src="audio/long_female_ds10_s42_ec6.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">ds1.0 &middot; s43</span><audio controls preload="none" src="audio/long_female_ds10_s43_ec6.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">ds1.0 &middot; s44</span><audio controls preload="none" src="audio/long_female_ds10_s44_ec6.flac"></audio><span class="wer">0.0%</span></div>
@@ -978,16 +993,37 @@ footer .wrap{padding:26px 24px 60px}
   <p class="standfirst"><strong>Fix shipped (engine @ <code>a92beb4</code>):</strong> two changes to <code>synthesize_long</code>. (1)&nbsp;<strong>Sibilant coda gate</strong> &mdash; a window whose final word ends in an unvoiced fricative (/s/ /z/ /f/ /th/ /sh/ /ch/, incl. &ldquo;ce&rdquo;, &ldquo;x&rdquo;) must end unvoiced: final audible run ZCR&nbsp;&ge;&nbsp;0.2, spectral centroid&nbsp;&gt;&nbsp;4&nbsp;kHz, hi-band&nbsp;&gt;&nbsp;0.9; a failing window is re-rendered at seed+i+7 (&le;3 attempts, keep best), per-window results recorded on <code>StreamInfo.coda_gate</code>. (2)&nbsp;<strong>Fricative-protected breath trim</strong> &mdash; the A3 trim classified a real 180&nbsp;ms /s/ as &ldquo;breath&rdquo; (level+ZCR cannot separate them; the A3 breath signature and a word-final /s/ are acoustically adjacent) and cut it; the trim is now spectral (bright-tail guard).</p>
   <p class="standfirst"><strong>Result:</strong> 0 expected-coda failures across 3 prompts &times; 3 seeds; the gate fired once (long_female s44, window 2 &mdash; re-rendered and passed). Verified independently at the <em>true</em> digital-zero window boundaries: &ldquo;once&rdquo; /s/ present on all 3 seeds (60&ndash;110&nbsp;ms, centroid 7.0&ndash;7.5&nbsp;kHz), &ldquo;years&rdquo; /z/ present on all 3. UTMOS 3.83 (onechunk champion 3.68, trim-off 3.86); WER 0.0 on female/form, 0.0244 on deep (the known colour&rarr;color ASR normalization). WER is blind to this defect class &mdash; &ldquo;once&rdquo; transcribes 3/3 even when the /s/ is gone &mdash; so the gate, not ASR, is the instrument. <strong>Please ear-check: does &ldquo;once&rdquo; keep its /s/ now?</strong></p>
   <h3>long_female &mdash; &ldquo;&hellip;all at once.&rdquo; ends window 1 (the prompt you reported)</h3>
+  <div class="tr"><p class="trlab">transcript &mdash; read along (all three gate rows render this text)</p>
+    <p><span class="cue">0:00</span> the thing nobody tells you is that it doesn&#x27;t arrive all <b>at once.</b> <span class="win">&larr; window 1 ends at ~4.3&nbsp;s &mdash; the /s/ of &ldquo;once&rdquo; is the sound to judge</span></p>
+    <p><span class="cue">4.3&nbsp;s</span> it comes in small pieces, on ordinary <b>afternoons,</b> <span class="win">&larr; window 2 ends at ~8.4&nbsp;s &mdash; the /z/ of &ldquo;afternoons&rdquo;</span></p>
+    <p><span class="cue">8.4&nbsp;s</span> when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+  </div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s42</span><audio controls preload="none" src="audio/long_female_a8_s42_ec7.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s43</span><audio controls preload="none" src="audio/long_female_a8_s43_ec7.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s44</span><audio controls preload="none" src="audio/long_female_a8_s44_ec7.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">ec6 ds1.0 &middot; s42 &middot; old</span><audio controls preload="none" src="audio/long_female_ds10_s42_ec6.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">ec5 onechunk &middot; s42 &middot; old</span><audio controls preload="none" src="audio/long_female_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
   <h3>long_form &mdash; &ldquo;&hellip;stood empty for years.&rdquo; ends window 1 (final /z/)</h3>
+  <div class="tr"><p class="trlab">transcript &mdash; read along (all three gate rows render this text; 9 windows)</p>
+    <p><span class="cue">0:00</span> when i was a child, the house at the end of the lane stood empty for <b>years.</b> <span class="win">&larr; window 1 ends at ~6.2&nbsp;s &mdash; the final /z/ of &ldquo;years&rdquo;</span></p>
+    <p><span class="cue">6.2&nbsp;s</span> we told each other stories about it, each one taller than the last,</p>
+    <p><span class="cue">11.8&nbsp;s</span> and none of us ever dared to open the gate.</p>
+    <p><span class="cue">14.8&nbsp;s</span> then one summer the lights came on again,</p>
+    <p><span class="cue">18.7&nbsp;s</span> and an old man moved in with a dog and a piano.</p>
+    <p><span class="cue">22.5&nbsp;s</span> he played every evening as the sun went down, and slowly,</p>
+    <p><span class="cue">27.4&nbsp;s</span> without anyone deciding it, the whole street began leaving their windows open just to listen.</p>
+    <p><span class="cue">33.9&nbsp;s</span> by september we knew every tune,</p>
+    <p><span class="cue">36.9&nbsp;s</span> and the house at the end of the lane was not empty anymore, not to any of us.</p>
+  </div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s42</span><audio controls preload="none" src="audio/long_form_a8_s42_ec7.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s43</span><audio controls preload="none" src="audio/long_form_a8_s43_ec7.flac"></audio><span class="wer">0.0%</span></div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s44</span><audio controls preload="none" src="audio/long_form_a8_s44_ec7.flac"></audio><span class="wer">0.0%</span></div>
   <h3>long_deep &mdash; no fricative-final window; regression check only</h3>
+  <div class="tr"><p class="trlab">transcript &mdash; read along (all three gate rows render this text)</p>
+    <p><span class="cue">0:00</span> i went back to the house last week.</p>
+    <p><span class="cue">2.2&nbsp;s</span> the fence is gone, and someone painted the door a <b>colour</b> i don&#x27;t think either of us would have chosen, <span class="win">&larr; window 2 ends at ~8.4&nbsp;s &mdash; ASR writes &ldquo;color&rdquo;, which is the whole 2.4%: a transcript normalization, not a speech error</span></p>
+    <p><span class="cue">8.4&nbsp;s</span> but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
+  </div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s42</span><audio controls preload="none" src="audio/long_deep_a8_s42_ec7.flac"></audio><span class="wer">2.4%</span></div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s43</span><audio controls preload="none" src="audio/long_deep_a8_s43_ec7.flac"></audio><span class="wer">2.4%</span></div>
   <div class="ear-row"><span class="ear-tag">gate &middot; s44</span><audio controls preload="none" src="audio/long_deep_a8_s44_ec7.flac"></audio><span class="wer">2.4%</span></div>
