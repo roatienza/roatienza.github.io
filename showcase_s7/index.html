@@ -56,6 +56,31 @@ button.tog:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 footer{border-top:1px solid var(--line);color:var(--faint);font-size:13px}
 footer .wrap{padding:26px 24px 60px}
 @media (prefers-reduced-motion:reduce){button.tog{transition:none}}
+
+/* Ear check section */
+.ear-h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,4vw,40px);
+  line-height:1.1;margin:56px 0 10px;letter-spacing:-.01em}
+.ear-h2 em{font-style:italic;color:var(--amber)}
+.ear-h3{font-family:var(--serif);font-weight:400;font-size:20px;color:var(--dim);
+  margin:34px 0 4px}
+.ear-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.ear-row audio{flex:1;min-width:0}
+.ear-tag{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);border:1px solid var(--line);border-radius:6px;
+  padding:5px 7px;white-space:nowrap;min-width:86px;text-align:center}
+.ear-key{margin:40px 0 72px;border:1px solid var(--line);border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.02),transparent)}
+.ear-key summary{cursor:pointer;padding:14px 18px;font:600 12px/1.4 var(--mono);
+  letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.ear-key summary:hover{color:var(--paper)}
+.ear-key-body{padding:4px 18px 18px;overflow-x:auto}
+.ear-table{border-collapse:collapse;width:100%;font-size:13px;color:var(--dim)}
+.ear-table th,.ear-table td{border:1px solid var(--line);padding:7px 10px;text-align:left;
+  vertical-align:top;font-family:var(--sans)}
+.ear-table th{font:600 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint)}
+.ear-table td:first-child{font:600 13px var(--mono);color:var(--amber)}
+
 </style></head><body>
 <header class="top"><div class="wrap">
   <h1>One model. <em>Many people.</em></h1>
@@ -71,6 +96,7 @@ footer .wrap{padding:26px 24px 60px}
     <button class="tog" type="button" data-set="S7.4" aria-pressed="false">S7.4</button>
     <button class="tog" type="button" data-set="S7.5" aria-pressed="false">S7.5</button>
     <button class="tog" type="button" data-set="S7.6" aria-pressed="true">S7.6</button>
+    <a class="tog" href="#earcheck" style="text-decoration:none">ear check &darr;</a>
     <p class="note">Seven checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All seven use the English text tower.</p>
   </div>
 </div></header>
@@ -336,6 +362,240 @@ footer .wrap{padding:26px 24px 60px}
     <p class="cond">intimate close-mic performance, tender, soft, close, breathy, much air and little phonation</p>
   </article>
 </div></main>
+
+<section id="earcheck" class="wrap">
+  <h2 class="ear-h2">Ear check &mdash; <em>streaming promotion</em></h2>
+  <p class="standfirst">The promotion decision for full streaming, on the page: can the streaming champion be told apart from &mdash; or preferred over &mdash; the offline reference, by ear? Every clip is the exact shipping artifact of its arm. Play the rows of a chip back to back; the arm key is at the bottom, after the listening.</p>
+
+  <h3 class="ear-h3">Matched suite &mdash; 6 prompts every arm rendered (C / D / F)</h3>
+  <div class="grid">
+  <article class="chip slate">
+    <div class="vox"><span class="dot"></span>ear check &middot; grief_oldman</div>
+    <p class="who">an older man, holding it together</p>
+    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
+      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/grief_oldman_c_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/grief_oldman_d_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/grief_oldman_f_s42.flac"></audio></div>
+  </article>
+  <article class="chip violet">
+    <div class="vox"><span class="dot"></span>ear check &middot; joy_woman</div>
+    <p class="who">a woman, delighted</p>
+    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
+      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/joy_woman_c_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/joy_woman_d_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/joy_woman_f_s42.flac"></audio></div>
+  </article>
+  <article class="chip sage">
+    <div class="vox"><span class="dot"></span>ear check &middot; child_fear</div>
+    <p class="who">a child, frightened</p>
+    <p class="line">don&#x27;t turn the light on. please. just stay here with me.</p>
+      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/child_fear_c_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/child_fear_d_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/fear_child_f_s42.flac"></audio></div>
+  </article>
+  <article class="chip ">
+    <div class="vox"><span class="dot"></span>ear check &middot; laugh_man</div>
+    <p class="who">a man, laughing</p>
+    <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
+      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/laugh_man_c_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/laugh_man_d_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/laugh_man_f_s42.flac"></audio></div>
+  </article>
+  <article class="chip violet">
+    <div class="vox"><span class="dot"></span>ear check &middot; long_deep</div>
+    <p class="who">a woman, reflective</p>
+    <p class="line">and it&#x27;s much bigger than i remembered, much bigger than i remembered.</p>
+      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/long_deep_c_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/long_deep_d_s42.flac"></audio></div>
+    <p class="cond">C/D use the ladder long-form line; the F roster&#x27;s long_deep is a different, longer line (rendered in block 2).</p>
+  </article>
+  <article class="chip ">
+    <div class="vox"><span class="dot"></span>ear check &middot; sorry_line</div>
+    <p class="who">a woman, breaking</p>
+    <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
+      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/sorry_line_c_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/sorry_line_d_s42.flac"></audio></div>
+    <p class="cond">C/D render this as sorry_line; F renders the same line as grief_woman (different caption) — see grief_woman in block 2.</p>
+  </article>
+  </div>
+  <h3 class="ear-h3">Full roster &mdash; 20 unseen prompts, champion at scale (F two seeds / E)</h3>
+  <div class="grid">
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; grief_woman</div>
+    <p class="who">a woman, breaking</p>
+    <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/grief_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/grief_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/grief_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; grief_oldman</div>
+    <p class="who">an older man, holding it together</p>
+    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/grief_oldman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/grief_oldman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/grief_oldman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; grief_young</div>
+    <p class="who">a young woman, undone</p>
+    <p class="line">i thought i&#x27;d be fine. i really did. and then i saw your coat.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/grief_young_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/grief_young_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/grief_young_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; rage_man</div>
+    <p class="who">a man, at the edge</p>
+    <p class="line">don&#x27;t. don&#x27;t you dare tell me to calm down right now.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/rage_man_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/rage_man_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/rage_man_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; rage_woman</div>
+    <p class="who">a woman, done pretending</p>
+    <p class="line">i asked you for one thing. one. and you couldn&#x27;t even manage that.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/rage_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/rage_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/rage_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; command_deep</div>
+    <p class="who">a commander, no volume needed</p>
+    <p class="line">everyone out. now. i won&#x27;t say it twice.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/command_deep_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/command_deep_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/command_deep_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; fear_woman</div>
+    <p class="who">a woman, listening in the dark</p>
+    <p class="line">there&#x27;s someone outside. i heard it again, right by the window.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/fear_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/fear_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/fear_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; fear_child</div>
+    <p class="who">a child, hiding</p>
+    <p class="line">don&#x27;t turn the light on. please. just stay here with me.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/fear_child_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/fear_child_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/fear_child_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; joy_woman</div>
+    <p class="who">a woman, delighted</p>
+    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/joy_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/joy_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/joy_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; laugh_man</div>
+    <p class="who">a man, losing it</p>
+    <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/laugh_man_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/laugh_man_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/laugh_man_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; tender_woman</div>
+    <p class="who">a woman, at the bedside</p>
+    <p class="line">don&#x27;t wake them. just come and look, quietly.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/tender_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/tender_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/tender_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; awe_deep</div>
+    <p class="who">a narrator, at the edge of something</p>
+    <p class="line">and then the whole valley opened up beneath us, and nobody said anything at all.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/awe_deep_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/awe_deep_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/awe_deep_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; flat_man</div>
+    <p class="who">a man, past caring</p>
+    <p class="line">it doesn&#x27;t matter. honestly, it doesn&#x27;t.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/flat_man_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/flat_man_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/flat_man_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; sly_woman</div>
+    <p class="who">a woman, up to something</p>
+    <p class="line">i may have done something. don&#x27;t be angry. it&#x27;s mostly good news.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/sly_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/sly_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/sly_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; long_female</div>
+    <p class="who">a woman, long line</p>
+    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/long_female_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/long_female_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/long_female_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; tired_woman</div>
+    <p class="who">a woman, running on empty</p>
+    <p class="line">yeah. no, it&#x27;s fine. i&#x27;m just tired.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/tired_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/tired_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/tired_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; shift_woman</div>
+    <p class="who">a woman, the mask slipping</p>
+    <p class="line">i&#x27;m fine. i&#x27;m fine — no. no, actually, i&#x27;m not fine.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/shift_woman_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/shift_woman_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/shift_woman_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; shift_man</div>
+    <p class="who">a man, remembering mid-sentence</p>
+    <p class="line">it was funny at the time. it was. it&#x27;s less funny now.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/shift_man_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/shift_man_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/shift_man_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; long_deep</div>
+    <p class="who">a narrator, long line</p>
+    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/long_deep_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/long_deep_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/long_deep_e_s42.flac"></audio></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>roster &middot; tender_man</div>
+    <p class="who">a man, gentle</p>
+    <p class="line">hey. hey, look at me. you&#x27;re okay. i&#x27;ve got you.</p>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/tender_man_f_s42.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/tender_man_f_s43.flac"></audio></div>
+      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/tender_man_e_s42.flac"></audio></div>
+  </article>
+  </div>
+
+  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
+    <div class="ear-key-body">
+      <table class="ear-table">
+        <tr><th>arm</th><th>checkpoint</th><th>mode</th><th>settings</th><th>canon WER granite/qwen</th><th>TTFA</th></tr>
+        <tr><td>C</td><td>S7.5-stream-v2 @37K</td><td>offline</td><td>32 steps, CFG 8/8/5, sway &minus;1, best-of-4</td><td>1.36% / 1.36%</td><td>&mdash;</td></tr>
+        <tr><td>D</td><td>S7.6 v6a-final</td><td>stream</td><td>16 steps, CFG 8/8/5, lc128, coherent lookahead, carryover@8</td><td>2.37% / 1.94%</td><td>177 ms eager</td></tr>
+        <tr><td>F</td><td>S7.6 v6a-final</td><td>stream</td><td>StreamSettings.hq(): 16 steps, CFG 8/8/5, lc128, pacing window 50, early stop; coherent dropped</td><td>2.65% / 2.06% (20 unseen)</td><td>~175 ms eager</td></tr>
+        <tr><td>E</td><td>S7.6 v6a-final</td><td>stream</td><td>F + coherent lookahead</td><td>3.08% / 2.75%</td><td>~175 ms eager</td></tr>
+      </table>
+      <p class="cond">The verdict this section exists for: <strong>F vs C by ear</strong> &mdash; is the streaming champion non-inferior to the offline reference? D-vs-C was the intermediate question; F supersedes it as the shipping artifact. Renders: C/D &mdash; eval/oplad_20260827/ladder_v2 + eval/oplad_20260828/hqsweep_v6a_final (seed 42); F/E &mdash; eval/oplad_20260828/champ_scale + e_scale (seeds 42/43), the serve-identical arm-F renders (page rev5). All 48 kHz mono FLAC, lossless from the eval WAVs.</p>
+    </div>
+  </details>
+</section>
+
 <footer><div class="wrap">A clip missing under a checkpoint failed the voice-class check on that checkpoint and is reported rather than replaced.</div></footer>
 <script>
 (function(){
