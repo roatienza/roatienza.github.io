@@ -101,6 +101,7 @@ footer .wrap{padding:26px 24px 60px}
     <a class="tog" href="#earcheck" style="text-decoration:none">ear check &darr;</a>
     <a class="tog" href="#earcheck2" style="text-decoration:none">ear check 2 &darr;</a>
     <a class="tog" href="#earcheck3" style="text-decoration:none">ear check 3 &darr;</a>
+    <a class="tog" href="#earcheck4" style="text-decoration:none">ear check 4 &darr;</a>
     <p class="note">Seven checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All seven use the English text tower.</p>
   </div>
 </div></header>
@@ -834,6 +835,57 @@ footer .wrap{padding:26px 24px 60px}
         <tr><td>k (A4)</td><td>patched hq() + clause chunking (engine @3bf597c)</td><td>clause-chunked</td><td>windows &gt;18 words split at the comma/conjunction nearest the midpoint &mdash; every window stays near the corpus-median 93-frame regime; breath-tail trim still applies; integrated engine reproduces these renders bit-identically</td><td>long_deep 14.6/14.6/4.9 &rarr; <strong>2.4/2.4/2.4, word-perfect, 0 repeats</strong> &middot; long_form 1.8/0.0/2.7 &rarr; 0.9/0.0/0.0 &middot; long_female 0/0/0</td></tr>
       </table>
       <p class="cond">Renders: k &mdash; eval/oplad_lf_20260828/a4_clause/renders/clause (seeds 42/43/44); before rows &mdash; a1_diagnosis/renders (g, seed 42). All 48 kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ 3bf597c, clause chunking default-on in synthesize_long; the 18-word cap is the measured operating point (12 words over-splits and regresses long_female). Pending: the 20-prompt scale gate re-run through the clause path &mdash; the current gate numbers (granite 2.46% / qwen 1.66%) still used the sentence path.</p>
+    </div>
+  </details>
+</section>
+
+<section id="earcheck4" class="wrap">
+  <h2 class="ear-h2">Ear check 4 &mdash; <em>the quality gap, diagnosed and closed</em> (A5)</h2>
+  <p class="standfirst"><strong>Owner verdict on ear check 3 (2026-08-28):</strong> clause chunking fixed the text &mdash; all 3 samples word-perfect &mdash; but quality is below the non-streaming version. <strong>Diagnosis (A5, measured, not guessed):</strong> UTMOS naturalness 2.92 streaming vs 3.72 offline. Ten arms isolated the mechanism by dose-response: 32 steps (+0.05), wide codec context (&minus;0.02), soft joins (+0.01), single seed (+0.03), coherent lookahead (+0.30) all fail &mdash; but chunk size moves it monotonically: 16-frame chunks 2.92 &rarr; 48-frame 3.36 &rarr; whole-window 3.68. <strong>The gap is the chunk-causal integration structure itself</strong> &mdash; each 16-frame chunk denoises against frozen left context and pure-noise lookahead, where offline co-denoises the whole window jointly. Steps never mattered (offline at 16 steps = 3.74, same as 32).</p>
+  <p class="standfirst"><strong>The fix candidates on this page</strong> keep everything won so far (clause chunking, breath trim, splitter fix) and change only the chunk geometry: <strong>bigchunk48</strong> renders each &le;18-word window in 2&ndash;3 chunks of 48 frames (UTMOS 3.36, TTFA 178&nbsp;ms, still incremental streaming within a window) and <strong>onechunk</strong> renders each window in a single pass (UTMOS 3.68 &asymp; offline 3.72, TTFA 182&nbsp;ms &mdash; first audio after the window&#x27;s full render; streaming happens between windows). Both pass the WER guard: 0 repeats everywhere, long_form 0.0%, long_deep 2.4%, long_female &le;1% (single-word ASR noise). <strong>off16/off32</strong> are the vendor offline sampler at 16/32 steps per window &mdash; the non-streaming references.</p>
+  <p class="standfirst"><strong>What to listen for:</strong> pick the prompt, then compare <em>clause (ear check 3)</em> &rarr; <em>bigchunk48</em> &rarr; <em>onechunk</em> &rarr; <em>off32</em> back-to-back. The question: does bigchunk48 already sound like offline, or is onechunk&#x27;s extra margin worth per-window (not per-chunk) emission?</p>
+
+  <div class="grid">
+  <article class="chip violet">
+    <div class="vox"><span class="dot"></span>quality &middot; long_deep</div>
+    <p class="who">the 41-word line &mdash; UTMOS: clause 3.10 &middot; bigchunk48 3.39 &middot; onechunk 3.69 &middot; offline 3.85</p>
+    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
+    <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_deep_bigchunk48_s42.flac"></audio><span class="wer">2.4%</span></div>
+    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_deep_onechunk_s42.flac"></audio><span class="wer">2.4%</span></div>
+    <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_deep_off16_s42.flac"></audio><span class="wer">2.4%</span></div>
+    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_deep_off32_s42.flac"></audio><span class="wer">2.4%</span></div>
+  </article>
+  <article class="chip slate">
+    <div class="vox"><span class="dot"></span>quality &middot; long_form</div>
+    <p class="who">the 110-word narration &mdash; UTMOS: clause 2.34 &middot; bigchunk48 2.79 &middot; onechunk 3.19 &middot; offline 3.23</p>
+    <p class="line">when i was a child, the house at the end of the lane stood empty for years. we told each other stories about it, each one taller than the last, and none of us ever dared to open the gate. then one summer the lights came on again, and an old man moved in with a dog and a piano. he played every evening as the sun went down, and slowly, without anyone deciding it, the whole street began leaving their windows open just to listen. by september we knew every tune, and the house at the end of the lane was not empty anymore, not to any of us.</p>
+    <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_form_bigchunk48_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_form_onechunk_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_form_off16_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_form_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
+  </article>
+  <article class="chip">
+    <div class="vox"><span class="dot"></span>quality &middot; long_female</div>
+    <p class="who">the 34-word aside &mdash; UTMOS: clause 3.31 &middot; bigchunk48 3.91 &middot; onechunk 4.16 &middot; offline 4.08</p>
+    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+    <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_female_bigchunk48_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_female_onechunk_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_female_off16_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_female_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
+  </article>
+  </div>
+
+  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
+    <div class="ear-key-body">
+      <table class="ear-table">
+        <tr><th>arm</th><th>mode</th><th>what it is</th><th>UTMOS (3 seeds)</th><th>WER guard (granite)</th></tr>
+        <tr><td>clause (k, ec3)</td><td>streaming 16-frame chunks</td><td>ear check 3&#x27;s shipping clause path &mdash; the control</td><td>2.92</td><td>2.4 / 0.9 / 0.0%</td></tr>
+        <tr><td>bigchunk48</td><td>streaming, 48-frame chunks</td><td>same engine, chunks 3&times; larger &mdash; 2&ndash;3 emits per &le;18-word window; TTFA 178&nbsp;ms</td><td>3.36</td><td>2.4 / 0.0 / 0.98%, 0 repeats</td></tr>
+        <tr><td>onechunk</td><td>per-window single pass</td><td>whole window denoised jointly (offline structure, streaming between windows); TTFA 182&nbsp;ms</td><td>3.68</td><td>2.4 / 0.0 / 0.98%, 0 repeats</td></tr>
+        <tr><td>off16</td><td>vendor offline, 16 steps</td><td>per-window vendor sampler at the champion&#x27;s step count &mdash; isolates structure from steps</td><td>3.74</td><td>2.4 / 0.0 / 0.0%</td></tr>
+        <tr><td>off32</td><td>vendor offline, 32 steps + best-of-4</td><td>the non-streaming reference the owner compares against</td><td>3.72</td><td>2.4 / 0.0 / 0.0%</td></tr>
+      </table>
+      <p class="cond">A5 method: 10 arms &times; 3 prompts &times; 3 seeds (42/43/44), UTMOS22 on 16&nbsp;kHz mono, granite+qwen consensus WER guard on the winners. Refuted mechanisms: 32 steps (+0.05), codec context 4&rarr;64 frames (&minus;0.02), 160&rarr;60&nbsp;ms joins (+0.01), single seed (+0.03), coherent lookahead (+0.30, still short), carryover (+0.35, still short). The dose-response on chunk size (16&rarr;48&rarr;whole-window: 2.92&rarr;3.36&rarr;3.68 vs offline 3.72) pins the gap on chunk-causal integration &mdash; each 16-frame chunk denoises against frozen left context and pure-noise lookahead where offline co-denoises the whole window. Renders: eval/oplad_lf_20260828/a5_quality/renders. All 48&nbsp;kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ fff0653.</p>
     </div>
   </details>
 </section>
