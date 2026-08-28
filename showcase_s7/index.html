@@ -80,6 +80,10 @@ footer .wrap{padding:26px 24px 60px}
 .ear-table th{font:600 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;
   color:var(--faint)}
 .ear-table td:first-child{font:600 13px var(--mono);color:var(--amber)}
+@media (max-width:640px){
+  .ear-tag{white-space:normal;letter-spacing:.05em;line-height:1.35;padding:5px 6px}
+  .ear-row audio{min-width:150px}
+}
 .wer{font:600 10.5px/1 var(--mono);color:var(--faint);border:1px dashed var(--line);border-radius:6px;padding:5px 7px;white-space:nowrap}
 .rep{color:var(--amber)}
 
@@ -855,7 +859,7 @@ footer .wrap{padding:26px 24px 60px}
     <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_deep_bigchunk48_s42.flac"></audio><span class="wer">2.4%</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_deep_onechunk_s42.flac"></audio><span class="wer">2.4%</span></div>
     <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_deep_off16_s42.flac"></audio><span class="wer">2.4%</span></div>
-    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_deep_off32_s42.flac"></audio><span class="wer">2.4%</span></div>
+    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_deep_off32_s42.flac"></audio><span class="wer">2.4%</span></div>
   </article>
   <article class="chip slate">
     <div class="vox"><span class="dot"></span>quality &middot; long_form</div>
@@ -864,7 +868,7 @@ footer .wrap{padding:26px 24px 60px}
     <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_form_bigchunk48_s42.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_form_onechunk_s42.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_form_off16_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_form_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_form_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
   </article>
   <article class="chip">
     <div class="vox"><span class="dot"></span>quality &middot; long_female</div>
@@ -873,7 +877,7 @@ footer .wrap{padding:26px 24px 60px}
     <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_female_bigchunk48_s42.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_female_onechunk_s42.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_female_off16_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_female_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_female_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
   </article>
   </div>
 
@@ -904,8 +908,8 @@ footer .wrap{padding:26px 24px 60px}
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_deep_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%*</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s43</span><audio controls preload="none" src="audio/long_deep_onechunk_s43_ec5.flac"></audio><span class="wer">0.0%*</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s44</span><audio controls preload="none" src="audio/long_deep_onechunk_s44_ec5.flac"></audio><span class="wer">0.0%*</span></div>
-    <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42 (the hazard, disclosed)</span><audio controls preload="none" src="audio/long_deep_bigchunk48_s42_ec5.flac"></audio><span class="wer">22.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_deep_off16_s42_ec5.flac"></audio><span class="wer">2.4%*</span></div>
+    <div class="ear-row"><span class="ear-tag" title="the hazard, disclosed &mdash; first window renders silent/devoiced after warmup">bigchunk48 &middot; s42 &middot; hazard</span><audio controls preload="none" src="audio/long_deep_bigchunk48_s42_ec5.flac"></audio><span class="wer">22.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_deep_off16_s42_ec5.flac"></audio><span class="wer">2.4%*</span></div>
   </article>
   <article class="chip">
     <div class="vox"><span class="dot"></span>the owner&#x27;s example &middot; long_female</div>
@@ -914,7 +918,7 @@ footer .wrap{padding:26px 24px 60px}
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_female_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s43</span><audio controls preload="none" src="audio/long_female_onechunk_s43_ec5.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s44</span><audio controls preload="none" src="audio/long_female_onechunk_s44_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_female_off16_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_female_off16_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
   </article>
   <article class="chip">
     <div class="vox"><span class="dot"></span>quality &middot; long_form</div>
@@ -923,7 +927,7 @@ footer .wrap{padding:26px 24px 60px}
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_form_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s43</span><audio controls preload="none" src="audio/long_form_onechunk_s43_ec5.flac"></audio><span class="wer">0.0%</span></div>
     <div class="ear-row"><span class="ear-tag">onechunk &middot; s44</span><audio controls preload="none" src="audio/long_form_onechunk_s44_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 (reference)</span><audio controls preload="none" src="audio/long_form_off16_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_form_off16_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
   </article>
   </div>
 
