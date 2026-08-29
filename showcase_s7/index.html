@@ -127,6 +127,8 @@ footer .wrap{padding:26px 24px 60px}
     <a class="tog" href="#s79perf" style="text-decoration:none">S7.9 perf &darr;</a>
     <a class="tog" href="#earcheck10" style="text-decoration:none">ear check 10 &darr;</a>
     <a class="tog" href="#s79bperf" style="text-decoration:none">S7.9b perf &darr;</a>
+    <a class="tog" href="#earcheck11" style="text-decoration:none">ear check 11 &darr;</a>
+    <a class="tog" href="#s710perf" style="text-decoration:none">S7.10 perf &darr;</a>
     <p class="note">Eight checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All seven use the English text tower. S7.7 is the same S7.6 checkpoint served by the current streaming engine (fast_stream @ <code>a92beb4</code>, the ear-check-7 champion): window-atomic long-form streaming with the sibilant coda gate and the fricative-protected breath trim, at hq() — 16 steps, CFG 8/8, lc128, pacing windows, early stop, duration_scale 1.1, CUDA graphs off. Same 20 prompts, captions and references as every other tab; single seed 42, no best-of-4 (streaming emits one take). Its TTFA/RTF table is at the bottom of the page.</p>
   </div>
 </div></header>
@@ -1507,6 +1509,112 @@ footer .wrap{padding:26px 24px 60px}
       (SpeechMOS v1.2.0) mean 3.304 vs 3.305. Detection rule validated against all 20 published S7.9 clips before the engine edit
       (fires exactly once, on the defect); the guard is a settings knob (<code>window_tail_guard</code>, default True in hq()).
       Scripts s79b_part0&ndash;12 in tmp/claude_fast_stream.</p>
+    </div>
+  </details>
+</section>
+
+<section id="earcheck11" class="wrap">
+  <h2 class="ear-h2">Ear check 11 &mdash; <em>&ldquo;pause longer than normal&rdquo; + &ldquo;unintended utterance &hellip; sounds like a suppressed laugh&rdquo;</em> (S7.10)</h2>
+  <p class="standfirst"><strong>Your note:</strong> (a) the pause sometimes is longer than normal, e.g. GRIEF_YOUNG in S7.9b;
+  (b) in sly_woman there is an unintended utterance after &ldquo;i may have done something&rdquo; &mdash; sounds like a
+  suppressed laugh. <strong>Both are real, and both are now measured at sample level (s710_part0&ndash;10).</strong></p>
+  <p class="standfirst"><strong>(a) The pause.</strong> The S7.9 join inserts a designed 560&nbsp;ms sentence pause, but the
+  <em>left window&rsquo;s own trailing decay</em> stacks on top of it: grief_young win0 ends &ldquo;fine.&rdquo; at 1.46&nbsp;s
+  yet keeps ~900&nbsp;ms of &minus;48&hellip;&minus;55&nbsp;dBFS breathy murmur before its allocation ends (below the A3
+  breath-trim threshold, above the join&rsquo;s room tone &mdash; no gate saw it). Measured speech-to-speech gaps:
+  <strong>1525/1585&nbsp;ms</strong> on grief_young; a census of all 20 clips found 28 gaps &gt;350&nbsp;ms, worst
+  1640&nbsp;ms (tender_woman). <strong>Fix &mdash; pause budget</strong> (<code>pause_budget_ms=760</code>): the excess
+  trailing audio is trimmed (40&nbsp;ms fade at the cut) before the tone is inserted, so the measured gap lands on the
+  designed pause. grief_young: <strong>1525/1585 &rarr; 795/785&nbsp;ms</strong> (designed 560 + the next window&rsquo;s own
+  55&ndash;230&nbsp;ms lead-in quiet &mdash; inside the 290&ndash;1030&nbsp;ms natural sentence-pause band measured on the
+  S7.8 census). Clip length 6.84&nbsp;s &rarr; 5.30&nbsp;s.</p>
+  <p class="standfirst"><strong>(b) The &ldquo;laugh&rdquo;.</strong> Window 2 of sly_woman opens with a
+  <strong>290&nbsp;ms voiced lead-in at &minus;10.7&nbsp;dBFS (louder than the speech around it), F0 340&nbsp;Hz</strong>
+  &mdash; the speaker&rsquo;s own register &mdash; then a 50&ndash;85&nbsp;ms gap, then &ldquo;don&rsquo;t&rdquo;.
+  Granite transcribes the fragment <em>alone</em> as &lsquo;&rsquo; (nothing): it is a non-lexical vocalization, exactly the
+  suppressed laugh you heard. It rode through S7.8/S7.9/S7.9b invisibly because full-window ASR absorbs it into
+  &ldquo;don&rsquo;t&rdquo; (WER 0.0 on every tab that carried it) &mdash; the third defect class WER cannot see. A seed
+  probe shows it is stochastic (seeds 42/43 have it; 50/57/64/71 do not), so the fix is the engine&rsquo;s standard
+  re-roll: <strong>window-onset guard</strong> (<code>window_onset_check</code>) fires on a first audible run that starts
+  &le;50&nbsp;ms in, lasts 100&ndash;400&nbsp;ms, peaks within 22&nbsp;dB of the window peak, and is followed by a
+  30&ndash;300&nbsp;ms gap &mdash; validated on a 41-window census to fire <em>only</em> there (real short first words fail
+  on duration: &ldquo;it&rdquo; 55&nbsp;ms, &ldquo;and&rdquo; 95&nbsp;ms; on gap: shift_man&rsquo;s &ldquo;don&rsquo;t&rdquo;
+  20&nbsp;ms). The re-rolled take opens directly with &ldquo;don&rsquo;t&rdquo; (fragment ASR: &ldquo;don&rsquo;t.&rdquo;,
+  F0 400&nbsp;Hz).</p>
+  <div class="ear-grid">
+    <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.10</span><audio controls preload="none" src="audio/grief_young_S7.10.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.9b</span><audio controls preload="none" src="audio/grief_young_s79b.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.10</span><audio controls preload="none" src="audio/sly_woman_S7.10.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.9b</span><audio controls preload="none" src="audio/sly_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.10</span><audio controls preload="none" src="audio/tender_woman_S7.10.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.9b</span><audio controls preload="none" src="audio/tender_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">long_female &middot; S7.10</span><audio controls preload="none" src="audio/long_female_S7.10.flac"></audio><span class="wer">0.0%</span></div>
+    <div class="ear-row"><span class="ear-tag">long_female &middot; S7.9b</span><audio controls preload="none" src="audio/long_female_s79b.flac"></audio><span class="wer">0.0%</span></div>
+  </div>
+  <details class="ear-key"><summary>Transcripts &amp; measured cues (read while listening)</summary>
+    <div class="ear-key-body">
+      <p class="cond"><strong>grief_young</strong> &mdash; &ldquo;i thought i&rsquo;d be <strong>fine.</strong>&rdquo; [S7.9b:
+      1525&nbsp;ms gap &mdash; ~900&nbsp;ms murmur + 560&nbsp;ms tone; <strong>S7.10: 795&nbsp;ms</strong>] &ldquo;i really
+      did.&rdquo; [S7.9b: 1585&nbsp;ms; <strong>S7.10: 785&nbsp;ms</strong>] &ldquo;and then i saw your coat.&rdquo;</p>
+      <p class="cond"><strong>sly_woman</strong> &mdash; &ldquo;i may have done <strong>something.</strong>&rdquo;
+      [630&nbsp;ms pause] &ldquo;<strong>don&rsquo;t</strong> be angry.&rdquo; [S7.9b: a 290&nbsp;ms voiced lead-in
+      (&minus;10.7&nbsp;dBFS, F0 340&nbsp;Hz) sounds before &ldquo;don&rsquo;t&rdquo; &mdash; the suppressed laugh;
+      <strong>S7.10: &ldquo;don&rsquo;t&rdquo; starts immediately (F0 400&nbsp;Hz)</strong>] [670&nbsp;ms pause]
+      &ldquo;it&rsquo;s mostly good news.&rdquo;</p>
+      <p class="cond"><strong>tender_woman</strong> &mdash; the 1640&nbsp;ms gap case: S7.10 measures 820&nbsp;ms.
+      <strong>long_female</strong> &mdash; &ldquo;&hellip;all at <strong>once.</strong>&rdquo; [745&nbsp;ms &rarr;
+      725&nbsp;ms] &ldquo;it comes in small pieces, on ordinary <strong>afternoons,</strong>&rdquo; [&hellip;] &mdash;
+      the /s/ and /z/ codas remain (coda gate ON).</p>
+    </div>
+  </details>
+  <h3 id="s710perf">TTFA &amp; RTF &mdash; S7.10 vs S7.9b (same definitions as #s77perf)</h3>
+  <table>
+    <thead><tr><th>clip</th><th>TTFA s710&nbsp;ms</th><th>TTFA s79b&nbsp;ms</th><th>RTF s710</th><th>RTF s79b</th><th>wins 710</th><th>wins 79b</th><th>WER 710</th><th>WER 79b</th><th>UTMOS 710</th><th>UTMOS 79b</th></tr></thead>
+    <tbody>
+      <tr><td>grief_woman</td><td>358</td><td>289</td><td>0.172</td><td>0.148</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.10</td><td>2.69</td></tr>
+      <tr><td>grief_oldman</td><td>389</td><td>301</td><td>0.199</td><td>0.166</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.16</td><td>3.62</td></tr>
+      <tr><td>grief_young</td><td>383</td><td>349</td><td>0.346</td><td>0.229</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.69</td><td>3.78</td></tr>
+      <tr><td>rage_man</td><td>343</td><td>260</td><td>0.183</td><td>0.187</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.04</td><td>3.01</td></tr>
+      <tr><td>rage_woman</td><td>399</td><td>266</td><td>0.383</td><td>0.212</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.90</td><td>3.94</td></tr>
+      <tr><td>command_deep</td><td>288</td><td>354</td><td>0.195</td><td>0.215</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.75</td><td>3.75</td></tr>
+      <tr><td>fear_woman</td><td>321</td><td>268</td><td>0.236</td><td>0.203</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>4.08</td><td>3.95</td></tr>
+      <tr><td>fear_child</td><td>376</td><td>278</td><td>0.295</td><td>0.223</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>1.46</td><td>1.45</td></tr>
+      <tr><td>joy_woman</td><td>267</td><td>279</td><td>0.444</td><td>0.266</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.70</td><td>2.74</td></tr>
+      <tr><td>laugh_man</td><td>323</td><td>271</td><td>0.228</td><td>0.203</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.80</td><td>3.85</td></tr>
+      <tr><td>tender_man</td><td>378</td><td>332</td><td>0.220</td><td>0.193</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.46</td><td>2.32</td></tr>
+      <tr><td>tender_woman</td><td>383</td><td>360</td><td>0.294</td><td>0.203</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.84</td><td>3.84</td></tr>
+      <tr><td>awe_deep</td><td>327</td><td>268</td><td>0.128</td><td>0.110</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.81</td><td>3.84</td></tr>
+      <tr><td>tired_woman</td><td>464</td><td>281</td><td>0.292</td><td>0.203</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.34</td><td>3.38</td></tr>
+      <tr><td>flat_man</td><td>446</td><td>280</td><td>0.679</td><td>0.252</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.62</td><td>3.06</td></tr>
+      <tr><td>sly_woman</td><td>258</td><td>282</td><td>0.396</td><td>0.224</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.11</td><td>3.45</td></tr>
+      <tr><td>shift_woman</td><td>271</td><td>333</td><td>0.161</td><td>0.181</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.12</td><td>2.16</td></tr>
+      <tr><td>shift_man</td><td>309</td><td>266</td><td>0.258</td><td>0.177</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>4.03</td><td>3.87</td></tr>
+      <tr><td>long_deep</td><td>302</td><td>294</td><td>0.177</td><td>0.130</td><td>3</td><td>3</td><td>2.4%</td><td>2.4%</td><td>3.53</td><td>3.48</td></tr>
+      <tr><td>long_female</td><td>347</td><td>272</td><td>0.132</td><td>0.144</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>4.08</td><td>3.89</td></tr>
+    </tbody>
+  </table>
+  <p class="standfirst"><strong>Medians:</strong> TTFA 280 &rarr; 345&nbsp;ms; RTF 0.203 &rarr; 0.232;
+  UTMOS 3.304 &rarr; 3.331. TTFA/RTF definitions unchanged (request start &rarr; first emitted audio, window 1;
+  RTF = wall-clock seconds &divide; audio seconds). The onset guard re-rolled sly_woman win1 once (seed 42+7=49 still had
+  the lead-in; seed 50 is clean) and joy_woman win1 twice (coda gate) &mdash; re-roll costs are visible in those RTF cells.
+  WER 19/20 word-perfect on both arms (long_deep 2.4% = the same colour&rarr;color ASR spelling every tab carries).</p>
+  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
+    <div class="ear-key-body">
+      <p class="cond">Engine: fast_stream on the streaming branch (S7.9b + <code>window_onset_guard</code> +
+      <code>pause_budget_ms</code>) @ <code>d363026</code> on the same S7.6 v6a-final checkpoint, seed 42, one take,
+      warmup(1) per clip. Arm: <code>StreamSettings.hq(min_window_words=3, long_chunk_schedule=(32,48,4096),
+      join_crossfade_ms=40.0, silent_window_guard=True, join_pause_ms=(560.0, 100.0), window_tail_guard=True,
+      window_onset_guard=True, onset_guard_retries=3, pause_budget_ms=760.0)</code> &mdash; coda gate + fricative-protected
+      trim ON, prosody_register_gate_st=0 (OFF), CUDA graphs OFF. Same 20 texts/captions/refs as every tab. Renders:
+      showcase_s7_prose_120k/audio_s710/ (manifest.json, wer_transcripts.json, utmos.json); FLACs audio/*_S7.10.flac.
+      S7.9b rows are the published ear-check-10 renders (audio_s79b/, audio/*_s79b.flac) for a fair A/B.</p>
+      <p class="cond">Instruments: gap census (speech-end &rarr; speech-start at &minus;42&nbsp;dBFS, 5&nbsp;ms frames)
+      grief_young 1525/1585 &rarr; 795/785&nbsp;ms, tender_woman 1640 &rarr; 820&nbsp;ms; onset census + fragment ASR
+      (granite on the isolated fragment: &lsquo;&rsquo; before the fix, &ldquo;don&rsquo;t.&rdquo; after); pause-budget
+      fire log: grief_young w1/w2 (740/800&nbsp;ms trimmed); onset-guard fire log: sly_woman win1 (1 re-roll);
+      granite+qwen consensus WER 19/20 word-perfect on both arms (long_deep 2.4% = colour&rarr;color); UTMOS
+      (SpeechMOS v1.2.0) mean 3.331 vs 3.304. Detector validated against a 41-window census before the engine edit
+      (fires only on the defect window). Scripts s710_part0&ndash;10 in tmp/claude_fast_stream.</p>
     </div>
   </details>
 </section>
