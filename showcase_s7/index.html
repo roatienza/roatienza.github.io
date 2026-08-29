@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Irodori-EN — S7.6 Showcase</title>
+<title>Irodori-EN — S7.10 Showcase</title>
 <style>
 :root{
   --ink:#14110D; --line:#332C22; --paper:#F4F0E8; --dim:#B9B1A3; --faint:#7E7768;
@@ -112,24 +112,8 @@ footer .wrap{padding:26px 24px 60px}
     <button class="tog" type="button" data-set="S7.4" aria-pressed="false">S7.4</button>
     <button class="tog" type="button" data-set="S7.5" aria-pressed="false">S7.5</button>
     <button class="tog" type="button" data-set="S7.6" aria-pressed="true">S7.6</button>
-    <button class="tog" type="button" data-set="S7.7" aria-pressed="false">S7.7</button>
-    <a class="tog" href="#earcheck" style="text-decoration:none">ear check &darr;</a>
-    <a class="tog" href="#earcheck2" style="text-decoration:none">ear check 2 &darr;</a>
-    <a class="tog" href="#earcheck3" style="text-decoration:none">ear check 3 &darr;</a>
-    <a class="tog" href="#earcheck4" style="text-decoration:none">ear check 4 &darr;</a>
-    <a class="tog" href="#earcheck5" style="text-decoration:none">ear check 5 &darr;</a>
-    <a class="tog" href="#earcheck6" style="text-decoration:none">ear check 6 &darr;</a>
-    <a class="tog" href="#earcheck7" style="text-decoration:none">ear check 7 &darr;</a>
-    <a class="tog" href="#s77perf" style="text-decoration:none">S7.7 perf &darr;</a>
-    <a class="tog" href="#earcheck8" style="text-decoration:none">ear check 8 &darr;</a>
-    <a class="tog" href="#s78perf" style="text-decoration:none">S7.8 perf &darr;</a>
-    <a class="tog" href="#earcheck9" style="text-decoration:none">ear check 9 &darr;</a>
-    <a class="tog" href="#s79perf" style="text-decoration:none">S7.9 perf &darr;</a>
-    <a class="tog" href="#earcheck10" style="text-decoration:none">ear check 10 &darr;</a>
-    <a class="tog" href="#s79bperf" style="text-decoration:none">S7.9b perf &darr;</a>
-    <a class="tog" href="#earcheck11" style="text-decoration:none">ear check 11 &darr;</a>
-    <a class="tog" href="#s710perf" style="text-decoration:none">S7.10 perf &darr;</a>
-    <p class="note">Eight checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All seven use the English text tower. S7.7 is the same S7.6 checkpoint served by the current streaming engine (fast_stream @ <code>a92beb4</code>, the ear-check-7 champion): window-atomic long-form streaming with the sibilant coda gate and the fricative-protected breath trim, at hq() — 16 steps, CFG 8/8, lc128, pacing windows, early stop, duration_scale 1.1, CUDA graphs off. Same 20 prompts, captions and references as every other tab; single seed 42, no best-of-4 (streaming emits one take). Its TTFA/RTF table is at the bottom of the page.</p>
+    <button class="tog" type="button" data-set="S7.10" aria-pressed="false">S7.10</button>
+    <p class="note">Nine checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All nine use the English text tower. S7.10 is the same S7.6 checkpoint served by the current streaming engine (fast_stream @ <code>d363026</code>): window-atomic long-form streaming with the sibilant coda gate, fricative-protected breath trim, min-window merge, variable chunk schedule (32/48/rest) with full lookahead, 40 ms crossfade joins, pause-aware joins (560 ms sentence / 100 ms clause) with adaptive room tone and a 760 ms pause budget, window tail guard, and window onset guard, at hq() — 16 steps, CFG 8/8, lc128, pacing windows, early stop, duration_scale 1.1, prosody register gate off, CUDA graphs off. Same 20 prompts, captions and references as every other tab; single seed 42, no best-of-4 (streaming emits one take).</p>
   </div>
 </div></header>
 <main class="wrap"><div class="grid">
@@ -144,7 +128,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/grief_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/grief_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/grief_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/grief_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/grief_woman_S7.10.flac"></audio>
     <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, halting, lots of space between phrases</p>
   </article>
   <article class="chip slate">
@@ -158,7 +142,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/grief_oldman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/grief_oldman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/grief_oldman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/grief_oldman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/grief_oldman_S7.10.flac"></audio>
     <p class="cond">performed narration, grieving, heavy, holding back tears, slow, drawn out</p>
   </article>
   <article class="chip violet">
@@ -172,7 +156,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/grief_young_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/grief_young_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/grief_young_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/grief_young_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/grief_young_S7.10.flac"></audio>
     <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, breathy, much air and little phonation</p>
   </article>
   <article class="chip sage">
@@ -186,7 +170,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/rage_man_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/rage_man_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/rage_man_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/rage_man_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/rage_man_S7.10.flac"></audio>
     <p class="cond">expressive performance, angry, sharp, raised voice, relentless, no room to breathe</p>
   </article>
   <article class="chip amber">
@@ -200,7 +184,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/rage_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/rage_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/rage_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/rage_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/rage_woman_S7.10.flac"></audio>
     <p class="cond">expressive performance, angry, sharp, raised voice, fast, rapid-fire</p>
   </article>
   <article class="chip slate">
@@ -214,7 +198,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/command_deep_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/command_deep_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/command_deep_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/command_deep_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/command_deep_S7.10.flac"></audio>
     <p class="cond">performed narration, deadpan, almost no pitch movement, slow, drawn out</p>
   </article>
   <article class="chip amber">
@@ -227,7 +211,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/fear_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/fear_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/fear_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/fear_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/fear_woman_S7.10.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, whispered, mostly breath</p>
   </article>
@@ -242,7 +226,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/fear_child_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/fear_child_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/fear_child_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/fear_child_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/fear_child_S7.10.flac"></audio>
     <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, halting, lots of space between phrases</p>
   </article>
   <article class="chip violet">
@@ -256,7 +240,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/joy_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/joy_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/joy_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/joy_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/joy_woman_S7.10.flac"></audio>
     <p class="cond">expressive performance, delighted, bright, buoyant, wildly expressive pitch</p>
   </article>
   <article class="chip sage">
@@ -270,7 +254,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/laugh_man_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/laugh_man_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/laugh_man_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/laugh_man_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/laugh_man_S7.10.flac"></audio>
     <p class="cond">expressive performance, laughing, amused, breathless, fast, rapid-fire</p>
   </article>
   <article class="chip amber">
@@ -284,7 +268,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/tender_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/tender_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/tender_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/tender_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/tender_woman_S7.10.flac"></audio>
     <p class="cond">intimate close-mic performance, tender, soft, close, whispered, mostly breath</p>
   </article>
   <article class="chip slate">
@@ -298,7 +282,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/awe_deep_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/awe_deep_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/awe_deep_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/awe_deep_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/awe_deep_S7.10.flac"></audio>
     <p class="cond">performed narration, wildly expressive pitch, slow, drawn out</p>
   </article>
   <article class="chip slate">
@@ -312,7 +296,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/flat_man_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/flat_man_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/flat_man_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/flat_man_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/flat_man_S7.10.flac"></audio>
     <p class="cond">performed narration, deadpan, almost no pitch movement, continuous, few pauses</p>
   </article>
   <article class="chip violet">
@@ -326,7 +310,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/sly_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/sly_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/sly_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/sly_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/sly_woman_S7.10.flac"></audio>
     <p class="cond">expressive performance, delighted, bright, buoyant, halting, lots of space between phrases</p>
   </article>
   <article class="chip amber">
@@ -340,7 +324,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/long_female_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/long_female_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/long_female_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/long_female_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/long_female_S7.10.flac"></audio>
     <p class="cond">intimate close-mic performance, slow, drawn out</p>
   </article>
   <article class="chip amber">
@@ -353,7 +337,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/tired_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/tired_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/tired_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/tired_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/tired_woman_S7.10.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">intimate close-mic performance, deadpan, almost no pitch movement, slow, drawn out</p>
   </article>
@@ -368,7 +352,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/shift_woman_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/shift_woman_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/shift_woman_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/shift_woman_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/shift_woman_S7.10.flac"></audio>
     <p class="cond">expressive performance, crying, tearful, voice breaking, wildly expressive pitch</p>
   </article>
   <article class="chip sage">
@@ -381,7 +365,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/shift_man_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/shift_man_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/shift_man_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/shift_man_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/shift_man_S7.10.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">expressive performance, grieving, heavy, holding back tears, halting, lots of space between phrases</p>
   </article>
@@ -396,7 +380,7 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/long_deep_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/long_deep_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/long_deep_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/long_deep_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/long_deep_S7.10.flac"></audio>
     <p class="cond">performed narration, continuous, few pauses</p>
   </article>
   <article class="chip sage">
@@ -410,1214 +394,10 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.4" src="audio/tender_man_s74_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.5" src="audio/tender_man_s75_spk.flac"></audio>
     <audio controls preload="none" data-set="S7.6" src="audio/tender_man_s76.flac"></audio>
-    <audio controls preload="none" data-set="S7.7" src="audio/tender_man_s77.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/tender_man_S7.10.flac"></audio>
     <p class="cond">intimate close-mic performance, tender, soft, close, breathy, much air and little phonation</p>
   </article>
 </div></main>
-
-<section id="earcheck" class="wrap">
-  <h2 class="ear-h2">Ear check &mdash; <em>streaming promotion</em></h2>
-  <p class="standfirst">The promotion decision for full streaming, on the page: can the streaming champion be told apart from &mdash; or preferred over &mdash; the offline reference, by ear? Every clip is the exact shipping artifact of its arm. Play the rows of a chip back to back; the arm key is at the bottom, after the listening.</p>
-
-  <h3 class="ear-h3">Matched suite &mdash; 6 prompts every arm rendered (C / D / F)</h3>
-  <div class="grid">
-  <article class="chip slate">
-    <div class="vox"><span class="dot"></span>ear check &middot; grief_oldman</div>
-    <p class="who">an older man, holding it together</p>
-    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
-      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/grief_oldman_c_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/grief_oldman_d_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/grief_oldman_f_s42.flac"></audio></div>
-  </article>
-  <article class="chip violet">
-    <div class="vox"><span class="dot"></span>ear check &middot; joy_woman</div>
-    <p class="who">a woman, delighted</p>
-    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
-      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/joy_woman_c_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/joy_woman_d_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/joy_woman_f_s42.flac"></audio></div>
-  </article>
-  <article class="chip sage">
-    <div class="vox"><span class="dot"></span>ear check &middot; child_fear</div>
-    <p class="who">a child, frightened</p>
-    <p class="line">don&#x27;t turn the light on. please. just stay here with me.</p>
-      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/child_fear_c_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/child_fear_d_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/fear_child_f_s42.flac"></audio></div>
-  </article>
-  <article class="chip ">
-    <div class="vox"><span class="dot"></span>ear check &middot; laugh_man</div>
-    <p class="who">a man, laughing</p>
-    <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
-      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/laugh_man_c_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/laugh_man_d_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; champion</span><audio controls preload="none" src="audio/laugh_man_f_s42.flac"></audio></div>
-  </article>
-  <article class="chip violet">
-    <div class="vox"><span class="dot"></span>ear check &middot; long_deep</div>
-    <p class="who">a woman, reflective</p>
-    <p class="line">and it&#x27;s much bigger than i remembered, much bigger than i remembered.</p>
-      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/long_deep_c_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/long_deep_d_s42.flac"></audio></div>
-    <p class="cond">C/D use the ladder long-form line; the F roster&#x27;s long_deep is a different, longer line (rendered in block 2).</p>
-  </article>
-  <article class="chip ">
-    <div class="vox"><span class="dot"></span>ear check &middot; sorry_line</div>
-    <p class="who">a woman, breaking</p>
-    <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
-      <div class="ear-row"><span class="ear-tag">C &middot; offline</span><audio controls preload="none" src="audio/sorry_line_c_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">D &middot; 16-step</span><audio controls preload="none" src="audio/sorry_line_d_s42.flac"></audio></div>
-    <p class="cond">C/D render this as sorry_line; F renders the same line as grief_woman (different caption) — see grief_woman in block 2.</p>
-  </article>
-  </div>
-  <h3 class="ear-h3">Full roster &mdash; 20 unseen prompts, champion at scale (F two seeds / E)</h3>
-  <div class="grid">
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; grief_woman</div>
-    <p class="who">a woman, breaking</p>
-    <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/grief_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/grief_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/grief_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; grief_oldman</div>
-    <p class="who">an older man, holding it together</p>
-    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/grief_oldman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/grief_oldman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/grief_oldman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; grief_young</div>
-    <p class="who">a young woman, undone</p>
-    <p class="line">i thought i&#x27;d be fine. i really did. and then i saw your coat.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/grief_young_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/grief_young_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/grief_young_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; rage_man</div>
-    <p class="who">a man, at the edge</p>
-    <p class="line">don&#x27;t. don&#x27;t you dare tell me to calm down right now.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/rage_man_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/rage_man_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/rage_man_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; rage_woman</div>
-    <p class="who">a woman, done pretending</p>
-    <p class="line">i asked you for one thing. one. and you couldn&#x27;t even manage that.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/rage_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/rage_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/rage_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; command_deep</div>
-    <p class="who">a commander, no volume needed</p>
-    <p class="line">everyone out. now. i won&#x27;t say it twice.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/command_deep_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/command_deep_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/command_deep_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; fear_woman</div>
-    <p class="who">a woman, listening in the dark</p>
-    <p class="line">there&#x27;s someone outside. i heard it again, right by the window.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/fear_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/fear_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/fear_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; fear_child</div>
-    <p class="who">a child, hiding</p>
-    <p class="line">don&#x27;t turn the light on. please. just stay here with me.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/fear_child_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/fear_child_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/fear_child_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; joy_woman</div>
-    <p class="who">a woman, delighted</p>
-    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/joy_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/joy_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/joy_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; laugh_man</div>
-    <p class="who">a man, losing it</p>
-    <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/laugh_man_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/laugh_man_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/laugh_man_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; tender_woman</div>
-    <p class="who">a woman, at the bedside</p>
-    <p class="line">don&#x27;t wake them. just come and look, quietly.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/tender_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/tender_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/tender_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; awe_deep</div>
-    <p class="who">a narrator, at the edge of something</p>
-    <p class="line">and then the whole valley opened up beneath us, and nobody said anything at all.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/awe_deep_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/awe_deep_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/awe_deep_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; flat_man</div>
-    <p class="who">a man, past caring</p>
-    <p class="line">it doesn&#x27;t matter. honestly, it doesn&#x27;t.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/flat_man_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/flat_man_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/flat_man_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; sly_woman</div>
-    <p class="who">a woman, up to something</p>
-    <p class="line">i may have done something. don&#x27;t be angry. it&#x27;s mostly good news.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/sly_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/sly_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/sly_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; long_female</div>
-    <p class="who">a woman, long line</p>
-    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/long_female_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/long_female_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/long_female_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; tired_woman</div>
-    <p class="who">a woman, running on empty</p>
-    <p class="line">yeah. no, it&#x27;s fine. i&#x27;m just tired.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/tired_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/tired_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/tired_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; shift_woman</div>
-    <p class="who">a woman, the mask slipping</p>
-    <p class="line">i&#x27;m fine. i&#x27;m fine — no. no, actually, i&#x27;m not fine.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/shift_woman_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/shift_woman_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/shift_woman_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; shift_man</div>
-    <p class="who">a man, remembering mid-sentence</p>
-    <p class="line">it was funny at the time. it was. it&#x27;s less funny now.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/shift_man_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/shift_man_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/shift_man_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; long_deep</div>
-    <p class="who">a narrator, long line</p>
-    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/long_deep_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/long_deep_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/long_deep_e_s42.flac"></audio></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>roster &middot; tender_man</div>
-    <p class="who">a man, gentle</p>
-    <p class="line">hey. hey, look at me. you&#x27;re okay. i&#x27;ve got you.</p>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 42</span><audio controls preload="none" src="audio/tender_man_f_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F &middot; seed 43</span><audio controls preload="none" src="audio/tender_man_f_s43.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">E &middot; +coh</span><audio controls preload="none" src="audio/tender_man_e_s42.flac"></audio></div>
-  </article>
-  </div>
-
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <table class="ear-table">
-        <tr><th>arm</th><th>checkpoint</th><th>mode</th><th>settings</th><th>canon WER granite/qwen</th><th>TTFA</th></tr>
-        <tr><td>C</td><td>S7.5-stream-v2 @37K</td><td>offline</td><td>32 steps, CFG 8/8/5, sway &minus;1, best-of-4</td><td>1.36% / 1.36%</td><td>&mdash;</td></tr>
-        <tr><td>D</td><td>S7.6 v6a-final</td><td>stream</td><td>16 steps, CFG 8/8/5, lc128, coherent lookahead, carryover@8</td><td>2.37% / 1.94%</td><td>177 ms eager</td></tr>
-        <tr><td>F</td><td>S7.6 v6a-final</td><td>stream</td><td>StreamSettings.hq(): 16 steps, CFG 8/8/5, lc128, pacing window 50, early stop; coherent dropped</td><td>2.65% / 2.06% (20 unseen)</td><td>~175 ms eager</td></tr>
-        <tr><td>E</td><td>S7.6 v6a-final</td><td>stream</td><td>F + coherent lookahead</td><td>3.08% / 2.75%</td><td>~175 ms eager</td></tr>
-      </table>
-      <p class="cond">The verdict this section exists for: <strong>F vs C by ear</strong> &mdash; is the streaming champion non-inferior to the offline reference? D-vs-C was the intermediate question; F supersedes it as the shipping artifact. Renders: C/D &mdash; eval/oplad_20260827/ladder_v2 + eval/oplad_20260828/hqsweep_v6a_final (seed 42); F/E &mdash; eval/oplad_20260828/champ_scale + e_scale (seeds 42/43), the serve-identical arm-F renders (page rev5). All 48 kHz mono FLAC, lossless from the eval WAVs.</p>
-    </div>
-  </details>
-</section>
-
-<section id="earcheck2" class="wrap">
-  <h2 class="ear-h2">Ear check 2 &mdash; <em>the patched renders</em></h2>
-  <p class="standfirst">The owner heard arm F win on expressiveness but flagged three long-form defects: missed words, repeated words, and a breath-like tail. Phase A patched the engine (breath-tail trim, sentence-splitter fix) and re-rendered everything. This section is the before/after for the ear. <strong>Every &ldquo;after&rdquo; clip is the patched champion, defaults on, serve-identical.</strong> WER beside each row is the granite ASR score for that exact clip &mdash; trim is WER-neutral, so the numbers you see are the text-fidelity story, not the trim&rsquo;s.</p>
-  <p class="standfirst"><strong>Owner verdict (2026-08-28):</strong> repeats gone, breath tails gone &mdash; one residual on <strong>long_deep</strong> (missing words + repetitions). Diagnosed: its second sentence is 33 words (~8&ndash;9&nbsp;s, 200+ latent frames) vs a corpus median of 93 frames &mdash; deep in the measured length-curve regime; the repeat sat at 77% of the window. <strong>Fixed same-day (A4, engine @3bf597c):</strong> <em>clause chunking</em> &mdash; windows longer than 18 words are split at the comma/conjunction nearest the midpoint. long_deep: 14.6% with repeats &rarr; <strong>2.4%, word-perfect, all 3 seeds</strong>. long_form 1.5% &rarr; 0.3%, long_female 0.0% unchanged. The clause renders are the new shipping long-form path &mdash; hear them in <a href="#earcheck3">ear check 3</a> below.</p>
-
-  <h3 class="ear-h3">Long forms &mdash; before / after, 3 seeds each (before &middot; 1 chunk / after &middot; 1 chunk / after &middot; sent.)</h3>
-  <div class="grid">
-  <article class="chip slate">
-    <div class="vox"><span class="dot"></span>patched &middot; long_form</div>
-    <p class="who">the 110-word narration — the worst offender</p>
-    <p class="line">when i was a child, the house at the end of the lane stood empty for years. we told each other stories about it, each one taller than the last, and none of us ever dared to open the gate. then one summer the lights came on again, and an old man moved in with a dog and a piano. he played every evening as the sun went down, and slowly, without anyone deciding it, the whole street began leaving their windows open just to listen. by september we knew every tune, and the house at the end of the lane was not empty anymore, not to any of us.</p>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_g_s42.flac"></audio><span class="wer">42.7% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_i_s42.flac"></audio><span class="wer">42.7% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_form_j_s42.flac"></audio><span class="wer">1.8%</span></div>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_g_s43.flac"></audio><span class="wer">43.6% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_i_s43.flac"></audio><span class="wer">43.6% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_form_j_s43.flac"></audio><span class="wer">0.0%</span></div>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_g_s44.flac"></audio><span class="wer">41.8% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_i_s44.flac"></audio><span class="wer">41.8% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_form_j_s44.flac"></audio><span class="wer">2.7%</span></div>
-  </article>
-  <article class="chip violet">
-    <div class="vox"><span class="dot"></span>patched &middot; long_deep</div>
-    <p class="who">the 41-word line &mdash; the ear-check-2 residual; clause fix in <a href="#earcheck3">ear check 3</a></p>
-    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_g_s42.flac"></audio><span class="wer">17.1% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_i_s42.flac"></audio><span class="wer">17.1% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_deep_j_s42.flac"></audio><span class="wer">14.6% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_g_s43.flac"></audio><span class="wer">29.3% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_i_s43.flac"></audio><span class="wer">29.3% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_deep_j_s43.flac"></audio><span class="wer">14.6% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_g_s44.flac"></audio><span class="wer">24.4% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_i_s44.flac"></audio><span class="wer">24.4% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_deep_j_s44.flac"></audio><span class="wer">4.9%</span></div>
-  </article>
-  <article class="chip ">
-    <div class="vox"><span class="dot"></span>patched &middot; long_female</div>
-    <p class="who">the 34-word aside — the clean one</p>
-    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_g_s42.flac"></audio><span class="wer">11.8%</span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_i_s42.flac"></audio><span class="wer">11.8%</span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_female_j_s42.flac"></audio><span class="wer">0.0%</span></div>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_g_s43.flac"></audio><span class="wer">5.9%</span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_i_s43.flac"></audio><span class="wer">5.9%</span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_female_j_s43.flac"></audio><span class="wer">0.0%</span></div>
-      <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_g_s44.flac"></audio><span class="wer">11.8% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_i_s44.flac"></audio><span class="wer">11.8% <span class='rep'>repeats</span></span></div>
-      <div class="ear-row"><span class="ear-tag">after &middot; sent.</span><audio controls preload="none" src="audio/long_female_j_s44.flac"></audio><span class="wer">0.0%</span></div>
-  </article>
-  </div>
-
-  <h3 class="ear-h3">Full roster &mdash; 20 prompts, patched champion at scale (F2, seeds 42/43)</h3>
-  <div class="grid">
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; grief_woman</div>
-    <p class="who">a woman, breaking</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/grief_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/grief_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; grief_oldman</div>
-    <p class="who">an older man, holding it together</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/grief_oldman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/grief_oldman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; grief_young</div>
-    <p class="who">a young woman, grief with composure</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/grief_young_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/grief_young_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; rage_man</div>
-    <p class="who">a man, furious</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/rage_man_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/rage_man_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; rage_woman</div>
-    <p class="who">a woman, furious</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/rage_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/rage_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; command_deep</div>
-    <p class="who">a deep voice, command</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/command_deep_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/command_deep_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; fear_woman</div>
-    <p class="who">a woman, listening in the dark</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/fear_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/fear_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; fear_child</div>
-    <p class="who">a child, hiding</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/fear_child_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/fear_child_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; joy_woman</div>
-    <p class="who">a woman, delighted</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/joy_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/joy_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; laugh_man</div>
-    <p class="who">a man, laughing</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/laugh_man_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/laugh_man_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; tender_man</div>
-    <p class="who">a man, gentle</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/tender_man_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/tender_man_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; tender_woman</div>
-    <p class="who">a woman, tender</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/tender_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/tender_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; awe_deep</div>
-    <p class="who">a deep voice, awe</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/awe_deep_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/awe_deep_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; tired_woman</div>
-    <p class="who">a woman, running on empty</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/tired_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/tired_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; flat_man</div>
-    <p class="who">a man, flat</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/flat_man_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/flat_man_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; sly_woman</div>
-    <p class="who">a woman, sly</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/sly_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/sly_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; shift_woman</div>
-    <p class="who">a woman, the mask slipping</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/shift_woman_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/shift_woman_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; shift_man</div>
-    <p class="who">a man, remembering mid-sentence</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/shift_man_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/shift_man_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; long_deep</div>
-    <p class="who">a narrator, long line</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/long_deep_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/long_deep_f2_s43.flac"></audio></div>
-</article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>patched roster &middot; long_female</div>
-    <p class="who">a woman, long line</p>
-            <div class="ear-row"><span class="ear-tag">F2 &middot; seed 42</span><audio controls preload="none" src="audio/long_female_f2_s42.flac"></audio></div>
-      <div class="ear-row"><span class="ear-tag">F2 &middot; seed 43</span><audio controls preload="none" src="audio/long_female_f2_s43.flac"></audio></div>
-</article>
-  </div>
-
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <table class="ear-table">
-        <tr><th>arm</th><th>engine</th><th>mode</th><th>what changed</th><th>long-form WER (granite, 3 seeds)</th></tr>
-        <tr><td>g</td><td>pre-patch hq()</td><td>single chunk</td><td>&mdash; the renders the owner heard</td><td>long_form 42.7/43.6/41.8 &middot; long_deep 17.1/29.3/24.4 &middot; long_female 11.8/5.9/11.8</td></tr>
-        <tr><td>h</td><td>pre-patch hq()</td><td>sentence-chunked</td><td>the splitter merged long_deep&rsquo;s opening sentence, so its &ldquo;sent.&rdquo; render equals its single-chunk render (identical files)</td><td>long_form 1.8/0.0/2.7 &middot; long_deep 17.1/29.3/24.4 (unfixed) &middot; long_female 0/0/0</td></tr>
-        <tr><td>i</td><td>patched hq()</td><td>single chunk</td><td>breath-tail trim only &mdash; repeats remain, by design: trim is WER-neutral</td><td>same as g (identical WERs, 100&ndash;320 ms of tail removed)</td></tr>
-        <tr><td>j</td><td>patched hq()</td><td>sentence-chunked</td><td>splitter fix + breath-tail trim &mdash; the shipping path for long text</td><td>long_form 1.8/0.0/2.7 &middot; long_deep 14.6/14.6/4.9 &middot; long_female 0/0/0</td></tr>
-        <tr><td>F2</td><td>patched hq()</td><td>roster at scale</td><td>the 20-prompt gate re-run on the patched engine</td><td>gate PASSES: granite 2.46% / qwen 1.66% (was 2.65/2.06); repeat rows 3/40 &rarr; 2/40</td></tr>
-        <tr><td>k (A4)</td><td>patched hq() + clause chunking (engine @3bf597c)</td><td>clause-chunked</td><td>windows &gt;18 words split at the comma/conjunction nearest the midpoint &mdash; every window stays near the corpus-median 93-frame regime</td><td>long_deep 14.6/14.6/4.9 &rarr; <strong>2.4/2.4/2.4, word-perfect, 0 repeats</strong> &middot; long_form 1.8/0.0/2.7 &rarr; 0.9/0.0/0.0 &middot; long_female 0/0/0</td></tr>
-      </table>
-      <p class="cond">What to listen for: (1) the <strong>tail</strong> &mdash; every &ldquo;after&rdquo; clip ends after the last word, no breath (100&ndash;1080 ms cut per clip, 17/18 clips trimmed, mean 442 ms); (2) the <strong>repeats</strong> &mdash; gone in every &ldquo;after &middot; sent.&rdquo; row of long_form; (3) <strong>long_deep</strong> &mdash; the sentence path now actually splits (WER 23.6% &rarr; 11.4% mean, seed 44 clean at 4.9%). Single-chunk long-form text-position drift is NOT fixed &mdash; that is the Phase B training arm&rsquo;s target, not a render patch. <strong>A4 update (after the owner&rsquo;s ear check 2):</strong> the long_deep residual (missed + repeated words in the 33-word second sentence) is fixed by clause chunking &mdash; the clause renders now have their own section: <a href="#earcheck3">ear check 3</a> below. Renders: k &mdash; eval/oplad_lf_20260828/a4_clause/renders/clause. Renders: g/h &mdash; eval/oplad_lf_20260828/a1_diagnosis/renders; i/j &mdash; a23_validation_v2/renders/trim; F2 &mdash; champ_scale_v2 (seeds 42/43). All 48 kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ 1628470, trim_tail_breath + splitter fix default-on in StreamSettings.hq().</p>
-    </div>
-  </details>
-</section>
-
-<section id="earcheck3" class="wrap">
-  <h2 class="ear-h2">Ear check 3 &mdash; <em>long_deep fixed by clause chunking</em> (A4)</h2>
-  <p class="standfirst"><strong>Owner verdict on ear check 2 (2026-08-28):</strong> repeats gone, breath tails gone &mdash; one residual on <strong>long_deep</strong>: missing words and repetitions. <strong>Diagnosis:</strong> its second sentence is 33 words (~8&ndash;9&nbsp;s, 200+ latent frames vs a corpus median of 93) &mdash; deep in the measured length-curve regime; the repeat sat at 77% of that window, and &ldquo;a colour&rdquo; was deleted mid-window on all 3 seeds. <strong>Fix (A4, engine @3bf597c):</strong> <em>clause chunking</em> &mdash; any window longer than 18 words is split at the comma/conjunction nearest its midpoint (never before 6 words in, never leaving fewer than 4 words on the right), so every window stays near the trained regime. <strong>Result:</strong> long_deep 14.6% with repeats &rarr; <strong>2.4%, word-perfect, all 3 seeds, 0 repeats</strong>; long_form 1.8/0.0/2.7 &rarr; 0.9/0.0/0.0; long_female 0.0% unchanged. The clause path is the new shipping long-form behavior; the integrated engine reproduces these renders bit-identically (a4_integration).</p>
-  <p class="standfirst"><strong>What to listen for:</strong> (1) <strong>long_deep</strong> &mdash; is the text complete now, every word present, no repeats? (2) the <strong>clause joins</strong> &mdash; the splits add short pauses at comma boundaries; natural in the slow contemplative delivery, or do they chop it? Each chip leads with the worst pre-patch take (seed 42, single chunk) for an immediate A/B, then the three clause renders. Full before/after history for these prompts is in <a href="#earcheck2">ear check 2</a>.</p>
-
-  <div class="grid">
-  <article class="chip violet">
-    <div class="vox"><span class="dot"></span>clause &middot; long_deep</div>
-    <p class="who">the 41-word line &mdash; the ear-check-2 residual, now fixed</p>
-    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>            <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_deep_g_s42.flac"></audio><span class="wer">17.1% <span class='rep'>repeats</span></span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_deep_k_s42.flac"></audio><span class="wer">2.4%</span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_deep_k_s43.flac"></audio><span class="wer">2.4%</span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_deep_k_s44.flac"></audio><span class="wer">2.4%</span></div>
-
-  </article>
-  <article class="chip slate">
-    <div class="vox"><span class="dot"></span>clause &middot; long_form</div>
-    <p class="who">the 110-word narration</p>
-    <p class="line">when i was a child, the house at the end of the lane stood empty for years. we told each other stories about it, each one taller than the last, and none of us ever dared to open the gate. then one summer the lights came on again, and an old man moved in with a dog and a piano. he played every evening as the sun went down, and slowly, without anyone deciding it, the whole street began leaving their windows open just to listen. by september we knew every tune, and the house at the end of the lane was not empty anymore, not to any of us.</p>            <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_form_g_s42.flac"></audio><span class="wer">42.7% <span class='rep'>repeats</span></span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_form_k_s42.flac"></audio><span class="wer">0.9%</span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_form_k_s43.flac"></audio><span class="wer">0.0%</span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_form_k_s44.flac"></audio><span class="wer">0.0%</span></div>
-
-  </article>
-  <article class="chip ">
-    <div class="vox"><span class="dot"></span>clause &middot; long_female</div>
-    <p class="who">the 34-word aside &mdash; clean throughout</p>
-    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>            <div class="ear-row"><span class="ear-tag">before &middot; 1 chunk</span><audio controls preload="none" src="audio/long_female_g_s42.flac"></audio><span class="wer">11.8%</span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_female_k_s42.flac"></audio><span class="wer">0.0%</span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_female_k_s43.flac"></audio><span class="wer">0.0%</span></div>
-            <div class="ear-row"><span class="ear-tag">after &middot; clause</span><audio controls preload="none" src="audio/long_female_k_s44.flac"></audio><span class="wer">0.0%</span></div>
-
-  </article>
-  </div>
-
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <table class="ear-table">
-        <tr><th>arm</th><th>engine</th><th>mode</th><th>what changed</th><th>long-form WER (granite, 3 seeds)</th></tr>
-        <tr><td>g</td><td>pre-patch hq()</td><td>single chunk</td><td>the renders behind the owner&rsquo;s ear-check verdicts (before rows here; full set in ear check 2)</td><td>long_form 42.7/43.6/41.8 &middot; long_deep 17.1/29.3/24.4 &middot; long_female 11.8/5.9/11.8</td></tr>
-        <tr><td>k (A4)</td><td>patched hq() + clause chunking (engine @3bf597c)</td><td>clause-chunked</td><td>windows &gt;18 words split at the comma/conjunction nearest the midpoint &mdash; every window stays near the corpus-median 93-frame regime; breath-tail trim still applies; integrated engine reproduces these renders bit-identically</td><td>long_deep 14.6/14.6/4.9 &rarr; <strong>2.4/2.4/2.4, word-perfect, 0 repeats</strong> &middot; long_form 1.8/0.0/2.7 &rarr; 0.9/0.0/0.0 &middot; long_female 0/0/0</td></tr>
-      </table>
-      <p class="cond">Renders: k &mdash; eval/oplad_lf_20260828/a4_clause/renders/clause (seeds 42/43/44); before rows &mdash; a1_diagnosis/renders (g, seed 42). All 48 kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ 3bf597c, clause chunking default-on in synthesize_long; the 18-word cap is the measured operating point (12 words over-splits and regresses long_female). Pending: the 20-prompt scale gate re-run through the clause path &mdash; the current gate numbers (granite 2.46% / qwen 1.66%) still used the sentence path.</p>
-    </div>
-  </details>
-</section>
-
-
-<section id="earcheck4" class="wrap">
-  <h2 class="ear-h2">Ear check 4 &mdash; <em>the quality gap, diagnosed and closed</em> (A5)</h2>
-  <p class="standfirst"><strong>Owner verdict on ear check 3 (2026-08-28):</strong> clause chunking fixed the text &mdash; all 3 samples word-perfect &mdash; but quality is below the non-streaming version. <strong>Diagnosis (A5, measured, not guessed):</strong> UTMOS naturalness 2.92 streaming vs 3.72 offline. Ten arms isolated the mechanism by dose-response: 32 steps (+0.05), wide codec context (&minus;0.02), soft joins (+0.01), single seed (+0.03), coherent lookahead (+0.30) all fail &mdash; but chunk size moves it monotonically: 16-frame chunks 2.92 &rarr; 48-frame 3.36 &rarr; whole-window 3.68. <strong>The gap is the chunk-causal integration structure itself</strong> &mdash; each 16-frame chunk denoises against frozen left context and pure-noise lookahead, where offline co-denoises the whole window jointly. Steps never mattered (offline at 16 steps = 3.74, same as 32).</p>
-  <p class="standfirst"><strong>The fix candidates on this page</strong> keep everything won so far (clause chunking, breath trim, splitter fix) and change only the chunk geometry: <strong>bigchunk48</strong> renders each &le;18-word window in 2&ndash;3 chunks of 48 frames (UTMOS 3.36, TTFA 178&nbsp;ms, still incremental streaming within a window) and <strong>onechunk</strong> renders each window in a single pass (UTMOS 3.68 &asymp; offline 3.72, TTFA 182&nbsp;ms &mdash; first audio after the window&#x27;s full render; streaming happens between windows). Both pass the WER guard: 0 repeats everywhere, long_form 0.0%, long_deep 2.4%, long_female &le;1% (single-word ASR noise). <strong>off16/off32</strong> are the vendor offline sampler at 16/32 steps per window &mdash; the non-streaming references.</p>
-  <p class="standfirst"><strong>What to listen for:</strong> pick the prompt, then compare <em>clause (ear check 3)</em> &rarr; <em>bigchunk48</em> &rarr; <em>onechunk</em> &rarr; <em>off32</em> back-to-back. The question: does bigchunk48 already sound like offline, or is onechunk&#x27;s extra margin worth per-window (not per-chunk) emission?</p>
-
-  <div class="grid">
-  <article class="chip violet">
-    <div class="vox"><span class="dot"></span>quality &middot; long_deep</div>
-    <p class="who">the 41-word line &mdash; UTMOS: clause 3.10 &middot; bigchunk48 3.39 &middot; onechunk 3.69 &middot; offline 3.85</p>
-    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
-    <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_deep_bigchunk48_s42.flac"></audio><span class="wer">2.4%</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_deep_onechunk_s42.flac"></audio><span class="wer">2.4%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_deep_off16_s42.flac"></audio><span class="wer">2.4%</span></div>
-    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_deep_off32_s42.flac"></audio><span class="wer">2.4%</span></div>
-  </article>
-  <article class="chip slate">
-    <div class="vox"><span class="dot"></span>quality &middot; long_form</div>
-    <p class="who">the 110-word narration &mdash; UTMOS: clause 2.34 &middot; bigchunk48 2.79 &middot; onechunk 3.19 &middot; offline 3.23</p>
-    <p class="line">when i was a child, the house at the end of the lane stood empty for years. we told each other stories about it, each one taller than the last, and none of us ever dared to open the gate. then one summer the lights came on again, and an old man moved in with a dog and a piano. he played every evening as the sun went down, and slowly, without anyone deciding it, the whole street began leaving their windows open just to listen. by september we knew every tune, and the house at the end of the lane was not empty anymore, not to any of us.</p>
-    <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_form_bigchunk48_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_form_onechunk_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_form_off16_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_form_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>quality &middot; long_female</div>
-    <p class="who">the 34-word aside &mdash; UTMOS: clause 3.31 &middot; bigchunk48 3.91 &middot; onechunk 4.16 &middot; offline 4.08</p>
-    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-    <div class="ear-row"><span class="ear-tag">bigchunk48 &middot; s42</span><audio controls preload="none" src="audio/long_female_bigchunk48_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_female_onechunk_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42</span><audio controls preload="none" src="audio/long_female_off16_s42.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off32 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_female_off32_s42.flac"></audio><span class="wer">0.0%</span></div>
-  </article>
-  </div>
-
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <table class="ear-table">
-        <tr><th>arm</th><th>mode</th><th>what it is</th><th>UTMOS (3 seeds)</th><th>WER guard (granite)</th></tr>
-        <tr><td>clause (k, ec3)</td><td>streaming 16-frame chunks</td><td>ear check 3&#x27;s shipping clause path &mdash; the control</td><td>2.92</td><td>2.4 / 0.9 / 0.0%</td></tr>
-        <tr><td>bigchunk48</td><td>streaming, 48-frame chunks</td><td>same engine, chunks 3&times; larger &mdash; 2&ndash;3 emits per &le;18-word window; TTFA 178&nbsp;ms</td><td>3.36</td><td>2.4 / 0.0 / 0.98%, 0 repeats</td></tr>
-        <tr><td>onechunk</td><td>per-window single pass</td><td>whole window denoised jointly (offline structure, streaming between windows); TTFA 182&nbsp;ms</td><td>3.68</td><td>2.4 / 0.0 / 0.98%, 0 repeats</td></tr>
-        <tr><td>off16</td><td>vendor offline, 16 steps</td><td>per-window vendor sampler at the champion&#x27;s step count &mdash; isolates structure from steps</td><td>3.74</td><td>2.4 / 0.0 / 0.0%</td></tr>
-        <tr><td>off32</td><td>vendor offline, 32 steps + best-of-4</td><td>the non-streaming reference the owner compares against</td><td>3.72</td><td>2.4 / 0.0 / 0.0%</td></tr>
-      </table>
-      <p class="cond">A5 method: 10 arms &times; 3 prompts &times; 3 seeds (42/43/44), UTMOS22 on 16&nbsp;kHz mono, granite+qwen consensus WER guard on the winners. Refuted mechanisms: 32 steps (+0.05), codec context 4&rarr;64 frames (&minus;0.02), 160&rarr;60&nbsp;ms joins (+0.01), single seed (+0.03), coherent lookahead (+0.30, still short), carryover (+0.35, still short). The dose-response on chunk size (16&rarr;48&rarr;whole-window: 2.92&rarr;3.36&rarr;3.68 vs offline 3.72) pins the gap on chunk-causal integration &mdash; each 16-frame chunk denoises against frozen left context and pure-noise lookahead where offline co-denoises the whole window. Renders: eval/oplad_lf_20260828/a5_quality/renders. All 48&nbsp;kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ fff0653.</p>
-    </div>
-  </details>
-</section>
-<section id="earcheck5" class="wrap">
-  <h2 class="ear-h2">Ear check 5 &mdash; <em>&ldquo;afternoons&rdquo;: root-caused, engine re-geometried</em> (A6)</h2>
-  <p class="standfirst"><strong>Owner verdict on ear check 4 (2026-08-28):</strong> bigchunk48 sounds offline-grade, but &ldquo;afternoons&rdquo; loses its final /z/ (&ldquo;afternoon&rdquo;) on long_female. <strong>What the investigation found (A6, 6 probe rounds, ~150 fresh renders):</strong> the ASR consensus confirmed the ear exactly &mdash; and the defect is not a tuning knob. duration_scale, pacing, early-stop and the breath trim were all exonerated by isolation toggles (every probe render of the isolated window came back clean, including the exact defective seeds). The real finding: <strong>a whole-window corruption class</strong> &mdash; under warmup+close-geometry protocols, multi-chunk windows (48-frame chunks) intermittently render <em>silent</em> (whole first window at 0.1% of normal level, 3/3 seeds in three separate passes) or devoiced (the &ldquo;afternoons&rdquo; take). Single-chunk windows never failed &mdash; 0 events in ~40 renders across every protocol.</p>
-  <p class="standfirst"><strong>The fix (engine @ 754bb63, pushed):</strong> long-form windows now render <strong>window-atomic</strong> &mdash; one denoising pass per &le;18-word clause window (chunk_frames=4096), which is also the quality winner from ear check 4&rsquo;s dose-response (whole-window 3.68 vs offline 3.72). Streaming latency now lives <em>between</em> clause windows (the existing 160&nbsp;ms joins), not inside them. Plus two hardening patches kept regardless: a device sync before any CUDA-graph capture, and warmup requests run without overlap decode. The multi-chunk hazard is filed with a full repro matrix and stays unshipped until root-caused.</p>
-  <p class="standfirst"><strong>Quality of the shipping arm (UTMOS, 3 seeds):</strong> long_female <strong>4.19 vs offline 4.04</strong> &middot; long_deep 3.83 vs 3.89 (parity) &middot; long_form 3.44 vs 3.28 (beats offline). WER guard: word-perfect on all prompts and seeds (the 2.4% on long_deep is the colour&rarr;color ASR normalization, not a speech error), 0 repeats.</p>
-  <div class="grid">
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>hazard fixed &middot; long_deep</div>
-    <p class="who">the 41-word memory &mdash; UTMOS: onechunk 3.83 &middot; offline 3.89</p>
-    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_deep_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%*</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s43</span><audio controls preload="none" src="audio/long_deep_onechunk_s43_ec5.flac"></audio><span class="wer">0.0%*</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s44</span><audio controls preload="none" src="audio/long_deep_onechunk_s44_ec5.flac"></audio><span class="wer">0.0%*</span></div>
-    <div class="ear-row"><span class="ear-tag" title="the hazard, disclosed &mdash; first window renders silent/devoiced after warmup">bigchunk48 &middot; s42 &middot; hazard</span><audio controls preload="none" src="audio/long_deep_bigchunk48_s42_ec5.flac"></audio><span class="wer">22.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_deep_off16_s42_ec5.flac"></audio><span class="wer">2.4%*</span></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>the owner&#x27;s example &middot; long_female</div>
-    <p class="who">the 34-word aside &mdash; UTMOS: onechunk 4.19 &middot; offline 4.04</p>
-    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_female_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s43</span><audio controls preload="none" src="audio/long_female_onechunk_s43_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s44</span><audio controls preload="none" src="audio/long_female_onechunk_s44_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_female_off16_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
-  </article>
-  <article class="chip">
-    <div class="vox"><span class="dot"></span>quality &middot; long_form</div>
-    <p class="who">the 110-word narration &mdash; UTMOS: onechunk 3.44 &middot; offline 3.28</p>
-    <p class="line">when i was a child, the house at the end of the lane stood empty for years. we told each other stories about it, each one taller than the last, and none of us ever dared to open the gate. then one summer, the lights came on again, and an old man moved in with a dog and a piano. he played every evening as the sun went down, and slowly, without anyone deciding it, the whole street began leaving their windows open just to listen. by september, we knew every tune, and the house at the end of the lane was not empty anymore, not to any of us.</p>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s42</span><audio controls preload="none" src="audio/long_form_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s43</span><audio controls preload="none" src="audio/long_form_onechunk_s43_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">onechunk &middot; s44</span><audio controls preload="none" src="audio/long_form_onechunk_s44_ec5.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">off16 &middot; s42 &middot; ref</span><audio controls preload="none" src="audio/long_form_off16_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
-  </article>
-  </div>
-
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <table class="ear-table">
-        <tr><th>arm</th><th>mode</th><th>what it is</th><th>UTMOS (3 seeds)</th><th>WER guard (granite)</th></tr>
-        <tr><td>onechunk (ships)</td><td>window-atomic streaming</td><td>one denoising pass per &le;18-word clause window; streaming between windows; TTFA = first window&rsquo;s first audio</td><td>3.83 / 3.44 / 4.19</td><td>2.4* / 0.6 / 0.0%, 0 repeats</td></tr>
-        <tr><td>bigchunk48 (hazard, disclosed)</td><td>streaming, 48-frame chunks</td><td>the ear-check-4 pick &mdash; intermittently renders whole windows silent/devoiced after warmup (long_deep s42/43/44 here: first window at 0.1% level, &ldquo;i went back to the house last week&rdquo; inaudible)</td><td>3.88 (long_female)</td><td>22.0% on long_deep (win0 missing)</td></tr>
-        <tr><td>off16</td><td>vendor offline, 16 steps</td><td>per-window vendor sampler reference</td><td>3.89 / 3.28 / 4.04</td><td>2.4* / 0.0 / 0.0%</td></tr>
-      </table>
-      <p class="cond">* 2.4% = the ASR writing &ldquo;colour&rdquo; as &ldquo;color&rdquo; &mdash; a transcript normalization, not a speech error; the audio says &ldquo;colour&rdquo;. A6 method: 6 probe rounds (isolation toggles of duration_scale/pacing/early-stop; full-sequence controls; render-order reuse; cold/warm/noverlap &times; 2 passes; patched-engine verify), ~150 renders, granite+qwen consensus on every one. Defect class: whole-window silence or word-final devoicing, stochastic per pass, multi-chunk windows only, concentrated right after warmup+close_geometries; single-chunk windows never failed. Engine hardening kept: sync before CUDA-graph capture; warmup without overlap decode. Renders: eval/oplad_lf_20260828/a6_fricative/earcheck5f (onechunk, bigchunk48) + earcheck5 (off16). All 48&nbsp;kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ 754bb63.</p>
-    </div>
-  </details>
-</section>
-
-<section id="earcheck6" class="wrap">
-  <h2 class="ear-h2">Ear check 6 &mdash; <em>the missing &ldquo;s&rdquo;: the trim is innocent, the allocation is guilty</em> (A7)</h2>
-  <p class="standfirst"><strong>Owner verdict on ear check 5 (2026-08-28):</strong> word-final fricatives still vanish on long_female &mdash; &ldquo;once&rdquo; &rarr; &ldquo;one&rdquo;, &ldquo;afternoons&rdquo; &rarr; &ldquo;afternoon&rdquo;. Owner hypothesis: <em>the trimming algorithm</em>. <strong>Verdict: the trim is exonerated &mdash; byte-for-byte.</strong> The breath trim only ever touches a window&rsquo;s final segment, and &ldquo;once&rdquo; ends window 1 of 7 (mid-clip, 1.6&nbsp;s in). Renders with the trim fully disabled are <em>byte-identical</em> to the shipped ones on all 3 seeds; early-stop disabled is byte-identical too. The fricatives are physically present in the audio (HI-ZCR bursts) &mdash; just short and soft.</p>
-  <p class="standfirst"><strong>The real cause, by dose-response (A7, 21 renders + full-prompt re-render):</strong> <code>duration_scale</code> &mdash; the 1.1&times; allocation stretch pinned for pace in ear check 4 &mdash; squeezes unvoiced tails below perceptibility on some seeds. At <code>duration_scale=1.0</code> the &ldquo;once&rdquo; /s/ appears on <strong>all 3 seeds</strong> (140&ndash;170&nbsp;ms, &minus;14 to &minus;17&nbsp;dB) where the shipped 1.1 drops it on seed 43; 1.2 regresses again. The vendor offline reference misses the same /s/ on seed 43 too &mdash; the weakness is in the base model, and the 1.1&times; stretch amplifies it. ASR never catches any of this (granite+qwen transcribe &ldquo;once&rdquo;/&ldquo;afternoons&rdquo; 3/3 on every arm, WER 0.000) &mdash; the ear is the only instrument that hears a devoiced fricative.</p>
-  <h3>Full long_female, duration_scale=1.0 (candidate fix) &mdash; 3 seeds</h3>
-  <div class="tr"><p class="trlab">transcript &mdash; read along (every row below renders this text)</p>
-    <p><span class="cue">0:00</span> the thing nobody tells you is that it doesn&#x27;t arrive all <b>at once.</b> <span class="win">&larr; window 1 ends at ~3.7&ndash;4.1&nbsp;s &mdash; the /s/ of &ldquo;once&rdquo; is the sound to judge</span></p>
-    <p><span class="cue">~3.7&nbsp;s</span> it comes in small pieces, on ordinary <b>afternoons,</b> <span class="win">&larr; window 2 ends at ~7.2&ndash;7.4&nbsp;s &mdash; the /z/ of &ldquo;afternoons&rdquo;</span></p>
-    <p><span class="cue">~7.2&nbsp;s</span> when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">ds1.0 &middot; s42</span><audio controls preload="none" src="audio/long_female_ds10_s42_ec6.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">ds1.0 &middot; s43</span><audio controls preload="none" src="audio/long_female_ds10_s43_ec6.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">ds1.0 &middot; s44</span><audio controls preload="none" src="audio/long_female_ds10_s44_ec6.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shipped ds1.1 &middot; s42</span><audio controls preload="none" src="audio/long_female_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
-  <p class="cond">Listen for: &ldquo;once&rdquo; keeping its /s/ and &ldquo;afternoons&rdquo; keeping its /z/ in the ds1.0 rows; the shipped ds1.1 row is the one where they can drop. Pace: ds1.0 renders this prompt in 12.1&nbsp;s vs 12.6&nbsp;s shipped &mdash; no pace penalty on the full prompt (the probe pair was 7.6 vs 8.7&nbsp;s; window count differs by splitter drift).</p>
-  <details><summary class="tog">arm key + provenance</summary><div class="cond">
-    <p class="cond">Probe arms (2-window clip: &ldquo;&hellip;all at once.&rdquo; + &ldquo;&hellip;ordinary afternoons,&rdquo;), seeds 42/43/44, all onechunk hq() geometry, warm+freeze, GPU&nbsp;6:</p>
-    <table>
-      <tr><th>arm</th><th>what changed</th><th>&ldquo;once&rdquo; /s/ (3 seeds)</th><th>&ldquo;afternoons&rdquo; /z/ (3 seeds)</th></tr>
-      <tr><td>base (ds1.1, shipped)</td><td>&mdash;</td><td>160 / <strong>missing</strong> / 80 ms</td><td>70 / 110 / 90 ms (&minus;17 to &minus;22 dB)</td></tr>
-      <tr><td>notrim</td><td>breath trim OFF</td><td colspan="2" style="text-align:center">byte-identical to base &mdash; trim exonerated</td></tr>
-      <tr><td>noes</td><td>early-stop OFF</td><td colspan="2" style="text-align:center">byte-identical to base &mdash; early-stop exonerated</td></tr>
-      <tr><td><strong>ds1.0</strong></td><td>duration_scale 1.1&rarr;1.0</td><td><strong>170 / 140 / 140 ms</strong> &mdash; all seeds</td><td>80 / 110 / 60 ms</td></tr>
-      <tr><td>ds1.2</td><td>duration_scale 1.1&rarr;1.2</td><td>170 / <strong>missing</strong> / 60 ms</td><td>90 / 100 / 90 ms</td></tr>
-      <tr><td>vendor16 ref</td><td>offline vendor sampler</td><td>160 / <strong>missing</strong> / 100 ms</td><td>150 / 170 / 110 ms (&minus;23 to &minus;27 dB)</td></tr>
-    </table>
-    <p class="cond" style="border-left:3px solid #c0392b;padding-left:10px"><strong>CORRECTION (ear check 7, 2026-08-28):</strong> the dose table above was measured at the <em>wrong boundaries</em> &mdash; the boundary finder fired on sentence pauses, not the digital-zero window gaps. Re-measured at the true boundaries, the ds1.0 &ldquo;all 3 seeds&rdquo; claim is <strong>withdrawn</strong>: probe ds1.0 has a real /s/ only on s42 (60&nbsp;ms), s43 is a 20&nbsp;ms sliver, s44 ends voiced. The defect is <strong>stochastic per seed&nbsp;&times;&nbsp;geometry</strong>, not a duration_scale dose response &mdash; the fix is the A8 coda gate (ear check 7 below), not the knob.</p>
-  <p class="cond">Metric: word-final HI-ZCR burst (ZCR&gt;0.20, env&gt;&minus;30&nbsp;dB of clip peak) in the last 70&ndash;110&nbsp;ms before each window boundary; 10&nbsp;ms frames. ASR guard: granite+qwen consensus, all 21 probe renders + 3 full renders WER 0.000, &ldquo;once&rdquo;/&ldquo;afternoons&rdquo; transcribed 3/3 on every arm &mdash; ASR is blind to devoiced fricatives, which is why this class survived every WER gate. Renders: eval/oplad_lf_20260828/a7_sibilant/{renders,fullds10}. All 48&nbsp;kHz mono FLAC, lossless from the eval WAVs. Engine: expressive-tts @ 754bb63 (unchanged &mdash; no engine commit this round; the candidate is a settings change).</p>
-  </div></details>
-</section>
-
-
-<section id="earcheck7" class="wrap">
-  <h2 class="ear-h2">Ear check 7 &mdash; <em>&ldquo;s&rdquo; restored: sibilant coda gate + fricative-protected trim</em> (A8)</h2>
-  <p class="standfirst"><strong>Fix shipped (engine @ <code>a92beb4</code>):</strong> two changes to <code>synthesize_long</code>. (1)&nbsp;<strong>Sibilant coda gate</strong> &mdash; a window whose final word ends in an unvoiced fricative (/s/ /z/ /f/ /th/ /sh/ /ch/, incl. &ldquo;ce&rdquo;, &ldquo;x&rdquo;) must end unvoiced: final audible run ZCR&nbsp;&ge;&nbsp;0.2, spectral centroid&nbsp;&gt;&nbsp;4&nbsp;kHz, hi-band&nbsp;&gt;&nbsp;0.9; a failing window is re-rendered at seed+i+7 (&le;3 attempts, keep best), per-window results recorded on <code>StreamInfo.coda_gate</code>. (2)&nbsp;<strong>Fricative-protected breath trim</strong> &mdash; the A3 trim classified a real 180&nbsp;ms /s/ as &ldquo;breath&rdquo; (level+ZCR cannot separate them; the A3 breath signature and a word-final /s/ are acoustically adjacent) and cut it; the trim is now spectral (bright-tail guard).</p>
-  <p class="standfirst"><strong>Result:</strong> 0 expected-coda failures across 3 prompts &times; 3 seeds; the gate fired once (long_female s44, window 2 &mdash; re-rendered and passed). Verified independently at the <em>true</em> digital-zero window boundaries: &ldquo;once&rdquo; /s/ present on all 3 seeds (60&ndash;110&nbsp;ms, centroid 7.0&ndash;7.5&nbsp;kHz), &ldquo;years&rdquo; /z/ present on all 3. UTMOS 3.83 (onechunk champion 3.68, trim-off 3.86); WER 0.0 on female/form, 0.0244 on deep (the known colour&rarr;color ASR normalization). WER is blind to this defect class &mdash; &ldquo;once&rdquo; transcribes 3/3 even when the /s/ is gone &mdash; so the gate, not ASR, is the instrument. <strong>Please ear-check: does &ldquo;once&rdquo; keep its /s/ now?</strong></p>
-  <h3>long_female &mdash; &ldquo;&hellip;all at once.&rdquo; ends window 1 (the prompt you reported)</h3>
-  <div class="tr"><p class="trlab">transcript &mdash; read along (all three gate rows render this text)</p>
-    <p><span class="cue">0:00</span> the thing nobody tells you is that it doesn&#x27;t arrive all <b>at once.</b> <span class="win">&larr; window 1 ends at ~4.3&nbsp;s &mdash; the /s/ of &ldquo;once&rdquo; is the sound to judge</span></p>
-    <p><span class="cue">4.3&nbsp;s</span> it comes in small pieces, on ordinary <b>afternoons,</b> <span class="win">&larr; window 2 ends at ~8.4&nbsp;s &mdash; the /z/ of &ldquo;afternoons&rdquo;</span></p>
-    <p><span class="cue">8.4&nbsp;s</span> when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s42</span><audio controls preload="none" src="audio/long_female_a8_s42_ec7.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s43</span><audio controls preload="none" src="audio/long_female_a8_s43_ec7.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s44</span><audio controls preload="none" src="audio/long_female_a8_s44_ec7.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">ec6 ds1.0 &middot; s42 &middot; old</span><audio controls preload="none" src="audio/long_female_ds10_s42_ec6.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">ec5 onechunk &middot; s42 &middot; old</span><audio controls preload="none" src="audio/long_female_onechunk_s42_ec5.flac"></audio><span class="wer">0.0%</span></div>
-  <h3>long_form &mdash; &ldquo;&hellip;stood empty for years.&rdquo; ends window 1 (final /z/)</h3>
-  <div class="tr"><p class="trlab">transcript &mdash; read along (all three gate rows render this text; 9 windows)</p>
-    <p><span class="cue">0:00</span> when i was a child, the house at the end of the lane stood empty for <b>years.</b> <span class="win">&larr; window 1 ends at ~6.2&nbsp;s &mdash; the final /z/ of &ldquo;years&rdquo;</span></p>
-    <p><span class="cue">6.2&nbsp;s</span> we told each other stories about it, each one taller than the last,</p>
-    <p><span class="cue">11.8&nbsp;s</span> and none of us ever dared to open the gate.</p>
-    <p><span class="cue">14.8&nbsp;s</span> then one summer the lights came on again,</p>
-    <p><span class="cue">18.7&nbsp;s</span> and an old man moved in with a dog and a piano.</p>
-    <p><span class="cue">22.5&nbsp;s</span> he played every evening as the sun went down, and slowly,</p>
-    <p><span class="cue">27.4&nbsp;s</span> without anyone deciding it, the whole street began leaving their windows open just to listen.</p>
-    <p><span class="cue">33.9&nbsp;s</span> by september we knew every tune,</p>
-    <p><span class="cue">36.9&nbsp;s</span> and the house at the end of the lane was not empty anymore, not to any of us.</p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s42</span><audio controls preload="none" src="audio/long_form_a8_s42_ec7.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s43</span><audio controls preload="none" src="audio/long_form_a8_s43_ec7.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s44</span><audio controls preload="none" src="audio/long_form_a8_s44_ec7.flac"></audio><span class="wer">0.0%</span></div>
-  <h3>long_deep &mdash; no fricative-final window; regression check only</h3>
-  <div class="tr"><p class="trlab">transcript &mdash; read along (all three gate rows render this text)</p>
-    <p><span class="cue">0:00</span> i went back to the house last week.</p>
-    <p><span class="cue">2.2&nbsp;s</span> the fence is gone, and someone painted the door a <b>colour</b> i don&#x27;t think either of us would have chosen, <span class="win">&larr; window 2 ends at ~8.4&nbsp;s &mdash; ASR writes &ldquo;color&rdquo;, which is the whole 2.4%: a transcript normalization, not a speech error</span></p>
-    <p><span class="cue">8.4&nbsp;s</span> but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s42</span><audio controls preload="none" src="audio/long_deep_a8_s42_ec7.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s43</span><audio controls preload="none" src="audio/long_deep_a8_s43_ec7.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">gate &middot; s44</span><audio controls preload="none" src="audio/long_deep_a8_s44_ec7.flac"></audio><span class="wer">2.4%</span></div>
-  <details><summary class="tog">arm key + provenance</summary><div class="cond">
-    <p class="cond">Champion arm &ldquo;gate&rdquo; = trim_protected: hq() defaults (ds1.1, 16 steps), coda gate ON, fricative-protected trim ON, cuda graphs OFF (remote finding: graphed-emission corruption is deterministic). 3 prompts &times; 3 seeds, warmup(2) + close_geometries + freeze, GPU&nbsp;6. Renders: eval/oplad_lf_20260828/a8_gate/renders/trim_protected/; gate log trim_protected_gate_log.json; guards part6_wer.json / part6_utmos.json; calibration part0c_true_boundary.json.</p>
-    <table>
-      <tr><th>window 1 tail (independent re-measure, true boundaries)</th><th>final run</th><th>ZCR</th><th>centroid</th><th>verdict</th></tr>
-      <tr><td>long_female &ldquo;once&rdquo; s42/43/44</td><td>60 / 110 / 70 ms</td><td>0.29&ndash;0.31</td><td>7.0&ndash;7.5 kHz</td><td>/s/ present &times;3</td></tr>
-      <tr><td>long_form &ldquo;years&rdquo; (/z/) s42/43/44</td><td>80 / 60 / 100 ms</td><td>0.21&ndash;0.25</td><td>5.8&ndash;6.4 kHz</td><td>/s/ present &times;3</td></tr>
-      <tr><td>ec6 fullds10 (pre-fix) s42/43/44</td><td>230 / 250 / 280 ms</td><td>0.02</td><td>0.5&ndash;0.7 kHz</td><td>voiced &mdash; /s/ missing</td></tr>
-      <tr><td>ec4 bigchunk48 s42 (the one old file with /s/)</td><td>150 ms</td><td>0.309</td><td>7.4 kHz</td><td>/s/ present</td></tr>
-    </table>
-    <p class="cond">s43&rsquo;s /s/ is the thinnest (110&nbsp;ms at the boundary re-measure; the in-engine gate logged 20&nbsp;ms &mdash; both unvoiced, both bright). If your ear still hears a weak &ldquo;once&rdquo; on s43, that is the honest residual and the next lever is the Phase&nbsp;B training arm, not more knobs. Vendor offline also misses /s/ on s43: the base model is weak on unvoiced tails.</p>
-  </div></details>
-</section>
-
-
-<section id="s77perf" class="wrap">
-  <h2 class="ear-h2">S7.7 &mdash; <em>TTFA &amp; RTF</em> (A8 engine, 20 showcase prompts)</h2>
-  <p class="standfirst"><strong>Definitions.</strong> <strong>TTFA (time to first audio)</strong> &mdash; seconds
-  from request start to the first audio a listener would hear. For this engine each &le;18-word window is
-  denoised in one pass and emitted whole, so TTFA = reference/caption conditioning + the first window&rsquo;s
-  full denoise (16 steps) + codec decode of that window. It is measured, not estimated:
-  <code>StreamInfo.ttfa_s</code> of window 1, per clip. <strong>RTF (real-time factor)</strong> &mdash;
-  <em>wall-clock seconds to produce the audio &divide; audio duration in seconds</em> (the same convention as
-  every prior tab; RTF&nbsp;&lt;&nbsp;1 means faster than real time). Wall time covers all windows of the clip
-  sequentially, including condition prep and any coda-gate re-rolls.</p>
-  <p class="standfirst"><strong>Reading.</strong> Median TTFA 316&nbsp;ms (mean 359); median
-  RTF 0.168 (mean 0.172) &mdash; roughly 6&times; real time. The two slowest TTFAs
-  are honest gate costs: shift_man (707&nbsp;ms) burned all 3 coda-gate re-rolls, joy_woman 1. The engine
-  renders window-atomic (one pass per &le;18-word window), so TTFA is set by the first window&rsquo;s length,
-  not the clip&rsquo;s: long-form clips (long_deep 496&nbsp;ms, long_female 328&nbsp;ms) start as fast as short
-  ones. Single seed 42, one take, no best-of-4; warmup(1) per clip before the timed pass (steady-state serving
-  latency, the convention of every prior benchmark on this page).</p>
-  <table class="ear-table">
-    <tr><th>clip</th><th>audio (s)</th><th>TTFA (ms)</th><th>RTF</th><th>windows</th><th>gate re-rolls</th><th>WER (consensus)</th></tr>
-      <tr><td>grief_woman</td><td>4.38</td><td>493</td><td>0.191</td><td>2</td><td>0</td><td>0%</td></tr>
-      <tr><td>grief_oldman</td><td>6.66</td><td>314</td><td>0.146</td><td>2</td><td>0</td><td>0%</td></tr>
-      <tr><td>grief_young</td><td>4.22</td><td>364</td><td>0.244</td><td>3</td><td>0</td><td>0%</td></tr>
-      <tr><td>rage_man</td><td>3.96</td><td>297</td><td>0.148</td><td>2</td><td>0</td><td>9.1%</td></tr>
-      <tr><td>rage_woman</td><td>4.06</td><td>239</td><td>0.179</td><td>3</td><td>0</td><td>0%</td></tr>
-      <tr><td>command_deep</td><td>5.52</td><td>309</td><td>0.157</td><td>3</td><td>0</td><td>0%</td></tr>
-      <tr><td>fear_woman</td><td>4.52</td><td>244</td><td>0.115</td><td>2</td><td>0</td><td>0%</td></tr>
-      <tr><td>fear_child</td><td>4.50</td><td>317</td><td>0.191</td><td>3</td><td>0</td><td>9.1%</td></tr>
-      <tr><td>joy_woman</td><td>5.86</td><td>435</td><td>0.244</td><td>3</td><td>1</td><td>0%</td></tr>
-      <tr><td>laugh_man</td><td>4.12</td><td>552</td><td>0.252</td><td>2</td><td>0</td><td>0%</td></tr>
-      <tr><td>tender_man</td><td>5.12</td><td>316</td><td>0.220</td><td>4</td><td>0</td><td>0%</td></tr>
-      <tr><td>tender_woman</td><td>3.72</td><td>242</td><td>0.124</td><td>2</td><td>0</td><td>0%</td></tr>
-      <tr><td>awe_deep</td><td>6.34</td><td>265</td><td>0.042</td><td>1</td><td>0</td><td>0%</td></tr>
-      <tr><td>tired_woman</td><td>4.20</td><td>336</td><td>0.198</td><td>3</td><td>0</td><td>0%</td></tr>
-      <tr><td>flat_man</td><td>3.76</td><td>281</td><td>0.150</td><td>2</td><td>0</td><td>0%</td></tr>
-      <tr><td>sly_woman</td><td>5.46</td><td>405</td><td>0.187</td><td>3</td><td>0</td><td>0%</td></tr>
-      <tr><td>shift_woman</td><td>6.84</td><td>250</td><td>0.108</td><td>3</td><td>0</td><td>0%</td></tr>
-      <tr><td>shift_man</td><td>5.00</td><td>706</td><td>0.385</td><td>3</td><td>3</td><td>0%</td></tr>
-      <tr><td>long_deep</td><td>13.18</td><td>496</td><td>0.092</td><td>3</td><td>0</td><td>2.4%</td></tr>
-      <tr><td>long_female</td><td>13.20</td><td>328</td><td>0.061</td><td>3</td><td>0</td><td>0%</td></tr>
-  </table>
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <p class="cond">Engine: fast_stream @ <code>a92beb4</code> (A8: sibilant coda gate + fricative-protected
-      breath trim), <code>StreamSettings.hq()</code> &mdash; 16 steps, CFG text/caption 8/8 (speaker 5),
-      lc128, pacing window 50, early stop, duration_scale 1.1, codec_left_context 25, CUDA graphs OFF
-      (graphed-emission corruption is deterministic; A6). Window-atomic long-form: chunk_frames 4096 per
-      &le;18-word clause window; 160&nbsp;ms gaps between windows. Checkpoint: S7.6 v6a-final
-      (<code>checkpoint_final.pt</code>, the ear-check-7 champion load), seed 42, one take. Same 20 texts,
-      captions and speaker references as the S7.6 tab (render_showcase_s76_stream.SHOWCASE_PROSE).</p>
-      <p class="cond">WER (granite+qwen consensus, the ear-check instrument): 17/20 clips word-perfect on both
-      decoders. The three non-zero rows are transcript normalizations, not speech errors &mdash; verified
-      per-window: long_deep 2.4% is ASR writing &ldquo;colour&rdquo; as &ldquo;color&rdquo;; fear_child 9.1%
-      is ASR merging &ldquo;please. just&rdquo; into &ldquo;please just&rdquo; across the window gap (each of
-      its 3 windows is word-perfect when scored alone); rage_man 9.1% is its first window &mdash; the single
-      word &ldquo;don&rsquo;t.&rdquo; &mdash; which all three decoders (granite, qwen, whisper) fail to
-      recognize in isolation (&ldquo;thank.&rdquo; / &ldquo;&rdquo; / &ldquo;Thanks for
-      watching!&rdquo;); its second window is word-perfect. Zero word repeats on all 20. Renders:
-      showcase_s7_prose_120k/audio_s77/ (manifest.json, wer.json); FLACs audio/*_s77.flac.</p>
-    </div>
-  </details>
-</section>
-
-
-<section id="earcheck8" class="wrap">
-  <h2 class="ear-h2">Ear check 8 &mdash; <em>Phase A: real streaming (merge rule + chunk schedule + crossfade joins)</em> (S7.8)</h2>
-  <p class="standfirst"><strong>What changed (engine @ <code>75e9aa3</code>, all defaults off &mdash; S7.7 behavior preserved):</strong>
-  (1)&nbsp;<strong>Minimum-window merge</strong> &mdash; no window shorter than 3 words is emitted alone; &ldquo;don&rsquo;t.&rdquo; merges into
-  its successor (rage_man 2&rarr;1 windows, tender_man 4&rarr;2, grief_woman 2&rarr;1). (2)&nbsp;<strong>Chunk schedule
-  (32,&nbsp;48,&nbsp;4096)</strong> &mdash; each window emits its first 1.28&nbsp;s as its own chunk, then 48 frames, then the rest; every chunk keeps the
-  full noise lookahead and a variable-boundary mask proven equal to the legacy mask on 420 uniform geometries. A 16-frame first chunk was
-  tested and <em>rejected</em>: it deterministically drops the word landing on the chunk boundary (awe_deep lost &ldquo;the&rdquo; at 6.7% WER on
-  both decoders); 32 frames passes with ~50&nbsp;ms more TTFA. (3)&nbsp;<strong>40&nbsp;ms equal-power crossfade joins</strong> replace the 160&nbsp;ms
-  digital-zero gaps &mdash; zero inserted silence. Plus a silent-window guard (re-roll the A6 hazard class). Coda gate + protected trim stay ON.</p>
-  <p class="standfirst"><strong>Result vs S7.7 (same 20 texts, captions, refs, seed 42):</strong> TTFA median 296&nbsp;ms vs 316&nbsp;ms;
-  TTFA <em>worst case</em> 390&nbsp;ms vs 707&nbsp;ms (shift_man&rsquo;s 3 gate re-rolls no longer land on the first window). WER 19/20
-  word-perfect (long_deep 2.4% = the same colour&rarr;color ASR normalization S7.7 has). UTMOS mean 3.31 vs 3.23 (rage_man +0.82,
-  laugh_man +0.99, grief_woman +0.45). The defect classes are gone: rage_man&rsquo;s &ldquo;don&rsquo;t&rdquo; is inside a full window
-  (rms 0.205 vs the broken 0.139) and every clip joins without digital silence. RTF median 0.228 vs 0.168 &mdash; the schedule&rsquo;s
-  honest cost (~36% more compute for streaming emission). <strong>Please ear-check: are the joins seamless, is &ldquo;don&rsquo;t&rdquo;
-  spoken, and does &ldquo;once&rdquo; keep its /s/?</strong></p>
-  <div class="tr"><p class="trlab">transcript &mdash; long_female (the prompt you reported; windows now crossfaded, no gaps)</p>
-    <p><span class="cue">0:00</span> the thing nobody tells you is that it doesn&#x27;t arrive all <b>at once.</b> <span class="win">&larr; window 1 ends ~4.7&nbsp;s &mdash; the /s/ of &ldquo;once&rdquo; (measured: ZCR 0.298, centroid 7.1&nbsp;kHz)</span></p>
-    <p><span class="cue">4.6&nbsp;s</span> it comes in small pieces, on ordinary <b>afternoons,</b> <span class="win">&larr; window 2 ends ~8.5&nbsp;s &mdash; the /z/ of &ldquo;afternoons&rdquo; (ZCR 0.299, centroid 7.1&nbsp;kHz)</span></p>
-    <p><span class="cue">8.5&nbsp;s</span> when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">S7.8 &middot; long_female</span><audio controls preload="none" src="audio/long_female_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">S7.7 &middot; long_female</span><audio controls preload="none" src="audio/long_female_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="tr"><p class="trlab">transcript &mdash; rage_man (the &ldquo;don&rsquo;t.&rdquo; breakage you flagged; now ONE window)</p>
-    <p><span class="cue">0:00</span> <b>don&#x27;t.</b> don&#x27;t you dare tell me to calm down right now. <span class="win">&larr; the first &ldquo;don&rsquo;t&rdquo; used to be a 1-word window at rms 0.139 that every decoder failed; now it opens a 10-word window at rms 0.205</span></p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">S7.8 &middot; rage_man</span><audio controls preload="none" src="audio/rage_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">S7.7 &middot; rage_man</span><audio controls preload="none" src="audio/rage_man_s77.flac"></audio><span class="wer">9.1%</span></div>
-  <h3>All 20 prompts &mdash; S7.8 vs S7.7 A/B</h3>
-  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.8</span><audio controls preload="none" src="audio/grief_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.7</span><audio controls preload="none" src="audio/grief_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.8</span><audio controls preload="none" src="audio/grief_oldman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.7</span><audio controls preload="none" src="audio/grief_oldman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.8</span><audio controls preload="none" src="audio/grief_young_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.7</span><audio controls preload="none" src="audio/grief_young_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.8</span><audio controls preload="none" src="audio/rage_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.7</span><audio controls preload="none" src="audio/rage_man_s77.flac"></audio><span class="wer">9.1%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.8</span><audio controls preload="none" src="audio/rage_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.7</span><audio controls preload="none" src="audio/rage_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.8</span><audio controls preload="none" src="audio/command_deep_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.7</span><audio controls preload="none" src="audio/command_deep_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.8</span><audio controls preload="none" src="audio/fear_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.7</span><audio controls preload="none" src="audio/fear_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.8</span><audio controls preload="none" src="audio/fear_child_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.7</span><audio controls preload="none" src="audio/fear_child_s77.flac"></audio><span class="wer">9.1%</span></div>
-  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.8</span><audio controls preload="none" src="audio/joy_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.7</span><audio controls preload="none" src="audio/joy_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.8</span><audio controls preload="none" src="audio/laugh_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.7</span><audio controls preload="none" src="audio/laugh_man_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.8</span><audio controls preload="none" src="audio/tender_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.7</span><audio controls preload="none" src="audio/tender_man_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.8</span><audio controls preload="none" src="audio/tender_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.7</span><audio controls preload="none" src="audio/tender_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.8</span><audio controls preload="none" src="audio/awe_deep_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.7</span><audio controls preload="none" src="audio/awe_deep_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.8</span><audio controls preload="none" src="audio/tired_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.7</span><audio controls preload="none" src="audio/tired_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.8</span><audio controls preload="none" src="audio/flat_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.7</span><audio controls preload="none" src="audio/flat_man_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.8</span><audio controls preload="none" src="audio/sly_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.7</span><audio controls preload="none" src="audio/sly_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.8</span><audio controls preload="none" src="audio/shift_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.7</span><audio controls preload="none" src="audio/shift_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.8</span><audio controls preload="none" src="audio/shift_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.7</span><audio controls preload="none" src="audio/shift_man_s77.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.8</span><audio controls preload="none" src="audio/long_deep_s78.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.7</span><audio controls preload="none" src="audio/long_deep_s77.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.8</span><audio controls preload="none" src="audio/long_female_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.7</span><audio controls preload="none" src="audio/long_female_s77.flac"></audio><span class="wer">0.0%</span></div>
-
-  <h3 id="s78perf">TTFA &amp; RTF &mdash; S7.8 vs S7.7 (same definitions as #s77perf)</h3>
-  <table class="ear-table">
-    <tr><th>clip</th><th>TTFA s77 (ms)</th><th>TTFA s78 (ms)</th><th>RTF s77</th><th>RTF s78</th><th>win s77</th><th>win s78</th><th>w1 chunks</th><th>WER s77</th><th>WER s78</th><th>UTMOS s77</th><th>UTMOS s78</th></tr>
-      <tr><td>grief_woman</td><td>493</td><td>260</td><td>0.191</td><td>0.129</td><td>2</td><td>1</td><td>3</td><td>0.0%</td><td>0%</td><td>2.64</td><td>3.09</td></tr>
-      <tr><td>grief_oldman</td><td>314</td><td>316</td><td>0.146</td><td>0.186</td><td>2</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.94</td><td>3.15</td></tr>
-      <tr><td>grief_young</td><td>364</td><td>296</td><td>0.244</td><td>0.274</td><td>3</td><td>3</td><td>2</td><td>0.0%</td><td>0%</td><td>3.25</td><td>3.64</td></tr>
-      <tr><td>rage_man</td><td>297</td><td>249</td><td>0.148</td><td>0.183</td><td>2</td><td>1</td><td>2</td><td>9.1%</td><td>0%</td><td>2.21</td><td>3.04</td></tr>
-      <tr><td>rage_woman</td><td>239</td><td>312</td><td>0.179</td><td>0.252</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.63</td><td>4.00</td></tr>
-      <tr><td>command_deep</td><td>309</td><td>301</td><td>0.157</td><td>0.209</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.55</td><td>3.75</td></tr>
-      <tr><td>fear_woman</td><td>244</td><td>266</td><td>0.115</td><td>0.241</td><td>2</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.77</td><td>4.09</td></tr>
-      <tr><td>fear_child</td><td>317</td><td>362</td><td>0.191</td><td>0.303</td><td>3</td><td>2</td><td>2</td><td>9.1%</td><td>0%</td><td>1.48</td><td>1.44</td></tr>
-      <tr><td>joy_woman</td><td>435</td><td>202</td><td>0.244</td><td>0.423</td><td>3</td><td>2</td><td>3</td><td>0.0%</td><td>0%</td><td>2.71</td><td>2.73</td></tr>
-      <tr><td>laugh_man</td><td>552</td><td>283</td><td>0.252</td><td>0.201</td><td>2</td><td>1</td><td>3</td><td>0.0%</td><td>0%</td><td>2.81</td><td>3.80</td></tr>
-      <tr><td>tender_man</td><td>316</td><td>318</td><td>0.220</td><td>0.219</td><td>4</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>2.50</td><td>2.46</td></tr>
-      <tr><td>tender_woman</td><td>242</td><td>293</td><td>0.124</td><td>0.222</td><td>2</td><td>2</td><td>1</td><td>0.0%</td><td>0%</td><td>3.72</td><td>3.88</td></tr>
-      <tr><td>awe_deep</td><td>265</td><td>253</td><td>0.042</td><td>0.118</td><td>1</td><td>1</td><td>3</td><td>0.0%</td><td>0%</td><td>4.24</td><td>3.82</td></tr>
-      <tr><td>tired_woman</td><td>336</td><td>365</td><td>0.198</td><td>0.252</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>2.91</td><td>3.36</td></tr>
-      <tr><td>flat_man</td><td>281</td><td>390</td><td>0.150</td><td>0.304</td><td>2</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.65</td><td>3.48</td></tr>
-      <tr><td>sly_woman</td><td>405</td><td>262</td><td>0.187</td><td>0.471</td><td>3</td><td>3</td><td>2</td><td>0.0%</td><td>0%</td><td>3.56</td><td>3.16</td></tr>
-      <tr><td>shift_woman</td><td>250</td><td>244</td><td>0.108</td><td>0.196</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>2.50</td><td>2.07</td></tr>
-      <tr><td>shift_man</td><td>706</td><td>310</td><td>0.385</td><td>0.226</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>4.06</td><td>3.78</td></tr>
-      <tr><td>long_deep</td><td>496</td><td>295</td><td>0.092</td><td>0.154</td><td>3</td><td>3</td><td>2</td><td>2.4%</td><td>2.4%</td><td>3.68</td><td>3.44</td></tr>
-      <tr><td>long_female</td><td>328</td><td>329</td><td>0.061</td><td>0.146</td><td>3</td><td>3</td><td>3</td><td>0.0%</td><td>0%</td><td>3.90</td><td>4.08</td></tr>
-  </table>
-  <p class="standfirst"><strong>Medians:</strong> TTFA 316 &rarr; 296&nbsp;ms;
-  RTF 0.168 &rarr; 0.220; TTFA max 706 &rarr; 390&nbsp;ms.
-  TTFA definition unchanged: request start &rarr; first emitted audio (<code>StreamInfo.ttfa_s</code> of window 1; under the schedule that is
-  the first 1.28&nbsp;s chunk: condition prep + 16-step denoise of 32 frames + codec decode). RTF = wall&nbsp;&divide;&nbsp;audio duration,
-  wall covering all windows and any gate re-rolls. The RTF increase is the price of emitting the first chunk early and crossfading joins
-  (3 chunks per window vs 1); the S7.7 numbers remain the throughput champion.</p>
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <p class="cond">Engine: fast_stream @ <code>75e9aa3</code> (S7.8 Phase A) on the same S7.6 v6a-final checkpoint, seed 42, one take,
-      warmup(1) per clip, GPU&nbsp;7. Arm: <code>StreamSettings.hq(min_window_words=3, long_chunk_schedule=(32,48,4096),
-      join_crossfade_ms=40.0, silent_window_guard=True)</code> &mdash; coda gate + fricative-protected trim ON (inherited from A8), CUDA graphs OFF.
-      Same 20 texts/captions/refs as the S7.6 tab. Renders: showcase_s7_prose_120k/audio_s78/ (manifest.json, wer.json, utmos.json);
-      FLACs audio/*_s78.flac. S7.7 rows are the published ear-check-7/S7.7-tab renders (audio_s77/, audio/*_s77.flac) for a fair A/B.</p>
-      <p class="cond">Instruments: granite+qwen consensus WER (19/20 word-perfect; long_deep 2.4% is the colour&rarr;color ASR spelling,
-      identical to S7.7&rsquo;s own row); UTMOS (SpeechMOS v1.2.0) mean 3.313 vs 3.234; coda gate measured &ldquo;once.&rdquo; ZCR 0.298 /
-      centroid 7.1&nbsp;kHz and &ldquo;afternoons,&rdquo; ZCR 0.299 / centroid 7.1&nbsp;kHz on the published take; zero digital-zero samples in
-      any multi-window clip (crossfade verified); rage_man renders as ONE window (w1 chunks [0,32,80]). The 16-frame first chunk was rejected on
-      evidence: awe_deep deterministically dropped &ldquo;the&rdquo; at the chunk boundary (6.7% WER, both decoders, reproduced twice);
-      32 frames passes at 0.0%.</p>
-    </div>
-  </details>
-</section>
-
-<section id="earcheck9" class="wrap">
-  <h2 class="ear-h2">Ear check 9 &mdash; <em>Pause-aware joins: prosody consistent across the transcript</em> (S7.9)</h2>
-  <p class="standfirst"><strong>Your note:</strong> on long text (long_female) the transition between windows is abrupt &mdash; not enough
-  pause &mdash; and prosody/style should be consistent across the whole transcript. <strong>Measured (s79_part0/0b):</strong> per-window
-  energy (&le;3.3&nbsp;dB) and speaking rate (mostly &le;57%) were already consistent; the abruptness is the join itself &mdash; S7.8&rsquo;s
-  flat 40&nbsp;ms crossfade splices speech onto speech with <em>0&nbsp;ms pause</em>, while natural pauses inside the same renders measure
-  70&ndash;290&nbsp;ms (comma) and 290&ndash;1030&nbsp;ms (sentence): the join was literally more abrupt than a comma. A second defect was
-  found and measured: windows pick independent pitch registers (grief_young 350&rarr;207&nbsp;Hz = 9.5&nbsp;st, sly_woman
-  194&rarr;299&nbsp;Hz = 7.5&nbsp;st).</p>
-  <p class="standfirst"><strong>What changed (engine @ <code>185c53c</code>, defaults off &mdash; S7.8 behavior byte-identical,
-  rage_man max&vert;diff&vert; 3&times;10<sup>&minus;5</sup>):</strong> <strong>pause-aware joins</strong> &mdash; each join now carries a
-  pause sized to the LEFT window&rsquo;s punctuation: <strong>560&nbsp;ms after a sentence</strong>, <strong>100&nbsp;ms after a clause</strong>
-  (the measured medians of natural pauses in the S7.8 census: sentence n=18 median 560&nbsp;ms, clause n=76 median 100&nbsp;ms). The pause is
-  <em>room tone, not digital zeros</em>: level adapts to the previous window&rsquo;s own quiet floor (10th percentile, capped at
-  &minus;46&nbsp;dBFS &mdash; a fixed level read as an 8&ndash;18&nbsp;dB hiss step on quiet clips; grief_young&rsquo;s floor is
-  &minus;76&nbsp;dBFS and its joins measure &minus;76.7&nbsp;dBFS), with equal-power fade-in/out so the pause is quietest in its middle.
-  A <strong>prosody register gate</strong> (window F0 within N semitones of window 0, re-roll on violation) was implemented, evaluated, and
-  shipped <strong>OFF</strong>: forensics show it cannot separate expressive contour from stochastic drift &mdash; every grief_young window-3
-  candidate (seeds 44/51/58/65) renders 207&ndash;223&nbsp;Hz against the 350&nbsp;Hz anchor (the model wants the reveal low), and the one
-  re-roll that &ldquo;passed&rdquo; dropped &ldquo;and&rdquo; (7.1% WER on both decoders). Register consistency is a Phase-B training fix
-  (cross-window conditioning), not an inference gate.</p>
-  <p class="standfirst"><strong>Result vs S7.8 (same 20 texts, captions, refs, seed 42):</strong> all 18 sentence joins + 2 clause joins carry
-  the pause at the correct positions (room-tone audit on the published renders). WER 19/20 word-perfect (long_deep 2.4% = the same
-  colour&rarr;color ASR spelling S7.7/S7.8 rows have). UTMOS 3.305 vs 3.313 &mdash; grief_young&rsquo;s &minus;0.29 was attributed by an
-  insertion experiment (identical takes + 560&nbsp;ms pauses: 3.642&rarr;3.432; tone at &minus;10/&minus;20/zero&nbsp;dB all score 3.349) to
-  the pause length itself &mdash; UTMOS penalizes audible-length silences &mdash; on the exact feature you asked for; the audio takes are
-  bit-identical to S7.8&rsquo;s (corr 1.0000). TTFA median 291&nbsp;ms vs 296; RTF 0.191 vs 0.220 (pause insertion is cheaper than the
-  crossfade it replaces on most clips). <strong>Please ear-check: do the window transitions now breathe like sentence boundaries, and is the
-  delivery consistent across each transcript?</strong></p>
-  <div class="tr"><p class="trlab">transcript &mdash; long_female (the prompt you reported; joins now carry 560&nbsp;ms / 100&nbsp;ms pauses)</p>
-    <p><span class="cue">0:00</span> the thing nobody tells you is that it doesn&#x27;t arrive all <b>at once.</b> <span class="win">&larr; window 1 ends ~4.6&nbsp;s, then a 560&nbsp;ms sentence pause (measured &minus;74.6&nbsp;dBFS room tone; the /s/ of &ldquo;once&rdquo; at ZCR 0.298, centroid 7.1&nbsp;kHz)</span></p>
-    <p><span class="cue">5.2&nbsp;s</span> it comes in small pieces, on ordinary <b>afternoons,</b> <span class="win">&larr; window 2 ends ~9.1&nbsp;s, then a 100&nbsp;ms clause pause (the /z/ of &ldquo;afternoons&rdquo; at ZCR 0.299, centroid 7.1&nbsp;kHz)</span></p>
-    <p><span class="cue">9.2&nbsp;s</span> when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">S7.9 &middot; long_female</span><audio controls preload="none" src="audio/long_female_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">S7.8 &middot; long_female</span><audio controls preload="none" src="audio/long_female_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="tr"><p class="trlab">transcript &mdash; grief_young (the measured 9.5&nbsp;st register drop, now audible as intended contour with real sentence pauses between)</p>
-    <p><span class="cue">0:00</span> i thought i&#x27;d be fine. <span class="win">&larr; window 1, ~350&nbsp;Hz register</span></p>
-    <p><span class="cue">3.0&nbsp;s</span> i really did. <span class="win">&larr; 560&nbsp;ms sentence pause before this window</span></p>
-    <p><span class="cue">5.4&nbsp;s</span> and then i saw your coat. <span class="win">&larr; window 3 drops to ~207&nbsp;Hz &mdash; the reveal; the register gate was rejected because forcing this window to 350&nbsp;Hz fights the emotion (and its one passing re-roll dropped &ldquo;and&rdquo;)</span></p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">S7.9 &middot; grief_young</span><audio controls preload="none" src="audio/grief_young_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">S7.8 &middot; grief_young</span><audio controls preload="none" src="audio/grief_young_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <h3>All 20 prompts &mdash; S7.9 vs S7.8 A/B</h3>
-  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.9</span><audio controls preload="none" src="audio/grief_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.8</span><audio controls preload="none" src="audio/grief_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.9</span><audio controls preload="none" src="audio/grief_oldman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.8</span><audio controls preload="none" src="audio/grief_oldman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.9</span><audio controls preload="none" src="audio/grief_young_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.8</span><audio controls preload="none" src="audio/grief_young_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.9</span><audio controls preload="none" src="audio/rage_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.8</span><audio controls preload="none" src="audio/rage_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.9</span><audio controls preload="none" src="audio/rage_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.8</span><audio controls preload="none" src="audio/rage_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.9</span><audio controls preload="none" src="audio/command_deep_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.8</span><audio controls preload="none" src="audio/command_deep_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.9</span><audio controls preload="none" src="audio/fear_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.8</span><audio controls preload="none" src="audio/fear_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.9</span><audio controls preload="none" src="audio/fear_child_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.8</span><audio controls preload="none" src="audio/fear_child_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.9</span><audio controls preload="none" src="audio/joy_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.8</span><audio controls preload="none" src="audio/joy_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.9</span><audio controls preload="none" src="audio/laugh_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.8</span><audio controls preload="none" src="audio/laugh_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.9</span><audio controls preload="none" src="audio/tender_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.8</span><audio controls preload="none" src="audio/tender_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.9</span><audio controls preload="none" src="audio/tender_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.8</span><audio controls preload="none" src="audio/tender_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.9</span><audio controls preload="none" src="audio/awe_deep_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.8</span><audio controls preload="none" src="audio/awe_deep_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.9</span><audio controls preload="none" src="audio/tired_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.8</span><audio controls preload="none" src="audio/tired_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.9</span><audio controls preload="none" src="audio/flat_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.8</span><audio controls preload="none" src="audio/flat_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.9</span><audio controls preload="none" src="audio/sly_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.8</span><audio controls preload="none" src="audio/sly_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.9</span><audio controls preload="none" src="audio/shift_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.8</span><audio controls preload="none" src="audio/shift_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.9</span><audio controls preload="none" src="audio/shift_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.8</span><audio controls preload="none" src="audio/shift_man_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.9</span><audio controls preload="none" src="audio/long_deep_s79.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.8</span><audio controls preload="none" src="audio/long_deep_s78.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.9</span><audio controls preload="none" src="audio/long_female_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.8</span><audio controls preload="none" src="audio/long_female_s78.flac"></audio><span class="wer">0.0%</span></div>
-  <h3 id="s79perf">TTFA &amp; RTF &mdash; S7.9 vs S7.8 (same definitions as #s77perf)</h3>
-  <table>
-    <thead><tr><th>clip</th><th>TTFA s79&nbsp;ms</th><th>TTFA s78&nbsp;ms</th><th>RTF s79</th><th>RTF s78</th><th>wins 79</th><th>wins 78</th><th>WER 79</th><th>WER 78</th><th>UTMOS 79</th><th>UTMOS 78</th></tr></thead>
-    <tbody>
-      <tr><td>grief_woman</td><td>262</td><td>260</td><td>0.128</td><td>0.129</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.10</td><td>3.09</td></tr>
-      <tr><td>grief_oldman</td><td>300</td><td>316</td><td>0.160</td><td>0.186</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.16</td><td>3.15</td></tr>
-      <tr><td>grief_young</td><td>329</td><td>296</td><td>0.213</td><td>0.274</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.35</td><td>3.64</td></tr>
-      <tr><td>rage_man</td><td>246</td><td>249</td><td>0.154</td><td>0.183</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.04</td><td>3.04</td></tr>
-      <tr><td>rage_woman</td><td>294</td><td>312</td><td>0.225</td><td>0.252</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>4.00</td><td>4.00</td></tr>
-      <tr><td>command_deep</td><td>340</td><td>301</td><td>0.192</td><td>0.209</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.74</td><td>3.75</td></tr>
-      <tr><td>fear_woman</td><td>254</td><td>266</td><td>0.190</td><td>0.241</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>4.08</td><td>4.09</td></tr>
-      <tr><td>fear_child</td><td>341</td><td>362</td><td>0.238</td><td>0.303</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>1.47</td><td>1.44</td></tr>
-      <tr><td>joy_woman</td><td>197</td><td>202</td><td>0.353</td><td>0.423</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.70</td><td>2.73</td></tr>
-      <tr><td>laugh_man</td><td>272</td><td>283</td><td>0.195</td><td>0.201</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.80</td><td>3.80</td></tr>
-      <tr><td>tender_man</td><td>299</td><td>318</td><td>0.177</td><td>0.219</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.46</td><td>2.46</td></tr>
-      <tr><td>tender_woman</td><td>307</td><td>293</td><td>0.201</td><td>0.222</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.87</td><td>3.88</td></tr>
-      <tr><td>awe_deep</td><td>237</td><td>253</td><td>0.098</td><td>0.118</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.81</td><td>3.82</td></tr>
-      <tr><td>tired_woman</td><td>292</td><td>365</td><td>0.209</td><td>0.252</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.34</td><td>3.36</td></tr>
-      <tr><td>flat_man</td><td>296</td><td>390</td><td>0.253</td><td>0.304</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.53</td><td>3.48</td></tr>
-      <tr><td>sly_woman</td><td>268</td><td>262</td><td>0.344</td><td>0.471</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.19</td><td>3.16</td></tr>
-      <tr><td>shift_woman</td><td>238</td><td>244</td><td>0.146</td><td>0.196</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.12</td><td>2.07</td></tr>
-      <tr><td>shift_man</td><td>286</td><td>310</td><td>0.168</td><td>0.226</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.81</td><td>3.78</td></tr>
-      <tr><td>long_deep</td><td>303</td><td>295</td><td>0.130</td><td>0.154</td><td>3</td><td>3</td><td>2.4%</td><td>2.4%</td><td>3.47</td><td>3.44</td></tr>
-      <tr><td>long_female</td><td>290</td><td>329</td><td>0.126</td><td>0.146</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>4.08</td><td>4.08</td></tr>
-    </tbody>
-  </table>
-  <p class="standfirst"><strong>Medians:</strong> TTFA 296 &rarr; 291&nbsp;ms; RTF 0.220 &rarr; 0.191; UTMOS 3.313 &rarr; 3.305.
-  TTFA definition unchanged (request start &rarr; first emitted audio, window 1). The RTF <em>improved</em> over S7.8: a pause join
-  concatenates and fades (O(n) samples) where the crossfade re-wrote overlapping tails per window; window-1 chunk count is unchanged
-  (2&ndash;3 chunks), so TTFA is unchanged within noise.</p>
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <p class="cond">Engine: fast_stream @ <code>185c53c</code> (S7.9) on the same S7.6 v6a-final checkpoint, seed 42, one take,
-      warmup(1) per clip, GPU&nbsp;7. Arm: <code>StreamSettings.hq(min_window_words=3, long_chunk_schedule=(32,48,4096),
-      join_crossfade_ms=40.0, silent_window_guard=True, join_pause_ms=(560.0, 100.0))</code> &mdash; coda gate + fricative-protected trim ON,
-      prosody_register_gate_st=0 (OFF, see above), CUDA graphs OFF. Same 20 texts/captions/refs as the S7.6 tab. Renders:
-      showcase_s7_prose_120k/audio_s79/ (manifest.json, wer.json, utmos.json); FLACs audio/*_s79.flac. S7.8 rows are the published
-      ear-check-8 renders (audio_s78/, audio/*_s78.flac) for a fair A/B.</p>
-      <p class="cond">Instruments: granite+qwen consensus WER (19/20 word-perfect; long_deep 2.4% is the colour&rarr;color ASR spelling
-      identical to S7.7/S7.8&rsquo;s own rows); UTMOS (SpeechMOS v1.2.0) mean 3.305 vs 3.313; pause audit: 18/18 sentence joins carry a
-      ~480&nbsp;ms room-tone run at the position predicted by the window durations, 2/2 clause joins carry ~80&ndash;120&nbsp;ms; join levels
-      adaptive (long_female &minus;74.6&nbsp;dBFS, grief_young &minus;76.7&nbsp;dBFS, both matching their clip floors); defaults byte-identity
-      re-verified on the final engine (rage_man max&vert;diff&vert; 3&times;10<sup>&minus;5</sup>); grief_young UTMOS decomposition: windows
-      3.336/2.618/3.873 (s79) vs 3.354/2.738/3.796 (s78) &mdash; the drop is the pause length, not the takes (insertion experiment above).</p>
-    </div>
-  </details>
-</section>
-
-<footer><div class="wrap">A clip missing under a checkpoint failed the voice-class check on that checkpoint and is reported rather than replaced.</div></footer>
-<section id="earcheck10" class="wrap">
-  <h2 class="ear-h2">Ear check 10 &mdash; <em>&ldquo;audible sound after &lsquo;fine.&rsquo;&rdquo;: the window-tail guard</em> (S7.9b)</h2>
-  <p class="standfirst"><strong>Your note:</strong> on grief_young, &ldquo;i thought i&rsquo;d be fine.&rdquo; has audible sound after
-  &ldquo;fine.&rdquo; &mdash; it did not terminate with silence. <strong>Measured (s79b_part0&ndash;6):</strong> you were hearing a
-  <em>truncated onset</em>. Window 1&rsquo;s speech ends at 1.46&nbsp;s and decays to the &minus;76&nbsp;dBFS floor by 1.90&nbsp;s; at
-  2.365&nbsp;s a <em>fresh voiced onset</em> (75&nbsp;ms, F0&nbsp;300&nbsp;Hz, peak &minus;8&nbsp;dBFS) rises from that floor and the
-  window&rsquo;s fixed allocation <strong>hard-cuts it at 2.440&nbsp;s</strong> &mdash; sample 0.395416&rarr;0.000000 in under 2&nbsp;ms,
-  no fade. The cut meets the join&rsquo;s room tone directly (the S7.9 pause path concatenated without fading the window&rsquo;s tail).
-  It reproduces deterministically (re-render at seed 42 cuts at the same 2.44&nbsp;s). This is the engine&rsquo;s documented
-  &ldquo;model fills allocation surplus with improvised audio&rdquo; class &mdash; but voiced, and starting at 97% of the allocation,
-  where no existing gate can see it: the A3 breath trim&rsquo;s segment peak <em>is</em> the burst (its final frames classify
-  &ldquo;loud&rdquo;, so the trim&rsquo;s last-kept frame is the segment end and the measured tail is 0&nbsp;ms); early_stop needs
-  800&nbsp;ms of quiet after 85% progress; the coda gate only binds on expected unvoiced codas (&ldquo;fine.&rdquo; ends in a voiced
-  nasal). A census of all 20 published clips found exactly one hard cut: this one.</p>
-  <p class="standfirst"><strong>What changed (engine, <code>window_tail_guard</code>):</strong> after each window renders,
-  a <strong>tail check</strong> (20&nbsp;ms frames; validated on all 20 published clips &mdash; fires exactly once, on grief_young
-  win0) looks for an <em>un-terminated late onset</em>: a final audible run &le;&nbsp;500&nbsp;ms separated from the previous run by
-  &ge;&nbsp;200&nbsp;ms of quiet, still within 6&nbsp;dB of its own peak when the window ends. Remedy: the window&rsquo;s audio is
-  truncated at the onset&rsquo;s start with a 40&nbsp;ms equal-power fade &mdash; the improvised fill is gone and the window ends into
-  the join&rsquo;s room tone. A milder variant (a window ending mid-sound <em>contiguous</em> with speech &mdash; command_deep&rsquo;s
-  &ldquo;twice.&rdquo; ends mid-/s/ at &minus;19&nbsp;dB) keeps its phoneme and gets only a 40&nbsp;ms release fade. Both remedies are
-  deterministic audio edits: no re-rolls, no WER risk.</p>
-  <p class="standfirst"><strong>Result vs S7.9 (same 20 texts, captions, refs, seed 42):</strong> grief_young&rsquo;s burst region
-  measures &minus;77.9&nbsp;dBFS (was &minus;21.6) and the clip has <strong>zero hard cuts</strong> &mdash; as do all 20 renders
-  (census: 1&nbsp;&rarr;&nbsp;0). &ldquo;fine.&rdquo; itself is untouched (&minus;15.3&nbsp;dB, identical). WER 19/20 word-perfect
-  (long_deep 2.4% = the same colour&rarr;color ASR spelling every tab&rsquo;s row carries). UTMOS mean 3.304 vs 3.305 &mdash; the
-  guard-touched clips moved <em>up</em> (grief_young +0.43, grief_oldman +0.46, sly_woman +0.26); the two big down-moves
-  (grief_woman &minus;0.41, flat_man &minus;0.47) are on clips the guard never touched &mdash; cross-take render variance, not the
-  fix. TTFA median 280&nbsp;ms vs 291; RTF 0.203 vs 0.191 (the guard&rsquo;s fade work is O(ms)). <strong>Please ear-check:
-  does &ldquo;fine.&rdquo; now terminate into silence, and does the fix hold across the other 19 prompts?</strong></p>
-  <div class="tr"><p class="trlab">transcript &mdash; grief_young (the prompt you reported; window 1 now ends at ~2.38&nbsp;s into room tone)</p>
-    <p><span class="cue">0:00</span> i thought i&#x27;d be fine. <span class="win">&larr; window 1: speech ends 1.46&nbsp;s; the improvised voiced onset that used to be cut at 2.44&nbsp;s is removed (region now &minus;77.9&nbsp;dBFS room tone); the window terminates into the 560&nbsp;ms sentence pause</span></p>
-    <p><span class="cue">3.0&nbsp;s</span> i really did. <span class="win">&larr; window 2</span></p>
-    <p><span class="cue">5.4&nbsp;s</span> and then i saw your coat. <span class="win">&larr; window 3, the ~207&nbsp;Hz reveal (contour, kept)</span></p>
-  </div>
-  <div class="ear-row"><span class="ear-tag">S7.9b &middot; grief_young</span><audio controls preload="none" src="audio/grief_young_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">S7.9 &middot; grief_young (the defect)</span><audio controls preload="none" src="audio/grief_young_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <h3>All 20 prompts &mdash; S7.9b vs S7.9 A/B</h3>
-  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.9b</span><audio controls preload="none" src="audio/grief_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.9</span><audio controls preload="none" src="audio/grief_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.9b</span><audio controls preload="none" src="audio/grief_oldman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.9</span><audio controls preload="none" src="audio/grief_oldman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.9b</span><audio controls preload="none" src="audio/rage_man_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.9</span><audio controls preload="none" src="audio/rage_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.9b</span><audio controls preload="none" src="audio/rage_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.9</span><audio controls preload="none" src="audio/rage_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.9b</span><audio controls preload="none" src="audio/command_deep_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.9</span><audio controls preload="none" src="audio/command_deep_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.9b</span><audio controls preload="none" src="audio/fear_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.9</span><audio controls preload="none" src="audio/fear_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.9b</span><audio controls preload="none" src="audio/fear_child_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.9</span><audio controls preload="none" src="audio/fear_child_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.9b</span><audio controls preload="none" src="audio/joy_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.9</span><audio controls preload="none" src="audio/joy_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.9b</span><audio controls preload="none" src="audio/laugh_man_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.9</span><audio controls preload="none" src="audio/laugh_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.9b</span><audio controls preload="none" src="audio/tender_man_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.9</span><audio controls preload="none" src="audio/tender_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.9b</span><audio controls preload="none" src="audio/tender_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.9</span><audio controls preload="none" src="audio/tender_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.9b</span><audio controls preload="none" src="audio/awe_deep_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.9</span><audio controls preload="none" src="audio/awe_deep_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.9b</span><audio controls preload="none" src="audio/tired_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.9</span><audio controls preload="none" src="audio/tired_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.9b</span><audio controls preload="none" src="audio/flat_man_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.9</span><audio controls preload="none" src="audio/flat_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.9b</span><audio controls preload="none" src="audio/sly_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.9</span><audio controls preload="none" src="audio/sly_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.9b</span><audio controls preload="none" src="audio/shift_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.9</span><audio controls preload="none" src="audio/shift_woman_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.9b</span><audio controls preload="none" src="audio/shift_man_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.9</span><audio controls preload="none" src="audio/shift_man_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.9b</span><audio controls preload="none" src="audio/long_deep_s79b.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.9</span><audio controls preload="none" src="audio/long_deep_s79.flac"></audio><span class="wer">2.4%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.9b</span><audio controls preload="none" src="audio/long_female_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.9</span><audio controls preload="none" src="audio/long_female_s79.flac"></audio><span class="wer">0.0%</span></div>
-  <h3 id="s79bperf">TTFA &amp; RTF &mdash; S7.9b vs S7.9 (same definitions as #s77perf)</h3>
-  <table>
-    <thead><tr><th>clip</th><th>TTFA s79b&nbsp;ms</th><th>TTFA s79&nbsp;ms</th><th>RTF s79b</th><th>RTF s79</th><th>wins 79b</th><th>wins 79</th><th>WER 79b</th><th>WER 79</th><th>UTMOS 79b</th><th>UTMOS 79</th></tr></thead>
-    <tbody>
-      <tr><td>grief_woman</td><td>289</td><td>262</td><td>0.148</td><td>0.128</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>2.69</td><td>3.10</td></tr>
-      <tr><td>grief_oldman</td><td>301</td><td>300</td><td>0.166</td><td>0.160</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.62</td><td>3.16</td></tr>
-      <tr><td>grief_young</td><td>349</td><td>329</td><td>0.229</td><td>0.213</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.78</td><td>3.35</td></tr>
-      <tr><td>rage_man</td><td>260</td><td>246</td><td>0.187</td><td>0.154</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.01</td><td>3.04</td></tr>
-      <tr><td>rage_woman</td><td>266</td><td>294</td><td>0.212</td><td>0.225</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.94</td><td>4.00</td></tr>
-      <tr><td>command_deep</td><td>354</td><td>340</td><td>0.215</td><td>0.192</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.75</td><td>3.74</td></tr>
-      <tr><td>fear_woman</td><td>268</td><td>254</td><td>0.203</td><td>0.190</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.95</td><td>4.08</td></tr>
-      <tr><td>fear_child</td><td>278</td><td>341</td><td>0.223</td><td>0.238</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>1.45</td><td>1.47</td></tr>
-      <tr><td>joy_woman</td><td>279</td><td>197</td><td>0.266</td><td>0.353</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.74</td><td>2.70</td></tr>
-      <tr><td>laugh_man</td><td>271</td><td>272</td><td>0.203</td><td>0.195</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.85</td><td>3.80</td></tr>
-      <tr><td>tender_man</td><td>332</td><td>299</td><td>0.193</td><td>0.177</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.32</td><td>2.46</td></tr>
-      <tr><td>tender_woman</td><td>360</td><td>307</td><td>0.203</td><td>0.201</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.84</td><td>3.87</td></tr>
-      <tr><td>awe_deep</td><td>268</td><td>237</td><td>0.110</td><td>0.098</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.84</td><td>3.81</td></tr>
-      <tr><td>tired_woman</td><td>281</td><td>292</td><td>0.203</td><td>0.209</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.38</td><td>3.34</td></tr>
-      <tr><td>flat_man</td><td>280</td><td>296</td><td>0.252</td><td>0.253</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.06</td><td>3.53</td></tr>
-      <tr><td>sly_woman</td><td>282</td><td>268</td><td>0.224</td><td>0.344</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.45</td><td>3.19</td></tr>
-      <tr><td>shift_woman</td><td>333</td><td>238</td><td>0.181</td><td>0.146</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.16</td><td>2.12</td></tr>
-      <tr><td>shift_man</td><td>266</td><td>286</td><td>0.177</td><td>0.168</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.87</td><td>3.81</td></tr>
-      <tr><td>long_deep</td><td>294</td><td>303</td><td>0.130</td><td>0.130</td><td>3</td><td>3</td><td>2.4%</td><td>2.4%</td><td>3.48</td><td>3.47</td></tr>
-      <tr><td>long_female</td><td>272</td><td>290</td><td>0.144</td><td>0.126</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.89</td><td>4.08</td></tr>
-    </tbody>
-  </table>
-  <p class="standfirst"><strong>Medians:</strong> TTFA 291 &rarr; 280&nbsp;ms; RTF 0.191 &rarr; 0.203; UTMOS 3.305 &rarr; 3.304.
-  TTFA/RTF definitions unchanged (request start &rarr; first emitted audio, window 1; RTF = wall-clock seconds &divide; audio
-  seconds). The UTMOS mean is flat because the metric is dominated by cross-take variance on untouched clips; the defect you
-  reported is a <em>structure</em> defect (a hard cut), which UTMOS barely registers &mdash; the honest gates for it are the
-  hard-cut census (1&nbsp;&rarr;&nbsp;0) and your ear.</p>
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <p class="cond">Engine: fast_stream on the streaming branch (S7.9 + <code>window_tail_guard</code>) on the same S7.6
-      v6a-final checkpoint, seed 42, one take, warmup(1) per clip, GPU&nbsp;7. Arm:
-      <code>StreamSettings.hq(min_window_words=3, long_chunk_schedule=(32,48,4096), join_crossfade_ms=40.0,
-      silent_window_guard=True, join_pause_ms=(560.0, 100.0), window_tail_guard=True)</code> &mdash; coda gate + fricative-protected
-      trim ON, prosody_register_gate_st=0 (OFF), CUDA graphs OFF. Same 20 texts/captions/refs as the S7.6 tab. Renders:
-      showcase_s7_prose_120k/audio_s79b/ (manifest.json, wer_transcripts.json, utmos.json); FLACs audio/*_s79b.flac. S7.9 rows
-      are the published ear-check-9 renders (audio_s79/, audio/*_s79.flac) for a fair A/B.</p>
-      <p class="cond">Instruments: hard-cut census (audible&rarr;near-zero within 5&nbsp;ms at sample level) 1/20 &rarr; 0/20;
-      grief_young burst region 2.36&ndash;2.44&nbsp;s &minus;21.6&nbsp;dB &rarr; &minus;77.9&nbsp;dB (floor); &ldquo;fine.&rdquo;
-      final syllable unchanged (&minus;15.3&nbsp;dB); guard fire log: grief_young win0 only (run 60&nbsp;ms, gap 940&nbsp;ms);
-      tail-fade log: 9 windows across 8 clips (command_deep win1 = the mid-/s/ ending, /s/ body preserved at &minus;16&nbsp;dB);
-      granite+qwen consensus WER 19/20 word-perfect (long_deep 2.4% = colour&rarr;color, same as every tab&rsquo;s row); UTMOS
-      (SpeechMOS v1.2.0) mean 3.304 vs 3.305. Detection rule validated against all 20 published S7.9 clips before the engine edit
-      (fires exactly once, on the defect); the guard is a settings knob (<code>window_tail_guard</code>, default True in hq()).
-      Scripts s79b_part0&ndash;12 in tmp/claude_fast_stream.</p>
-    </div>
-  </details>
-</section>
-
-<section id="earcheck11" class="wrap">
-  <h2 class="ear-h2">Ear check 11 &mdash; <em>&ldquo;pause longer than normal&rdquo; + &ldquo;unintended utterance &hellip; sounds like a suppressed laugh&rdquo;</em> (S7.10)</h2>
-  <p class="standfirst"><strong>Your note:</strong> (a) the pause sometimes is longer than normal, e.g. GRIEF_YOUNG in S7.9b;
-  (b) in sly_woman there is an unintended utterance after &ldquo;i may have done something&rdquo; &mdash; sounds like a
-  suppressed laugh. <strong>Both are real, and both are now measured at sample level (s710_part0&ndash;10).</strong></p>
-  <p class="standfirst"><strong>(a) The pause.</strong> The S7.9 join inserts a designed 560&nbsp;ms sentence pause, but the
-  <em>left window&rsquo;s own trailing decay</em> stacks on top of it: grief_young win0 ends &ldquo;fine.&rdquo; at 1.46&nbsp;s
-  yet keeps ~900&nbsp;ms of &minus;48&hellip;&minus;55&nbsp;dBFS breathy murmur before its allocation ends (below the A3
-  breath-trim threshold, above the join&rsquo;s room tone &mdash; no gate saw it). Measured speech-to-speech gaps:
-  <strong>1525/1585&nbsp;ms</strong> on grief_young; a census of all 20 clips found 28 gaps &gt;350&nbsp;ms, worst
-  1640&nbsp;ms (tender_woman). <strong>Fix &mdash; pause budget</strong> (<code>pause_budget_ms=760</code>): the excess
-  trailing audio is trimmed (40&nbsp;ms fade at the cut) before the tone is inserted, so the measured gap lands on the
-  designed pause. grief_young: <strong>1525/1585 &rarr; 795/785&nbsp;ms</strong> (designed 560 + the next window&rsquo;s own
-  55&ndash;230&nbsp;ms lead-in quiet &mdash; inside the 290&ndash;1030&nbsp;ms natural sentence-pause band measured on the
-  S7.8 census). Clip length 6.84&nbsp;s &rarr; 5.30&nbsp;s.</p>
-  <p class="standfirst"><strong>(b) The &ldquo;laugh&rdquo;.</strong> Window 2 of sly_woman opens with a
-  <strong>290&nbsp;ms voiced lead-in at &minus;10.7&nbsp;dBFS (louder than the speech around it), F0 340&nbsp;Hz</strong>
-  &mdash; the speaker&rsquo;s own register &mdash; then a 50&ndash;85&nbsp;ms gap, then &ldquo;don&rsquo;t&rdquo;.
-  Granite transcribes the fragment <em>alone</em> as &lsquo;&rsquo; (nothing): it is a non-lexical vocalization, exactly the
-  suppressed laugh you heard. It rode through S7.8/S7.9/S7.9b invisibly because full-window ASR absorbs it into
-  &ldquo;don&rsquo;t&rdquo; (WER 0.0 on every tab that carried it) &mdash; the third defect class WER cannot see. A seed
-  probe shows it is stochastic (seeds 42/43 have it; 50/57/64/71 do not), so the fix is the engine&rsquo;s standard
-  re-roll: <strong>window-onset guard</strong> (<code>window_onset_check</code>) fires on a first audible run that starts
-  &le;50&nbsp;ms in, lasts 100&ndash;400&nbsp;ms, peaks within 22&nbsp;dB of the window peak, and is followed by a
-  30&ndash;300&nbsp;ms gap &mdash; validated on a 41-window census to fire <em>only</em> there (real short first words fail
-  on duration: &ldquo;it&rdquo; 55&nbsp;ms, &ldquo;and&rdquo; 95&nbsp;ms; on gap: shift_man&rsquo;s &ldquo;don&rsquo;t&rdquo;
-  20&nbsp;ms). The re-rolled take opens directly with &ldquo;don&rsquo;t&rdquo; (fragment ASR: &ldquo;don&rsquo;t.&rdquo;,
-  F0 400&nbsp;Hz).</p>
-  <div class="ear-grid">
-    <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.10</span><audio controls preload="none" src="audio/grief_young_S7.10.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.9b</span><audio controls preload="none" src="audio/grief_young_s79b.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.10</span><audio controls preload="none" src="audio/sly_woman_S7.10.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.9b</span><audio controls preload="none" src="audio/sly_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.10</span><audio controls preload="none" src="audio/tender_woman_S7.10.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.9b</span><audio controls preload="none" src="audio/tender_woman_s79b.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">long_female &middot; S7.10</span><audio controls preload="none" src="audio/long_female_S7.10.flac"></audio><span class="wer">0.0%</span></div>
-    <div class="ear-row"><span class="ear-tag">long_female &middot; S7.9b</span><audio controls preload="none" src="audio/long_female_s79b.flac"></audio><span class="wer">0.0%</span></div>
-  </div>
-  <details class="ear-key"><summary>Transcripts &amp; measured cues (read while listening)</summary>
-    <div class="ear-key-body">
-      <p class="cond"><strong>grief_young</strong> &mdash; &ldquo;i thought i&rsquo;d be <strong>fine.</strong>&rdquo; [S7.9b:
-      1525&nbsp;ms gap &mdash; ~900&nbsp;ms murmur + 560&nbsp;ms tone; <strong>S7.10: 795&nbsp;ms</strong>] &ldquo;i really
-      did.&rdquo; [S7.9b: 1585&nbsp;ms; <strong>S7.10: 785&nbsp;ms</strong>] &ldquo;and then i saw your coat.&rdquo;</p>
-      <p class="cond"><strong>sly_woman</strong> &mdash; &ldquo;i may have done <strong>something.</strong>&rdquo;
-      [630&nbsp;ms pause] &ldquo;<strong>don&rsquo;t</strong> be angry.&rdquo; [S7.9b: a 290&nbsp;ms voiced lead-in
-      (&minus;10.7&nbsp;dBFS, F0 340&nbsp;Hz) sounds before &ldquo;don&rsquo;t&rdquo; &mdash; the suppressed laugh;
-      <strong>S7.10: &ldquo;don&rsquo;t&rdquo; starts immediately (F0 400&nbsp;Hz)</strong>] [670&nbsp;ms pause]
-      &ldquo;it&rsquo;s mostly good news.&rdquo;</p>
-      <p class="cond"><strong>tender_woman</strong> &mdash; the 1640&nbsp;ms gap case: S7.10 measures 820&nbsp;ms.
-      <strong>long_female</strong> &mdash; &ldquo;&hellip;all at <strong>once.</strong>&rdquo; [745&nbsp;ms &rarr;
-      725&nbsp;ms] &ldquo;it comes in small pieces, on ordinary <strong>afternoons,</strong>&rdquo; [&hellip;] &mdash;
-      the /s/ and /z/ codas remain (coda gate ON).</p>
-    </div>
-  </details>
-  <h3 id="s710perf">TTFA &amp; RTF &mdash; S7.10 vs S7.9b (same definitions as #s77perf)</h3>
-  <table>
-    <thead><tr><th>clip</th><th>TTFA s710&nbsp;ms</th><th>TTFA s79b&nbsp;ms</th><th>RTF s710</th><th>RTF s79b</th><th>wins 710</th><th>wins 79b</th><th>WER 710</th><th>WER 79b</th><th>UTMOS 710</th><th>UTMOS 79b</th></tr></thead>
-    <tbody>
-      <tr><td>grief_woman</td><td>358</td><td>289</td><td>0.172</td><td>0.148</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.10</td><td>2.69</td></tr>
-      <tr><td>grief_oldman</td><td>389</td><td>301</td><td>0.199</td><td>0.166</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.16</td><td>3.62</td></tr>
-      <tr><td>grief_young</td><td>383</td><td>349</td><td>0.346</td><td>0.229</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.69</td><td>3.78</td></tr>
-      <tr><td>rage_man</td><td>343</td><td>260</td><td>0.183</td><td>0.187</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.04</td><td>3.01</td></tr>
-      <tr><td>rage_woman</td><td>399</td><td>266</td><td>0.383</td><td>0.212</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.90</td><td>3.94</td></tr>
-      <tr><td>command_deep</td><td>288</td><td>354</td><td>0.195</td><td>0.215</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.75</td><td>3.75</td></tr>
-      <tr><td>fear_woman</td><td>321</td><td>268</td><td>0.236</td><td>0.203</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>4.08</td><td>3.95</td></tr>
-      <tr><td>fear_child</td><td>376</td><td>278</td><td>0.295</td><td>0.223</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>1.46</td><td>1.45</td></tr>
-      <tr><td>joy_woman</td><td>267</td><td>279</td><td>0.444</td><td>0.266</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.70</td><td>2.74</td></tr>
-      <tr><td>laugh_man</td><td>323</td><td>271</td><td>0.228</td><td>0.203</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.80</td><td>3.85</td></tr>
-      <tr><td>tender_man</td><td>378</td><td>332</td><td>0.220</td><td>0.193</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.46</td><td>2.32</td></tr>
-      <tr><td>tender_woman</td><td>383</td><td>360</td><td>0.294</td><td>0.203</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.84</td><td>3.84</td></tr>
-      <tr><td>awe_deep</td><td>327</td><td>268</td><td>0.128</td><td>0.110</td><td>1</td><td>1</td><td>0.0%</td><td>0.0%</td><td>3.81</td><td>3.84</td></tr>
-      <tr><td>tired_woman</td><td>464</td><td>281</td><td>0.292</td><td>0.203</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.34</td><td>3.38</td></tr>
-      <tr><td>flat_man</td><td>446</td><td>280</td><td>0.679</td><td>0.252</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>3.62</td><td>3.06</td></tr>
-      <tr><td>sly_woman</td><td>258</td><td>282</td><td>0.396</td><td>0.224</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>3.11</td><td>3.45</td></tr>
-      <tr><td>shift_woman</td><td>271</td><td>333</td><td>0.161</td><td>0.181</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>2.12</td><td>2.16</td></tr>
-      <tr><td>shift_man</td><td>309</td><td>266</td><td>0.258</td><td>0.177</td><td>2</td><td>2</td><td>0.0%</td><td>0.0%</td><td>4.03</td><td>3.87</td></tr>
-      <tr><td>long_deep</td><td>302</td><td>294</td><td>0.177</td><td>0.130</td><td>3</td><td>3</td><td>2.4%</td><td>2.4%</td><td>3.53</td><td>3.48</td></tr>
-      <tr><td>long_female</td><td>347</td><td>272</td><td>0.132</td><td>0.144</td><td>3</td><td>3</td><td>0.0%</td><td>0.0%</td><td>4.08</td><td>3.89</td></tr>
-    </tbody>
-  </table>
-  <p class="standfirst"><strong>Medians:</strong> TTFA 280 &rarr; 345&nbsp;ms; RTF 0.203 &rarr; 0.232;
-  UTMOS 3.304 &rarr; 3.331. TTFA/RTF definitions unchanged (request start &rarr; first emitted audio, window 1;
-  RTF = wall-clock seconds &divide; audio seconds). The onset guard re-rolled sly_woman win1 once (seed 42+7=49 still had
-  the lead-in; seed 50 is clean) and joy_woman win1 twice (coda gate) &mdash; re-roll costs are visible in those RTF cells.
-  WER 19/20 word-perfect on both arms (long_deep 2.4% = the same colour&rarr;color ASR spelling every tab carries).</p>
-  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
-    <div class="ear-key-body">
-      <p class="cond">Engine: fast_stream on the streaming branch (S7.9b + <code>window_onset_guard</code> +
-      <code>pause_budget_ms</code>) @ <code>d363026</code> on the same S7.6 v6a-final checkpoint, seed 42, one take,
-      warmup(1) per clip. Arm: <code>StreamSettings.hq(min_window_words=3, long_chunk_schedule=(32,48,4096),
-      join_crossfade_ms=40.0, silent_window_guard=True, join_pause_ms=(560.0, 100.0), window_tail_guard=True,
-      window_onset_guard=True, onset_guard_retries=3, pause_budget_ms=760.0)</code> &mdash; coda gate + fricative-protected
-      trim ON, prosody_register_gate_st=0 (OFF), CUDA graphs OFF. Same 20 texts/captions/refs as every tab. Renders:
-      showcase_s7_prose_120k/audio_s710/ (manifest.json, wer_transcripts.json, utmos.json); FLACs audio/*_S7.10.flac.
-      S7.9b rows are the published ear-check-10 renders (audio_s79b/, audio/*_s79b.flac) for a fair A/B.</p>
-      <p class="cond">Instruments: gap census (speech-end &rarr; speech-start at &minus;42&nbsp;dBFS, 5&nbsp;ms frames)
-      grief_young 1525/1585 &rarr; 795/785&nbsp;ms, tender_woman 1640 &rarr; 820&nbsp;ms; onset census + fragment ASR
-      (granite on the isolated fragment: &lsquo;&rsquo; before the fix, &ldquo;don&rsquo;t.&rdquo; after); pause-budget
-      fire log: grief_young w1/w2 (740/800&nbsp;ms trimmed); onset-guard fire log: sly_woman win1 (1 re-roll);
-      granite+qwen consensus WER 19/20 word-perfect on both arms (long_deep 2.4% = colour&rarr;color); UTMOS
-      (SpeechMOS v1.2.0) mean 3.331 vs 3.304. Detector validated against a 41-window census before the engine edit
-      (fires only on the defect window). Scripts s710_part0&ndash;10 in tmp/claude_fast_stream.</p>
-    </div>
-  </details>
-</section>
 
 <footer><div class="wrap">A clip missing under a checkpoint failed the voice-class check on that checkpoint and is reported rather than replaced.</div></footer>
 <script>
