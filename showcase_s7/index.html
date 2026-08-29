@@ -121,6 +121,8 @@ footer .wrap{padding:26px 24px 60px}
     <a class="tog" href="#earcheck6" style="text-decoration:none">ear check 6 &darr;</a>
     <a class="tog" href="#earcheck7" style="text-decoration:none">ear check 7 &darr;</a>
     <a class="tog" href="#s77perf" style="text-decoration:none">S7.7 perf &darr;</a>
+    <a class="tog" href="#earcheck8" style="text-decoration:none">ear check 8 &darr;</a>
+    <a class="tog" href="#s78perf" style="text-decoration:none">S7.8 perf &darr;</a>
     <p class="note">Eight checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All seven use the English text tower. S7.7 is the same S7.6 checkpoint served by the current streaming engine (fast_stream @ <code>a92beb4</code>, the ear-check-7 champion): window-atomic long-form streaming with the sibilant coda gate and the fricative-protected breath trim, at hq() — 16 steps, CFG 8/8, lc128, pacing windows, early stop, duration_scale 1.1, CUDA graphs off. Same 20 prompts, captions and references as every other tab; single seed 42, no best-of-4 (streaming emits one take). Its TTFA/RTF table is at the bottom of the page.</p>
   </div>
 </div></header>
@@ -1121,6 +1123,125 @@ footer .wrap{padding:26px 24px 60px}
       recognize in isolation (&ldquo;thank.&rdquo; / &ldquo;&rdquo; / &ldquo;Thanks for
       watching!&rdquo;); its second window is word-perfect. Zero word repeats on all 20. Renders:
       showcase_s7_prose_120k/audio_s77/ (manifest.json, wer.json); FLACs audio/*_s77.flac.</p>
+    </div>
+  </details>
+</section>
+
+
+<section id="earcheck8" class="wrap">
+  <h2 class="ear-h2">Ear check 8 &mdash; <em>Phase A: real streaming (merge rule + chunk schedule + crossfade joins)</em> (S7.8)</h2>
+  <p class="standfirst"><strong>What changed (engine @ <code>75e9aa3</code>, all defaults off &mdash; S7.7 behavior preserved):</strong>
+  (1)&nbsp;<strong>Minimum-window merge</strong> &mdash; no window shorter than 3 words is emitted alone; &ldquo;don&rsquo;t.&rdquo; merges into
+  its successor (rage_man 2&rarr;1 windows, tender_man 4&rarr;2, grief_woman 2&rarr;1). (2)&nbsp;<strong>Chunk schedule
+  (32,&nbsp;48,&nbsp;4096)</strong> &mdash; each window emits its first 1.28&nbsp;s as its own chunk, then 48 frames, then the rest; every chunk keeps the
+  full noise lookahead and a variable-boundary mask proven equal to the legacy mask on 420 uniform geometries. A 16-frame first chunk was
+  tested and <em>rejected</em>: it deterministically drops the word landing on the chunk boundary (awe_deep lost &ldquo;the&rdquo; at 6.7% WER on
+  both decoders); 32 frames passes with ~50&nbsp;ms more TTFA. (3)&nbsp;<strong>40&nbsp;ms equal-power crossfade joins</strong> replace the 160&nbsp;ms
+  digital-zero gaps &mdash; zero inserted silence. Plus a silent-window guard (re-roll the A6 hazard class). Coda gate + protected trim stay ON.</p>
+  <p class="standfirst"><strong>Result vs S7.7 (same 20 texts, captions, refs, seed 42):</strong> TTFA median 296&nbsp;ms vs 316&nbsp;ms;
+  TTFA <em>worst case</em> 390&nbsp;ms vs 707&nbsp;ms (shift_man&rsquo;s 3 gate re-rolls no longer land on the first window). WER 19/20
+  word-perfect (long_deep 2.4% = the same colour&rarr;color ASR normalization S7.7 has). UTMOS mean 3.31 vs 3.23 (rage_man +0.82,
+  laugh_man +0.99, grief_woman +0.45). The defect classes are gone: rage_man&rsquo;s &ldquo;don&rsquo;t&rdquo; is inside a full window
+  (rms 0.205 vs the broken 0.139) and every clip joins without digital silence. RTF median 0.228 vs 0.168 &mdash; the schedule&rsquo;s
+  honest cost (~36% more compute for streaming emission). <strong>Please ear-check: are the joins seamless, is &ldquo;don&rsquo;t&rdquo;
+  spoken, and does &ldquo;once&rdquo; keep its /s/?</strong></p>
+  <div class="tr"><p class="trlab">transcript &mdash; long_female (the prompt you reported; windows now crossfaded, no gaps)</p>
+    <p><span class="cue">0:00</span> the thing nobody tells you is that it doesn&#x27;t arrive all <b>at once.</b> <span class="win">&larr; window 1 ends ~4.7&nbsp;s &mdash; the /s/ of &ldquo;once&rdquo; (measured: ZCR 0.298, centroid 7.1&nbsp;kHz)</span></p>
+    <p><span class="cue">4.6&nbsp;s</span> it comes in small pieces, on ordinary <b>afternoons,</b> <span class="win">&larr; window 2 ends ~8.5&nbsp;s &mdash; the /z/ of &ldquo;afternoons&rdquo; (ZCR 0.299, centroid 7.1&nbsp;kHz)</span></p>
+    <p><span class="cue">8.5&nbsp;s</span> when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+  </div>
+  <div class="ear-row"><span class="ear-tag">S7.8 &middot; long_female</span><audio controls preload="none" src="audio/long_female_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">S7.7 &middot; long_female</span><audio controls preload="none" src="audio/long_female_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="tr"><p class="trlab">transcript &mdash; rage_man (the &ldquo;don&rsquo;t.&rdquo; breakage you flagged; now ONE window)</p>
+    <p><span class="cue">0:00</span> <b>don&#x27;t.</b> don&#x27;t you dare tell me to calm down right now. <span class="win">&larr; the first &ldquo;don&rsquo;t&rdquo; used to be a 1-word window at rms 0.139 that every decoder failed; now it opens a 10-word window at rms 0.205</span></p>
+  </div>
+  <div class="ear-row"><span class="ear-tag">S7.8 &middot; rage_man</span><audio controls preload="none" src="audio/rage_man_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">S7.7 &middot; rage_man</span><audio controls preload="none" src="audio/rage_man_s77.flac"></audio><span class="wer">9.1%</span></div>
+  <h3>All 20 prompts &mdash; S7.8 vs S7.7 A/B</h3>
+  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.8</span><audio controls preload="none" src="audio/grief_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">grief_woman &middot; S7.7</span><audio controls preload="none" src="audio/grief_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.8</span><audio controls preload="none" src="audio/grief_oldman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">grief_oldman &middot; S7.7</span><audio controls preload="none" src="audio/grief_oldman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.8</span><audio controls preload="none" src="audio/grief_young_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">grief_young &middot; S7.7</span><audio controls preload="none" src="audio/grief_young_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.8</span><audio controls preload="none" src="audio/rage_man_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">rage_man &middot; S7.7</span><audio controls preload="none" src="audio/rage_man_s77.flac"></audio><span class="wer">9.1%</span></div>
+  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.8</span><audio controls preload="none" src="audio/rage_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">rage_woman &middot; S7.7</span><audio controls preload="none" src="audio/rage_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.8</span><audio controls preload="none" src="audio/command_deep_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">command_deep &middot; S7.7</span><audio controls preload="none" src="audio/command_deep_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.8</span><audio controls preload="none" src="audio/fear_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">fear_woman &middot; S7.7</span><audio controls preload="none" src="audio/fear_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.8</span><audio controls preload="none" src="audio/fear_child_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">fear_child &middot; S7.7</span><audio controls preload="none" src="audio/fear_child_s77.flac"></audio><span class="wer">9.1%</span></div>
+  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.8</span><audio controls preload="none" src="audio/joy_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">joy_woman &middot; S7.7</span><audio controls preload="none" src="audio/joy_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.8</span><audio controls preload="none" src="audio/laugh_man_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">laugh_man &middot; S7.7</span><audio controls preload="none" src="audio/laugh_man_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.8</span><audio controls preload="none" src="audio/tender_man_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">tender_man &middot; S7.7</span><audio controls preload="none" src="audio/tender_man_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.8</span><audio controls preload="none" src="audio/tender_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">tender_woman &middot; S7.7</span><audio controls preload="none" src="audio/tender_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.8</span><audio controls preload="none" src="audio/awe_deep_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">awe_deep &middot; S7.7</span><audio controls preload="none" src="audio/awe_deep_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.8</span><audio controls preload="none" src="audio/tired_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">tired_woman &middot; S7.7</span><audio controls preload="none" src="audio/tired_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.8</span><audio controls preload="none" src="audio/flat_man_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">flat_man &middot; S7.7</span><audio controls preload="none" src="audio/flat_man_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.8</span><audio controls preload="none" src="audio/sly_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">sly_woman &middot; S7.7</span><audio controls preload="none" src="audio/sly_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.8</span><audio controls preload="none" src="audio/shift_woman_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">shift_woman &middot; S7.7</span><audio controls preload="none" src="audio/shift_woman_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.8</span><audio controls preload="none" src="audio/shift_man_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">shift_man &middot; S7.7</span><audio controls preload="none" src="audio/shift_man_s77.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.8</span><audio controls preload="none" src="audio/long_deep_s78.flac"></audio><span class="wer">2.4%</span></div>
+  <div class="ear-row"><span class="ear-tag">long_deep &middot; S7.7</span><audio controls preload="none" src="audio/long_deep_s77.flac"></audio><span class="wer">2.4%</span></div>
+  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.8</span><audio controls preload="none" src="audio/long_female_s78.flac"></audio><span class="wer">0.0%</span></div>
+  <div class="ear-row"><span class="ear-tag">long_female &middot; S7.7</span><audio controls preload="none" src="audio/long_female_s77.flac"></audio><span class="wer">0.0%</span></div>
+
+  <h3 id="s78perf">TTFA &amp; RTF &mdash; S7.8 vs S7.7 (same definitions as #s77perf)</h3>
+  <table class="ear-table">
+    <tr><th>clip</th><th>TTFA s77 (ms)</th><th>TTFA s78 (ms)</th><th>RTF s77</th><th>RTF s78</th><th>win s77</th><th>win s78</th><th>w1 chunks</th><th>WER s77</th><th>WER s78</th><th>UTMOS s77</th><th>UTMOS s78</th></tr>
+      <tr><td>grief_woman</td><td>493</td><td>260</td><td>0.191</td><td>0.129</td><td>2</td><td>1</td><td>3</td><td>0.0%</td><td>0%</td><td>2.64</td><td>3.09</td></tr>
+      <tr><td>grief_oldman</td><td>314</td><td>316</td><td>0.146</td><td>0.186</td><td>2</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.94</td><td>3.15</td></tr>
+      <tr><td>grief_young</td><td>364</td><td>296</td><td>0.244</td><td>0.274</td><td>3</td><td>3</td><td>2</td><td>0.0%</td><td>0%</td><td>3.25</td><td>3.64</td></tr>
+      <tr><td>rage_man</td><td>297</td><td>249</td><td>0.148</td><td>0.183</td><td>2</td><td>1</td><td>2</td><td>9.1%</td><td>0%</td><td>2.21</td><td>3.04</td></tr>
+      <tr><td>rage_woman</td><td>239</td><td>312</td><td>0.179</td><td>0.252</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.63</td><td>4.00</td></tr>
+      <tr><td>command_deep</td><td>309</td><td>301</td><td>0.157</td><td>0.209</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.55</td><td>3.75</td></tr>
+      <tr><td>fear_woman</td><td>244</td><td>266</td><td>0.115</td><td>0.241</td><td>2</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.77</td><td>4.09</td></tr>
+      <tr><td>fear_child</td><td>317</td><td>362</td><td>0.191</td><td>0.303</td><td>3</td><td>2</td><td>2</td><td>9.1%</td><td>0%</td><td>1.48</td><td>1.44</td></tr>
+      <tr><td>joy_woman</td><td>435</td><td>202</td><td>0.244</td><td>0.423</td><td>3</td><td>2</td><td>3</td><td>0.0%</td><td>0%</td><td>2.71</td><td>2.73</td></tr>
+      <tr><td>laugh_man</td><td>552</td><td>283</td><td>0.252</td><td>0.201</td><td>2</td><td>1</td><td>3</td><td>0.0%</td><td>0%</td><td>2.81</td><td>3.80</td></tr>
+      <tr><td>tender_man</td><td>316</td><td>318</td><td>0.220</td><td>0.219</td><td>4</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>2.50</td><td>2.46</td></tr>
+      <tr><td>tender_woman</td><td>242</td><td>293</td><td>0.124</td><td>0.222</td><td>2</td><td>2</td><td>1</td><td>0.0%</td><td>0%</td><td>3.72</td><td>3.88</td></tr>
+      <tr><td>awe_deep</td><td>265</td><td>253</td><td>0.042</td><td>0.118</td><td>1</td><td>1</td><td>3</td><td>0.0%</td><td>0%</td><td>4.24</td><td>3.82</td></tr>
+      <tr><td>tired_woman</td><td>336</td><td>365</td><td>0.198</td><td>0.252</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>2.91</td><td>3.36</td></tr>
+      <tr><td>flat_man</td><td>281</td><td>390</td><td>0.150</td><td>0.304</td><td>2</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>3.65</td><td>3.48</td></tr>
+      <tr><td>sly_woman</td><td>405</td><td>262</td><td>0.187</td><td>0.471</td><td>3</td><td>3</td><td>2</td><td>0.0%</td><td>0%</td><td>3.56</td><td>3.16</td></tr>
+      <tr><td>shift_woman</td><td>250</td><td>244</td><td>0.108</td><td>0.196</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>2.50</td><td>2.07</td></tr>
+      <tr><td>shift_man</td><td>706</td><td>310</td><td>0.385</td><td>0.226</td><td>3</td><td>2</td><td>2</td><td>0.0%</td><td>0%</td><td>4.06</td><td>3.78</td></tr>
+      <tr><td>long_deep</td><td>496</td><td>295</td><td>0.092</td><td>0.154</td><td>3</td><td>3</td><td>2</td><td>2.4%</td><td>2.4%</td><td>3.68</td><td>3.44</td></tr>
+      <tr><td>long_female</td><td>328</td><td>329</td><td>0.061</td><td>0.146</td><td>3</td><td>3</td><td>3</td><td>0.0%</td><td>0%</td><td>3.90</td><td>4.08</td></tr>
+  </table>
+  <p class="standfirst"><strong>Medians:</strong> TTFA 316 &rarr; 296&nbsp;ms;
+  RTF 0.168 &rarr; 0.220; TTFA max 706 &rarr; 390&nbsp;ms.
+  TTFA definition unchanged: request start &rarr; first emitted audio (<code>StreamInfo.ttfa_s</code> of window 1; under the schedule that is
+  the first 1.28&nbsp;s chunk: condition prep + 16-step denoise of 32 frames + codec decode). RTF = wall&nbsp;&divide;&nbsp;audio duration,
+  wall covering all windows and any gate re-rolls. The RTF increase is the price of emitting the first chunk early and crossfading joins
+  (3 chunks per window vs 1); the S7.7 numbers remain the throughput champion.</p>
+  <details class="ear-key"><summary>Arm key &amp; provenance (spoiler &mdash; read after listening)</summary>
+    <div class="ear-key-body">
+      <p class="cond">Engine: fast_stream @ <code>75e9aa3</code> (S7.8 Phase A) on the same S7.6 v6a-final checkpoint, seed 42, one take,
+      warmup(1) per clip, GPU&nbsp;7. Arm: <code>StreamSettings.hq(min_window_words=3, long_chunk_schedule=(32,48,4096),
+      join_crossfade_ms=40.0, silent_window_guard=True)</code> &mdash; coda gate + fricative-protected trim ON (inherited from A8), CUDA graphs OFF.
+      Same 20 texts/captions/refs as the S7.6 tab. Renders: showcase_s7_prose_120k/audio_s78/ (manifest.json, wer.json, utmos.json);
+      FLACs audio/*_s78.flac. S7.7 rows are the published ear-check-7/S7.7-tab renders (audio_s77/, audio/*_s77.flac) for a fair A/B.</p>
+      <p class="cond">Instruments: granite+qwen consensus WER (19/20 word-perfect; long_deep 2.4% is the colour&rarr;color ASR spelling,
+      identical to S7.7&rsquo;s own row); UTMOS (SpeechMOS v1.2.0) mean 3.313 vs 3.234; coda gate measured &ldquo;once.&rdquo; ZCR 0.298 /
+      centroid 7.1&nbsp;kHz and &ldquo;afternoons,&rdquo; ZCR 0.299 / centroid 7.1&nbsp;kHz on the published take; zero digital-zero samples in
+      any multi-window clip (crossfade verified); rage_man renders as ONE window (w1 chunks [0,32,80]). The 16-frame first chunk was rejected on
+      evidence: awe_deep deterministically dropped &ldquo;the&rdquo; at the chunk boundary (6.7% WER, both decoders, reproduced twice);
+      32 frames passes at 0.0%.</p>
     </div>
   </details>
 </section>
