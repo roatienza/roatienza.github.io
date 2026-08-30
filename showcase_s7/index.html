@@ -92,7 +92,9 @@ footer .wrap{padding:26px 24px 60px}
     <button class="tog" type="button" data-set="S7.6" aria-pressed="true">S7.6</button>
     <button class="tog" type="button" data-set="S7.10" aria-pressed="false">S7.10</button>
     <button class="tog" type="button" data-set="S7.11" aria-pressed="false">S7.11</button>
-    <p class="note">Nine checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All nine use the English text tower. S7.10 and S7.11 are the same S7.6 checkpoint served by the streaming engine (fast_stream), one guard apart. S7.10 (engine <code>d363026</code>): window-atomic long-form streaming with the sibilant coda gate, fricative-protected breath trim, min-window merge, variable chunk schedule (32/48/rest) with full lookahead, 40 ms crossfade joins, pause-aware joins (560 ms sentence / 100 ms clause) with adaptive room tone and a 760 ms pause budget, window tail guard, and window onset guard (re-rolls non-lexical lead-ins), at hq() — 16 steps, CFG 8/8, lc128, pacing windows, early stop, duration_scale 1.1, prosody register gate off, CUDA graphs off. S7.11 (engine <code>cdaa33d</code>) adds the window head guard: a window that opens with a quiet sub-speech tonal burst (the tender_man "ringing" before "you're okay.") gets it trimmed deterministically instead of re-rolled; everything else is identical, so the two tabs differ by exactly that guard. Same 20 prompts, captions and references as every other tab; single seed 42, no best-of-4 (streaming emits one take).</p>
+    <button class="tog" type="button" data-set="S7.11-ttfa" aria-pressed="false">S7.11-ttfa</button>
+    <button class="tog" type="button" data-set="S7.11-ttfa-fast" aria-pressed="false">S7.11-ttfa-fast</button>
+    <p class="note">Nine checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All nine use the English text tower. S7.10 and S7.11 are the same S7.6 checkpoint served by the streaming engine (fast_stream), one guard apart. S7.10 (engine <code>d363026</code>): window-atomic long-form streaming with the sibilant coda gate, fricative-protected breath trim, min-window merge, variable chunk schedule (32/48/rest) with full lookahead, 40 ms crossfade joins, pause-aware joins (560 ms sentence / 100 ms clause) with adaptive room tone and a 760 ms pause budget, window tail guard, and window onset guard (re-rolls non-lexical lead-ins), at hq() — 16 steps, CFG 8/8, lc128, pacing windows, early stop, duration_scale 1.1, prosody register gate off, CUDA graphs off. S7.11 (engine <code>cdaa33d</code>) adds the window head guard: a window that opens with a quiet sub-speech tonal burst (the tender_man "ringing" before "you're okay.") gets it trimmed deterministically instead of re-rolled; everything else is identical, so the two tabs differ by exactly that guard. Same 20 prompts, captions and references as every other tab; single seed 42, no best-of-4 (streaming emits one take). S7.11-ttfa and S7.11-ttfa-fast are the same engine (<code>cdaa33d</code>) rendered through the two serve presets from <code>serve_worker.build_streamer</code> instead of hq(). <strong>S7.11-ttfa</strong> (quality-first serve): 96-frame first denoise commitment (schedule 96/4096, first_chunk_emit 32, latent_steps_multiple 8) — the dose-curve-saturated operating point where streaming matches the no-streaming control; runs eager (graphs off pending the multi-graph replay-corruption root cause). <strong>S7.11-ttfa-fast</strong> (latency-first serve): fixed-geometry (32,48,48,rest) schedule with an 8-step opening chunk — standard-streaming quality at roughly half the ttfa latency. All three tabs share prompts, captions, references and seed 42; the perf table below measures all three on the same GPU.</p>
   </div>
 </div></header>
 <main class="wrap"><div class="grid">
@@ -109,6 +111,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/grief_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/grief_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/grief_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/grief_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/grief_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, halting, lots of space between phrases</p>
   </article>
   <article class="chip slate">
@@ -124,6 +128,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/grief_oldman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/grief_oldman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/grief_oldman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/grief_oldman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/grief_oldman_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">performed narration, grieving, heavy, holding back tears, slow, drawn out</p>
   </article>
   <article class="chip violet">
@@ -139,6 +145,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/grief_young_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/grief_young_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/grief_young_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/grief_young_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/grief_young_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, breathy, much air and little phonation</p>
   </article>
   <article class="chip sage">
@@ -154,6 +162,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/rage_man_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/rage_man_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/rage_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/rage_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/rage_man_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">expressive performance, angry, sharp, raised voice, relentless, no room to breathe</p>
   </article>
   <article class="chip amber">
@@ -169,6 +179,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/rage_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/rage_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/rage_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/rage_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/rage_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">expressive performance, angry, sharp, raised voice, fast, rapid-fire</p>
   </article>
   <article class="chip slate">
@@ -184,6 +196,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/command_deep_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/command_deep_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/command_deep_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/command_deep_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/command_deep_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">performed narration, deadpan, almost no pitch movement, slow, drawn out</p>
   </article>
   <article class="chip amber">
@@ -198,6 +212,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/fear_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/fear_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/fear_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/fear_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/fear_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, whispered, mostly breath</p>
   </article>
@@ -214,6 +230,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/fear_child_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/fear_child_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/fear_child_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/fear_child_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/fear_child_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, halting, lots of space between phrases</p>
   </article>
   <article class="chip violet">
@@ -229,6 +247,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/joy_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/joy_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/joy_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/joy_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/joy_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">expressive performance, delighted, bright, buoyant, wildly expressive pitch</p>
   </article>
   <article class="chip sage">
@@ -244,6 +264,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/laugh_man_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/laugh_man_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/laugh_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/laugh_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/laugh_man_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">expressive performance, laughing, amused, breathless, fast, rapid-fire</p>
   </article>
   <article class="chip amber">
@@ -259,6 +281,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/tender_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/tender_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/tender_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/tender_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/tender_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">intimate close-mic performance, tender, soft, close, whispered, mostly breath</p>
   </article>
   <article class="chip slate">
@@ -274,6 +298,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/awe_deep_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/awe_deep_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/awe_deep_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/awe_deep_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/awe_deep_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">performed narration, wildly expressive pitch, slow, drawn out</p>
   </article>
   <article class="chip slate">
@@ -289,6 +315,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/flat_man_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/flat_man_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/flat_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/flat_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/flat_man_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">performed narration, deadpan, almost no pitch movement, continuous, few pauses</p>
   </article>
   <article class="chip violet">
@@ -304,6 +332,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/sly_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/sly_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/sly_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/sly_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/sly_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">expressive performance, delighted, bright, buoyant, halting, lots of space between phrases</p>
   </article>
   <article class="chip amber">
@@ -319,6 +349,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/long_female_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/long_female_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/long_female_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/long_female_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/long_female_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">intimate close-mic performance, slow, drawn out</p>
   </article>
   <article class="chip amber">
@@ -333,6 +365,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/tired_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/tired_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/tired_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/tired_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/tired_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">intimate close-mic performance, deadpan, almost no pitch movement, slow, drawn out</p>
   </article>
@@ -349,6 +383,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/shift_woman_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/shift_woman_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/shift_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/shift_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/shift_woman_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">expressive performance, crying, tearful, voice breaking, wildly expressive pitch</p>
   </article>
   <article class="chip sage">
@@ -363,6 +399,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/shift_man_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/shift_man_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/shift_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/shift_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/shift_man_S7.11-ttfa-fast.flac"></audio>
     <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
     <p class="cond">expressive performance, grieving, heavy, holding back tears, halting, lots of space between phrases</p>
   </article>
@@ -379,6 +417,8 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/long_deep_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/long_deep_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/long_deep_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/long_deep_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/long_deep_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">performed narration, continuous, few pauses</p>
   </article>
   <article class="chip sage">
@@ -394,8 +434,46 @@ footer .wrap{padding:26px 24px 60px}
     <audio controls preload="none" data-set="S7.6" src="audio/tender_man_s76.flac"></audio>
     <audio controls preload="none" data-set="S7.10" src="audio/tender_man_S7.10.flac"></audio>
     <audio controls preload="none" data-set="S7.11" src="audio/tender_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/tender_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/tender_man_S7.11-ttfa-fast.flac"></audio>
     <p class="cond">intimate close-mic performance, tender, soft, close, breathy, much air and little phonation</p>
   </article>
+
+<section class="tr" id="s711perf" style="max-width:none">
+  <p class="trlab">S7.11 serve presets — measured on the same 20 prompts, same GPU (RTX-pro 6k-class, idle), engine cdaa33d, seed 42</p>
+  <table style="border-collapse:collapse;font-size:13.5px;margin-top:8px">
+    <thead><tr>
+      <th style="text-align:left;padding:6px 14px 6px 0;border-bottom:1px solid #444">metric</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11 (hq)</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11-ttfa</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11-ttfa-fast</th>
+    </tr></thead>
+    <tbody>
+      <tr><td style="padding:5px 14px 5px 0">schedule (first commitment)</td><td style="text-align:right;padding:5px 14px">32-frame</td><td style="text-align:right;padding:5px 14px"><b>96-frame</b></td><td style="text-align:right;padding:5px 14px">32-frame</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">first chunk steps</td><td style="text-align:right;padding:5px 14px">16</td><td style="text-align:right;padding:5px 14px">16</td><td style="text-align:right;padding:5px 14px"><b>8</b></td></tr>
+      <tr><td style="padding:5px 14px 5px 0">TTFA p50</td><td style="text-align:right;padding:5px 14px">196 ms</td><td style="text-align:right;padding:5px 14px">190 ms</td><td style="text-align:right;padding:5px 14px"><b>120 ms</b></td></tr>
+      <tr><td style="padding:5px 14px 5px 0">TTFA p95</td><td style="text-align:right;padding:5px 14px">684 ms</td><td style="text-align:right;padding:5px 14px">224 ms</td><td style="text-align:right;padding:5px 14px"><b>142 ms</b></td></tr>
+      <tr><td style="padding:5px 14px 5px 0">TTFA max</td><td style="text-align:right;padding:5px 14px">749 ms</td><td style="text-align:right;padding:5px 14px">253 ms</td><td style="text-align:right;padding:5px 14px"><b>170 ms</b></td></tr>
+      <tr><td style="padding:5px 14px 5px 0">RTF mean (lower = faster than real time)</td><td style="text-align:right;padding:5px 14px">0.221</td><td style="text-align:right;padding:5px 14px"><b>0.108</b></td><td style="text-align:right;padding:5px 14px">0.177</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">UTMOS mean</td><td style="text-align:right;padding:5px 14px">3.278</td><td style="text-align:right;padding:5px 14px"><b>3.413</b></td><td style="text-align:right;padding:5px 14px">3.207</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">consensus ASR exact (granite+qwen)</td><td style="text-align:right;padding:5px 14px">19/20</td><td style="text-align:right;padding:5px 14px">19/20</td><td style="text-align:right;padding:5px 14px">19/20</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">worst WER</td><td style="text-align:right;padding:5px 14px">2.4% (colour→color)</td><td style="text-align:right;padding:5px 14px">2.4% (colour→color)</td><td style="text-align:right;padding:5px 14px">2.4% (colour→color)</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">total audio</td><td style="text-align:right;padding:5px 14px">118.4 s</td><td style="text-align:right;padding:5px 14px">122.1 s</td><td style="text-align:right;padding:5px 14px">119.2 s</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">windows / gate retries</td><td style="text-align:right;padding:5px 14px">40 / 2</td><td style="text-align:right;padding:5px 14px">40 / 5</td><td style="text-align:right;padding:5px 14px">40 / 1</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">head / tail guard fires</td><td style="text-align:right;padding:5px 14px">3 / 1</td><td style="text-align:right;padding:5px 14px">0 / 0</td><td style="text-align:right;padding:5px 14px">1 / 1</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">CUDA graphs</td><td style="text-align:right;padding:5px 14px">off</td><td style="text-align:right;padding:5px 14px">off (eager; graphed ≈104 ms recoverable)</td><td style="text-align:right;padding:5px 14px">off (eager; graphed 102/111 ms)</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">best for</td><td style="text-align:right;padding:5px 14px">render / A-B baseline</td><td style="text-align:right;padding:5px 14px"><b>serve: quality-first</b></td><td style="text-align:right;padding:5px 14px"><b>serve: latency-first</b></td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    ttfa's 96-frame first commitment is the dose-curve-saturated operating point: streaming matches the no-streaming control
+    (32-frame commits cost joy_woman −0.29 / laugh_man −1.0 UTMOS in the dose curve). It also measures the best UTMOS of the
+    three here (3.413) and the lowest RTF (0.108) — the bigger first chunk amortizes per-window overhead. ttfa-fast trades
+    ≈0.2 UTMOS for a 120 ms p50 TTFA (the 8-step opening chunk), matching the serve-bench numbers (p50 103 / p95 107 eager).
+    The one non-exact ASR row in every tab is long_deep's colour→color spelling artifact, not a model error.
+    All renders eager, CUDA graphs off (multi-graph replay-corruption root cause open; graphed ttfa ≈104 ms and
+    ttfa-fast 102/111 ms recoverable once fixed).</p>
+</section>
 </div></main>
 
 <footer><div class="wrap">A clip missing under a checkpoint failed the voice-class check on that checkpoint and is reported rather than replaced.</div></footer>
