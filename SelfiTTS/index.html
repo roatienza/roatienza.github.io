@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SelfiTTS — AetherTTS Champion vs Baseline</title>
+<title>SelfiTTS — AetherTTS Champion vs Baseline &amp; SOTA</title>
 <style>
   :root {
     --bg: #0e1116; --panel: #161b23; --panel2: #1c2330;
@@ -38,8 +38,9 @@
   .utt .idx { color: var(--dim); font-size: 12px; font-variant-numeric: tabular-nums; }
   .utt .txt { margin: 4px 0 10px; font-size: 15.5px; }
   .row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
-  .row .who { width: 92px; font-size: 12.5px; font-weight: 700; letter-spacing: .03em; }
+  .row .who { width: 110px; font-size: 12.5px; font-weight: 700; letter-spacing: .03em; }
   .who.champ { color: var(--gold); } .who.base { color: var(--dim); }
+  .who.sota { color: var(--accent); } .who.ref { color: var(--green); }
   audio { height: 36px; flex: 1; min-width: 220px; }
   .dur { color: var(--dim); font-size: 12px; font-variant-numeric: tabular-nums; width: 52px; text-align: right; }
   .note { color: var(--dim); font-size: 13px; background: var(--panel); border: 1px solid var(--line);
@@ -50,6 +51,22 @@
   .pill.gold { background: rgba(245,185,66,.15); color: var(--gold); }
   .pill.dim { background: rgba(139,152,171,.15); color: var(--dim); }
   a { color: var(--accent); }
+  /* SOTA table */
+  .sota-table { width: 100%; border-collapse: collapse; margin: 18px 0 8px; font-size: 13px; }
+  .sota-table th, .sota-table td { padding: 7px 9px; border-bottom: 1px solid var(--line);
+          text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sota-table th { color: var(--dim); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; }
+  .sota-table th:first-child, .sota-table td:first-child { text-align: left; }
+  .sota-table td.m { font-weight: 600; white-space: normal; min-width: 150px; }
+  .sota-table tr.champ td { background: rgba(245,185,66,.07); }
+  .sota-table tr.champ td.m { color: var(--gold); }
+  .sota-table .best { color: var(--green); font-weight: 700; }
+  .sota-table .worst { color: #e06c5a; }
+  .sota-table .method { color: var(--dim); font-size: 11.5px; font-weight: 400; display: block; }
+  .sota-h { font-size: 15px; font-weight: 700; margin: 22px 0 4px; color: var(--text); }
+  .sota-sub { color: var(--dim); font-size: 12.5px; margin-bottom: 6px; }
+  .legend { color: var(--dim); font-size: 12px; margin: 4px 0 14px; }
+  .legend .best { color: var(--green); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -57,7 +74,8 @@
   <h1>SelfiTTS <span style="color:var(--dim);font-weight:400">— AetherTTS self-improvement demo</span></h1>
   <div class="sub">
     Champion <b style="color:var(--gold)">c003</b> (w_adv 4 · n_disc 1 · 20 ep) vs the pre-campaign
-    baseline (manual Stage-B ep299). 30 utterances per split, synthesized with the frozen eval protocol:
+    baseline (manual Stage-B ep299), and vs five SOTA TTS models — all speaking the
+    <b>LJSpeech voice</b>. 30 utterances per split, synthesized with the frozen eval protocol:
     <b>n_steps=1, temp 0.8, length_scale 0.9</b>, 24 kHz.
   </div>
 
@@ -76,6 +94,7 @@
     <button class="tab champ active" data-tab="champion">Champion (c003)</button>
     <button class="tab" data-tab="baseline">Baseline</button>
     <button class="tab" data-tab="compare">Compare</button>
+    <button class="tab" data-tab="sota">SOTA (6 models)</button>
   </div>
 
   <div class="splitbar">
@@ -85,21 +104,30 @@
     <span id="split-note" style="margin-left:10px"></span>
   </div>
 
+  <div id="sota-table-wrap" style="display:none"></div>
   <div id="list"></div>
 
   <div class="note">
     <b>How to listen:</b> same utterance index = same text within a split. In <b>Compare</b> mode play
     champion and baseline back to back — the UTMOS jump 2.9 → 3.8 should be audible as cleaner, more
-    natural prosody. Dev and holdout are different sentences; compare quality, not content, across splits.
+    natural prosody. In <b>SOTA</b> mode each utterance plays the LJSpeech ground truth plus all six
+    models back to back. Dev and holdout are different sentences; compare quality, not content, across splits.
     <br><br>
     <b>Protocol:</b> composite = mean(WER, WER2, UTMOS) — SOTA target 0.80363, win target 0.81363.
     Champion c003: w_adv 4, w_fm 2, anchor 1.0, n_disc 1, disc_lr 5e-5, voc_lr 2e-4, lr 5e-6,
     unfreeze@5, floor 0.1, 20 ep, seed 1237, warm-started from the baseline Stage-B ep299.
     Vocoder: nanovocos student (1.53M) fine-tuned jointly. Model: 5.25M acoustic + 1.53M vocoder.
     <br><br>
+    <b>SOTA benchmark:</b> Matcha-TTS (LJSpeech-trained) and AetherTTS are trained on LJSpeech;
+    ZipVoice, E2-TTS, F5-TTS and Chatterbox are zero-shot models that clone the LJSpeech voice from
+    the <code>LJ001-0001</code> prompt (3 s). All scored with the same harness: faster-Whisper WER,
+    two-ASR consensus WER2, UTMOSv2, ECAPA-TDNN speaker similarity vs the LJSpeech voice, and
+    RTF (synth time / audio time on A100).
+    <br><br>
     Generated 2026-08-27 from
     <code>outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt</code>
     (champion) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
+    SOTA run 2026-09-05.
   </div>
 </div>
 
@@ -117,12 +145,37 @@ const DATA = {
   },
 };
 
+// SOTA summary numbers (from outputs/sota_bench/comparison.json, all-LJSpeech run 2026-09-05)
+const SOTA_MODELS = ["champion","matcha","zipvoice","e2","f5","chatterbox"];
+const SOTA_SUMMARY = {
+  champion:   { name:"AetherTTS c003", method:"1-step MeanFlow + NanoVocos (1 NFE)",  params:"6.78M",
+    dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:.0082, sa:.8453 },
+    holdout: { wer:.0481, wer2:.0760, utmos:3.732, sim:.869, rtf:.0107, sa:.8568 } },
+  matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
+    dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:.0269, sa:.8532 },
+    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:.0273, sa:.8661 } },
+  zipvoice:   { name:"ZipVoice", method:"Flow matching + Vocos (16 NFE)",             params:"136.2M",
+    dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:.1281, sa:.8585 },
+    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:.1415, sa:.8630 } },
+  e2:         { name:"E2-TTS Base", method:"Flow matching, masked U-Net (32 NFE)",    params:"347.1M",
+    dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:.1347, sa:.8258 },
+    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:.1605, sa:.8415 } },
+  f5:         { name:"F5-TTS v1 Base", method:"Flow matching, DiT (32 NFE)",          params:"350.6M",
+    dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:.1621, sa:.8803 },
+    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:.1897, sa:.8838 } },
+  chatterbox: { name:"Chatterbox", method:"AR-token LLM + FM vocoder",                params:"796.3M",
+    dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:.6641, sa:.8662 },
+    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:.6751, sa:.8705 } },
+};
+
 const SPLIT_NOTES = {
   dev: "Dev set — 30 utterances from LJSpeech eval.txt (seen by the dev-eval loop).",
   holdout: "Holdout set — 30 utterances carved from train, never in the dev loop (the gate set).",
 };
 
 let curTab = "champion", curSplit = "dev";
+let SOTA_UTTS = null;   // per-utterance audio manifest, loaded lazily
+let SOTA_REFS = null;
 
 function esc(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -136,9 +189,98 @@ function playerRow(model, u) {
   </div>`;
 }
 
+function sotaRow(m, u) {
+  const label = SOTA_SUMMARY[m].name;
+  const cls = m === "champion" ? "champ" : "sota";
+  return `<div class="row">
+    <span class="who ${cls}">${label}</span>
+    <audio controls preload="none" src="audio/sota_${m}_${curSplit}/syn_${String(u.i).padStart(3, "0")}.wav"></audio>
+    <span class="dur">${u.duration.toFixed(1)}s</span>
+  </div>`;
+}
+
+function refRow(r) {
+  return `<div class="row">
+    <span class="who ref">LJSpeech GT</span>
+    <audio controls preload="none" src="audio/${r.wav}"></audio>
+    <span class="dur"></span>
+  </div>`;
+}
+
+function sotaTable() {
+  const cols = [
+    ["wer",  "WER ↓",  v => v.toFixed(4)],
+    ["wer2", "WER2 ↓", v => v.toFixed(4)],
+    ["utmos","UTMOS ↑",v => v.toFixed(3)],
+    ["sim",  "SIM ↑",  v => v.toFixed(3)],
+    ["rtf",  "RTF ↓",  v => v.toFixed(4)],
+    ["sa",   "SA-comp ↑", v => v.toFixed(4)],
+  ];
+  let html = `<div class="sota-h">AetherTTS c003 vs SOTA — ${curSplit === "dev" ? "Dev" : "Holdout"}</div>
+  <div class="sota-sub">All models speak the LJSpeech voice. SA-comp = speaker-agnostic composite
+  (mean of normalized WER, WER2, UTMOS). Green = best in column, red = worst.</div>
+  <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
+  <span style="color:#e06c5a">■</span> worst in column</div>
+  <table class="sota-table"><thead><tr>
+    <th>Model</th><th>Params</th><th>Method</th>`;
+  for (const [,h] of cols) html += `<th>${h}</th>`;
+  html += `</tr></thead><tbody>`;
+  // per-column best/worst
+  const best = {}, worst = {};
+  for (const [k] of cols) {
+    let bv = null, wv = null;
+    for (const m of SOTA_MODELS) {
+      const v = SOTA_SUMMARY[m][curSplit][k];
+      const higher = k === "utmos" || k === "sim" || k === "sa";
+      if (bv === null || (higher ? v > bv : v < bv)) bv = v;
+      if (wv === null || (higher ? v < wv : v > wv)) wv = v;
+    }
+    best[k] = bv; worst[k] = wv;
+  }
+  for (const m of SOTA_MODELS) {
+    const d = SOTA_SUMMARY[m][curSplit];
+    html += `<tr class="${m === "champion" ? "champ" : ""}">
+      <td class="m">${SOTA_SUMMARY[m].name}</td>
+      <td>${SOTA_SUMMARY[m].params}</td>
+      <td style="text-align:left"><span class="method">${SOTA_SUMMARY[m].method}</span></td>`;
+    for (const [k, , fmt] of cols) {
+      const v = d[k];
+      const cls = v === best[k] ? "best" : (v === worst[k] ? "worst" : "");
+      html += `<td class="${cls}">${fmt(v)}</td>`;
+    }
+    html += `</tr>`;
+  }
+  html += `</tbody></table>`;
+  return html;
+}
+
 function render() {
   const list = document.getElementById("list");
+  const tw = document.getElementById("sota-table-wrap");
   document.getElementById("split-note").textContent = SPLIT_NOTES[curSplit];
+
+  if (curTab === "sota") {
+    tw.style.display = "block";
+    if (!SOTA_UTTS) { tw.innerHTML = "<div class='note'>Loading SOTA samples…</div>"; list.innerHTML = ""; return; }
+    tw.innerHTML = sotaTable();
+    const n = SOTA_UTTS.champion[curSplit].length;
+    let html = "";
+    for (let i = 0; i < n; i++) {
+      const uc = SOTA_UTTS.champion[curSplit][i];
+      const ref = SOTA_REFS[curSplit][i];
+      let rows = refRow(ref);
+      for (const m of SOTA_MODELS) rows += sotaRow(m, SOTA_UTTS[m][curSplit][i]);
+      html += `<div class="utt">
+        <span class="idx">${String(i).padStart(3, "0")}</span>
+        <div class="txt">${esc(uc.text)}</div>
+        ${rows}
+      </div>`;
+    }
+    list.innerHTML = html;
+    return;
+  }
+
+  tw.style.display = "none";
   const n = DATA.champion[curSplit].utts.length;
   if (!n) { list.innerHTML = "<div class='note'>Loading samples…</div>"; return; }
   let html = "";
@@ -161,6 +303,20 @@ document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () =>
   document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
   t.classList.add("active");
   curTab = t.dataset.tab;
+  if (curTab === "sota" && !SOTA_UTTS) {
+    fetch("audio/sota_manifest.json").then(r => r.json()).then(m => {
+      SOTA_UTTS = {};
+      for (const m2 of SOTA_MODELS) {
+        SOTA_UTTS[m2] = { dev: m.models[m2].split.dev, holdout: m.models[m2].split.holdout };
+      }
+      SOTA_REFS = m.references;
+      render();
+    }).catch(e => {
+      document.getElementById("sota-table-wrap").innerHTML =
+        "<div class='note'>Could not load sota_manifest.json: " + esc(String(e)) + "</div>";
+    });
+    return;
+  }
   render();
 }));
 document.querySelectorAll(".splitbar button[data-split]").forEach(b => b.addEventListener("click", () => {
