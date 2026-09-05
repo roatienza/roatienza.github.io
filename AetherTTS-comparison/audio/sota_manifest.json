@@ -614,6 +614,618 @@
     ]
    }
   },
+  "vits": {
+   "name": "VITS (LJSpeech, official)",
+   "method": "CVAE + normalizing-flow prior + adversarial (1 NFE)",
+   "params": "36.3M",
+   "data": "LJSpeech (trained)",
+   "split": {
+    "dev": [
+     {
+      "i": 0,
+      "text": "of the more formal ecclesiastical writing which obtained at that time; this has since been called \"missal type,\"",
+      "wav": "sota_vits_dev/syn_000.wav",
+      "duration": 6.9312,
+      "wer": 0.1111111111111111,
+      "wer2": 0.11111111111111116,
+      "utmos": 3.361328125,
+      "sim_ljs": 0.860623836517334
+     },
+     {
+      "i": 1,
+      "text": "for the seventeenth-century letters are at least pure and simple in line. The Italian, Bodoni, and the Frenchman, Didot,",
+      "wav": "sota_vits_dev/syn_001.wav",
+      "duration": 8.1386,
+      "wer": 0.15,
+      "wer2": 0.15000000000000002,
+      "utmos": 3.751953125,
+      "sim_ljs": 0.8767207860946655
+     },
+     {
+      "i": 2,
+      "text": "The jail at that date was divided into eight separate and more or less distinct departments, each of which had its own wards and yard.",
+      "wav": "sota_vits_dev/syn_002.wav",
+      "duration": 9.9381,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.47265625,
+      "sim_ljs": 0.9126620292663574
+     },
+     {
+      "i": 3,
+      "text": "The master felons' side consisted of a yard the same size as the preceding, appropriated nominally to the most decent and better-behaved prisoners,",
+      "wav": "sota_vits_dev/syn_003.wav",
+      "duration": 9.4505,
+      "wer": 0.08333333333333333,
+      "wer2": 0.08333333333333337,
+      "utmos": 3.986328125,
+      "sim_ljs": 0.9062396883964539
+     },
+     {
+      "i": 4,
+      "text": "were to be kept in every jail, and the prisoners directed to wash in them before release. These provisions were almost a dead letter.",
+      "wav": "sota_vits_dev/syn_004.wav",
+      "duration": 8.3244,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 4.01171875,
+      "sim_ljs": 0.8996466398239136
+     },
+     {
+      "i": 5,
+      "text": "The admission of a crowd of visitors to assist in these lay services has already been remarked upon; as the inspectors pointed out,",
+      "wav": "sota_vits_dev/syn_005.wav",
+      "duration": 8.1966,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 4.15625,
+      "sim_ljs": 0.9274824261665344
+     },
+     {
+      "i": 6,
+      "text": "so subversive of meditation, so disturbing to the thoughts;",
+      "wav": "sota_vits_dev/syn_006.wav",
+      "duration": 4.2493,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 4.01171875,
+      "sim_ljs": 0.8401576280593872
+     },
+     {
+      "i": 7,
+      "text": "but he came as a lad to London, and took service as a pot-boy to a publican.",
+      "wav": "sota_vits_dev/syn_007.wav",
+      "duration": 5.1084,
+      "wer": 0.05555555555555555,
+      "wer2": 0.05555555555555558,
+      "utmos": 3.705078125,
+      "sim_ljs": 0.8727693557739258
+     },
+     {
+      "i": 8,
+      "text": "At the Italian Opera in the evening the audience, on the Queen's appearance, greeted her with loud cheers, and called for the national anthem.",
+      "wav": "sota_vits_dev/syn_008.wav",
+      "duration": 9.5782,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.98828125,
+      "sim_ljs": 0.8830468058586121
+     },
+     {
+      "i": 9,
+      "text": "By-and-by the occupant of the room noticed something glittering in the center of the fire, which, to inspect more closely, he took out with the tongs.",
+      "wav": "sota_vits_dev/syn_009.wav",
+      "duration": 8.7539,
+      "wer": 0.0,
+      "wer2": 0.0357142857142857,
+      "utmos": 3.5546875,
+      "sim_ljs": 0.9259991645812988
+     },
+     {
+      "i": 10,
+      "text": "and stretching out her hand, she gathered up a quantity of the rue which, following ancient custom dating from the days of the jail fever,",
+      "wav": "sota_vits_dev/syn_010.wav",
+      "duration": 7.9528,
+      "wer": 0.04,
+      "wer2": 0.040000000000000036,
+      "utmos": 3.814453125,
+      "sim_ljs": 0.917109489440918
+     },
+     {
+      "i": 11,
+      "text": "This affected Cole's credit, and ugly reports were in circulation charging him with the issue of simulated warrants.",
+      "wav": "sota_vits_dev/syn_011.wav",
+      "duration": 7.5581,
+      "wer": 0.0,
+      "wer2": 0.05555555555555558,
+      "utmos": 3.974609375,
+      "sim_ljs": 0.9318075180053711
+     },
+     {
+      "i": 12,
+      "text": "In eighteen fifty Sir George Grey brought forward a new motion to the same effect,",
+      "wav": "sota_vits_dev/syn_012.wav",
+      "duration": 6.2113,
+      "wer": 0.2,
+      "wer2": 0.19999999999999996,
+      "utmos": 3.498046875,
+      "sim_ljs": 0.8939075469970703
+     },
+     {
+      "i": 13,
+      "text": "nitrogen is obtained from simple salts and the nutritive processes result in deoxidation;",
+      "wav": "sota_vits_dev/syn_013.wav",
+      "duration": 6.1417,
+      "wer": 0.0,
+      "wer2": 0.07692307692307687,
+      "utmos": 3.931640625,
+      "sim_ljs": 0.9134409427642822
+     },
+     {
+      "i": 14,
+      "text": "Eleven years later, in five eighty-six, he destroyed the sacred Hebrew city,",
+      "wav": "sota_vits_dev/syn_014.wav",
+      "duration": 5.6424,
+      "wer": 0.23076923076923078,
+      "wer2": 0.23076923076923073,
+      "utmos": 3.203125,
+      "sim_ljs": 0.867027223110199
+     },
+     {
+      "i": 15,
+      "text": "to inspect buildings along the motorcade route since the Secret Service did not normally request or make such a check.",
+      "wav": "sota_vits_dev/syn_015.wav",
+      "duration": 7.3956,
+      "wer": 0.0,
+      "wer2": 0.09999999999999998,
+      "utmos": 4.05859375,
+      "sim_ljs": 0.8884171843528748
+     },
+     {
+      "i": 16,
+      "text": "four anesthesiologists, Drs. Marion T. Jenkins, Adolph H. Giesecke, Jr., Jackie H. Hunt,",
+      "wav": "sota_vits_dev/syn_016.wav",
+      "duration": 8.5914,
+      "wer": 0.15384615384615385,
+      "wer2": 0.5384615384615384,
+      "utmos": 3.201171875,
+      "sim_ljs": 0.8682563900947571
+     },
+     {
+      "i": 17,
+      "text": "He concluded, quote, There is no doubt in my mind that these fibers could have come from this shirt.",
+      "wav": "sota_vits_dev/syn_017.wav",
+      "duration": 6.0372,
+      "wer": 0.0,
+      "wer2": 0.052631578947368474,
+      "utmos": 3.99609375,
+      "sim_ljs": 0.8895316123962402
+     },
+     {
+      "i": 18,
+      "text": "Ronald Fischer and Robert Edwards were standing on the curb at the southwest corner of Elm and Houston Streets,",
+      "wav": "sota_vits_dev/syn_018.wav",
+      "duration": 7.5697,
+      "wer": 0.15789473684210525,
+      "wer2": 0.21052631578947367,
+      "utmos": 3.55859375,
+      "sim_ljs": 0.9098511338233948
+     },
+     {
+      "i": 19,
+      "text": "In an effort to determine whether Oswald could have descended to the lunchroom",
+      "wav": "sota_vits_dev/syn_019.wav",
+      "duration": 3.9938,
+      "wer": 0.15384615384615385,
+      "wer2": 0.15384615384615385,
+      "utmos": 3.927734375,
+      "sim_ljs": 0.8358454704284668
+     },
+     {
+      "i": 20,
+      "text": "[east side of the street]. Of course, the traffic was moving through there and I put it in gear and moved on, that is the last I saw of him.",
+      "wav": "sota_vits_dev/syn_020.wav",
+      "duration": 8.0689,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.72265625,
+      "sim_ljs": 0.92304527759552
+     },
+     {
+      "i": 21,
+      "text": "Chapter four. The Assassin: Part six.",
+      "wav": "sota_vits_dev/syn_021.wav",
+      "duration": 3.1231,
+      "wer": 0.3333333333333333,
+      "wer2": 0.33333333333333337,
+      "utmos": 3.734375,
+      "sim_ljs": 0.7888866662979126
+     },
+     {
+      "i": 22,
+      "text": "In concluding that Oswald was carrying a rifle in the paper bag on the morning of November twenty-two, nineteen sixty-three,",
+      "wav": "sota_vits_dev/syn_022.wav",
+      "duration": 7.4304,
+      "wer": 0.22727272727272727,
+      "wer2": 0.2272727272727273,
+      "utmos": 3.578125,
+      "sim_ljs": 0.9030550718307495
+     },
+     {
+      "i": 23,
+      "text": "This is a definite advantage to the shooter, the vehicle moving directly away from him and the downgrade of the street, and he being in an elevated position",
+      "wav": "sota_vits_dev/syn_023.wav",
+      "duration": 9.8917,
+      "wer": 0.07142857142857142,
+      "wer2": 0.0357142857142857,
+      "utmos": 3.986328125,
+      "sim_ljs": 0.9123839735984802
+     },
+     {
+      "i": 24,
+      "text": "The subsidy, apparently similar to those sometimes given to foreigners allowed to remain in the Soviet Union, together with his salary,",
+      "wav": "sota_vits_dev/syn_024.wav",
+      "duration": 8.5914,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.4765625,
+      "sim_ljs": 0.8609194755554199
+     },
+     {
+      "i": 25,
+      "text": "In this part of its inquiry the Commission has had full access to a major study of all phases of protective activities",
+      "wav": "sota_vits_dev/syn_025.wav",
+      "duration": 7.6161,
+      "wer": 0.0,
+      "wer2": 0.045454545454545414,
+      "utmos": 3.943359375,
+      "sim_ljs": 0.9186118245124817
+     },
+     {
+      "i": 26,
+      "text": "It is unlikely that measures can be devised to eliminate entirely the multitude of diverse dangers that may arise,",
+      "wav": "sota_vits_dev/syn_026.wav",
+      "duration": 8.5798,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 4.0703125,
+      "sim_ljs": 0.9311444163322449
+     },
+     {
+      "i": 27,
+      "text": "The State Department advised the Secret Service of all crank and threat letter mail",
+      "wav": "sota_vits_dev/syn_027.wav",
+      "duration": 5.3522,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.619140625,
+      "sim_ljs": 0.8980916142463684
+     },
+     {
+      "i": 28,
+      "text": "but expand both the scope and the operations of the existing agencies, particularly those of the Secret Service and the FBI.",
+      "wav": "sota_vits_dev/syn_028.wav",
+      "duration": 8.7539,
+      "wer": 0.0,
+      "wer2": 0.04761904761904767,
+      "utmos": 3.5625,
+      "sim_ljs": 0.9162583351135254
+     },
+     {
+      "i": 29,
+      "text": "In attempting to identify those individuals who might prove a danger to the President,",
+      "wav": "sota_vits_dev/syn_029.wav",
+      "duration": 4.9459,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.81640625,
+      "sim_ljs": 0.8667718172073364
+     }
+    ],
+    "holdout": [
+     {
+      "i": 0,
+      "text": "The intention of the real murderer to shift the crime to burglars was evident although futile,",
+      "wav": "sota_vits_holdout/syn_000.wav",
+      "duration": 5.7353,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.923828125,
+      "sim_ljs": 0.9128815531730652
+     },
+     {
+      "i": 1,
+      "text": "I don't know if this is the man they want. But he is running from them for some reason, end quote, She then called the police.",
+      "wav": "sota_vits_holdout/syn_001.wav",
+      "duration": 8.1386,
+      "wer": 0.07692307692307693,
+      "wer2": 0.07692307692307687,
+      "utmos": 3.833984375,
+      "sim_ljs": 0.8941829204559326
+     },
+     {
+      "i": 2,
+      "text": "Frazier later fired four groups of three shots at a distance of one hundred yards in five point nine, six point two,",
+      "wav": "sota_vits_holdout/syn_002.wav",
+      "duration": 9.0906,
+      "wer": 0.36363636363636365,
+      "wer2": 0.40909090909090906,
+      "utmos": 3.681640625,
+      "sim_ljs": 0.9130721092224121
+     },
+     {
+      "i": 3,
+      "text": "he finished reading a morning newspaper, quote, and put on a good suit. I saw that he took a pistol.",
+      "wav": "sota_vits_holdout/syn_003.wav",
+      "duration": 7.5117,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.390625,
+      "sim_ljs": 0.8870062232017517
+     },
+     {
+      "i": 4,
+      "text": "It was that of a \"Long Firm\" swindler, by name Johnson,",
+      "wav": "sota_vits_holdout/syn_004.wav",
+      "duration": 4.3654,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.72265625,
+      "sim_ljs": 0.8704438805580139
+     },
+     {
+      "i": 5,
+      "text": "to determine what matters require attention in making advance preparations and to decide what action to take.",
+      "wav": "sota_vits_holdout/syn_005.wav",
+      "duration": 6.9079,
+      "wer": 0.058823529411764705,
+      "wer2": 0.05882352941176472,
+      "utmos": 3.78515625,
+      "sim_ljs": 0.9367719292640686
+     },
+     {
+      "i": 6,
+      "text": "The provision of more baths was also suggested, and the daily sweeping out of the prison.",
+      "wav": "sota_vits_holdout/syn_006.wav",
+      "duration": 5.5844,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.84765625,
+      "sim_ljs": 0.8712993860244751
+     },
+     {
+      "i": 7,
+      "text": "To his wife, poor soul, he made no pretense of fidelity, and she enjoyed only so much of his company as was necessarily spent",
+      "wav": "sota_vits_holdout/syn_007.wav",
+      "duration": 8.4521,
+      "wer": 0.0,
+      "wer2": 0.04166666666666663,
+      "utmos": 4.07421875,
+      "sim_ljs": 0.9197643399238586
+     },
+     {
+      "i": 8,
+      "text": "with money enough to retrieve the position of the bank. But that passed from bad to worse;",
+      "wav": "sota_vits_holdout/syn_008.wav",
+      "duration": 6.0488,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.638671875,
+      "sim_ljs": 0.8480517268180847
+     },
+     {
+      "i": 9,
+      "text": "The lobby of the hotel and the areas adjacent to the quarters of the President were guarded during the night",
+      "wav": "sota_vits_holdout/syn_009.wav",
+      "duration": 6.1997,
+      "wer": 0.0,
+      "wer2": 0.050000000000000044,
+      "utmos": 3.544921875,
+      "sim_ljs": 0.905627429485321
+     },
+     {
+      "i": 10,
+      "text": "till every feature was obliterated, and then, still living, flung him into the sea.",
+      "wav": "sota_vits_holdout/syn_010.wav",
+      "duration": 6.6757,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.451171875,
+      "sim_ljs": 0.8509083390235901
+     },
+     {
+      "i": 11,
+      "text": "shows three employees looking out of the fifth-floor window directly below the window from which the shots were fired.",
+      "wav": "sota_vits_holdout/syn_011.wav",
+      "duration": 6.9312,
+      "wer": 0.0,
+      "wer2": 0.050000000000000044,
+      "utmos": 3.81640625,
+      "sim_ljs": 0.8974871635437012
+     },
+     {
+      "i": 12,
+      "text": "It should be noted, however, that the President's car was curving slightly to the right when the third shot was fired.",
+      "wav": "sota_vits_holdout/syn_012.wav",
+      "duration": 7.0356,
+      "wer": 0.0,
+      "wer2": 0.04761904761904767,
+      "utmos": 3.87109375,
+      "sim_ljs": 0.877629816532135
+     },
+     {
+      "i": 13,
+      "text": "Sir Frederick Roe was of the same opinion as regards the appointment, but he would give the inspectors the power of acting as well as reporting.",
+      "wav": "sota_vits_holdout/syn_013.wav",
+      "duration": 8.6959,
+      "wer": 0.038461538461538464,
+      "wer2": 0.038461538461538436,
+      "utmos": 3.947265625,
+      "sim_ljs": 0.9294286370277405
+     },
+     {
+      "i": 14,
+      "text": "shortly after Oswald rented the room on October fourteen.",
+      "wav": "sota_vits_holdout/syn_014.wav",
+      "duration": 3.9706,
+      "wer": 0.1111111111111111,
+      "wer2": 0.11111111111111116,
+      "utmos": 4.2109375,
+      "sim_ljs": 0.8730620741844177
+     },
+     {
+      "i": 15,
+      "text": "She was found guilty.",
+      "wav": "sota_vits_holdout/syn_015.wav",
+      "duration": 1.4861,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.5546875,
+      "sim_ljs": 0.6880027055740356
+     },
+     {
+      "i": 16,
+      "text": "It came out in the husband's confession that Mrs. Manning induced O'Connor to go down to the kitchen to wash his hands, that she followed him to the basement,",
+      "wav": "sota_vits_holdout/syn_016.wav",
+      "duration": 10.3793,
+      "wer": 0.0,
+      "wer2": 0.06896551724137934,
+      "utmos": 3.39453125,
+      "sim_ljs": 0.8849853873252869
+     },
+     {
+      "i": 17,
+      "text": "were clean, they had good color to them, there was no grease on them and they were not fragmented. They looked as if they had just been picked up, end quote.",
+      "wav": "sota_vits_holdout/syn_017.wav",
+      "duration": 10.031,
+      "wer": 0.0,
+      "wer2": 0.032258064516129004,
+      "utmos": 3.833984375,
+      "sim_ljs": 0.9126685261726379
+     },
+     {
+      "i": 18,
+      "text": "If too stiff, warm water, a spoonful at a time until you can handle the paste easily. The danger is in getting it too stiff. Now.",
+      "wav": "sota_vits_holdout/syn_018.wav",
+      "duration": 10.7508,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.314453125,
+      "sim_ljs": 0.8814134001731873
+     },
+     {
+      "i": 19,
+      "text": "Frazier testified, however, that he found no microscopic characteristics or other evidence",
+      "wav": "sota_vits_holdout/syn_019.wav",
+      "duration": 6.548,
+      "wer": 0.0,
+      "wer2": 0.08333333333333337,
+      "utmos": 3.65625,
+      "sim_ljs": 0.9087920188903809
+     },
+     {
+      "i": 20,
+      "text": "en route from Dallas Love Field, end quote, on its way to the Trade Mart on Stemmons Freeway.",
+      "wav": "sota_vits_holdout/syn_020.wav",
+      "duration": 6.6873,
+      "wer": 0.16666666666666666,
+      "wer2": 0.33333333333333337,
+      "utmos": 4.046875,
+      "sim_ljs": 0.9000400304794312
+     },
+     {
+      "i": 21,
+      "text": "As each transaction was carried out from a different address, and a different messenger always employed,",
+      "wav": "sota_vits_holdout/syn_021.wav",
+      "duration": 6.548,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 4.171875,
+      "sim_ljs": 0.8748732209205627
+     },
+     {
+      "i": 22,
+      "text": "His name headed every subscription list; his purse was always open.",
+      "wav": "sota_vits_holdout/syn_022.wav",
+      "duration": 4.6208,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 4.26953125,
+      "sim_ljs": 0.8452227115631104
+     },
+     {
+      "i": 23,
+      "text": "The best description of Oswald's state of mind, however, is set forth in his own \"Historic Diary.\"",
+      "wav": "sota_vits_holdout/syn_023.wav",
+      "duration": 6.6641,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 4.078125,
+      "sim_ljs": 0.8602018356323242
+     },
+     {
+      "i": 24,
+      "text": "and he could disassemble it more rapidly.",
+      "wav": "sota_vits_holdout/syn_024.wav",
+      "duration": 2.1827,
+      "wer": 0.0,
+      "wer2": 0.1428571428571429,
+      "utmos": 3.50390625,
+      "sim_ljs": 0.8018186092376709
+     },
+     {
+      "i": 25,
+      "text": "The first duty of the agents in the motorcade is to attempt to cover the President as closely as possible and practicable",
+      "wav": "sota_vits_holdout/syn_025.wav",
+      "duration": 7.6045,
+      "wer": 0.0,
+      "wer2": 0.045454545454545414,
+      "utmos": 3.765625,
+      "sim_ljs": 0.9010040163993835
+     },
+     {
+      "i": 26,
+      "text": "As regards the first, I find that in seventeen eighty-six",
+      "wav": "sota_vits_holdout/syn_026.wav",
+      "duration": 4.1448,
+      "wer": 0.2727272727272727,
+      "wer2": 0.2727272727272727,
+      "utmos": 3.697265625,
+      "sim_ljs": 0.840663731098175
+     },
+     {
+      "i": 27,
+      "text": "This fact was referred to by the judge in his summing up,",
+      "wav": "sota_vits_holdout/syn_027.wav",
+      "duration": 3.5759,
+      "wer": 0.0,
+      "wer2": 0.0,
+      "utmos": 3.580078125,
+      "sim_ljs": 0.8335428237915039
+     },
+     {
+      "i": 28,
+      "text": "He went from Newgate first to Bethlehem, from which he was removed to Broadmoor on the opening of the great criminal lunatic asylum at that place.",
+      "wav": "sota_vits_holdout/syn_028.wav",
+      "duration": 8.9629,
+      "wer": 0.0,
+      "wer2": 0.038461538461538436,
+      "utmos": 3.77734375,
+      "sim_ljs": 0.8916429281234741
+     },
+     {
+      "i": 29,
+      "text": "and which he was to take to the School Book Depository. The Unanswered Questions.",
+      "wav": "sota_vits_holdout/syn_029.wav",
+      "duration": 5.0155,
+      "wer": 0.0,
+      "wer2": 0.1428571428571429,
+      "utmos": 4.1953125,
+      "sim_ljs": 0.8805923461914062
+     }
+    ]
+   }
+  },
   "matcha": {
    "label": "Matcha-TTS (LJSpeech)",
    "method": "OT-CFM flow matching + HiFi-GAN (10 NFE)",

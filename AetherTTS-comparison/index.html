@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SelfiTTS — AetherTTS Champion vs Baseline &amp; SOTA</title>
+<title>AetherTTS Comparison — Champion vs Baseline &amp; SOTA</title>
 <style>
   :root {
     --bg: #0e1116; --panel: #161b23; --panel2: #1c2330;
@@ -71,7 +71,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>SelfiTTS <span style="color:var(--dim);font-weight:400">— AetherTTS self-improvement demo</span></h1>
+  <h1>AetherTTS Comparison <span style="color:var(--dim);font-weight:400">— champion vs baseline &amp; SOTA</span></h1>
   <div class="sub">
     Champion <b style="color:var(--gold)">c003</b> (w_adv 4 · n_disc 1 · 20 ep) vs the pre-campaign
     baseline (manual Stage-B ep299), and vs five SOTA TTS models — all speaking the
@@ -94,7 +94,7 @@
     <button class="tab champ active" data-tab="champion">Champion (c003)</button>
     <button class="tab" data-tab="baseline">Baseline</button>
     <button class="tab" data-tab="compare">Compare</button>
-    <button class="tab" data-tab="sota">SOTA (6 models)</button>
+    <button class="tab" data-tab="sota">SOTA (7 models)</button>
   </div>
 
   <div class="splitbar">
@@ -110,7 +110,7 @@
   <div class="note">
     <b>How to listen:</b> same utterance index = same text within a split. In <b>Compare</b> mode play
     champion and baseline back to back — the UTMOS jump 2.9 → 3.8 should be audible as cleaner, more
-    natural prosody. In <b>SOTA</b> mode each utterance plays the LJSpeech ground truth plus all six
+    natural prosody. In <b>SOTA</b> mode each utterance plays the LJSpeech ground truth plus all seven
     models back to back. Dev and holdout are different sentences; compare quality, not content, across splits.
     <br><br>
     <b>Protocol:</b> composite = mean(WER, WER2, UTMOS) — SOTA target 0.80363, win target 0.81363.
@@ -146,11 +146,14 @@ const DATA = {
 };
 
 // SOTA summary numbers (from outputs/sota_bench/comparison.json, all-LJSpeech run 2026-09-05)
-const SOTA_MODELS = ["champion","matcha","zipvoice","e2","f5","chatterbox"];
+const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox"];
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS c003", method:"1-step MeanFlow + NanoVocos (1 NFE)",  params:"6.78M",
     dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:.0082, sa:.8453 },
     holdout: { wer:.0481, wer2:.0760, utmos:3.732, sim:.869, rtf:.0107, sa:.8568 } },
+  vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
+    dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:.0335, sa:.8491 },
+    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:.0343, sa:.8674 } },
   matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
     dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:.0269, sa:.8532 },
     holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:.0273, sa:.8661 } },
