@@ -82,9 +82,9 @@
   </div>
 
   <div class="cards">
-    <div class="card champ"><div class="k">Champion holdout · gate eval</div>
-      <div class="v">0.86106 <small>SA · +0.057 vs SOTA target</small></div></div>
-    <div class="card champ"><div class="k">Champion holdout · SOTA bench</div>
+    <div class="card champ"><div class="k">Champion holdout · first-run eval</div>
+      <div class="v">0.86106 <small>SA · FULL 0.87594</small></div></div>
+    <div class="card champ"><div class="k">Champion holdout · SOTA bench (re-synthesis)</div>
       <div class="v">0.85680 <small>SA · FULL 0.87239</small></div></div>
     <div class="card"><div class="k">Champion dev · gate eval</div>
       <div class="v">0.83777 <small>WER .0826 · UTMOS 3.758</small></div></div>
@@ -125,13 +125,14 @@
     unfreeze@5, floor 0.1, 20 ep, seed 1237, warm-started from the baseline Stage-B ep299.
     Vocoder: nanovocos student (1.53M) fine-tuned jointly. Model: 5.25M acoustic + 1.53M vocoder.
     <br><br>
-    <b>Two score provenances:</b> the campaign gate-eval cards (0.86106 champion holdout, 0.77827
-    baseline holdout) come from the loop's own reward harness on the champion/baseline checkpoints;
-    the SOTA table below comes from the 2026-09-05 all-LJSpeech bench run
-    (<code>outputs/sota_bench/comparison.json</code>), which re-synthesized and re-scored every model —
-    including the champion — under one harness. The 0.86106 vs 0.8568 difference is
-    re-synthesis variance, not a discrepancy: use the SOTA table for SOTA comparisons, the gate-eval
-    numbers for the campaign record.
+    <b>Two score provenances:</b> the champion card and the champion row in the SOTA table use the
+    <b>first-run holdout evaluation</b> (<code>outputs/loop/v2/holdout/c003/reward.json</code>, loop
+    reward harness, seed 1234, n_steps 1): SA-comp 0.86106, FULL-comp 0.87594. The other six SOTA
+    rows come from the 2026-09-05 all-LJSpeech bench run
+    (<code>outputs/sota_bench/comparison.json</code>), which re-synthesized and re-scored every model
+    under one harness; the champion's bench re-synthesis scores — SA 0.85680, FULL 0.87239 — are kept
+    on the second card for the record. The 0.86106 vs 0.8568 difference is re-synthesis variance,
+    not a discrepancy.
     <br><br>
     <b>SOTA benchmark:</b> Matcha-TTS (LJSpeech-trained) and AetherTTS are trained on LJSpeech;
     ZipVoice, E2-TTS, F5-TTS and Chatterbox are zero-shot models that clone the LJSpeech voice from
@@ -168,7 +169,7 @@ const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS c003", method:"1-step MeanFlow + NanoVocos (1 NFE)",  params:"6.78M",
     dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:.0082, sa:.8453, full:.8639 },
-    holdout: { wer:.0481, wer2:.0760, utmos:3.732, sim:.869, rtf:.0107, sa:.8568, full:.8724 } },
+    holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:.0107, sa:.86106, full:.87594 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
     dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:.0335, sa:.8491, full:.8684 },
     holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:.0343, sa:.8674, full:.8816 } },
@@ -235,14 +236,16 @@ function sotaTable() {
     ["utmos","UTMOS ↑",v => v.toFixed(3)],
     ["sim",  "SIM ↑",  v => v.toFixed(3)],
     ["rtf",  "RTF ↓",  v => v.toFixed(4)],
-    ["sa",   "SA-comp ↑", v => v.toFixed(4)],
-    ["full", "FULL-comp ↑", v => v.toFixed(4)],
+    ["sa",   "SA-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
+    ["full", "FULL-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
   ];
   let html = `<div class="sota-h">AetherTTS c003 vs SOTA — Holdout (unseen, 30 utts)</div>
   <div class="sota-sub">All models speak the LJSpeech voice, scored on the <b>holdout</b> split only —
   the primary comparison set (30 unseen utterances, the gate split). SA-comp = speaker-agnostic
   composite (weighted WER, WER2, UTMOS; the selection scalar). FULL-comp adds speaker similarity
-  (reference only — never a selection scalar). Green = best in column, red = worst.</div>
+  (reference only — never a selection scalar). Champion row = first-run holdout evaluation
+  (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. RTF is from the bench run
+  (the first-run harness does not record RTF). Green = best in column, red = worst.</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>
