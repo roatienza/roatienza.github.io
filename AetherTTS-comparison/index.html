@@ -141,6 +141,12 @@
     RTF (synth time / audio time on A100). Every model in the SOTA table synthesizes the LJSpeech
     voice, so SIM and FULL-comp are cross-comparable across all rows.
     <br><br>
+    <b>RTF measurement:</b> RTF = total synthesis time / total generated-audio duration over the
+    30-utterance holdout set, measured per model on a single NVIDIA A100-SXM4-40GB (one model per
+    GPU), batch size 1, warm steady-state, per-utterance deployment-style calls (zero-shot models
+    re-encode their 3&nbsp;s reference prompt on every call), seed 1234. The timed region is the
+    full synthesis call only, bracketed by CUDA synchronization; metric computation is excluded.
+    <br><br>
     Generated 2026-08-27 from
     <code>outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt</code>
     (champion) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
@@ -244,8 +250,10 @@ function sotaTable() {
   the primary comparison set (30 unseen utterances, the gate split). SA-comp = speaker-agnostic
   composite (weighted WER, WER2, UTMOS; the selection scalar). FULL-comp adds speaker similarity
   (reference only — never a selection scalar). Champion row = first-run holdout evaluation
-  (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. RTF is from the bench run
-  (the first-run harness does not record RTF). Green = best in column, red = worst.</div>
+  (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. RTF is from the bench run:
+  total synthesis time / total generated-audio duration over the 30 holdout utterances, on a
+  single NVIDIA A100-SXM4-40GB (batch size 1, warm steady-state, per-utterance deployment-style
+  calls, seed 1234); the first-run harness does not record RTF. Green = best in column, red = worst.</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>
