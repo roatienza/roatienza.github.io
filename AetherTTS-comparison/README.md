@@ -17,8 +17,11 @@ models — all speaking the LJSpeech voice.
 - **SOTA (7 models)** — the all-LJSpeech benchmark (2026-09-05): the champion
   plus **VITS, Matcha-TTS, ZipVoice, E2-TTS, F5-TTS, Chatterbox**, scored with
   the same reward-harness metrics (WER, WER2, UTMOSv2, SIM, RTF, composite).
+  **Holdout-only comparison** — the summary table always shows the holdout
+  (unseen, gate) split; per-utterance audio can be played on either split.
   Each utterance plays the LJSpeech ground truth plus all seven models back to
-  back.
+  back. Both composite scores are shown: **SA-comp** (speaker-agnostic
+  selection scalar) and **FULL-comp** (adds SIM; reference only).
 
 ## Champion / baseline protocol (frozen)
 

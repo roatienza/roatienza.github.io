@@ -75,18 +75,22 @@
   <div class="sub">
     Champion <b style="color:var(--gold)">c003</b> (w_adv 4 · n_disc 1 · 20 ep) vs the pre-campaign
     baseline (manual Stage-B ep299), and vs five SOTA TTS models — all speaking the
-    <b>LJSpeech voice</b>. 30 utterances per split, synthesized with the frozen eval protocol:
+    <b>LJSpeech voice</b>. <b>SOTA comparison is holdout-only</b> (30 unseen utterances, the gate
+    split); the dev split is kept for the listening tabs and the campaign's own gate-eval record.
+    Synthesized with the frozen eval protocol:
     <b>n_steps=1, temp 0.8, length_scale 0.9</b>, 24 kHz.
   </div>
 
   <div class="cards">
-    <div class="card champ"><div class="k">Champion holdout</div>
-      <div class="v">0.86106 <small>+0.057 vs SOTA</small></div></div>
-    <div class="card"><div class="k">Champion dev</div>
+    <div class="card champ"><div class="k">Champion holdout · gate eval</div>
+      <div class="v">0.86106 <small>SA · +0.057 vs SOTA target</small></div></div>
+    <div class="card champ"><div class="k">Champion holdout · SOTA bench</div>
+      <div class="v">0.85680 <small>SA · FULL 0.87239</small></div></div>
+    <div class="card"><div class="k">Champion dev · gate eval</div>
       <div class="v">0.83777 <small>WER .0826 · UTMOS 3.758</small></div></div>
-    <div class="card base"><div class="k">Baseline holdout</div>
+    <div class="card base"><div class="k">Baseline holdout · gate eval</div>
       <div class="v">0.77827 <small>WER .0516 · UTMOS 2.895</small></div></div>
-    <div class="card base"><div class="k">Baseline dev</div>
+    <div class="card base"><div class="k">Baseline dev · gate eval</div>
       <div class="v">0.77797 <small>WER .0699 · UTMOS 2.988</small></div></div>
   </div>
 
@@ -97,7 +101,7 @@
     <button class="tab" data-tab="sota">SOTA (7 models)</button>
   </div>
 
-  <div class="splitbar">
+  <div class="splitbar" id="splitbar">
     Split:
     <button id="sp-dev" class="on" data-split="dev">Dev</button>
     <button id="sp-holdout" data-split="holdout">Holdout (unseen)</button>
@@ -113,21 +117,33 @@
     natural prosody. In <b>SOTA</b> mode each utterance plays the LJSpeech ground truth plus all seven
     models back to back. Dev and holdout are different sentences; compare quality, not content, across splits.
     <br><br>
-    <b>Protocol:</b> composite = mean(WER, WER2, UTMOS) — SOTA target 0.80363, win target 0.81363.
+    <b>Protocol:</b> SA-comp (speaker-agnostic composite) = weighted mean of normalized WER, WER2, UTMOS
+    (weights .375/.1875/.4375) — the selection scalar; SOTA target 0.80363, win target 0.81363.
+    FULL-comp adds speaker similarity (weights .30/.15/.35/.20 for WER/WER2/UTMOS/SIM) — reported for
+    reference only, never a selection scalar. All SOTA comparisons use the <b>holdout</b> split.
     Champion c003: w_adv 4, w_fm 2, anchor 1.0, n_disc 1, disc_lr 5e-5, voc_lr 2e-4, lr 5e-6,
     unfreeze@5, floor 0.1, 20 ep, seed 1237, warm-started from the baseline Stage-B ep299.
     Vocoder: nanovocos student (1.53M) fine-tuned jointly. Model: 5.25M acoustic + 1.53M vocoder.
+    <br><br>
+    <b>Two score provenances:</b> the campaign gate-eval cards (0.86106 champion holdout, 0.77827
+    baseline holdout) come from the loop's own reward harness on the champion/baseline checkpoints;
+    the SOTA table below comes from the 2026-09-05 all-LJSpeech bench run
+    (<code>outputs/sota_bench/comparison.json</code>), which re-synthesized and re-scored every model —
+    including the champion — under one harness. The 0.86106 vs 0.8568 difference is
+    re-synthesis variance, not a discrepancy: use the SOTA table for SOTA comparisons, the gate-eval
+    numbers for the campaign record.
     <br><br>
     <b>SOTA benchmark:</b> Matcha-TTS (LJSpeech-trained) and AetherTTS are trained on LJSpeech;
     ZipVoice, E2-TTS, F5-TTS and Chatterbox are zero-shot models that clone the LJSpeech voice from
     the <code>LJ001-0001</code> prompt (3 s). All scored with the same harness: faster-Whisper WER,
     two-ASR consensus WER2, UTMOSv2, ECAPA-TDNN speaker similarity vs the LJSpeech voice, and
-    RTF (synth time / audio time on A100).
+    RTF (synth time / audio time on A100). Every model in the SOTA table synthesizes the LJSpeech
+    voice, so SIM and FULL-comp are cross-comparable across all rows.
     <br><br>
     Generated 2026-08-27 from
     <code>outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt</code>
     (champion) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
-    SOTA run 2026-09-05.
+    SOTA run 2026-09-05 (holdout-only comparison).
   </div>
 </div>
 
@@ -146,29 +162,31 @@ const DATA = {
 };
 
 // SOTA summary numbers (from outputs/sota_bench/comparison.json, all-LJSpeech run 2026-09-05)
+// sa = SA-comp (speaker-agnostic selection scalar); full = FULL-comp (adds SIM, reference only).
+// SOTA comparison is HOLDOUT-ONLY: the table below always reads the holdout split.
 const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox"];
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS c003", method:"1-step MeanFlow + NanoVocos (1 NFE)",  params:"6.78M",
-    dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:.0082, sa:.8453 },
-    holdout: { wer:.0481, wer2:.0760, utmos:3.732, sim:.869, rtf:.0107, sa:.8568 } },
+    dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:.0082, sa:.8453, full:.8639 },
+    holdout: { wer:.0481, wer2:.0760, utmos:3.732, sim:.869, rtf:.0107, sa:.8568, full:.8724 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
-    dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:.0335, sa:.8491 },
-    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:.0343, sa:.8674 } },
+    dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:.0335, sa:.8491, full:.8684 },
+    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:.0343, sa:.8674, full:.8816 } },
   matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
-    dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:.0269, sa:.8532 },
-    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:.0273, sa:.8661 } },
+    dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:.0269, sa:.8532, full:.8692 },
+    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:.0273, sa:.8661, full:.8791 } },
   zipvoice:   { name:"ZipVoice", method:"Flow matching + Vocos (16 NFE)",             params:"136.2M",
-    dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:.1281, sa:.8585 },
-    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:.1415, sa:.8630 } },
+    dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:.1281, sa:.8585, full:.8631 },
+    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:.1415, sa:.8630, full:.8661 } },
   e2:         { name:"E2-TTS Base", method:"Flow matching, masked U-Net (32 NFE)",    params:"347.1M",
-    dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:.1347, sa:.8258 },
-    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:.1605, sa:.8415 } },
+    dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:.1347, sa:.8258, full:.8408 },
+    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:.1605, sa:.8415, full:.8524 } },
   f5:         { name:"F5-TTS v1 Base", method:"Flow matching, DiT (32 NFE)",          params:"350.6M",
-    dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:.1621, sa:.8803 },
-    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:.1897, sa:.8838 } },
+    dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:.1621, sa:.8803, full:.8854 },
+    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:.1897, sa:.8838, full:.8865 } },
   chatterbox: { name:"Chatterbox", method:"AR-token LLM + FM vocoder",                params:"796.3M",
-    dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:.6641, sa:.8662 },
-    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:.6751, sa:.8705 } },
+    dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:.6641, sa:.8662, full:.8726 },
+    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:.6751, sa:.8705, full:.8751 } },
 };
 
 const SPLIT_NOTES = {
@@ -218,10 +236,13 @@ function sotaTable() {
     ["sim",  "SIM ↑",  v => v.toFixed(3)],
     ["rtf",  "RTF ↓",  v => v.toFixed(4)],
     ["sa",   "SA-comp ↑", v => v.toFixed(4)],
+    ["full", "FULL-comp ↑", v => v.toFixed(4)],
   ];
-  let html = `<div class="sota-h">AetherTTS c003 vs SOTA — ${curSplit === "dev" ? "Dev" : "Holdout"}</div>
-  <div class="sota-sub">All models speak the LJSpeech voice. SA-comp = speaker-agnostic composite
-  (mean of normalized WER, WER2, UTMOS). Green = best in column, red = worst.</div>
+  let html = `<div class="sota-h">AetherTTS c003 vs SOTA — Holdout (unseen, 30 utts)</div>
+  <div class="sota-sub">All models speak the LJSpeech voice, scored on the <b>holdout</b> split only —
+  the primary comparison set (30 unseen utterances, the gate split). SA-comp = speaker-agnostic
+  composite (weighted WER, WER2, UTMOS; the selection scalar). FULL-comp adds speaker similarity
+  (reference only — never a selection scalar). Green = best in column, red = worst.</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>
@@ -233,15 +254,15 @@ function sotaTable() {
   for (const [k] of cols) {
     let bv = null, wv = null;
     for (const m of SOTA_MODELS) {
-      const v = SOTA_SUMMARY[m][curSplit][k];
-      const higher = k === "utmos" || k === "sim" || k === "sa";
+      const v = SOTA_SUMMARY[m].holdout[k];
+      const higher = k === "utmos" || k === "sim" || k === "sa" || k === "full";
       if (bv === null || (higher ? v > bv : v < bv)) bv = v;
       if (wv === null || (higher ? v < wv : v > wv)) wv = v;
     }
     best[k] = bv; worst[k] = wv;
   }
   for (const m of SOTA_MODELS) {
-    const d = SOTA_SUMMARY[m][curSplit];
+    const d = SOTA_SUMMARY[m].holdout;
     html += `<tr class="${m === "champion" ? "champ" : ""}">
       <td class="m">${SOTA_SUMMARY[m].name}</td>
       <td>${SOTA_SUMMARY[m].params}</td>
@@ -263,6 +284,9 @@ function render() {
   document.getElementById("split-note").textContent = SPLIT_NOTES[curSplit];
 
   if (curTab === "sota") {
+    // SOTA comparison is holdout-only: pin the split and hide the dev/holdout bar.
+    curSplit = "holdout";
+    document.getElementById("splitbar").style.display = "none";
     tw.style.display = "block";
     if (!SOTA_UTTS) { tw.innerHTML = "<div class='note'>Loading SOTA samples…</div>"; list.innerHTML = ""; return; }
     tw.innerHTML = sotaTable();
@@ -284,6 +308,7 @@ function render() {
   }
 
   tw.style.display = "none";
+  document.getElementById("splitbar").style.display = "flex";
   const n = DATA.champion[curSplit].utts.length;
   if (!n) { list.innerHTML = "<div class='note'>Loading samples…</div>"; return; }
   let html = "";
