@@ -180,25 +180,25 @@ const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS c003", method:"1-step MeanFlow + NanoVocos (1 NFE)",  params:"6.78M",
     dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:122.268, sa:.8453, full:.8639 },
-    holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:93.4016, sa:.86106, full:.87594, rtf_rpi4:11.0340, mos:3.26, mos_ci:0.52, mos_k:6 } },
+    holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:93.4016, sa:.86106, full:.87594, rtf_rpi4:11.0340, mos:3.35, mos_ci:0.48, mos_k:6 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
     dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:29.8078, sa:.8491, full:.8684 },
-    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:29.1415, sa:.8674, full:.8816, rtf_rpi4:0.2281, mos:4.02, mos_ci:0.37, mos_k:7 } },
+    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:29.1415, sa:.8674, full:.8816, rtf_rpi4:0.2281, mos:4.07, mos_ci:0.36, mos_k:7 } },
   matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
     dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:37.1805, sa:.8532, full:.8692 },
-    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:36.6055, sa:.8661, full:.8791, rtf_rpi4:0.1686, mos:3.62, mos_ci:0.74, mos_k:7 } },
+    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:36.6055, sa:.8661, full:.8791, rtf_rpi4:0.1686, mos:3.86, mos_ci:0.43, mos_k:7 } },
   zipvoice:   { name:"ZipVoice", method:"Flow matching + Vocos (16 NFE)",             params:"136.2M",
     dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:7.8045, sa:.8585, full:.8631 },
-    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:7.068, sa:.8630, full:.8661, rtf_rpi4:null, mos:4.17, mos_ci:0.51, mos_k:7 } },
+    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:7.068, sa:.8630, full:.8661, rtf_rpi4:null, mos:4.04, mos_ci:0.42, mos_k:7 } },
   e2:         { name:"E2-TTS Base", method:"Flow matching, masked U-Net (32 NFE)",    params:"347.1M",
     dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:7.4217, sa:.8258, full:.8408 },
-    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:6.2301, sa:.8415, full:.8524, rtf_rpi4:null, mos:3.10, mos_ci:0.44, mos_k:7 } },
+    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:6.2301, sa:.8415, full:.8524, rtf_rpi4:null, mos:3.14, mos_ci:0.43, mos_k:7 } },
   f5:         { name:"F5-TTS v1 Base", method:"Flow matching, DiT (32 NFE)",          params:"350.6M",
     dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:6.1693, sa:.8803, full:.8854 },
-    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:5.2711, sa:.8838, full:.8865, rtf_rpi4:null, mos:3.73, mos_ci:0.73, mos_k:7 } },
+    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:5.2711, sa:.8838, full:.8865, rtf_rpi4:null, mos:3.61, mos_ci:0.45, mos_k:7 } },
   chatterbox: { name:"Chatterbox", method:"AR-token LLM + FM vocoder",                params:"796.3M",
     dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:1.5058, sa:.8662, full:.8726 },
-    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:1.4813, sa:.8705, full:.8751, rtf_rpi4:null, mos:4.32, mos_ci:0.35, mos_k:7 } },
+    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:1.4813, sa:.8705, full:.8751, rtf_rpi4:null, mos:4.21, mos_ci:0.32, mos_k:7 } },
 };
 
 const SPLIT_NOTES = {
@@ -207,10 +207,14 @@ const SPLIT_NOTES = {
 };
 
 // MOS listening test (MOS-test app, 2026-09-08): 28 ratings/system over 7 utterances.
-// Cleaned per-utterance means ± 95% CI (t-based): champion clip-level outlier u5=1.80
-// (forced multiple 1–2 ratings) and one unfair 1/5 rating on the human reference (GT u20)
-// removed. GT row is reference only. Source: sandbox/mos_cleaned_stats.json (view B).
-const MOS_GT = { name: "LJSpeech GT (reference)", mos: 4.37, mos_ci: 0.28, mos_k: 7 };
+// Cleaned per-utterance means ± 95% CI (t-based), from a from-scratch re-analysis
+// (sandbox/mos_reanalysis_clean.json, view B_clean): exact reconstruction of every
+// feasible rating assignment, then removal of the champion's clip-level outlier
+// u5=1.80 (forced to contain multiple 1–2 ratings) and one unfair 1/5 rating on the
+// human reference (GT u20, forced in every feasible assignment — removed MUSHRA-style).
+// GT row is reference only. Champion sd/CI is the conservative upper end of its range
+// across all 521 feasible reconstructions (3.35 ± [0.43, 0.48]).
+const MOS_GT = { name: "LJSpeech GT (reference)", mos: 4.44, mos_ci: 0.30, mos_k: 7 };
 
 let curTab = "champion", curSplit = "dev";
 let SOTA_UTTS = null;   // per-utterance audio manifest, loaded lazily
@@ -272,17 +276,21 @@ function sotaTable() {
   while Matcha (0.17) and VITS (0.23) are slower than real time on the Pi (RTF &lt; 1); Matcha
   additionally required swapping torch's bundled NVPL BLAS for OpenBLAS (ARMv8.1 atomics SIGILL
   on the ARMv8.0 A72). Other models are not yet measured on the RPi4 (—). Green = best in column, red = worst.</div>
-  <div class="sota-sub"><b>MOS 1–5</b> (added 2026-09-08): human listening test via the
+  <div class="sota-sub"><b>MOS 1–5</b> (updated 2026-09-08, re-analysis): human listening test via the
   <a href="../MOS-test/">MOS-test</a> app — 28 ratings per system over 7 utterances, anonymized
   8-system scoring on 1–5 sliders. Shown is the <b>cleaned per-utterance mean ± 95% CI</b>
-  (t-based): the champion's clip-level outlier (u5 = 1.80, forced to contain multiple 1–2
-  ratings — consistently bad audio, not one troll rating) and one unfair rating on the human
-  reference (a 1/5 on GT at u20, forced in every feasible rating assignment — removed
-  MUSHRA-style) are excluded. The <b>LJSpeech GT (reference)</b> row is the ground truth,
-  shown for comparison only. Caveats: 7 utterances is a small sample; u6 is single-rater for
-  every system; post-hoc removal is diagnostic, not citable. Full analysis:
-  <code>mos_cleaned_stats.json</code> (views A raw / B cleaned / C sensitivity — the champion is
-  significantly below GT in all three: −1.20 / −1.10 / −0.87).</div>
+  (t-based) from a from-scratch re-analysis: every feasible rating assignment was reconstructed
+  exactly from the published aggregates, then screened with Tukey-1.5 fences + modified z-scores
+  (GT held out of the fences as the expected-high reference). Removed: the champion's clip-level
+  outlier (u5 = 1.80, every feasible composition forces multiple 1–2 ratings — consistently bad
+  audio, not one troll rating) and one unfair rating on the human reference (a 1/5 on GT at u20,
+  forced in every feasible assignment — removed MUSHRA-style). The <b>LJSpeech GT (reference)</b>
+  row is the ground truth, shown for comparison only. Caveats: 7 utterances is a small sample;
+  u6 is single-rater for every system; post-hoc removal is diagnostic, not citable. Full analysis:
+  <code>mos_reanalysis_clean.json</code> (views A raw / B cleaned / C sensitivity — the champion
+  is significantly below GT in all three: −1.20 / −1.10 / −1.10; paired t, p ≤ .014). The
+  champion's CI is the conservative upper end of its range across all 521 feasible rating
+  reconstructions (3.35 ± [0.43, 0.48]).</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>
