@@ -138,10 +138,10 @@
     ZipVoice, E2-TTS, F5-TTS and Chatterbox are zero-shot models that clone the LJSpeech voice from
     the <code>LJ001-0001</code> prompt (3 s). All scored with the same harness: faster-Whisper WER,
     two-ASR consensus WER2, UTMOSv2, ECAPA-TDNN speaker similarity vs the LJSpeech voice, and
-    RTF (synth time / audio time on A100). Every model in the SOTA table synthesizes the LJSpeech
+    RTF (audio time / synth time on A100). Every model in the SOTA table synthesizes the LJSpeech
     voice, so SIM and FULL-comp are cross-comparable across all rows.
     <br><br>
-    <b>RTF measurement:</b> RTF = total synthesis time / total generated-audio duration over the
+    <b>RTF measurement:</b> RTF = total generated-audio duration / total synthesis time over the
     30-utterance holdout set, measured per model on a single NVIDIA A100-SXM4-40GB (one model per
     GPU), batch size 1, warm steady-state, per-utterance deployment-style calls (zero-shot models
     re-encode their 3&nbsp;s reference prompt on every call), seed 1234. The timed region is the
@@ -174,26 +174,26 @@ const DATA = {
 const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox"];
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS c003", method:"1-step MeanFlow + NanoVocos (1 NFE)",  params:"6.78M",
-    dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:.0082, sa:.8453, full:.8639 },
-    holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:.0107, sa:.86106, full:.87594 } },
+    dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:122.268, sa:.8453, full:.8639 },
+    holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:93.4016, sa:.86106, full:.87594 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
-    dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:.0335, sa:.8491, full:.8684 },
-    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:.0343, sa:.8674, full:.8816 } },
+    dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:29.8078, sa:.8491, full:.8684 },
+    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:29.1415, sa:.8674, full:.8816 } },
   matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
-    dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:.0269, sa:.8532, full:.8692 },
-    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:.0273, sa:.8661, full:.8791 } },
+    dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:37.1805, sa:.8532, full:.8692 },
+    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:36.6055, sa:.8661, full:.8791 } },
   zipvoice:   { name:"ZipVoice", method:"Flow matching + Vocos (16 NFE)",             params:"136.2M",
-    dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:.1281, sa:.8585, full:.8631 },
-    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:.1415, sa:.8630, full:.8661 } },
+    dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:7.8045, sa:.8585, full:.8631 },
+    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:7.068, sa:.8630, full:.8661 } },
   e2:         { name:"E2-TTS Base", method:"Flow matching, masked U-Net (32 NFE)",    params:"347.1M",
-    dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:.1347, sa:.8258, full:.8408 },
-    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:.1605, sa:.8415, full:.8524 } },
+    dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:7.4217, sa:.8258, full:.8408 },
+    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:6.2301, sa:.8415, full:.8524 } },
   f5:         { name:"F5-TTS v1 Base", method:"Flow matching, DiT (32 NFE)",          params:"350.6M",
-    dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:.1621, sa:.8803, full:.8854 },
-    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:.1897, sa:.8838, full:.8865 } },
+    dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:6.1693, sa:.8803, full:.8854 },
+    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:5.2711, sa:.8838, full:.8865 } },
   chatterbox: { name:"Chatterbox", method:"AR-token LLM + FM vocoder",                params:"796.3M",
-    dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:.6641, sa:.8662, full:.8726 },
-    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:.6751, sa:.8705, full:.8751 } },
+    dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:1.5058, sa:.8662, full:.8726 },
+    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:1.4813, sa:.8705, full:.8751 } },
 };
 
 const SPLIT_NOTES = {
@@ -241,7 +241,7 @@ function sotaTable() {
     ["wer2", "WER2 ↓", v => v.toFixed(4)],
     ["utmos","UTMOS ↑",v => v.toFixed(3)],
     ["sim",  "SIM ↑",  v => v.toFixed(3)],
-    ["rtf",  "RTF ↓",  v => v.toFixed(4)],
+    ["rtf",  "RTF ↑",  v => v.toFixed(2)],
     ["sa",   "SA-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
     ["full", "FULL-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
   ];
@@ -251,7 +251,7 @@ function sotaTable() {
   composite (weighted WER, WER2, UTMOS; the selection scalar). FULL-comp adds speaker similarity
   (reference only — never a selection scalar). Champion row = first-run holdout evaluation
   (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. RTF is from the bench run:
-  total synthesis time / total generated-audio duration over the 30 holdout utterances, on a
+  total generated-audio duration / total synthesis time over the 30 holdout utterances, on a
   single NVIDIA A100-SXM4-40GB (batch size 1, warm steady-state, per-utterance deployment-style
   calls, seed 1234); the first-run harness does not record RTF. Green = best in column, red = worst.</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
@@ -266,7 +266,7 @@ function sotaTable() {
     let bv = null, wv = null;
     for (const m of SOTA_MODELS) {
       const v = SOTA_SUMMARY[m].holdout[k];
-      const higher = k === "utmos" || k === "sim" || k === "sa" || k === "full";
+      const higher = k === "utmos" || k === "sim" || k === "sa" || k === "full" || k === "rtf";
       if (bv === null || (higher ? v > bv : v < bv)) bv = v;
       if (wv === null || (higher ? v < wv : v > wv)) wv = v;
     }
