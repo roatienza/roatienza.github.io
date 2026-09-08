@@ -74,8 +74,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
 <header>
   <div>
     <h1>🎧 MOS Listening Test</h1>
-    <div class="sub">AetherTTS vs state-of-the-art TTS — 30 holdout utterances, LJSpeech voice ·
-    <a href="https://roatienza.github.io/AetherTTS-comparison/" target="_blank" rel="noopener">comparison site</a></div>
+    <div class="sub">AetherTTS vs state-of-the-art TTS — 30 holdout sentences, LJSpeech voice</div>
   </div>
   <nav>
     <button class="btn" id="navScore">Score samples</button>
@@ -97,17 +96,18 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
     <b>2</b><span><b>Poor</b> — annoying; clearly unnatural.</span>
     <b>1</b><span><b>Bad</b> — very annoying; hard to listen to.</span>
   </div>
+  <p style="margin:6px 0">To keep the test short, the 30 sentences are split into <b>6 blocks of 5</b>. Each rater is assigned <b>one block</b> and rates all 8 systems on its 5 sentences — <b>40 ratings, about 10 minutes</b>. Across raters, every system is still compared on every sentence, and blocks rotate so each gets equal coverage.</p>
   <ul class="tips">
     <li><b>Use headphones</b> in a quiet room if possible.</li>
     <li><b>Play each sample fully</b> (at least once) before rating it — the score buttons unlock after playback starts.</li>
     <li>You may replay any sample as often as you like before deciding.</li>
     <li>Rate what you <i>hear</i>, not what you think it might be — the system identities are hidden on purpose.</li>
-    <li>Rate all 8 versions, then press <b>Submit ratings</b>. Your scores are saved anonymously; no personal data is collected.</li>
+    <li>Rate all 8 versions of a sentence, then press <b>Submit ratings</b>. Your scores are saved anonymously; no personal data is collected.</li>
   </ul>
 </div>
 
 <div class="bar">
-  <span class="pill" id="uttPill">Utterance 1 / 30</span>
+  <span class="pill" id="uttPill">Sentence 1 / 5</span>
   <button class="btn small" id="prevUtt">← Prev</button>
   <button class="btn small" id="nextUtt">Next →</button>
   <button class="btn small" id="randUtt">Random</button>
@@ -121,7 +121,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
 
 <div class="card" id="thanksCard" style="display:none">
   <h2>✅ Ratings submitted — thank you!</h2>
-  <p>Your scores were recorded anonymously. You can rate more utterances, or
+  <p>Your scores were recorded anonymously. You can rate another block of sentences, or
   <a href="#stats" id="statsLink2">view the live statistics</a>.</p>
 </div>
 
@@ -140,7 +140,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
   </div>
   <div id="statsBody"></div>
   <p class="note">95% confidence intervals use the t-distribution (normal approximation for n ≥ 30).
-  MOS = mean opinion score over all ratings; per-utterance table shows mean MOS per system for each of the 30 sentences.</p>
+  MOS = mean opinion score over all ratings; the per-sentence table shows mean MOS per system for each of the 30 sentences.</p>
 </div>
 <div id="statsDetail"></div>
 </div>
@@ -148,7 +148,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
 <footer>
   Ratings are stored anonymously on a public key-value store (textdb.online); each submission is an independent record.
   Models are anonymized during scoring and identified only in the statistics view.<br>
-  Part of the <a href="https://roatienza.github.io/AetherTTS-comparison/" target="_blank" rel="noopener">AetherTTS benchmark</a> · built 2026-09-08
+  AetherTTS listening test · built 2026-09-08
 </footer>
 </div>
 
@@ -231,32 +231,38 @@ async function tdRead(key) {
 function randHex(n){const a=new Uint8Array(n);crypto.getRandomValues(a);return[...a].map(b=>b.toString(16).padStart(2,"0")).join("")}
 let SID = localStorage.getItem("mos_sid");
 if (!SID) { SID = randHex(4); localStorage.setItem("mos_sid", SID); }
-/* ratings buffer: {uttIndex: {sysId: mos}} persisted locally until submitted */
+/* balanced incomplete block design: 30 sentences -> 6 blocks of 5; each rater gets one block */
+const BLOCKS = [[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],[25,26,27,28,29]];
+let curBlock = parseInt(localStorage.getItem("mos_block_" + SID) || "0", 10);
+if (!(curBlock >= 0 && curBlock < BLOCKS.length)) curBlock = 0;
+let BLOCK = BLOCKS[curBlock];
+/* ratings buffer: {globalSentenceIndex: {sysId: mos}} persisted locally until submitted */
 let BUF = JSON.parse(localStorage.getItem("mos_buf_" + SID) || "{}");
 function saveBuf(){localStorage.setItem("mos_buf_" + SID, JSON.stringify(BUF))}
 
-/* seeded PRNG + shuffle: per-utterance random system order, labels A..H */
+/* seeded PRNG + shuffle: per-sentence random system order, labels A..H */
 function mulberry32(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function seededShuffle(arr, seed){const a=arr.slice();const rnd=mulberry32(seed);for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function orderForUtt(u){return seededShuffle(SYSTEMS.map(s=>s.id), (SID.charCodeAt(0)*7919 + u*104729 + 17) >>> 0)}
 const LETTERS = "ABCDEFGH";
 
 /* ================= SCORE UI ================= */
-let curUtt = 0;
+let curLocal = 0;             /* position within the assigned block */
+let curUtt = BLOCK[curLocal]; /* global sentence index (0..29) */
 const $ = id => document.getElementById(id);
 const grid = $("grid");
 
 function buildUttSel(){
   const sel = $("uttSel");
-  sel.innerHTML = UTTS.map((u,i)=>`<option value="${i}">Utterance ${i+1}</option>`).join("");
-  sel.onchange = e => { stopAllAudio(); curUtt = +e.target.value; render(); };
+  sel.innerHTML = BLOCK.map((g,k)=>`<option value="${k}">Sentence ${g+1}</option>`).join("");
+  sel.onchange = e => { stopAllAudio(); curLocal = +e.target.value; curUtt = BLOCK[curLocal]; render(); };
 }
 function ratedCount(u){const o=BUF[u]||{};let n=0;for(const k in o){if(!k.startsWith("__"))n++}return n}
 
 function render(){
   const u = UTTS[curUtt];
-  $("uttPill").textContent = `Utterance ${curUtt+1} / ${UTTS.length}`;
-  $("uttSel").value = curUtt;
+  $("uttPill").textContent = `Sentence ${curLocal+1} / ${BLOCK.length} (block ${curBlock+1} of 6)`;
+  $("uttSel").value = curLocal;
   const order = orderForUtt(curUtt);
   const my = BUF[curUtt] || {};
   grid.innerHTML = order.map((sysId, pos) => {
@@ -323,11 +329,11 @@ function updateProg(){
   $("progPill").textContent = `Rated ${n} / 8`;
   $("submitBtn").disabled = n < 8;
 }
-$("prevUtt").onclick = ()=>{ stopAllAudio(); if(curUtt>0){curUtt--;render()} };
-$("nextUtt").onclick = ()=>{ stopAllAudio(); if(curUtt<UTTS.length-1){curUtt++;render()} };
-$("randUtt").onclick = ()=>{ stopAllAudio(); curUtt = Math.floor(Math.random()*UTTS.length); render(); };
+$("prevUtt").onclick = ()=>{ stopAllAudio(); if(curLocal>0){curLocal--;curUtt=BLOCK[curLocal];render()} };
+$("nextUtt").onclick = ()=>{ stopAllAudio(); if(curLocal<BLOCK.length-1){curLocal++;curUtt=BLOCK[curLocal];render()} };
+$("randUtt").onclick = ()=>{ stopAllAudio(); curLocal = Math.floor(Math.random()*BLOCK.length); curUtt = BLOCK[curLocal]; render(); };
 
-/* stop any playing audio when leaving an utterance */
+/* stop any playing audio when leaving a sentence */
 function stopAllAudio(){
   grid.querySelectorAll(".pbtn").forEach(b=>{ if(b._audio){ b._audio.pause(); b.textContent="▶"; } });
 }
@@ -345,15 +351,20 @@ $("submitBtn").onclick = async () => {
   if (!ratings.length) return;
   btn.disabled = true; st.textContent = "Submitting…"; st.className = "status";
   const recKey = "mosbench-r-" + randHex(4);
-  const rec = {sid:SID, t:Date.now(), n:ratings.length, ratings};
+  const rec = {sid:SID, t:Date.now(), n:ratings.length, block:curBlock, ratings};
   try {
     await tdWrite(recKey, JSON.stringify(rec));
     await registerIndex(recKey, ratings.length);
     st.innerHTML = `✅ Saved ${ratings.length} ratings (record <code>${recKey}</code>). Thank you!`;
     st.className = "status";
-    /* clear submitted utterances from buffer */
+    /* clear submitted sentences from buffer */
     for (const u of Object.keys(BUF)) delete BUF[u];
     saveBuf();
+    /* rotate to the next block so repeat raters cover all 30 sentences */
+    curBlock = (curBlock + 1) % BLOCKS.length;
+    localStorage.setItem("mos_block_" + SID, curBlock);
+    BLOCK = BLOCKS[curBlock];
+    curLocal = 0; curUtt = BLOCK[curLocal];
     $("thanksCard").style.display = "block";
     render();
     loadStats();   /* refresh stats + permanent link after every submission */
@@ -432,7 +443,8 @@ function fmt(x,d=2){return x.toFixed(d)}
 
 function renderStats(st){
   LAST_STATS = st;
-  $("statsMeta").innerHTML = `Computed ${new Date(st.generated).toLocaleString()} · ${st.nRecords} session record(s) · ${st.nRatings} individual ratings · models de-anonymized below`;
+  const covered = UTTS.map((u,i)=>i).filter(i=>st.rows.some(r=>r.perUtt[i]&&r.perUtt[i].n));
+  $("statsMeta").innerHTML = `Computed ${new Date(st.generated).toLocaleString()} · ${st.nRecords} session record(s) · ${st.nRatings} individual ratings · sentences covered ${covered.length}/30 · models de-anonymized below`;
   const maxN = Math.max(1, ...st.rows.map(r=>r.n));
   const best = st.rows.filter(r=>r.n>0).sort((a,b)=>b.mean-a.mean)[0];
   const head = `<table><tr><th>System (de-anonymized)</th><th>Params</th><th class="num">n</th><th class="num">MOS</th><th class="num">95% CI</th><th class="num">SD</th><th>Distribution (1★ → 5★)</th></tr>` +
@@ -444,8 +456,8 @@ function renderStats(st){
     }).join("") + `</table>`;
   $("statsBody").innerHTML = head;
 
-  /* per-utterance matrix */
-  const uttRows = UTTS.map((u,i)=>{
+  /* per-sentence matrix */
+  const uttRows = UTTS.map((u,i)=>({u,i})).filter(({i})=>st.rows.some(r=>r.perUtt[i]&&r.perUtt[i].n)).map(({u,i})=>{
     const cells = st.rows.map(r=>{
       const p = r.perUtt[i];
       return (p&&p.n) ? fmt(p.sum/p.n) : "—";
@@ -453,7 +465,7 @@ function renderStats(st){
     return `<tr><td>${i+1}</td><td class="text" style="font-style:italic;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.text}</td><td>${cells.join("</td><td>")}</td></tr>`;
   }).join("");
   const sysHead = st.rows.map(r=>`<th class="num" title="${r.label}">${r.label.split(" ")[0].slice(0,10)}</th>`).join("");
-  $("statsDetail").innerHTML = `<div class="card"><h2>Per-utterance mean MOS</h2><div style="overflow-x:auto"><table><tr><th>#</th><th>Sentence</th>${sysHead}</tr>${uttRows}</table></div></div>`;
+  $("statsDetail").innerHTML = `<div class="card"><h2>Per-sentence mean MOS</h2><div style="overflow-x:auto"><table><tr><th>#</th><th>Sentence</th>${sysHead}</tr>${uttRows}</table></div></div>`;
 }
 
 function download(name, text, type){
@@ -465,13 +477,15 @@ function download(name, text, type){
 }
 $("dlCsv").onclick = () => {
   if (!LAST_STATS) return;
-  let csv = "system,params,utterance_index,utterance_text,mos\n";
+  let csv = "system,params,sentence_index,sentence_text,mos\n";
   /* per-rating rows need raw records; rebuild from LAST_STATS per-utt means + histogram summary */
   csv += "# summary rows\nsystem,params,n,mean_mos,ci95,sd,hist1,hist2,hist3,hist4,hist5\n";
   for (const r of LAST_STATS.rows)
     csv += `"${r.label}","${r.params}",${r.n},${r.n?r.mean.toFixed(4):""},${r.n>1?r.ci.toFixed(4):""},${r.n>1?r.sd.toFixed(4):""},${r.hist.join(",")}\n`;
-  csv += "\n# per-utterance mean MOS\nutterance,sentence," + LAST_STATS.rows.map(r=>`"${r.label}"`).join(",") + "\n";
+  csv += "\n# per-sentence mean MOS\nsentence," + LAST_STATS.rows.map(r=>`"${r.label}"`).join(",") + "\n";
   UTTS.forEach((u,i)=>{
+    const anyN = LAST_STATS.rows.some(r=>r.perUtt[i]&&r.perUtt[i].n);
+    if (!anyN) return;
     csv += `${i},"${u.text.replace(/"/g,'""')}",` + LAST_STATS.rows.map(r=>{
       const p=r.perUtt[i]; return (p&&p.n)?(p.sum/p.n).toFixed(4):"";
     }).join(",") + "\n";
