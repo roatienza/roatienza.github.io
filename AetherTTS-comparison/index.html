@@ -146,11 +146,14 @@
     GPU), batch size 1, warm steady-state, per-utterance deployment-style calls (zero-shot models
     re-encode their 3&nbsp;s reference prompt on every call), seed 1234. The timed region is the
     full synthesis call only, bracketed by CUDA synchronization; metric computation is excluded.
+    <b>RTF ↑ (RPi4)</b> (added 2026-09-08): the same protocol on a Raspberry Pi 4 (quad-core Arm
+    Cortex-A72 @ 1.7 GHz, 8 GB RAM, CPU-only, torch 2.7.1+cpu) — no GPU; measured so far only for
+    the champion (11.03, i.e. ~11× faster than real time on CPU), other models marked —.
     <br><br>
     Generated 2026-08-27 from
     <code>outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt</code>
     (champion) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
-    SOTA run 2026-09-05 (holdout-only comparison).
+    SOTA run 2026-09-05 (holdout-only comparison). RPi4 RTF added 2026-09-08.
   </div>
 </div>
 
@@ -175,25 +178,25 @@ const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS c003", method:"1-step MeanFlow + NanoVocos (1 NFE)",  params:"6.78M",
     dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:122.268, sa:.8453, full:.8639 },
-    holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:93.4016, sa:.86106, full:.87594 } },
+    holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:93.4016, sa:.86106, full:.87594, rtf_rpi4:11.0340 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
     dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:29.8078, sa:.8491, full:.8684 },
-    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:29.1415, sa:.8674, full:.8816 } },
+    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:29.1415, sa:.8674, full:.8816, rtf_rpi4:null } },
   matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
     dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:37.1805, sa:.8532, full:.8692 },
-    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:36.6055, sa:.8661, full:.8791 } },
+    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:36.6055, sa:.8661, full:.8791, rtf_rpi4:null } },
   zipvoice:   { name:"ZipVoice", method:"Flow matching + Vocos (16 NFE)",             params:"136.2M",
     dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:7.8045, sa:.8585, full:.8631 },
-    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:7.068, sa:.8630, full:.8661 } },
+    holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:7.068, sa:.8630, full:.8661, rtf_rpi4:null } },
   e2:         { name:"E2-TTS Base", method:"Flow matching, masked U-Net (32 NFE)",    params:"347.1M",
     dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:7.4217, sa:.8258, full:.8408 },
-    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:6.2301, sa:.8415, full:.8524 } },
+    holdout: { wer:.0541, wer2:.0742, utmos:3.579, sim:.792, rtf:6.2301, sa:.8415, full:.8524, rtf_rpi4:null } },
   f5:         { name:"F5-TTS v1 Base", method:"Flow matching, DiT (32 NFE)",          params:"350.6M",
     dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:6.1693, sa:.8803, full:.8854 },
-    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:5.2711, sa:.8838, full:.8865 } },
+    holdout: { wer:.0481, wer2:.0702, utmos:4.029, sim:.794, rtf:5.2711, sa:.8838, full:.8865, rtf_rpi4:null } },
   chatterbox: { name:"Chatterbox", method:"AR-token LLM + FM vocoder",                params:"796.3M",
     dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:1.5058, sa:.8662, full:.8726 },
-    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:1.4813, sa:.8705, full:.8751 } },
+    holdout: { wer:.0453, wer2:.0753, utmos:3.875, sim:.787, rtf:1.4813, sa:.8705, full:.8751, rtf_rpi4:null } },
 };
 
 const SPLIT_NOTES = {
@@ -241,7 +244,8 @@ function sotaTable() {
     ["wer2", "WER2 ↓", v => v.toFixed(4)],
     ["utmos","UTMOS ↑",v => v.toFixed(3)],
     ["sim",  "SIM ↑",  v => v.toFixed(3)],
-    ["rtf",  "RTF ↑",  v => v.toFixed(2)],
+    ["rtf",  "RTF ↑ (A100)",  v => v.toFixed(2)],
+    ["rtf_rpi4", "RTF ↑ (RPi4)", v => v === null ? "—" : v.toFixed(2)],
     ["sa",   "SA-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
     ["full", "FULL-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
   ];
@@ -253,7 +257,10 @@ function sotaTable() {
   (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. RTF is from the bench run:
   total generated-audio duration / total synthesis time over the 30 holdout utterances, on a
   single NVIDIA A100-SXM4-40GB (batch size 1, warm steady-state, per-utterance deployment-style
-  calls, seed 1234); the first-run harness does not record RTF. Green = best in column, red = worst.</div>
+  calls, seed 1234); the first-run harness does not record RTF. <b>RTF ↑ (RPi4)</b> is the same
+  protocol measured 2026-09-08 on a Raspberry Pi 4 (quad-core Arm Cortex-A72 @ 1.7 GHz, 8 GB RAM,
+  CPU-only, torch 2.7.1+cpu) — the champion synthesizes ~11× faster than real time with no GPU;
+  other models are not yet measured on the RPi4 (—). Green = best in column, red = worst.</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>
@@ -266,7 +273,8 @@ function sotaTable() {
     let bv = null, wv = null;
     for (const m of SOTA_MODELS) {
       const v = SOTA_SUMMARY[m].holdout[k];
-      const higher = k === "utmos" || k === "sim" || k === "sa" || k === "full" || k === "rtf";
+      if (v === null || v === undefined) continue;   // unmeasured (e.g. RPi4 "-")
+      const higher = k === "utmos" || k === "sim" || k === "sa" || k === "full" || k === "rtf" || k === "rtf_rpi4";
       if (bv === null || (higher ? v > bv : v < bv)) bv = v;
       if (wv === null || (higher ? v < wv : v > wv)) wv = v;
     }
@@ -280,6 +288,7 @@ function sotaTable() {
       <td style="text-align:left"><span class="method">${SOTA_SUMMARY[m].method}</span></td>`;
     for (const [k, , fmt] of cols) {
       const v = d[k];
+      if (v === null || v === undefined) { html += `<td>—</td>`; continue; }
       const cls = v === best[k] ? "best" : (v === worst[k] ? "worst" : "");
       html += `<td class="${cls}">${fmt(v)}</td>`;
     }
