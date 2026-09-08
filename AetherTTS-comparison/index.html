@@ -147,13 +147,14 @@
     re-encode their 3&nbsp;s reference prompt on every call), seed 1234. The timed region is the
     full synthesis call only, bracketed by CUDA synchronization; metric computation is excluded.
     <b>RTF ↑ (RPi4)</b> (added 2026-09-08): the same protocol on a Raspberry Pi 4 (quad-core Arm
-    Cortex-A72 @ 1.7 GHz, 8 GB RAM, CPU-only, torch 2.7.1+cpu) — no GPU; measured so far only for
-    the champion (11.03, i.e. ~11× faster than real time on CPU), other models marked —.
+    Cortex-A72 @ 1.7 GHz, 8 GB RAM, CPU-only, torch 2.7.1+cpu) — no GPU; measured for the
+    champion (11.03, i.e. ~11× faster than real time on CPU), Matcha-TTS (0.17) and VITS
+    (0.23) — both SOTA models are <em>slower</em> than real time on the Pi; other models marked —.
     <br><br>
     Generated 2026-08-27 from
     <code>outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt</code>
     (champion) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
-    SOTA run 2026-09-05 (holdout-only comparison). RPi4 RTF added 2026-09-08.
+    SOTA run 2026-09-05 (holdout-only comparison). RPi4 RTF added 2026-09-08 (champion, Matcha, VITS).
   </div>
 </div>
 
@@ -181,10 +182,10 @@ const SOTA_SUMMARY = {
     holdout: { wer:.0468, wer2:.0819, utmos:3.788, sim:.871, rtf:93.4016, sa:.86106, full:.87594, rtf_rpi4:11.0340 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
     dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:29.8078, sa:.8491, full:.8684 },
-    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:29.1415, sa:.8674, full:.8816, rtf_rpi4:null } },
+    holdout: { wer:.0363, wer2:.0681, utmos:3.786, sim:.876, rtf:29.1415, sa:.8674, full:.8816, rtf_rpi4:0.2281 } },
   matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
     dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:37.1805, sa:.8532, full:.8692 },
-    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:36.6055, sa:.8661, full:.8791, rtf_rpi4:null } },
+    holdout: { wer:.0428, wer2:.0656, utmos:3.793, sim:.862, rtf:36.6055, sa:.8661, full:.8791, rtf_rpi4:0.1686 } },
   zipvoice:   { name:"ZipVoice", method:"Flow matching + Vocos (16 NFE)",             params:"136.2M",
     dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:7.8045, sa:.8585, full:.8631 },
     holdout: { wer:.0507, wer2:.0686, utmos:3.799, sim:.756, rtf:7.068, sa:.8630, full:.8661, rtf_rpi4:null } },
@@ -245,7 +246,7 @@ function sotaTable() {
     ["utmos","UTMOS ↑",v => v.toFixed(3)],
     ["sim",  "SIM ↑",  v => v.toFixed(3)],
     ["rtf",  "RTF ↑ (A100)",  v => v.toFixed(2)],
-    ["rtf_rpi4", "RTF ↑ (RPi4)", v => v === null ? "—" : v.toFixed(2)],
+    ["rtf_rpi4", "RTF ↑ (RPi4)", v => v === null ? "—" : v.toFixed(v < 1 ? 4 : 2)],
     ["sa",   "SA-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
     ["full", "FULL-comp ↑", v => String(v).split(".")[1]?.length > 4 ? v.toFixed(5) : v.toFixed(4)],
   ];
@@ -259,8 +260,10 @@ function sotaTable() {
   single NVIDIA A100-SXM4-40GB (batch size 1, warm steady-state, per-utterance deployment-style
   calls, seed 1234); the first-run harness does not record RTF. <b>RTF ↑ (RPi4)</b> is the same
   protocol measured 2026-09-08 on a Raspberry Pi 4 (quad-core Arm Cortex-A72 @ 1.7 GHz, 8 GB RAM,
-  CPU-only, torch 2.7.1+cpu) — the champion synthesizes ~11× faster than real time with no GPU;
-  other models are not yet measured on the RPi4 (—). Green = best in column, red = worst.</div>
+  CPU-only, torch 2.7.1+cpu) — the champion synthesizes ~11× faster than real time with no GPU,
+  while Matcha (0.17) and VITS (0.23) are slower than real time on the Pi (RTF &lt; 1); Matcha
+  additionally required swapping torch's bundled NVPL BLAS for OpenBLAS (ARMv8.1 atomics SIGILL
+  on the ARMv8.0 A72). Other models are not yet measured on the RPi4 (—). Green = best in column, red = worst.</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>
