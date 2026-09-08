@@ -22,6 +22,12 @@ models — all speaking the LJSpeech voice.
   Each utterance plays the LJSpeech ground truth plus all seven models back to
   back. Both composite scores are shown: **SA-comp** (speaker-agnostic
   selection scalar) and **FULL-comp** (adds SIM; reference only).
+  The table shows two RTF columns: **RTF ↑ (A100)** from the 2026-09-05 bench
+  run (single NVIDIA A100-SXM4-40GB) and **RTF ↑ (RPi4)** (added 2026-09-08)
+  from the same protocol on a Raspberry Pi 4 (quad-core Arm Cortex-A72 @
+  1.7 GHz, 8 GB RAM, CPU-only, torch 2.7.1+cpu) — measured so far only for the
+  champion (11.03, ~11× faster than real time with no GPU); other models are
+  marked — until measured on the same hardware.
 
 ## Champion / baseline protocol (frozen)
 
@@ -54,5 +60,7 @@ audio/sota_chatterbox_{dev,holdout}/ 30 wavs each
 audio/sota_references/    61 LJSpeech ground-truth wavs (30 dev + 30 holdout + voice prompt)
 ```
 
-Generated 2026-08-27; SOTA tab added 2026-09-05 (VITS added the same day).
-Full benchmark write-up: `AetherTTS/docs/sota-benchmark.md`.
+Generated 2026-08-27; SOTA tab added 2026-09-05 (VITS added the same day);
+RPi4 RTF column added 2026-09-08.
+Full benchmark write-up: `AetherTTS/docs/sota-benchmark.md` (§3.5 for the
+RPi4 measurement; script `AetherTTS/sota_bench/rpi4_rtf.py`).
