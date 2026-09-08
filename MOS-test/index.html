@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOS Listening Test — AetherTTS vs SOTA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎧</text></svg>">
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#1a2233;--mut:#5b6474;--acc:#3b5bdb;--acc2:#eef1ff;--ok:#2f9e44;--warn:#e8590c;--line:#e3e6ef;--rad:14px}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 80px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+h1{font-size:1.45rem;margin:0}
+h2{font-size:1.1rem;margin:0 0 8px}
+.sub{color:var(--mut);font-size:.92rem}
+a{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:16px 18px;margin-bottom:14px}
+.scale{display:grid;grid-template-columns:56px 1fr;gap:4px 12px;font-size:.95rem}
+.scale b{color:var(--acc);text-align:center;background:var(--acc2);border-radius:8px;padding:2px 0}
+.tips{margin:10px 0 0;padding-left:20px;font-size:.93rem;color:var(--mut)}
+.tips li{margin:3px 0}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;font-size:.92rem;cursor:pointer}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.small{padding:5px 10px;font-size:.85rem}
+.pill{background:var(--acc2);color:var(--acc);border-radius:999px;padding:3px 12px;font-size:.85rem;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.sample{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
+.sample .lab{font-weight:700;font-size:1.02rem}
+.sample .gt{color:var(--mut);font-weight:400;font-size:.8rem}
+.playrow{display:flex;align-items:center;gap:8px;margin:8px 0}
+.pbtn{width:42px;height:42px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:1.05rem;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
+.pbtn:hover{opacity:.88}
+.pbtn.done{background:var(--ok)}
+.pbtn:disabled{background:#adb5bd;cursor:not-allowed}
+.prog{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--acc);width:0}
+.mosrow{display:flex;gap:6px;margin-top:8px}
+.mos{flex:1;padding:8px 0;border:1.5px solid var(--line);border-radius:9px;background:#fff;font-weight:700;font-size:.95rem;cursor:pointer;color:var(--mut)}
+.mos:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
+.mos.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.mos:disabled{opacity:.4;cursor:not-allowed}
+.text{font-size:.88rem;color:var(--mut);margin:6px 0 2px;font-style:italic}
+.status{font-size:.85rem;color:var(--mut);min-height:1.2em;margin-top:6px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left}
+th{background:var(--acc2);color:var(--acc);font-weight:600;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.best{background:#ebfbee}
+.hbar{background:var(--acc2);border-radius:3px;height:14px;position:relative;min-width:60px}
+.hbar i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);border-radius:3px}
+.hist{display:flex;gap:4px;align-items:flex-end;height:56px;margin-top:6px}
+.hist .hb{flex:1;background:var(--acc);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+.hist .hb span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:.72rem;color:var(--mut)}
+.hist .hlab{display:flex;gap:4px;font-size:.75rem;color:var(--mut)}
+.hist .hlab div{flex:1;text-align:center}
+.note{font-size:.85rem;color:var(--mut)}
+.hidden{display:none}
+.big{font-size:1.6rem;font-weight:800;color:var(--acc)}
+dialog{border:none;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.25);max-width:560px;width:92%;padding:20px}
+dialog::backdrop{background:rgba(20,24,40,.45)}
+.err{color:var(--warn);font-size:.9rem}
+footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
+@media(max-width:640px){.grid{grid-template-columns:1fr}.scale{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>🎧 MOS Listening Test</h1>
+    <div class="sub">AetherTTS vs state-of-the-art TTS — 30 holdout utterances, LJSpeech voice ·
+    <a href="https://roatienza.github.io/AetherTTS-comparison/" target="_blank" rel="noopener">comparison site</a></div>
+  </div>
+  <nav>
+    <button class="btn" id="navScore">Score samples</button>
+    <button class="btn" id="navStats">View statistics</button>
+  </nav>
+</header>
+
+<!-- ============ SCORE VIEW ============ -->
+<div id="viewScore">
+
+<div class="card">
+  <h2>How to score (Mean Opinion Score)</h2>
+  <p style="margin:6px 0">Each item below is the <b>same sentence</b> spoken by <b>8 anonymized systems</b> (labeled <b>System A–H</b>), one of which may be a human recording.
+  Listen to each version and rate its <b>overall speech quality</b> — naturalness of the voice, pronunciation and prosody, and freedom from artifacts (noise, glitches, robotic tone).</p>
+  <div class="scale">
+    <b>5</b><span><b>Excellent</b> — no perceptible flaw; sounds completely natural.</span>
+    <b>4</b><span><b>Good</b> — flaws are perceptible but not annoying; mostly natural.</span>
+    <b>3</b><span><b>Fair</b> — slightly annoying; noticeably unnatural at times.</span>
+    <b>2</b><span><b>Poor</b> — annoying; clearly unnatural.</span>
+    <b>1</b><span><b>Bad</b> — very annoying; hard to listen to.</span>
+  </div>
+  <ul class="tips">
+    <li><b>Use headphones</b> in a quiet room if possible.</li>
+    <li><b>Play each sample fully</b> (at least once) before rating it — the score buttons unlock after playback starts.</li>
+    <li>You may replay any sample as often as you like before deciding.</li>
+    <li>Rate what you <i>hear</i>, not what you think it might be — the system identities are hidden on purpose.</li>
+    <li>Rate all 8 versions, then press <b>Submit ratings</b>. Your scores are saved anonymously; no personal data is collected.</li>
+  </ul>
+</div>
+
+<div class="bar">
+  <span class="pill" id="uttPill">Utterance 1 / 30</span>
+  <button class="btn small" id="prevUtt">← Prev</button>
+  <button class="btn small" id="nextUtt">Next →</button>
+  <button class="btn small" id="randUtt">Random</button>
+  <select id="uttSel" style="padding:7px;border-radius:8px;border:1px solid var(--line);font-size:.9rem"></select>
+  <span style="flex:1"></span>
+  <span class="pill" id="progPill">Rated 0 / 8</span>
+  <button class="btn primary" id="submitBtn" disabled>Submit ratings</button>
+</div>
+<div class="status" id="saveStatus"></div>
+<div class="grid" id="grid"></div>
+
+<div class="card" id="thanksCard" style="display:none">
+  <h2>✅ Ratings submitted — thank you!</h2>
+  <p>Your scores were recorded anonymously. You can rate more utterances, or
+  <a href="#stats" id="statsLink2">view the live statistics</a>.</p>
+</div>
+
+</div>
+
+<!-- ============ STATS VIEW ============ -->
+<div id="viewStats" class="hidden">
+<div class="card">
+  <h2>MOS statistics (live)</h2>
+  <div class="sub" id="statsMeta">Loading…</div>
+  <div style="margin:10px 0">
+    <button class="btn" id="refreshStats">↻ Refresh</button>
+    <button class="btn" id="dlCsv">⬇ Download CSV</button>
+    <button class="btn" id="dlJson">⬇ Download JSON</button>
+    <a class="btn" id="permLink" href="#" target="_blank" rel="noopener" style="text-decoration:none">🔗 Permanent stats link</a>
+  </div>
+  <div id="statsBody"></div>
+  <p class="note">95% confidence intervals use the t-distribution (normal approximation for n ≥ 30).
+  MOS = mean opinion score over all ratings; per-utterance table shows mean MOS per system for each of the 30 sentences.</p>
+</div>
+<div id="statsDetail"></div>
+</div>
+
+<footer>
+  Ratings are stored anonymously on a public key-value store (textdb.online); each submission is an independent record.
+  Models are anonymized during scoring and identified only in the statistics view.<br>
+  Part of the <a href="https://roatienza.github.io/AetherTTS-comparison/" target="_blank" rel="noopener">AetherTTS benchmark</a> · built 2026-09-08
+</footer>
+</div>
+
+<script>
+"use strict";
+/* ================= DATA (holdout split, 30 utts, 8 systems) ================= */
+const AUDIO_BASE = "https://roatienza.github.io/AetherTTS-comparison/audio/";
+const SYSTEMS = [
+ {id:"champion", label:"AetherTTS c003 (champion)", params:"6.78M (5.25M ac + 1.53M voc)", data:"LJSpeech (trained)"},
+ {id:"vits", label:"VITS", params:"36.3M", data:"LJSpeech (trained)"},
+ {id:"matcha", label:"Matcha-TTS (LJSpeech)", params:"32.1M (18.2M ac + 13.9M voc)", data:"LJSpeech (trained)"},
+ {id:"zipvoice", label:"ZipVoice (k2-fsa)", params:"136.2M (122.7M ac + 13.5M vocos)", data:"Emilia (100k hrs), zero-shot (LJSpeech voice prompt)"},
+ {id:"e2", label:"E2-TTS Base", params:"347.1M (333.5M UNetT + 13.5M vocos)", data:"Emilia (100k hrs), zero-shot (LJSpeech voice prompt)"},
+ {id:"f5", label:"F5-TTS v1 Base", params:"350.6M (337.1M DiT + 13.5M vocos)", data:"Emilia (100k hrs), zero-shot (LJSpeech voice prompt)"},
+ {id:"chatterbox", label:"Chatterbox (ResembleAI)", params:"796.3M (T3 + S3Gen)", data:"ResembleAI (undisclosed), zero-shot (LJSpeech voice prompt)"},
+ {id:"gt", label:"Ground Truth (LJSpeech)", params:"—", data:"LJSpeech recordings"}
+];
+const UTTS = [
+ {i:0, text:"The intention of the real murderer to shift the crime to burglars was evident although futile,", src:"LJ013-0180.wav"},
+ {i:1, text:"I don't know if this is the man they want. But he is running from them for some reason, end quote, She then called the police.", src:"LJ038-0022.wav"},
+ {i:2, text:"Frazier later fired four groups of three shots at a distance of one hundred yards in five point nine, six point two,", src:"LJ039-0204.wav"},
+ {i:3, text:"he finished reading a morning newspaper, quote, and put on a good suit. I saw that he took a pistol.", src:"LJ039-0016.wav"},
+ {i:4, text:"It was that of a \"Long Firm\" swindler, by name Johnson,", src:"LJ016-0158.wav"},
+ {i:5, text:"to determine what matters require attention in making advance preparations and to decide what action to take.", src:"LJ048-0115.wav"},
+ {i:6, text:"The provision of more baths was also suggested, and the daily sweeping out of the prison.", src:"LJ003-0305.wav"},
+ {i:7, text:"To his wife, poor soul, he made no pretense of fidelity, and she enjoyed only so much of his company as was necessarily spent", src:"LJ015-0088.wav"},
+ {i:8, text:"with money enough to retrieve the position of the bank. But that passed from bad to worse;", src:"LJ015-0044.wav"},
+ {i:9, text:"The lobby of the hotel and the areas adjacent to the quarters of the President were guarded during the night", src:"LJ048-0239.wav"},
+ {i:10, text:"till every feature was obliterated, and then, still living, flung him into the sea.", src:"LJ017-0228.wav"},
+ {i:11, text:"shows three employees looking out of the fifth-floor window directly below the window from which the shots were fired.", src:"LJ034-0126.wav"},
+ {i:12, text:"It should be noted, however, that the President's car was curving slightly to the right when the third shot was fired.", src:"LJ039-0216.wav"},
+ {i:13, text:"Sir Frederick Roe was of the same opinion as regards the appointment, but he would give the inspectors the power of acting as well as reporting.", src:"LJ006-0013.wav"},
+ {i:14, text:"shortly after Oswald rented the room on October fourteen.", src:"LJ047-0176.wav"},
+ {i:15, text:"She was found guilty.", src:"LJ018-0363.wav"},
+ {i:16, text:"It came out in the husband's confession that Mrs. Manning induced O'Connor to go down to the kitchen to wash his hands, that she followed him to the basement,", src:"LJ014-0077.wav"},
+ {i:17, text:"were clean, they had good color to them, there was no grease on them and they were not fragmented. They looked as if they had just been picked up, end quote.", src:"LJ032-0182.wav"},
+ {i:18, text:"If too stiff, warm water, a spoonful at a time until you can handle the paste easily. The danger is in getting it too stiff. Now.", src:"LJ020-0023.wav"},
+ {i:19, text:"Frazier testified, however, that he found no microscopic characteristics or other evidence", src:"LJ038-0269.wav"},
+ {i:20, text:"en route from Dallas Love Field, end quote, on its way to the Trade Mart on Stemmons Freeway.", src:"LJ045-0193.wav"},
+ {i:21, text:"As each transaction was carried out from a different address, and a different messenger always employed,", src:"LJ015-0289.wav"},
+ {i:22, text:"His name headed every subscription list; his purse was always open.", src:"LJ015-0152.wav"},
+ {i:23, text:"The best description of Oswald's state of mind, however, is set forth in his own \"Historic Diary.\"", src:"LJ042-0115.wav"},
+ {i:24, text:"and he could disassemble it more rapidly.", src:"LJ033-0055.wav"},
+ {i:25, text:"The first duty of the agents in the motorcade is to attempt to cover the President as closely as possible and practicable", src:"LJ049-0056.wav"},
+ {i:26, text:"As regards the first, I find that in seventeen eighty-six", src:"LJ008-0013.wav"},
+ {i:27, text:"This fact was referred to by the judge in his summing up,", src:"LJ017-0203.wav"},
+ {i:28, text:"He went from Newgate first to Bethlehem, from which he was removed to Broadmoor on the opening of the great criminal lunatic asylum at that place.", src:"LJ010-0227.wav"},
+ {i:29, text:"and which he was to take to the School Book Depository. The Unanswered Questions.", src:"LJ045-0180.wav"}
+];
+const AUDIO = {
+champion:["sota_champion_holdout/syn_000.wav","sota_champion_holdout/syn_001.wav","sota_champion_holdout/syn_002.wav","sota_champion_holdout/syn_003.wav","sota_champion_holdout/syn_004.wav","sota_champion_holdout/syn_005.wav","sota_champion_holdout/syn_006.wav","sota_champion_holdout/syn_007.wav","sota_champion_holdout/syn_008.wav","sota_champion_holdout/syn_009.wav","sota_champion_holdout/syn_010.wav","sota_champion_holdout/syn_011.wav","sota_champion_holdout/syn_012.wav","sota_champion_holdout/syn_013.wav","sota_champion_holdout/syn_014.wav","sota_champion_holdout/syn_015.wav","sota_champion_holdout/syn_016.wav","sota_champion_holdout/syn_017.wav","sota_champion_holdout/syn_018.wav","sota_champion_holdout/syn_019.wav","sota_champion_holdout/syn_020.wav","sota_champion_holdout/syn_021.wav","sota_champion_holdout/syn_022.wav","sota_champion_holdout/syn_023.wav","sota_champion_holdout/syn_024.wav","sota_champion_holdout/syn_025.wav","sota_champion_holdout/syn_026.wav","sota_champion_holdout/syn_027.wav","sota_champion_holdout/syn_028.wav","sota_champion_holdout/syn_029.wav"],
+vits:["sota_vits_holdout/syn_000.wav","sota_vits_holdout/syn_001.wav","sota_vits_holdout/syn_002.wav","sota_vits_holdout/syn_003.wav","sota_vits_holdout/syn_004.wav","sota_vits_holdout/syn_005.wav","sota_vits_holdout/syn_006.wav","sota_vits_holdout/syn_007.wav","sota_vits_holdout/syn_008.wav","sota_vits_holdout/syn_009.wav","sota_vits_holdout/syn_010.wav","sota_vits_holdout/syn_011.wav","sota_vits_holdout/syn_012.wav","sota_vits_holdout/syn_013.wav","sota_vits_holdout/syn_014.wav","sota_vits_holdout/syn_015.wav","sota_vits_holdout/syn_016.wav","sota_vits_holdout/syn_017.wav","sota_vits_holdout/syn_018.wav","sota_vits_holdout/syn_019.wav","sota_vits_holdout/syn_020.wav","sota_vits_holdout/syn_021.wav","sota_vits_holdout/syn_022.wav","sota_vits_holdout/syn_023.wav","sota_vits_holdout/syn_024.wav","sota_vits_holdout/syn_025.wav","sota_vits_holdout/syn_026.wav","sota_vits_holdout/syn_027.wav","sota_vits_holdout/syn_028.wav","sota_vits_holdout/syn_029.wav"],
+matcha:["sota_matcha_holdout/syn_000.wav","sota_matcha_holdout/syn_001.wav","sota_matcha_holdout/syn_002.wav","sota_matcha_holdout/syn_003.wav","sota_matcha_holdout/syn_004.wav","sota_matcha_holdout/syn_005.wav","sota_matcha_holdout/syn_006.wav","sota_matcha_holdout/syn_007.wav","sota_matcha_holdout/syn_008.wav","sota_matcha_holdout/syn_009.wav","sota_matcha_holdout/syn_010.wav","sota_matcha_holdout/syn_011.wav","sota_matcha_holdout/syn_012.wav","sota_matcha_holdout/syn_013.wav","sota_matcha_holdout/syn_014.wav","sota_matcha_holdout/syn_015.wav","sota_matcha_holdout/syn_016.wav","sota_matcha_holdout/syn_017.wav","sota_matcha_holdout/syn_018.wav","sota_matcha_holdout/syn_019.wav","sota_matcha_holdout/syn_020.wav","sota_matcha_holdout/syn_021.wav","sota_matcha_holdout/syn_022.wav","sota_matcha_holdout/syn_023.wav","sota_matcha_holdout/syn_024.wav","sota_matcha_holdout/syn_025.wav","sota_matcha_holdout/syn_026.wav","sota_matcha_holdout/syn_027.wav","sota_matcha_holdout/syn_028.wav","sota_matcha_holdout/syn_029.wav"],
+zipvoice:["sota_zipvoice_holdout/syn_000.wav","sota_zipvoice_holdout/syn_001.wav","sota_zipvoice_holdout/syn_002.wav","sota_zipvoice_holdout/syn_003.wav","sota_zipvoice_holdout/syn_004.wav","sota_zipvoice_holdout/syn_005.wav","sota_zipvoice_holdout/syn_006.wav","sota_zipvoice_holdout/syn_007.wav","sota_zipvoice_holdout/syn_008.wav","sota_zipvoice_holdout/syn_009.wav","sota_zipvoice_holdout/syn_010.wav","sota_zipvoice_holdout/syn_011.wav","sota_zipvoice_holdout/syn_012.wav","sota_zipvoice_holdout/syn_013.wav","sota_zipvoice_holdout/syn_014.wav","sota_zipvoice_holdout/syn_015.wav","sota_zipvoice_holdout/syn_016.wav","sota_zipvoice_holdout/syn_017.wav","sota_zipvoice_holdout/syn_018.wav","sota_zipvoice_holdout/syn_019.wav","sota_zipvoice_holdout/syn_020.wav","sota_zipvoice_holdout/syn_021.wav","sota_zipvoice_holdout/syn_022.wav","sota_zipvoice_holdout/syn_023.wav","sota_zipvoice_holdout/syn_024.wav","sota_zipvoice_holdout/syn_025.wav","sota_zipvoice_holdout/syn_026.wav","sota_zipvoice_holdout/syn_027.wav","sota_zipvoice_holdout/syn_028.wav","sota_zipvoice_holdout/syn_029.wav"],
+e2:["sota_e2_holdout/syn_000.wav","sota_e2_holdout/syn_001.wav","sota_e2_holdout/syn_002.wav","sota_e2_holdout/syn_003.wav","sota_e2_holdout/syn_004.wav","sota_e2_holdout/syn_005.wav","sota_e2_holdout/syn_006.wav","sota_e2_holdout/syn_007.wav","sota_e2_holdout/syn_008.wav","sota_e2_holdout/syn_009.wav","sota_e2_holdout/syn_010.wav","sota_e2_holdout/syn_011.wav","sota_e2_holdout/syn_012.wav","sota_e2_holdout/syn_013.wav","sota_e2_holdout/syn_014.wav","sota_e2_holdout/syn_015.wav","sota_e2_holdout/syn_016.wav","sota_e2_holdout/syn_017.wav","sota_e2_holdout/syn_018.wav","sota_e2_holdout/syn_019.wav","sota_e2_holdout/syn_020.wav","sota_e2_holdout/syn_021.wav","sota_e2_holdout/syn_022.wav","sota_e2_holdout/syn_023.wav","sota_e2_holdout/syn_024.wav","sota_e2_holdout/syn_025.wav","sota_e2_holdout/syn_026.wav","sota_e2_holdout/syn_027.wav","sota_e2_holdout/syn_028.wav","sota_e2_holdout/syn_029.wav"],
+f5:["sota_f5_holdout/syn_000.wav","sota_f5_holdout/syn_001.wav","sota_f5_holdout/syn_002.wav","sota_f5_holdout/syn_003.wav","sota_f5_holdout/syn_004.wav","sota_f5_holdout/syn_005.wav","sota_f5_holdout/syn_006.wav","sota_f5_holdout/syn_007.wav","sota_f5_holdout/syn_008.wav","sota_f5_holdout/syn_009.wav","sota_f5_holdout/syn_010.wav","sota_f5_holdout/syn_011.wav","sota_f5_holdout/syn_012.wav","sota_f5_holdout/syn_013.wav","sota_f5_holdout/syn_014.wav","sota_f5_holdout/syn_015.wav","sota_f5_holdout/syn_016.wav","sota_f5_holdout/syn_017.wav","sota_f5_holdout/syn_018.wav","sota_f5_holdout/syn_019.wav","sota_f5_holdout/syn_020.wav","sota_f5_holdout/syn_021.wav","sota_f5_holdout/syn_022.wav","sota_f5_holdout/syn_023.wav","sota_f5_holdout/syn_024.wav","sota_f5_holdout/syn_025.wav","sota_f5_holdout/syn_026.wav","sota_f5_holdout/syn_027.wav","sota_f5_holdout/syn_028.wav","sota_f5_holdout/syn_029.wav"],
+chatterbox:["sota_chatterbox_holdout/syn_000.wav","sota_chatterbox_holdout/syn_001.wav","sota_chatterbox_holdout/syn_002.wav","sota_chatterbox_holdout/syn_003.wav","sota_chatterbox_holdout/syn_004.wav","sota_chatterbox_holdout/syn_005.wav","sota_chatterbox_holdout/syn_006.wav","sota_chatterbox_holdout/syn_007.wav","sota_chatterbox_holdout/syn_008.wav","sota_chatterbox_holdout/syn_009.wav","sota_chatterbox_holdout/syn_010.wav","sota_chatterbox_holdout/syn_011.wav","sota_chatterbox_holdout/syn_012.wav","sota_chatterbox_holdout/syn_013.wav","sota_chatterbox_holdout/syn_014.wav","sota_chatterbox_holdout/syn_015.wav","sota_chatterbox_holdout/syn_016.wav","sota_chatterbox_holdout/syn_017.wav","sota_chatterbox_holdout/syn_018.wav","sota_chatterbox_holdout/syn_019.wav","sota_chatterbox_holdout/syn_020.wav","sota_chatterbox_holdout/syn_021.wav","sota_chatterbox_holdout/syn_022.wav","sota_chatterbox_holdout/syn_023.wav","sota_chatterbox_holdout/syn_024.wav","sota_chatterbox_holdout/syn_025.wav","sota_chatterbox_holdout/syn_026.wav","sota_chatterbox_holdout/syn_027.wav","sota_chatterbox_holdout/syn_028.wav","sota_chatterbox_holdout/syn_029.wav"],
+gt:["sota_references/holdout_LJ013-0180.wav","sota_references/holdout_LJ038-0022.wav","sota_references/holdout_LJ039-0204.wav","sota_references/holdout_LJ039-0016.wav","sota_references/holdout_LJ016-0158.wav","sota_references/holdout_LJ048-0115.wav","sota_references/holdout_LJ003-0305.wav","sota_references/holdout_LJ015-0088.wav","sota_references/holdout_LJ015-0044.wav","sota_references/holdout_LJ048-0239.wav","sota_references/holdout_LJ017-0228.wav","sota_references/holdout_LJ034-0126.wav","sota_references/holdout_LJ039-0216.wav","sota_references/holdout_LJ006-0013.wav","sota_references/holdout_LJ047-0176.wav","sota_references/holdout_LJ018-0363.wav","sota_references/holdout_LJ014-0077.wav","sota_references/holdout_LJ032-0182.wav","sota_references/holdout_LJ020-0023.wav","sota_references/holdout_LJ038-0269.wav","sota_references/holdout_LJ045-0193.wav","sota_references/holdout_LJ015-0289.wav","sota_references/holdout_LJ015-0152.wav","sota_references/holdout_LJ042-0115.wav","sota_references/holdout_LJ033-0055.wav","sota_references/holdout_LJ049-0056.wav","sota_references/holdout_LJ008-0013.wav","sota_references/holdout_LJ017-0203.wav","sota_references/holdout_LJ010-0227.wav","sota_references/holdout_LJ045-0180.wav"]
+};;
+
+/* ================= BACKEND (textdb.online) ================= */
+const IDX_KEYS = ["mosbench-idx", "mosbench-idx2"];
+const STATS_KEY = "mosbench-stats";
+const TD_UPDATE = "https://textdb.online/update";
+const TD_READ = "https://textdb.online/";
+
+async function tdWrite(key, value) {
+  const body = new URLSearchParams({key, value});
+  const r = await fetch(TD_UPDATE, {method:"POST", body});
+  if (!r.ok) throw new Error("textdb write HTTP " + r.status);
+  return r.text();
+}
+async function tdRead(key) {
+  const r = await fetch(TD_READ + encodeURIComponent(key), {cache:"no-store"});
+  if (!r.ok) throw new Error("textdb read HTTP " + r.status);
+  return await r.text();
+}
+
+/* ================= SESSION / STATE ================= */
+function randHex(n){const a=new Uint8Array(n);crypto.getRandomValues(a);return[...a].map(b=>b.toString(16).padStart(2,"0")).join("")}
+let SID = localStorage.getItem("mos_sid");
+if (!SID) { SID = randHex(4); localStorage.setItem("mos_sid", SID); }
+/* ratings buffer: {uttIndex: {sysId: mos}} persisted locally until submitted */
+let BUF = JSON.parse(localStorage.getItem("mos_buf_" + SID) || "{}");
+function saveBuf(){localStorage.setItem("mos_buf_" + SID, JSON.stringify(BUF))}
+
+/* seeded PRNG + shuffle: per-utterance random system order, labels A..H */
+function mulberry32(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seededShuffle(arr, seed){const a=arr.slice();const rnd=mulberry32(seed);for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function orderForUtt(u){return seededShuffle(SYSTEMS.map(s=>s.id), (SID.charCodeAt(0)*7919 + u*104729 + 17) >>> 0)}
+const LETTERS = "ABCDEFGH";
+
+/* ================= SCORE UI ================= */
+let curUtt = 0;
+const $ = id => document.getElementById(id);
+const grid = $("grid");
+
+function buildUttSel(){
+  const sel = $("uttSel");
+  sel.innerHTML = UTTS.map((u,i)=>`<option value="${i}">Utterance ${i+1}</option>`).join("");
+  sel.onchange = e => { stopAllAudio(); curUtt = +e.target.value; render(); };
+}
+function ratedCount(u){const o=BUF[u]||{};let n=0;for(const k in o){if(!k.startsWith("__"))n++}return n}
+
+function render(){
+  const u = UTTS[curUtt];
+  $("uttPill").textContent = `Utterance ${curUtt+1} / ${UTTS.length}`;
+  $("uttSel").value = curUtt;
+  const order = orderForUtt(curUtt);
+  const my = BUF[curUtt] || {};
+  grid.innerHTML = order.map((sysId, pos) => {
+    const wav = AUDIO[sysId][curUtt];
+    const sel = my[sysId];
+    const played = my["__played_" + sysId];
+    const btns = [1,2,3,4,5].map(m =>
+      `<button class="mos ${sel===m?"sel":""}" data-sys="${sysId}" data-mos="${m}" ${played?"":"disabled"}>${m}</button>`).join("");
+    return `<div class="sample" data-sys="${sysId}">
+      <div class="lab">System ${LETTERS[pos]} <span class="gt">(anonymized)</span></div>
+      <div class="text">"${u.text}"</div>
+      <div class="playrow">
+        <button class="pbtn ${played?"done":""}" data-sys="${sysId}" title="Play">▶</button>
+        <div class="prog"><i></i></div>
+      </div>
+      <div class="mosrow">${btns}</div>
+    </div>`;
+  }).join("");
+  wireGrid();
+  updateProg();
+}
+
+function wireGrid(){
+  grid.querySelectorAll(".pbtn").forEach(btn => {
+    btn.onclick = () => {
+      const sysId = btn.dataset.sys;
+      const wav = AUDIO[sysId][curUtt];
+      let au = btn._audio;
+      if (!au) {
+        au = new Audio(AUDIO_BASE + wav);
+        au.preload = "auto";
+        btn._audio = au;
+        au.ontimeupdate = () => {
+          const row = btn.closest(".sample").querySelector(".prog i");
+          if (au.duration) row.style.width = (au.currentTime/au.duration*100) + "%";
+        };
+        au.onended = () => { btn.textContent = "▶"; };
+      }
+      grid.querySelectorAll("audio").forEach(x=>{});
+      grid.querySelectorAll(".pbtn").forEach(b=>{ if(b!==btn && b._audio) { b._audio.pause(); b.textContent="▶"; } });
+      if (au.paused) { au.play(); btn.textContent = "⏸"; } else { au.pause(); btn.textContent = "▶"; }
+      if (!BUF[curUtt]) BUF[curUtt] = {};
+      if (!BUF[curUtt]["__played_" + sysId]) {
+        BUF[curUtt]["__played_" + sysId] = 1; saveBuf();
+        btn.classList.add("done");
+        const card = btn.closest(".sample");
+        card.querySelectorAll(".mos").forEach(b=>b.disabled=false);
+      }
+    };
+  });
+  grid.querySelectorAll(".mos").forEach(btn => {
+    btn.onclick = () => {
+      const sysId = btn.dataset.sys, mos = +btn.dataset.mos;
+      if (!BUF[curUtt]) BUF[curUtt] = {};
+      BUF[curUtt][sysId] = mos; saveBuf();
+      const card = btn.closest(".sample");
+      card.querySelectorAll(".mos").forEach(b=>b.classList.toggle("sel", b===btn));
+      updateProg();
+    };
+  });
+}
+function updateProg(){
+  const n = ratedCount(curUtt);
+  $("progPill").textContent = `Rated ${n} / 8`;
+  $("submitBtn").disabled = n < 8;
+}
+$("prevUtt").onclick = ()=>{ stopAllAudio(); if(curUtt>0){curUtt--;render()} };
+$("nextUtt").onclick = ()=>{ stopAllAudio(); if(curUtt<UTTS.length-1){curUtt++;render()} };
+$("randUtt").onclick = ()=>{ stopAllAudio(); curUtt = Math.floor(Math.random()*UTTS.length); render(); };
+
+/* stop any playing audio when leaving an utterance */
+function stopAllAudio(){
+  grid.querySelectorAll(".pbtn").forEach(b=>{ if(b._audio){ b._audio.pause(); b.textContent="▶"; } });
+}
+
+/* ================= SUBMIT ================= */
+$("submitBtn").onclick = async () => {
+  const btn = $("submitBtn");
+  const st = $("saveStatus");
+  const ratings = [];
+  for (const [u, per] of Object.entries(BUF)) {
+    for (const [k,v] of Object.entries(per)) {
+      if (!k.startsWith("__")) ratings.push({utt:+u, sys:k, mos:v});
+    }
+  }
+  if (!ratings.length) return;
+  btn.disabled = true; st.textContent = "Submitting…"; st.className = "status";
+  const recKey = "mosbench-r-" + randHex(4);
+  const rec = {sid:SID, t:Date.now(), n:ratings.length, ratings};
+  try {
+    await tdWrite(recKey, JSON.stringify(rec));
+    await registerIndex(recKey, ratings.length);
+    st.innerHTML = `✅ Saved ${ratings.length} ratings (record <code>${recKey}</code>). Thank you!`;
+    st.className = "status";
+    /* clear submitted utterances from buffer */
+    for (const u of Object.keys(BUF)) delete BUF[u];
+    saveBuf();
+    $("thanksCard").style.display = "block";
+    render();
+    loadStats();   /* refresh stats + permanent link after every submission */
+  } catch (e) {
+    st.textContent = "⚠ Save failed: " + e.message + " — your ratings are kept locally; press Submit again.";
+    st.className = "status err";
+    btn.disabled = false;
+  }
+};
+
+async function registerIndex(recKey, n){
+  for (const idxKey of IDX_KEYS) {
+    for (let attempt=0; attempt<5; attempt++) {
+      let list = [];
+      try { const raw = await tdRead(idxKey); if (raw.trim()) list = JSON.parse(raw); } catch(e){}
+      if (!Array.isArray(list)) list = [];
+      list.push({k:recKey, t:Date.now(), n});
+      const payload = JSON.stringify(list);
+      await tdWrite(idxKey, payload);
+      try {
+        const check = await tdRead(idxKey);
+        if (check.trim() === payload) return true;   /* verified — no clobber */
+      } catch(e){}
+      await new Promise(r=>setTimeout(r, 250 + Math.random()*400));
+    }
+  }
+  return true; /* best effort — record itself is already saved */
+}
+
+/* ================= STATS ================= */
+const T95 = {1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,11:2.201,12:2.179,13:2.160,14:2.145,15:2.131,16:2.120,17:2.110,18:2.101,19:2.093,20:2.086,21:2.080,22:2.074,23:2.069,24:2.064,25:2.060,26:2.056,27:2.052,28:2.049,29:2.045};
+function tcrit(df){ return df>=30 ? 1.960 : (T95[df] || 1.960); }
+
+let LAST_STATS = null;
+
+async function fetchAllRatings(){
+  const seen = new Set(); const records = [];
+  for (const idxKey of IDX_KEYS) {
+    let list = [];
+    try { const raw = await tdRead(idxKey); if (raw.trim()) list = JSON.parse(raw); } catch(e){}
+    if (Array.isArray(list)) for (const it of list) if (it && it.k && !seen.has(it.k)) seen.add(it.k);
+  }
+  const keys = [...seen];
+  const results = await Promise.allSettled(keys.map(k =>
+    tdRead(k).then(raw => JSON.parse(raw)).then(rec => ({key:k, rec}))
+  ));
+  for (const r of results) if (r.status==="fulfilled" && r.value.rec && Array.isArray(r.value.rec.ratings)) records.push(r.value);
+  return records;
+}
+
+function computeStats(records){
+  const bySys = {};   /* sys -> {sum,sumsq,n,hist[5],perUtt{utt:{sum,n}}} */
+  for (const s of SYSTEMS) bySys[s.id] = {sum:0,sumsq:0,n:0,hist:[0,0,0,0,0],perUtt:{}};
+  let nRecords = 0, nRatings = 0;
+  for (const {rec} of records) {
+    nRecords++;
+    for (const r of rec.ratings) {
+      const b = bySys[r.sys]; if (!b) continue;
+      b.sum += r.mos; b.sumsq += r.mos*r.mos; b.n++; nRatings++;
+      b.hist[r.mos-1]++;
+      if (!b.perUtt[r.utt]) b.perUtt[r.utt] = {sum:0,n:0};
+      b.perUtt[r.utt].sum += r.mos; b.perUtt[r.utt].n++;
+    }
+  }
+  const rows = SYSTEMS.map(s => {
+    const b = bySys[s.id];
+    const mean = b.n ? b.sum/b.n : 0;
+    const sd = b.n>1 ? Math.sqrt(Math.max(0,(b.sumsq - b.sum*b.sum/b.n)/(b.n-1))) : 0;
+    const ci = b.n>1 ? tcrit(b.n-1)*sd/Math.sqrt(b.n) : 0;
+    return {...s, n:b.n, mean, sd, ci, hist:b.hist, perUtt:b.perUtt};
+  });
+  return {generated:new Date().toISOString(), nRecords, nRatings, rows};
+}
+
+function fmt(x,d=2){return x.toFixed(d)}
+
+function renderStats(st){
+  LAST_STATS = st;
+  $("statsMeta").innerHTML = `Computed ${new Date(st.generated).toLocaleString()} · ${st.nRecords} session record(s) · ${st.nRatings} individual ratings · models de-anonymized below`;
+  const maxN = Math.max(1, ...st.rows.map(r=>r.n));
+  const best = st.rows.filter(r=>r.n>0).sort((a,b)=>b.mean-a.mean)[0];
+  const head = `<table><tr><th>System (de-anonymized)</th><th>Params</th><th class="num">n</th><th class="num">MOS</th><th class="num">95% CI</th><th class="num">SD</th><th>Distribution (1★ → 5★)</th></tr>` +
+    st.rows.map(r=>{
+      const bars = r.hist.map((c,i)=>`<div class="hb" style="height:${maxN?Math.max(3,c/maxN*44):3}px"><span>${c||""}</span></div>`).join("");
+      const labs = [1,2,3,4,5].map(i=>`<div>${i}</div>`).join("");
+      const isBest = best && r.id===best.id;
+      return `<tr class="${isBest?"best":""}"><td><b>${r.label}</b>${isBest?' <span class="pill">best</span>':""}</td><td>${r.params}</td><td class="num">${r.n}</td><td class="num"><b>${r.n?fmt(r.mean):"—"}</b></td><td class="num">${r.n>1?"±"+fmt(r.ci):"—"}</td><td class="num">${r.n>1?fmt(r.sd):"—"}</td><td><div class="hist">${bars}</div><div class="hlab">${labs}</div></td></tr>`;
+    }).join("") + `</table>`;
+  $("statsBody").innerHTML = head;
+
+  /* per-utterance matrix */
+  const uttRows = UTTS.map((u,i)=>{
+    const cells = st.rows.map(r=>{
+      const p = r.perUtt[i];
+      return (p&&p.n) ? fmt(p.sum/p.n) : "—";
+    });
+    return `<tr><td>${i+1}</td><td class="text" style="font-style:italic;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.text}</td><td>${cells.join("</td><td>")}</td></tr>`;
+  }).join("");
+  const sysHead = st.rows.map(r=>`<th class="num" title="${r.label}">${r.label.split(" ")[0].slice(0,10)}</th>`).join("");
+  $("statsDetail").innerHTML = `<div class="card"><h2>Per-utterance mean MOS</h2><div style="overflow-x:auto"><table><tr><th>#</th><th>Sentence</th>${sysHead}</tr>${uttRows}</table></div></div>`;
+}
+
+function download(name, text, type){
+  const blob = new Blob([text], {type});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+}
+$("dlCsv").onclick = () => {
+  if (!LAST_STATS) return;
+  let csv = "system,params,utterance_index,utterance_text,mos\n";
+  /* per-rating rows need raw records; rebuild from LAST_STATS per-utt means + histogram summary */
+  csv += "# summary rows\nsystem,params,n,mean_mos,ci95,sd,hist1,hist2,hist3,hist4,hist5\n";
+  for (const r of LAST_STATS.rows)
+    csv += `"${r.label}","${r.params}",${r.n},${r.n?r.mean.toFixed(4):""},${r.n>1?r.ci.toFixed(4):""},${r.n>1?r.sd.toFixed(4):""},${r.hist.join(",")}\n`;
+  csv += "\n# per-utterance mean MOS\nutterance,sentence," + LAST_STATS.rows.map(r=>`"${r.label}"`).join(",") + "\n";
+  UTTS.forEach((u,i)=>{
+    csv += `${i},"${u.text.replace(/"/g,'""')}",` + LAST_STATS.rows.map(r=>{
+      const p=r.perUtt[i]; return (p&&p.n)?(p.sum/p.n).toFixed(4):"";
+    }).join(",") + "\n";
+  });
+  download("mos_statistics.csv", csv, "text/csv");
+};
+$("dlJson").onclick = () => {
+  if (!LAST_STATS) return;
+  download("mos_statistics.json", JSON.stringify(LAST_STATS, null, 2), "application/json");
+};
+$("permLink").href = TD_READ + STATS_KEY;
+$("permLink").textContent = "🔗 " + TD_READ + STATS_KEY;
+
+$("refreshStats").onclick = loadStats;
+async function loadStats(){
+  $("statsMeta").textContent = "Loading records…";
+  try {
+    const recs = await fetchAllRatings();
+    if (!recs.length) { $("statsMeta").textContent = "No ratings submitted yet — be the first!"; $("statsBody").innerHTML=""; $("statsDetail").innerHTML=""; LAST_STATS=null; return; }
+    renderStats(computeStats(recs));
+    publishStats();   /* keep the permanent stats link current */
+  } catch(e) {
+    $("statsMeta").innerHTML = `<span class="err">Failed to load: ${e.message}</span>`;
+  }
+}
+
+/* publish current stats snapshot to the permanent link */
+async function publishStats(){
+  if (!LAST_STATS) return;
+  try { await tdWrite(STATS_KEY, JSON.stringify(LAST_STATS)); } catch(e){}
+}
+
+/* ================= NAV / ROUTING ================= */
+function show(view){
+  $("viewScore").classList.toggle("hidden", view!=="score");
+  $("viewStats").classList.toggle("hidden", view!=="stats");
+  if (view==="stats") loadStats();
+  window.scrollTo(0,0);
+}
+$("navScore").onclick = ()=>{ location.hash = "#score"; };
+$("navStats").onclick = ()=>{ location.hash = "#stats"; };
+$("statsLink2").onclick = ()=>{ location.hash = "#stats"; };
+window.addEventListener("hashchange", ()=>show(location.hash==="#stats"?"stats":"score"));
+
+/* ================= INIT ================= */
+buildUttSel();
+render();
+show(location.hash==="#stats" ? "stats" : "score");
+</script>
+</body>
+</html>
