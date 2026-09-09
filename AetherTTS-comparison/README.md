@@ -22,15 +22,15 @@ models — all speaking the LJSpeech voice.
   Each utterance plays the LJSpeech ground truth plus all seven models back to
   back. Both composite scores are shown: **SA-comp** (speaker-agnostic
   selection scalar) and **FULL-comp** (adds SIM; reference only).
-  The table shows two RTF columns: **RTF ↑ (A100)** from the 2026-09-05 bench
-  run (single NVIDIA A100-SXM4-40GB) and **RTF ↑ (RPi4)** (added 2026-09-08)
+  The table shows two RTF columns: **RTF (A100) ↑** from the 2026-09-05 bench
+  run (single NVIDIA A100-SXM4-40GB) and **RTF (RPi4) ↑** (added 2026-09-08)
   from the same protocol on a Raspberry Pi 4 (quad-core Arm Cortex-A72 @
   1.7 GHz, 8 GB RAM, CPU-only, torch 2.7.1+cpu) — measured for the
   champion (11.03, ~11× faster than real time with no GPU), Matcha-TTS
   (0.17) and VITS (0.23); both SOTA models are slower than real time on the
   Pi (RTF < 1). Other models are marked — until measured on the same
   hardware.
-- **MOS 1–5 ↑** (added 2026-09-08; **final 2026-09-09, campaign closed**) — human
+- **MOS ↑** (added 2026-09-08; **final 2026-09-09, campaign closed**) — human
   listening-test column from the MOS-test app (anonymized 8-system
   scoring, 1–5 sliders, textdb.online backend). Final data: **36 ratings per system
   over 9 utterances** (288 ratings; sentences 6 and 17 removed per instruction →
@@ -79,7 +79,7 @@ audio/sota_references/    61 LJSpeech ground-truth wavs (30 dev + 30 holdout + v
 
 Generated 2026-08-27; SOTA tab added 2026-09-05 (VITS added the same day);
 RPi4 RTF column added 2026-09-08 (champion, Matcha, VITS);
-MOS 1–5 column added 2026-09-08 (cleaned MOS-test stats, GT reference row);
+MOS column added 2026-09-08 (cleaned MOS-test stats, GT reference row);
 MOS campaign **closed 2026-09-09** — final scores from the v2 re-analysis
 (36 ratings/system, 9 utterances; sentences 6 & 17 removed; champion u5
 outlier cleaned). Comprehensive MOS write-up:
