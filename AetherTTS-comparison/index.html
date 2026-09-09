@@ -75,8 +75,9 @@
   <h1>AetherTTS Comparison <span style="color:var(--dim);font-weight:400">— champion vs baseline &amp; SOTA</span></h1>
   <div class="sub">
     Champion <b style="color:var(--gold)">c003</b> (w_adv 4 · n_disc 1 · 20 ep) vs the pre-campaign
-    baseline (manual Stage-B ep299), and vs five SOTA TTS models — all speaking the
-    <b>LJSpeech voice</b>. <b>SOTA comparison is holdout-only</b> (30 unseen utterances, the gate
+    baseline (manual Stage-B ep299), and vs six SOTA TTS models — all speaking the
+    <b>LJSpeech voice</b>. Final human <b>MOS</b> scores (listening test closed
+    2026-09-09) are shown in the SOTA table. <b>SOTA comparison is holdout-only</b> (30 unseen utterances, the gate
     split); the dev split is kept for the listening tabs and the campaign's own gate-eval record.
     Synthesized with the frozen eval protocol:
     <b>n_steps=1, temp 0.8, length_scale 0.9</b>, 24 kHz.
@@ -155,7 +156,7 @@
     Generated 2026-08-27 from
     <code>outputs/loop/v2/train/c003/lightning_logs/version_1/ema_epoch-last.ckpt</code>
     (champion) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
-    SOTA run 2026-09-05 (holdout-only comparison). RPi4 RTF added 2026-09-08 (champion, Matcha, VITS).
+    SOTA run 2026-09-05 (holdout-only comparison). RPi4 RTF added 2026-09-08 (champion, Matcha, VITS). MOS finalized 2026-09-09 (campaign closed).
   </div>
 </div>
 
@@ -265,35 +266,24 @@ function sotaTable() {
     ["mos",  "MOS 1–5 ↑", v => v.toFixed(2)],
   ];
   let html = `<div class="sota-h">AetherTTS c003 vs SOTA — Holdout (unseen, 30 utts)</div>
-  <div class="sota-sub">All models speak the LJSpeech voice, scored on the <b>holdout</b> split only —
-  the primary comparison set (30 unseen utterances, the gate split). SA-comp = speaker-agnostic
-  composite (weighted WER, WER2, UTMOS; the selection scalar). FULL-comp adds speaker similarity
-  (reference only — never a selection scalar). Champion row = first-run holdout evaluation
-  (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. RTF is from the bench run:
-  total generated-audio duration / total synthesis time over the 30 holdout utterances, on a
-  single NVIDIA A100-SXM4-40GB (batch size 1, warm steady-state, per-utterance deployment-style
-  calls, seed 1234); the first-run harness does not record RTF. <b>RTF ↑ (RPi4)</b> is the same
-  protocol measured 2026-09-08 on a Raspberry Pi 4 (quad-core Arm Cortex-A72 @ 1.7 GHz, 8 GB RAM,
-  CPU-only, torch 2.7.1+cpu) — the champion synthesizes ~11× faster than real time with no GPU,
-  while Matcha (0.17) and VITS (0.23) are slower than real time on the Pi (RTF &lt; 1); Matcha
-  additionally required swapping torch's bundled NVPL BLAS for OpenBLAS (ARMv8.1 atomics SIGILL
-  on the ARMv8.0 A72). Other models are not yet measured on the RPi4 (—). Green = best in column, red = worst.</div>
-  <div class="sota-sub"><b>MOS 1–5</b> (final, campaign closed 2026-09-09): human listening test via the
-  MOS-test app — 36 ratings per system over 9 utterances, anonymized
-  8-system scoring on 1–5 sliders. Sentences 6 and 17 (single-rater utterances) are removed
-  per instruction. Shown is the <b>cleaned per-utterance mean ± 95% CI</b> (z-based) from a
-  from-scratch re-analysis: every feasible rating assignment was reconstructed exactly from the
-  published aggregates, then screened with Tukey-1.5 fences + modified z-scores (GT held out of
-  the fences as the expected-high reference). Removed: the champion's clip-level outlier
-  (u5 = 1.67, all 5 feasible compositions force ≥2 ratings of 1–5 — consistently bad audio,
-  not one troll rating). GT needed no cleaning in this file version. The <b>LJSpeech GT
-  (reference)</b> row is the ground truth, shown for comparison only. Caveats: 7 kept utterances
-  is a small sample; post-hoc removal is diagnostic, not citable. Full analysis:
-  <code>mos_reanalysis_clean_v2.json</code> (views A raw / B cleaned / C sensitivity — paired
-  per-utterance vs GT in view B: champion −0.88, e2 −1.44 and f5 −0.69 significant;
-  chatterbox/vits/zipvoice/matcha at parity). The champion's CI is the conservative upper end of
-  its range across all 2022 feasible rating reconstructions (3.43 ± [0.40, 0.47]).
-  Comprehensive write-up: <code>AetherTTS/docs/mos-analysis.md</code> (frontier branch).</div>
+  <div class="sota-sub">All systems speak the LJSpeech voice, scored on the <b>holdout</b> split only
+  (30 unseen utterances, the gate split); ZipVoice, E2-TTS, F5-TTS and Chatterbox clone it zero-shot
+  from a 3&nbsp;s prompt. <b>SA-comp</b> = speaker-agnostic composite (WER/WER2/UTMOS; the selection
+  scalar); <b>FULL-comp</b> adds SIM (reference only). Champion row = first-run holdout evaluation
+  (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. <b>RTF</b> = generated audio /
+  synthesis time (higher = faster), batch size 1. <b>RTF ↑ (A100)</b>: single NVIDIA
+  A100-SXM4-40GB, warm steady-state, per-utterance deployment-style calls, seed 1234 (the first-run
+  harness records no RTF). <b>RTF ↑ (RPi4)</b>: same protocol, Raspberry Pi 4 CPU-only
+  (2026-09-08) — champion 11.03 (≈11× real time with no GPU), Matcha 0.17 and VITS 0.23
+  (slower than real time); other models not yet measured (—). Green = best in column, red = worst.</div>
+  <div class="sota-sub"><b>MOS 1–5</b> (final, campaign closed 2026-09-09): anonymized 8-system
+  listening test (ITU-T P.800 1–5 scale) via the MOS-test app — 36 ratings per system over
+  9 utterances. Sentences 6 and 17 removed, then the champion's clip-level outlier (u5) excluded
+  → <b>cleaned per-utterance mean ± 95% CI</b> over 7 kept utterances (small sample; post-hoc
+  removal is diagnostic, not citable). GT needed no cleaning; the <b>LJSpeech GT (reference)</b>
+  row is shown for comparison only. The champion's CI is the conservative upper end across all
+  feasible rating reconstructions. Full analysis: <code>mos_reanalysis_clean_v2.json</code> ·
+  <code>AetherTTS/docs/mos-analysis.md</code> (frontier branch).</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>
