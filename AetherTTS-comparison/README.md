@@ -31,7 +31,7 @@ models — all speaking the LJSpeech voice.
   Pi (RTF < 1). Other models are marked — until measured on the same
   hardware.
 - **MOS 1–5 ↑** (added 2026-09-08; **final 2026-09-09, campaign closed**) — human
-  listening-test column from the [MOS-test](../MOS-test/) app (anonymized 8-system
+  listening-test column from the MOS-test app (anonymized 8-system
   scoring, 1–5 sliders, textdb.online backend). Final data: **36 ratings per system
   over 9 utterances** (288 ratings; sentences 6 and 17 removed per instruction →
   7 kept utterances: LJ013-0180, LJ048-0115, LJ003-0305, LJ039-0204, LJ039-0016,
