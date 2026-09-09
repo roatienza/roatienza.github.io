@@ -74,7 +74,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
 <header>
   <div>
     <h1>🎧 MOS Listening Test</h1>
-    <div class="sub">AetherTTS vs state-of-the-art TTS — 30 holdout sentences, LJSpeech voice</div>
+    <div class="sub">AetherTTS vs state-of-the-art TTS — 30 holdout sentences, LJSpeech voice — <b style="color:var(--warn)">CAMPAIGN CLOSED 2026-09-09</b></div>
   </div>
   <nav>
     <button class="btn" id="navScore">Score samples</button>
@@ -84,6 +84,14 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
 
 <!-- ============ SCORE VIEW ============ -->
 <div id="viewScore">
+
+<div class="card" style="border-color:var(--warn)">
+  <h2>🔒 This listening test is closed.</h2>
+  <p style="margin:6px 0">The MOS campaign ended on <b>2026-09-09</b>. Thank you to everyone who
+  rated — 288 ratings were collected and the final cleaned results are published on the
+  <a href="https://roatienza.github.io/AetherTTS-comparison/">AetherTTS comparison page</a> and in
+  <code>AetherTTS/docs/mos-analysis.md</code>. New submissions are disabled.</p>
+</div>
 
 <div class="card">
   <h2>How to score (Mean Opinion Score)</h2>
@@ -283,6 +291,7 @@ function render(){
   }).join("");
   wireGrid();
   updateProg();
+  if (MOS_CLOSED) document.querySelectorAll(".mos,.pbtn").forEach(b => { b.disabled = true; });
 }
 
 function wireGrid(){
@@ -324,10 +333,16 @@ function wireGrid(){
     };
   });
 }
+/* ================= CAMPAIGN CLOSED 2026-09-09 =================
+   Final data: 288 ratings (n=36/system, 9 utterances). Analysis:
+   sandbox/mos_reanalysis_clean_v2.json; results on the comparison page
+   and in AetherTTS/docs/mos-analysis.md. New submissions are disabled. */
+const MOS_CLOSED = true;
+
 function updateProg(){
   const n = ratedCount(curUtt);
   $("progPill").textContent = `Rated ${n} / 8`;
-  $("submitBtn").disabled = n < 8;
+  $("submitBtn").disabled = MOS_CLOSED || n < 8;
 }
 $("prevUtt").onclick = ()=>{ stopAllAudio(); if(curLocal>0){curLocal--;curUtt=BLOCK[curLocal];render()} };
 $("nextUtt").onclick = ()=>{ stopAllAudio(); if(curLocal<BLOCK.length-1){curLocal++;curUtt=BLOCK[curLocal];render()} };
@@ -338,41 +353,12 @@ function stopAllAudio(){
   grid.querySelectorAll(".pbtn").forEach(b=>{ if(b._audio){ b._audio.pause(); b.textContent="▶"; } });
 }
 
-/* ================= SUBMIT ================= */
+/* ================= SUBMIT (campaign closed 2026-09-09) ================= */
 $("submitBtn").onclick = async () => {
-  const btn = $("submitBtn");
   const st = $("saveStatus");
-  const ratings = [];
-  for (const [u, per] of Object.entries(BUF)) {
-    for (const [k,v] of Object.entries(per)) {
-      if (!k.startsWith("__")) ratings.push({utt:+u, sys:k, mos:v});
-    }
-  }
-  if (!ratings.length) return;
-  btn.disabled = true; st.textContent = "Submitting…"; st.className = "status";
-  const recKey = "mosbench-r-" + randHex(4);
-  const rec = {sid:SID, t:Date.now(), n:ratings.length, block:curBlock, ratings};
-  try {
-    await tdWrite(recKey, JSON.stringify(rec));
-    await registerIndex(recKey, ratings.length);
-    st.innerHTML = `✅ Saved ${ratings.length} ratings (record <code>${recKey}</code>). Thank you!`;
-    st.className = "status";
-    /* clear submitted sentences from buffer */
-    for (const u of Object.keys(BUF)) delete BUF[u];
-    saveBuf();
-    /* rotate to the next block so repeat raters cover all 30 sentences */
-    curBlock = (curBlock + 1) % BLOCKS.length;
-    localStorage.setItem("mos_block_" + SID, curBlock);
-    BLOCK = BLOCKS[curBlock];
-    curLocal = 0; curUtt = BLOCK[curLocal];
-    $("thanksCard").style.display = "block";
-    render();
-    loadStats();   /* refresh stats + permanent link after every submission */
-  } catch (e) {
-    st.textContent = "⚠ Save failed: " + e.message + " — your ratings are kept locally; press Submit again.";
-    st.className = "status err";
-    btn.disabled = false;
-  }
+  st.innerHTML = "🔒 The MOS campaign closed on 2026-09-09 — new ratings are no longer accepted. Final results: <a href=\"https://roatienza.github.io/AetherTTS-comparison/\">comparison page</a>.";
+  st.className = "status err";
+  return;
 };
 
 async function registerIndex(recKey, n){
@@ -534,6 +520,15 @@ window.addEventListener("hashchange", ()=>show(location.hash==="#stats"?"stats":
 buildUttSel();
 render();
 show(location.hash==="#stats" ? "stats" : "score");
+/* campaign closed 2026-09-09: disable rating input, keep stats viewable */
+(function closeCampaign(){
+  const st = $("saveStatus");
+  if (st) { st.innerHTML = "🔒 The MOS campaign closed on 2026-09-09 — new ratings are no longer accepted. Final results: <a href=\"https://roatienza.github.io/AetherTTS-comparison/\">comparison page</a>."; st.className = "status err"; }
+  const sb = $("submitBtn");
+  if (sb) sb.disabled = true;
+  document.querySelectorAll(".mos").forEach(b => { b.disabled = true; b.classList.remove("sel"); });
+  document.querySelectorAll(".pbtn").forEach(b => { b.disabled = true; });
+})();
 </script>
 </body>
 </html>

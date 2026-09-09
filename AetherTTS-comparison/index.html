@@ -207,7 +207,8 @@ const SPLIT_NOTES = {
 };
 
 // MOS listening test (MOS-test app, 2026-09-09 file): 36 ratings/system over 9 utterances.
-// Sentences 6 and 17 (single-rater utterances u6, u16) removed per instruction; then
+// CAMPAIGN CLOSED 2026-09-09 — scores are final. Sentences 6 and 17 (single-rater
+// utterances u6, u16) removed per instruction; then
 // cleaned per-utterance means ± 95% CI (z-based) from the from-scratch re-analysis
 // (sandbox/mos_reanalysis_clean_v2.json, view B_clean): exact reconstruction of every
 // feasible rating assignment, then removal of the champion's clip-level outlier
@@ -277,7 +278,7 @@ function sotaTable() {
   while Matcha (0.17) and VITS (0.23) are slower than real time on the Pi (RTF &lt; 1); Matcha
   additionally required swapping torch's bundled NVPL BLAS for OpenBLAS (ARMv8.1 atomics SIGILL
   on the ARMv8.0 A72). Other models are not yet measured on the RPi4 (—). Green = best in column, red = worst.</div>
-  <div class="sota-sub"><b>MOS 1–5</b> (updated 2026-09-09, re-analysis v2): human listening test via the
+  <div class="sota-sub"><b>MOS 1–5</b> (final, campaign closed 2026-09-09): human listening test via the
   MOS-test app — 36 ratings per system over 9 utterances, anonymized
   8-system scoring on 1–5 sliders. Sentences 6 and 17 (single-rater utterances) are removed
   per instruction. Shown is the <b>cleaned per-utterance mean ± 95% CI</b> (z-based) from a
@@ -291,7 +292,8 @@ function sotaTable() {
   <code>mos_reanalysis_clean_v2.json</code> (views A raw / B cleaned / C sensitivity — paired
   per-utterance vs GT in view B: champion −0.88, e2 −1.44 and f5 −0.69 significant;
   chatterbox/vits/zipvoice/matcha at parity). The champion's CI is the conservative upper end of
-  its range across all 2022 feasible rating reconstructions (3.43 ± [0.40, 0.47]).</div>
+  its range across all 2022 feasible rating reconstructions (3.43 ± [0.40, 0.47]).
+  Comprehensive write-up: <code>AetherTTS/docs/mos-analysis.md</code> (frontier branch).</div>
   <div class="legend"><span class="best">■</span> best in column &nbsp;·&nbsp;
   <span style="color:#e06c5a">■</span> worst in column</div>
   <table class="sota-table"><thead><tr>

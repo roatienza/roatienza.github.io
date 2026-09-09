@@ -30,20 +30,21 @@ models — all speaking the LJSpeech voice.
   (0.17) and VITS (0.23); both SOTA models are slower than real time on the
   Pi (RTF < 1). Other models are marked — until measured on the same
   hardware.
-- **MOS 1–5 ↑** (added 2026-09-08) — human listening-test column from the
-  [MOS-test](../MOS-test/) app (anonymized 8-system scoring, 1–5 sliders,
-  textdb.online backend), 28 ratings per system over 7 utterances
-  (LJ013-0180, LJ048-0115, LJ003-0305, LJ039-0204, LJ039-0016, LJ015-0088,
-  LJ048-0222). Shown is the **cleaned per-utterance mean ± 95% CI** (t-based):
-  the champion's clip-level outlier (u5 = 1.80, forced to contain multiple
-  1–2 ratings — consistently bad audio, not one troll rating) and one unfair
-  rating on the human reference (a 1/5 on GT at u20, forced in every feasible
-  rating assignment — removed MUSHRA-style) are excluded. **GT row** = LJSpeech
-  ground truth, shown for reference (not best/worst-marked). Caveats: 7
-  utterances is a small sample; u6 is single-rater for every system; post-hoc
-  removal is diagnostic, not citable. Full analysis:
-  `sandbox/mos_cleaned_stats.json` (views A raw / B cleaned / C sensitivity;
-  the champion is significantly below GT in all three, −1.20/−1.10/−0.87).
+- **MOS 1–5 ↑** (added 2026-09-08; **final 2026-09-09, campaign closed**) — human
+  listening-test column from the [MOS-test](../MOS-test/) app (anonymized 8-system
+  scoring, 1–5 sliders, textdb.online backend). Final data: **36 ratings per system
+  over 9 utterances** (288 ratings; sentences 6 and 17 removed per instruction →
+  7 kept utterances: LJ013-0180, LJ048-0115, LJ003-0305, LJ039-0204, LJ039-0016,
+  LJ015-0088, LJ048-0222). Shown is the **cleaned per-utterance mean ± 95% CI**
+  (z-based): the champion's clip-level outlier (u5 = 1.67, forced to contain
+  multiple 1–5 ratings — consistently bad audio, not one troll rating) is excluded;
+  GT needed no cleaning in this file version. **GT row** = LJSpeech ground truth,
+  shown for reference (not best/worst-marked). Caveats: 7 utterances is a small
+  sample; post-hoc removal is diagnostic, not citable. Full analysis:
+  `sandbox/mos_reanalysis_clean_v2.json` (views A raw / B cleaned / C sensitivity;
+  paired per-utterance vs GT in view B: champion −0.88, e2 −1.44 and f5 −0.69
+  significant; chatterbox/vits/zipvoice/matcha at parity). Comprehensive write-up:
+  `AetherTTS/docs/mos-analysis.md` (frontier branch).
 
 ## Champion / baseline protocol (frozen)
 
@@ -78,6 +79,10 @@ audio/sota_references/    61 LJSpeech ground-truth wavs (30 dev + 30 holdout + v
 
 Generated 2026-08-27; SOTA tab added 2026-09-05 (VITS added the same day);
 RPi4 RTF column added 2026-09-08 (champion, Matcha, VITS);
-MOS 1–5 column added 2026-09-08 (cleaned MOS-test stats, GT reference row).
+MOS 1–5 column added 2026-09-08 (cleaned MOS-test stats, GT reference row);
+MOS campaign **closed 2026-09-09** — final scores from the v2 re-analysis
+(36 ratings/system, 9 utterances; sentences 6 & 17 removed; champion u5
+outlier cleaned). Comprehensive MOS write-up:
+`AetherTTS/docs/mos-analysis.md` (frontier branch).
 Full benchmark write-up: `AetherTTS/docs/sota-benchmark.md` (§3.5 for the
 RPi4 measurement; script `AetherTTS/sota_bench/rpi4_rtf.py`).
