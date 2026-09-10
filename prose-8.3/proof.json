@@ -1,0 +1,778 @@
+{
+ "schema": "s711rope_v8_prose.v1 (10-sample, v8.3 approximate tier)",
+ "dataset": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope",
+ "rows": 10,
+ "registers_attached": 10,
+ "meta_voice_register": 10,
+ "provider_summary": {
+  "schema": "register_bridge.v1",
+  "mode": "sidecar",
+  "sidecar_python": "/storage/tmp/claude_cap_bench/moss_caption_pilot_v1/venv/bin/python",
+  "certified_stack": {
+   "transformers": "4.57.1",
+   "torch": "2.9.1+cu128"
+  },
+  "device": "cuda:0",
+  "sidecar_evidence": {
+   "adapter_evidence_sha256": "fb9249b8b8d0a47f03bcbc227e3df74fe8be12adfb37c4e51c0ea315a0096c3b",
+   "assets_sha256": "86823e6da0ad497d95332bc58a35899384471ca6e16ff6951be44883b5753fa2",
+   "base_revision": "6907a499dc0e87cc77c8ae0fe23fd0eb5476a02d",
+   "device": "cuda:0",
+   "max_new_tokens": 1024,
+   "model": "OpenMOSS-Team/MOSS-Audio-4B-Instruct",
+   "precision": "bfloat16",
+   "register_schema": "voice_register.v1",
+   "schema": "register_provider.v1",
+   "spec_sha256": "c1250b1c5a480f34a8e03555c16e50c9f7fd5fc858b5a89e58753d29392396b3"
+  },
+  "calls": 20,
+  "register_valid_calls": 20,
+  "problem_calls": 0
+ },
+ "s7_rows": [
+  {
+   "utt_id": "s711rope:grief_woman",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/grief_woman.wav",
+   "v7_caption": "young adult female voice, delivering performance and conversational, intimate close-mic performance, with a mildly distressed and sad emotional register, with a breathy, bright, and nasal timbre. The delivery is slow tempo, low pitch, loud loudness, breathy in delivery and with a trembling voice. There is tremble. clear recording. medium utterance — 13 words — 2.57 words per second.",
+   "v8_caption": "young adult female voice, appears to be Australian-accented, high-pitched, delivered in what reads as a conversational style, intimate close-mic performance, with what sounds like a sad emotional register, with what sounds like a breathy, bright, and nasal timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, breathy in delivery and with a trembling voice. There is what sounds like tremble. clear recording. medium utterance — 13 words — 2.57 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "young-adult",
+      "age_years": 21
+     },
+     "environment": "high",
+     "gender": "female",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "high",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "accent": {
+      "value": "australian",
+      "source": "approx:qwen3omni_fused_vote"
+     },
+     "affect": {
+      "value": "sad",
+      "source": "approx:fused_affect_vote"
+     },
+     "style": {
+      "value": "conversational",
+      "source": "approx:fused_style_vote"
+     },
+     "vocal_power": {
+      "value": "loud",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "gasp",
+       "tremble"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "breathy",
+       "bright",
+       "nasal"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:command_deep",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/command_deep.wav",
+   "v7_caption": "adult male voice, delivering performance, intimate close-mic performance, with a mildly content and serious emotional register, with a resonant, dark, and soft timbre. The delivery is slow tempo, low pitch, loud loudness, drawled. There is pause. clear recording. medium utterance — 8 words — 1.41 words per second.",
+   "v8_caption": "middle-aged male voice, appears to be North American-accented, low-pitched, intimate close-mic performance, with what sounds like a resonant, dark, and soft timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, drawled. There is what sounds like pause. clear recording. medium utterance — 8 words — 1.41 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "middle-aged",
+      "age_years": 44
+     },
+     "environment": "high",
+     "gender": "male",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "low",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "accent": {
+      "value": "american",
+      "source": "approx:qwen3omni_fused_vote"
+     },
+     "vocal_power": {
+      "value": "loud",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "pause"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "resonant",
+       "dark",
+       "soft"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:grief_oldman",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/grief_oldman.wav",
+   "v7_caption": "adult female voice, delivering monologue, intimate close-mic performance, with a mildly gentle and affectionate emotional register, with a warm, nasal, and breathy timbre. The delivery is slow tempo, low pitch, soft loudness, fluent and breathy in delivery. There is pause. clear recording. medium utterance — 15 words — 2.03 words per second.",
+   "v8_caption": "elderly male voice, appears to be North American-accented, low-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like a warm, nasal, and breathy timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a quiet volume, moderate pitch variability, fluent and breathy in delivery. There is what sounds like pause. clear recording. medium utterance — 15 words — 2.03 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "elderly",
+      "age_years": 63
+     },
+     "environment": "high",
+     "gender": "male",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "low",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "accent": {
+      "value": "american",
+      "source": "approx:qwen3omni_fused_vote"
+     },
+     "style": {
+      "value": "monologue",
+      "source": "approx:fused_style_vote"
+     },
+     "vocal_power": {
+      "value": "soft",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "pause"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "warm",
+       "nasal",
+       "breathy"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:joy_woman",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/joy_woman.wav",
+   "v7_caption": "young adult female voice, delivering performance, intimate close-mic performance, with an intensely joyful and elated emotional register, with a breathy, bright, and soft timbre. The delivery is fast tempo, high pitch, loud loudness, breathy in delivery and with a trembling voice. There is hum. clear recording. medium utterance — 12 words — 1.92 words per second.",
+   "v8_caption": "young adult female voice, high-pitched, intimate close-mic performance, with what sounds like a breathy, bright, and soft timbre. The delivery is breathy, fast, rapid pacing, at what sounds like a loud volume, animated, wide pitch movement, breathy in delivery and with a trembling voice. There is what sounds like hum. clear recording. medium utterance — 12 words — 1.92 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "young-adult",
+      "age_years": 21
+     },
+     "environment": "high",
+     "gender": "female",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "high",
+     "prosodic_variability": "animated",
+     "tempo": "fast"
+    },
+    "approx": {
+     "vocal_power": {
+      "value": "loud",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "hum"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "breathy",
+       "bright",
+       "soft"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:rage_woman",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/rage_woman.wav",
+   "v7_caption": "young adult female voice, delivering monologue and performance, intimate close-mic performance, with an intensely angry, animated, and disappointed emotional register, shifting to strong anger, with a bright, soft, and clear timbre. The delivery is fast tempo, high pitch, loud loudness, clipped. There is hum and pause. clear recording. medium utterance — 13 words — 2.79 words per second.",
+   "v8_caption": "young adult female voice, high-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like an angry emotional register, shifting to strong anger, with what sounds like a bright, soft, and clear timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, clipped. There is what sounds like hum and pause. clear recording. medium utterance — 13 words — 2.79 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "young-adult",
+      "age_years": 31
+     },
+     "environment": "high",
+     "gender": "female",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "high",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "affect": {
+      "value": "angry",
+      "source": "approx:fused_affect_vote"
+     },
+     "style": {
+      "value": "monologue",
+      "source": "approx:fused_style_vote"
+     },
+     "vocal_power": {
+      "value": "loud",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "hum",
+       "pause"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "bright",
+       "soft",
+       "clear"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:sly_woman",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/sly_woman.wav",
+   "v7_caption": "young adult female voice, delivering narration and news, intimate close-mic performance, with a mildly animated, angry, and gentle emotional register, with a bright, breathy, and soft timbre. The delivery is slow tempo, low pitch, fluent and breathy in delivery. There is hum and pause. clear recording. medium utterance — 12 words — 1.8 words per second.",
+   "v8_caption": "young adult female voice, appears to be Australian-accented, high-pitched, delivered in what reads as a narration style, intimate close-mic performance, with what sounds like an angry emotional register, with what sounds like a bright, breathy, and soft timbre. The delivery is breathy, slow, unhurried pacing, moderate pitch variability, fluent and breathy in delivery. There is what sounds like hum and pause. clear recording. medium utterance — 12 words — 1.8 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "young-adult",
+      "age_years": 31
+     },
+     "environment": "high",
+     "gender": "female",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "high",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "accent": {
+      "value": "australian",
+      "source": "approx:qwen3omni_fused_vote"
+     },
+     "affect": {
+      "value": "angry",
+      "source": "approx:fused_affect_vote"
+     },
+     "style": {
+      "value": "narration",
+      "source": "approx:fused_style_vote"
+     },
+     "event_placement": {
+      "value": [
+       "hum",
+       "pause"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "bright",
+       "breathy",
+       "soft"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:tender_man",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/tender_man.wav",
+   "v7_caption": "adult male voice, delivering conversational and performance, intimate close-mic performance, with a mildly gentle emotional register, with a breathy, resonant, and bright timbre. The delivery is slow tempo, low pitch, soft loudness, breathy in delivery and fluent. There is hum and pause. degraded recording with noise, distortion. medium utterance — 10 words — 1.92 words per second.",
+   "v8_caption": "elderly male voice, appears to be North American-accented, low-pitched, delivered in what reads as a conversational style, intimate close-mic performance, with what sounds like a breathy, resonant, and bright timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a quiet volume, moderate pitch variability, breathy in delivery and fluent. There is what sounds like hum and pause. clear recording. medium utterance — 10 words — 1.92 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "elderly",
+      "age_years": 63
+     },
+     "environment": "high",
+     "gender": "male",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "low",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "accent": {
+      "value": "american",
+      "source": "approx:qwen3omni_fused_vote"
+     },
+     "style": {
+      "value": "conversational",
+      "source": "approx:fused_style_vote"
+     },
+     "vocal_power": {
+      "value": "soft",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "hum",
+       "pause"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "breathy",
+       "resonant",
+       "bright"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:fear_child",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/fear_child.wav",
+   "v7_caption": "young adult female voice, delivering performance, intimate close-mic performance, with a mildly fearful and sad emotional register, with a breathy, bright, and nasal timbre. The delivery is slow tempo, high pitch, soft loudness, breathy in delivery, whispered, and with a trembling voice. There is whisper and tremble. degraded recording with noise, distortion. medium utterance — 11 words — 2.48 words per second.",
+   "v8_caption": "young adult female voice, appears to be North American-accented, high-pitched, intimate close-mic performance, with what sounds like a fearful emotional register, with what sounds like a breathy, bright, and nasal timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a quiet volume, moderate pitch variability, breathy in delivery, whispered, and with a trembling voice. There is what sounds like whisper and tremble. clear recording. medium utterance — 11 words — 2.48 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "young-adult",
+      "age_years": 21
+     },
+     "environment": "high",
+     "gender": "female",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "high",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "accent": {
+      "value": "american",
+      "source": "approx:qwen3omni_fused_vote"
+     },
+     "affect": {
+      "value": "fearful",
+      "source": "approx:fused_affect_vote"
+     },
+     "vocal_power": {
+      "value": "soft",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "whisper",
+       "tremble"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "breathy",
+       "bright",
+       "nasal"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:long_female",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/long_female.wav",
+   "v7_caption": "young adult female voice, delivering monologue and narration, intimate close-mic performance, with a mildly gentle, calm, and vulnerable emotional register, with a resonant, breathy, and soft timbre. The delivery is slow tempo, low pitch, loud loudness, fluent and breathy in delivery. There is pause. clear recording. long utterance — 34 words — 2.28 words per second.",
+   "v8_caption": "young adult female voice, low-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like a calm emotional register, with what sounds like a resonant, breathy, and soft timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, fluent and breathy in delivery. There is what sounds like pause. clear recording. long utterance — 34 words — 2.28 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "young-adult",
+      "age_years": 31
+     },
+     "environment": "high",
+     "gender": "female",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "low",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "affect": {
+      "value": "calm",
+      "source": "approx:fused_affect_vote"
+     },
+     "style": {
+      "value": "monologue",
+      "source": "approx:fused_style_vote"
+     },
+     "vocal_power": {
+      "value": "loud",
+      "source": "approx:fused_loudness_vote"
+     },
+     "event_placement": {
+      "value": [
+       "pause"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "resonant",
+       "breathy",
+       "soft"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  },
+  {
+   "utt_id": "s711rope:shift_man",
+   "audio_path": "/storage/tts/irodori-en/showcase_s7_prose_120k/audio_s711_rope/shift_man.wav",
+   "v7_caption": "middle-aged male voice, delivering monologue and conversational, intimate close-mic performance, with a mildly thoughtful, neutral, and content emotional register, with a resonant, warm, and rough timbre. The delivery is slow tempo, low pitch. There is pause. clear recording. medium utterance — 12 words — 2.15 words per second.",
+   "v8_caption": "middle-aged male voice, low-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like a neutral emotional register, with what sounds like a resonant, warm, and rough timbre. The delivery is breathy, slow, unhurried pacing, moderate pitch variability. There is what sounds like pause. clear recording. medium utterance — 12 words — 2.15 words per second.",
+   "v8_differs_from_v7": true,
+   "register": {
+    "abstained": {
+     "accent": "measured_value_absent",
+     "accent_strength": "no_certified_instrument",
+     "affect": "no_certified_instrument",
+     "articulation": "no_certified_instrument",
+     "degree_modifiers": "no_certified_instrument",
+     "event_placement": "no_witness_spans",
+     "pathologies": "policy_no_model_vocabulary",
+     "persona": "no_certified_instrument",
+     "resonance": "no_certified_instrument",
+     "style": "no_certified_instrument",
+     "timbre": "no_certified_instrument",
+     "vocal_power": "measured_value_absent"
+    },
+    "provenance": {
+     "age": "store:spkpass_speaker_vote",
+     "environment": "measured:dsp_recording_quality_tier",
+     "gender": "store:spkpass_clip_attrs",
+     "language": "corpus_metadata:english_only_corpus",
+     "phonation": "measured:spkpass_cap_register",
+     "pitch_register": "measured:spkpass_cap_pitch",
+     "prosodic_variability": "measured:feats_pool_f0_iqr_st",
+     "tempo": "measured:spkpass_cap_tempo"
+    },
+    "schema": "voice_register.v1",
+    "values": {
+     "age": {
+      "age_bin": "middle-aged",
+      "age_years": 44
+     },
+     "environment": "high",
+     "gender": "male",
+     "language": "en",
+     "phonation": "breathy",
+     "pitch_register": "low",
+     "prosodic_variability": "moderate",
+     "tempo": "slow"
+    },
+    "approx": {
+     "affect": {
+      "value": "neutral",
+      "source": "approx:fused_affect_vote"
+     },
+     "style": {
+      "value": "monologue",
+      "source": "approx:fused_style_vote"
+     },
+     "event_placement": {
+      "value": [
+       "pause"
+      ],
+      "source": "approx:fused_event_vote"
+     },
+     "timbre": {
+      "value": [
+       "resonant",
+       "warm",
+       "rough"
+      ],
+      "source": "approx:fused_timbre_vote"
+     }
+    }
+   }
+  }
+ ],
+ "note": "10 samples selected from two 10-clip v8.3 runs (v83_10 + v83_10b) for coverage and emotion diversity; all 20 clips captioned, 20/20 registers valid, 0 problem calls."
+}
