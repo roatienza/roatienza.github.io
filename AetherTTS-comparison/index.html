@@ -267,25 +267,15 @@ function sotaTable() {
   let html = `<div class="sota-h">AetherTTS c003 vs SOTA — Holdout (unseen, 30 utts) with human MOS</div>
   <div class="sota-sub">All systems speak the LJSpeech voice, scored on the <b>holdout</b> split only
   (30 unseen utterances, the gate split); ZipVoice, E2-TTS, F5-TTS and Chatterbox clone it zero-shot
-  from a 3&nbsp;s prompt. <b>WER</b>: faster-Whisper <code>small.en</code>; <b>WER2</b>: two-ASR
-  consensus WER; <b>UTMOS</b>: UTMOSv2; <b>SIM</b>: ECAPA-TDNN speaker cosine.
-  <b>SA-comp</b> = speaker-agnostic composite (WER/WER2/UTMOS; the selection
+  from a 3&nbsp;s prompt. <b>SA-comp</b> = speaker-agnostic composite (WER/WER2/UTMOS; the selection
   scalar); <b>FULL-comp</b> adds SIM (reference only). Champion row = first-run holdout evaluation
   (seed 1234, n_steps 1); SOTA rows = 2026-09-05 bench re-synthesis. <b>RTF</b> = generated audio /
-  synthesis time (higher = faster), batch size 1, on A100-40GB and RPi4 (CPU).
-  <b>RTF (A100)</b>: single NVIDIA
-  A100-SXM4-40GB, warm steady-state, per-utterance deployment-style calls, seed 1234 (the first-run
-  harness records no RTF). <b>RTF (RPi4)</b>: same protocol, Raspberry Pi 4 CPU-only
-  (2026-09-08) — champion 11.03 (≈11× real time with no GPU), Matcha 0.17 and VITS 0.23
-  (slower than real time); other models not yet measured (—).</div>
+  synthesis time (higher = faster), batch size 1, on A100-40GB and RPi4 (CPU).</div>
   <div class="sota-sub"><b>MOS</b> (mean ± 95% CI; final, campaign closed 2026-09-09): anonymized
-  8-system
-  listening test (ITU-T P.800 1–5 scale) via the MOS-test app — 36 ratings per system over
-  9 utterances. Sentences 6 and 17 removed, then the champion's clip-level outlier (u5) excluded
-  → <b>cleaned per-utterance mean ± 95% CI</b> over 7 kept utterances (small sample; post-hoc
-  removal is diagnostic, not citable). GT needed no cleaning; the <b>LJSpeech GT (reference)</b>
-  row is shown for comparison only. The champion's CI is the conservative upper end across all
-  feasible rating reconstructions. Full analysis: <code>mos_reanalysis_clean_v2.json</code> ·
+  8-system listening test (ITU-T P.800 1–5 scale) — 36 ratings per system over 9 utterances;
+  sentences 6 and 17 removed and the champion's outlier (u5) excluded → cleaned per-utterance
+  mean ± 95% CI over 7 kept utterances (small sample; post-hoc removal is diagnostic, not
+  citable). The <b>LJSpeech GT (reference)</b> row is shown for comparison only. Full analysis:
   <code>AetherTTS/docs/mos-analysis.md</code> (frontier branch).</div>
   <div class="legend"><b>Bold</b> = best per column among the TTS systems; LJSpeech GT is a
   reference row.</div>
