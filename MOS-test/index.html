@@ -32,6 +32,8 @@ a{color:var(--acc)}
 .sample{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
 .sample .lab{font-weight:700;font-size:1.02rem}
 .sample .gt{color:var(--mut);font-weight:400;font-size:.8rem}
+.sample.gtc{border:1.5px dashed var(--acc);background:var(--acc2)}
+.sample.gtc .lab{color:var(--acc)}
 .playrow{display:flex;align-items:center;gap:8px;margin:8px 0}
 .pbtn{width:42px;height:42px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:1.05rem;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
 .pbtn:hover{opacity:.88}
@@ -101,6 +103,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
   <p style="margin:6px 0">To keep the test short, a <b>random sample of 10 sentences</b> (drawn from the 100-utterance validation holdout, seed 20260914) is split into <b>2 blocks of 5</b>. Each rater is assigned <b>one block</b> and rates all 7 systems on its 5 sentences — <b>35 ratings, about 8 minutes</b>. Blocks rotate so each gets equal coverage. The <b>full 100-utterance machine composite</b> for every system is shown in the statistics view.</p>
   <ul class="tips">
     <li><b>Use headphones</b> in a quiet room if possible.</li>
+    <li>Each sentence starts with the <b>ground-truth reference</b> (the original LJSpeech recording) — listen to it first, then compare each system against it.</li>
     <li><b>Play each sample fully</b> (at least once) before rating it — the score buttons unlock after playback starts.</li>
     <li>You may replay any sample as often as you like before deciding.</li>
     <li>Rate what you <i>hear</i>, not what you think it might be — the system identities are hidden on purpose.</li>
@@ -142,6 +145,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
   <div class="sub" id="statsMeta">Loading…</div>
   <div style="margin:10px 0">
     <button class="btn" id="refreshStats">↻ Refresh</button>
+    <button class="btn" id="resetScores" title="Delete all submitted ratings from the shared store">✕ Reset scores</button>
     <button class="btn" id="dlCsv">⬇ Download CSV</button>
     <button class="btn" id="dlJson">⬇ Download JSON</button>
     <a class="btn" id="permLink" href="#" target="_blank" rel="noopener" style="text-decoration:none">🔗 Permanent stats link</a>
@@ -157,7 +161,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
   Ratings are stored anonymously on a public key-value store (textdb.online); each submission is an independent record.
   Models are anonymized during scoring and identified only in the statistics view.
   Champion: AetherTTS v3m (c003 recipe + multi-band flow-matching loss, 40 ep, warm-started from c003 EMA) · 6.78M.
-  Sample: 10 of 100 holdout utterances, seed 20260914 · built 2026-09-14.
+  Sample: 10 of 100 holdout utterances, seed 20260914 · ground-truth reference included · built 2026-09-14.
 </footer>
 </div>
 
@@ -165,6 +169,7 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
 "use strict";
 /* ================= DATA (10-utt random sample of the 100-utt holdout, 7 SOTA systems) ================= */
 const AUDIO_BASE = "https://roatienza.github.io/AetherTTS-comparison/audio/";
+const GT = ["sota_references/holdout_LJ013-0180.wav", "sota_references/holdout_LJ006-0219.wav", "sota_references/holdout_LJ028-0320.wav", "sota_references/holdout_LJ014-0221.wav", "sota_references/holdout_LJ014-0268.wav", "sota_references/holdout_LJ022-0155.wav", "sota_references/holdout_LJ019-0155.wav", "sota_references/holdout_LJ042-0057.wav", "sota_references/holdout_LJ037-0031.wav", "sota_references/holdout_LJ032-0021.wav"]; /* original LJSpeech recordings (ground truth), index-aligned with UTTS */
 const SYSTEMS = [{"id": "champion", "label": "AetherTTS v3m (champion)", "params": "6.78M", "data": "LJSpeech (trained)"}, {"id": "vits", "label": "VITS (LJSpeech)", "params": "36.3M", "data": "LJSpeech (trained)"}, {"id": "matcha", "label": "Matcha-TTS", "params": "32.1M", "data": "LJSpeech (trained)"}, {"id": "zipvoice", "label": "ZipVoice", "params": "136.2M", "data": "Emilia, zero-shot (LJSpeech voice prompt)"}, {"id": "e2", "label": "E2-TTS Base", "params": "347.1M", "data": "Emilia, zero-shot (LJSpeech voice prompt)"}, {"id": "f5", "label": "F5-TTS v1 Base", "params": "350.6M", "data": "Emilia, zero-shot (LJSpeech voice prompt)"}, {"id": "chatterbox", "label": "Chatterbox", "params": "796.3M", "data": "Emilia, zero-shot (LJSpeech voice prompt)"}];
 const MACHINE = {"champion": {"sa": 0.85186, "full": 0.86924, "utmos": 3.7685, "wer": 0.0615, "wer2": 0.0923, "sim": 0.8775, "rtf": 164.9416}, "vits": {"sa": 0.8527, "full": 0.8698, "utmos": 3.7467, "wer": 0.059, "wer2": 0.0828, "sim": 0.8764, "rtf": 18.6948}, "matcha": {"sa": 0.8578, "full": 0.8717, "utmos": 3.7621, "wer": 0.0528, "wer2": 0.0752, "sim": 0.8549, "rtf": 23.8804}, "zipvoice": {"sa": 0.8628, "full": 0.8663, "utmos": 3.8157, "wer": 0.051, "wer2": 0.077, "sim": 0.7603, "rtf": 3.3495}, "e2": {"sa": 0.8335, "full": 0.8471, "utmos": 3.5364, "wer": 0.0605, "wer2": 0.084, "sim": 0.8025, "rtf": 4.2723}, "f5": {"sa": 0.8804, "full": 0.8848, "utmos": 4.0359, "wer": 0.0551, "wer2": 0.0778, "sim": 0.8052, "rtf": 2.7547}, "chatterbox": {"sa": 0.8691, "full": 0.8748, "utmos": 3.8733, "wer": 0.048, "wer2": 0.0765, "sim": 0.7953, "rtf": 1.085}};   /* 100-utt holdout machine composite per system */
 const UTTS = [{"i": 0, "text": "The intention of the real murderer to shift the crime to burglars was evident although futile,", "src": "LJ013-0180.wav"}, {"i": 44, "text": "leap-frog, puss in the corner, and \"fly the garter,\" for which purpose the rugs were spread out to prevent feet slipping on the floor.", "src": "LJ006-0219.wav"}, {"i": 52, "text": "will prove the greatest gain that you could possibly receive, while to Darius and the Persians it will be the severest loss.", "src": "LJ028-0320.wav"}, {"i": 59, "text": "On the contrary, many of them encouraged the brutal assailant in his savage attack.", "src": "LJ014-0221.wav"}, {"i": 73, "text": "whither he was taken every morning in a smart brougham, they would have seen him alight from it in Cornhill,", "src": "LJ014-0268.wav"}, {"i": 79, "text": "Power production in this country is virtually back to the nineteen twenty-nine peak.", "src": "LJ022-0155.wav"}, {"i": 80, "text": "The enforcement of discipline depended upon the want of honor among thieves.", "src": "LJ019-0155.wav"}, {"i": 85, "text": "three. That I want to, and I shall, live a normal happy and peaceful life here in the Soviet Union for the rest of my life.", "src": "LJ042-0057.wav"}, {"i": 94, "text": "He found two empty shells in the bushes and gave them to Patrolman J. M. Poe who arrived on the scene shortly after the shooting.", "src": "LJ037-0031.wav"}, {"i": 95, "text": "was a distributor of surplus Italian six point five-millimeter military rifles. During the evening of November twenty-two, nineteen sixty-three,", "src": "LJ032-0021.wav"}];         /* 10 sampled sentences (i = index in the 100-utt holdout) */
@@ -225,7 +230,15 @@ function render(){
   $("uttSel").value = curLocal;
   const order = orderForUtt(curUtt);
   const my = BUF[curUtt] || {};
-  grid.innerHTML = order.map((sysId, pos) => {
+  const gtCard = `<div class="sample gtc">
+      <div class="lab">◆ Ground truth <span class="gt">(original LJSpeech recording — reference only, not rated)</span></div>
+      <div class="text">“${u.text}”</div>
+      <div class="playrow">
+        <button class="pbtn gt" data-gt="1" title="Play reference">▶</button>
+        <div class="prog"><i></i></div>
+      </div>
+    </div>`;
+  grid.innerHTML = gtCard + order.map((sysId, pos) => {
     const wav = AUDIO[sysId][curUtt];
     const sel = my[sysId];
     const played = my["__played_" + sysId];
@@ -246,7 +259,23 @@ function render(){
 }
 
 function wireGrid(){
-  grid.querySelectorAll(".pbtn").forEach(btn => {
+  const gtBtn = grid.querySelector(".pbtn.gt");
+  if (gtBtn) gtBtn.onclick = () => {
+    let au = gtBtn._audio;
+    if (!au) {
+      au = new Audio(AUDIO_BASE + GT[curUtt]);
+      au.preload = "auto";
+      gtBtn._audio = au;
+      au.ontimeupdate = () => {
+        const row = gtBtn.closest(".sample").querySelector(".prog i");
+        if (au.duration) row.style.width = (au.currentTime/au.duration*100) + "%";
+      };
+      au.onended = () => { gtBtn.textContent = "▶"; };
+    }
+    grid.querySelectorAll(".pbtn").forEach(b=>{ if(b!==gtBtn && b._audio) { b._audio.pause(); b.textContent="▶"; } });
+    if (au.paused) { au.play(); gtBtn.textContent = "⏸"; } else { au.pause(); gtBtn.textContent = "▶"; }
+  };
+  grid.querySelectorAll(".pbtn:not(.gt)").forEach(btn => {
     btn.onclick = () => {
       const sysId = btn.dataset.sys;
       const wav = AUDIO[sysId][curUtt];
@@ -507,6 +536,22 @@ $("navScore").onclick = ()=>{ location.hash = "#score"; };
 $("navStats").onclick = ()=>{ location.hash = "#stats"; };
 $("statsLink2").onclick = ()=>{ location.hash = "#stats"; };
 window.addEventListener("hashchange", ()=>show(location.hash==="#stats"?"stats":"score"));
+
+/* ================= RESET (admin) ================= */
+$("resetScores").onclick = async () => {
+  if (!confirm("Reset ALL submitted ratings for every rater? This deletes every record from the shared store.")) return;
+  const btn = $("resetScores"); btn.disabled = true; btn.textContent = "⏳ Resetting…";
+  try {
+    const keys = new Set();
+    for (const k of IDX_KEYS) { try { const raw = await tdRead(k); if (raw.trim()) JSON.parse(raw).forEach(e => keys.add(e.k)); } catch(e){} }
+    for (const k of keys) await tdWrite(k, "");
+    for (const k of IDX_KEYS) await tdWrite(k, "[]");
+    await tdWrite(STATS_KEY, "");
+    alert("Done — " + keys.size + " record(s) deleted. Scores reset.");
+    await loadStats();
+  } catch (e) { alert("Reset failed: " + e.message); }
+  btn.disabled = false; btn.textContent = "✕ Reset scores";
+};
 
 /* ================= INIT ================= */
 buildUttSel();
