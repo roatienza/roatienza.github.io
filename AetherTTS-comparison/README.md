@@ -14,7 +14,8 @@ models — all speaking the LJSpeech voice.
 
 - **Champion (c003)** / **Baseline** / **Compare** — the original
   self-improvement story (30 utts × 2 splits × 2 models = 120 samples).
-- **SOTA (7 models)** — the all-LJSpeech benchmark (2026-09-05): the champion
+- **SOTA (7 models)** — the all-LJSpeech benchmark (2026-09-05, re-scored on the
+  **100-utterance holdout** 2026-09-14): the champion
   plus **VITS, Matcha-TTS, ZipVoice, E2-TTS, F5-TTS, Chatterbox**, scored with
   the same reward-harness metrics (WER, WER2, UTMOSv2, SIM, RTF, composite).
   **Holdout-only comparison** — the summary table always shows the holdout
@@ -22,7 +23,7 @@ models — all speaking the LJSpeech voice.
   Each utterance plays the LJSpeech ground truth plus all seven models back to
   back. Both composite scores are shown: **SA-comp** (speaker-agnostic
   selection scalar) and **FULL-comp** (adds SIM; reference only).
-  The table shows two RTF columns: **RTF (A100) ↑** from the 2026-09-05 bench
+  The table shows two RTF columns: **RTF (A100) ↑** from the 2026-09-14 bench
   run (single NVIDIA A100-SXM4-40GB) and **RTF (RPi4) ↑** (added 2026-09-08)
   from the same protocol on a Raspberry Pi 4 (quad-core Arm Cortex-A72 @
   1.7 GHz, 8 GB RAM, CPU-only, torch 2.7.1+cpu) — measured for the
@@ -67,17 +68,20 @@ audio/champion_holdout/   30 wavs
 audio/baseline_dev/       30 wavs
 audio/baseline_holdout/   30 wavs
 audio/sota_manifest.json  SOTA: per-utterance audio + metrics for 7 models + LJSpeech refs
-audio/sota_champion_{dev,holdout}/   30 wavs each
-audio/sota_vits_{dev,holdout}/       30 wavs each
-audio/sota_matcha_{dev,holdout}/     30 wavs each
-audio/sota_zipvoice_{dev,holdout}/   30 wavs each
-audio/sota_e2_{dev,holdout}/         30 wavs each
-audio/sota_f5_{dev,holdout}/         30 wavs each
-audio/sota_chatterbox_{dev,holdout}/ 30 wavs each
-audio/sota_references/    61 LJSpeech ground-truth wavs (30 dev + 30 holdout + voice prompt)
+audio/sota_champion_{dev,holdout}/   30 dev + 100 holdout wavs
+audio/sota_vits_{dev,holdout}/       30 dev + 100 holdout wavs
+audio/sota_matcha_{dev,holdout}/     30 dev + 100 holdout wavs
+audio/sota_zipvoice_{dev,holdout}/   30 dev + 100 holdout wavs
+audio/sota_e2_{dev,holdout}/         30 dev + 100 holdout wavs
+audio/sota_f5_{dev,holdout}/         30 dev + 100 holdout wavs
+audio/sota_chatterbox_{dev,holdout}/ 30 dev + 100 holdout wavs
+audio/sota_references/    131 LJSpeech ground-truth wavs (30 dev + 100 holdout + voice prompt)
 ```
 
 Generated 2026-08-27; SOTA tab added 2026-09-05 (VITS added the same day);
+RPi4 RTF column added 2026-09-08; SOTA re-scored on the 100-utterance holdout
+2026-09-14 (strict superset of the original 30; first 30 identical, same
+seed-2024 carve, disjoint from dev).
 RPi4 RTF column added 2026-09-08 (champion, Matcha, VITS);
 MOS column added 2026-09-08 (cleaned MOS-test stats, GT reference row);
 MOS campaign **closed 2026-09-09** — final scores from the v2 re-analysis
