@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Prose Captioning v8.3 &mdash; 20-axis register, 10 samples</title>
+<style>
+:root{
+  --ink:#14110D; --line:#332C22; --paper:#F4F0E8; --dim:#B9B1A3;
+  --amber:#E39A2B; --sage:#8FB573; --slate:#7C9CB5; --violet:#B58AD4;
+  --serif:Charter,"Bitstream Charter","Iowan Old Style",Georgia,serif;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);
+  font-size:16px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header.top{border-bottom:1px solid var(--line);
+  background:radial-gradient(120% 100% at 8% -10%,rgba(227,154,43,.10),transparent 60%)}
+header.top .wrap{padding:56px 24px 36px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.6vw,46px);
+  line-height:1.1;margin:0 0 14px}
+h1 em{font-style:italic;color:var(--amber)}
+.standfirst{max-width:70ch;color:var(--dim);margin:0 0 20px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 8px}
+.chip{font-family:var(--mono);font-size:12px;padding:3px 9px;border-radius:99px;
+  border:1px solid var(--line);white-space:nowrap}
+.chip.cert{color:var(--sage);border-color:rgba(143,181,115,.45)}
+.chip.t2{color:var(--violet);border-color:rgba(181,138,212,.45)}
+.chip.t3{color:var(--slate);border-color:rgba(124,156,181,.45)}
+.chip.abs{color:var(--dim)}
+h2{font-family:var(--serif);font-weight:400;font-size:26px;margin:44px 0 12px}
+table.axes{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:12.5px}
+table.axes th,table.axes td{border:1px solid var(--line);padding:5px 8px;text-align:center}
+table.axes th{color:var(--dim);font-weight:500;background:rgba(255,255,255,.02)}
+table.axes td.ax{text-align:left;color:var(--paper)}
+table.axes td.slot,table.axes td.prov{text-align:left;color:var(--dim);font-size:11.5px}
+table.axes td.np{color:var(--amber)}
+.c-cert{color:var(--sage);font-weight:700}
+.c-t2{color:var(--violet);font-weight:700}
+.c-t3{color:var(--slate);font-weight:700}
+.c-abs{color:#5c554a}
+.card{border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:0 0 18px;
+  background:rgba(255,255,255,.015)}
+.cardhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 10px}
+.cardhead h3{font-family:var(--mono);font-weight:500;font-size:17px;margin:0}
+.dur,.cov{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.cov b{color:var(--amber)}
+audio{width:100%;height:36px;margin:0 0 12px}
+.cap{font-family:var(--serif);font-size:17.5px;line-height:1.65;margin:0 0 10px}
+.cap em{color:var(--violet);font-style:italic}
+details{margin:6px 0 0}
+summary{cursor:pointer;color:var(--dim);font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.reg{font-family:var(--mono);font-size:11px;color:var(--dim);overflow:auto;
+  max-height:260px;border:1px solid var(--line);border-radius:6px;padding:10px}
+.files{font-family:var(--mono);font-size:13px}
+.files a{color:var(--slate)}
+footer{border-top:1px solid var(--line);margin-top:48px}
+footer .wrap{padding:24px;color:var(--faint,#7E7768);font-size:13px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<h1>Prose captioning <em>v8.3</em> &mdash; the 20-axis voice register, 10 samples</h1>
+<p class="standfirst">Every caption below comes from the production path
+(caption_batch &rarr; build_s7_row) with the certified register bridge
+(<b>register_full_fit_v4</b>) and the v8.3 approximate tier: certified axes render
+unhedged; axes the certified instruments cannot fill render from fused model votes
+(tier&nbsp;2) or measured signal proxies (tier&nbsp;3), always <em>hedged</em>
+(&ldquo;what sounds like&rdquo;). Policy axes stay abstained &mdash; no instrument,
+no hedge, no clause. The whisper-band conflation gate stays hard.</p>
+
+<div class="legend">
+  <span class="chip cert">&#10003; certified</span>
+  <span class="chip t2">&#126; tier 2 &mdash; fused model vote (hedged in prose)</span>
+  <span class="chip t3">&#126; tier 3 &mdash; measured signal proxy (hedged)</span>
+  <span class="chip abs">&mdash; abstained (policy / no instrument)</span>
+</div>
+<p class="standfirst" style="font-size:13.5px">Adapter evidence
+<code>fb9249b8b8d0a47f&hellip;</code> &middot;
+calls 20 &middot; valid 20 &middot;
+problem calls 0</p>
+</div></header>
+<main class="wrap">
+<h2>20-axis presence table</h2>
+<p class="standfirst" style="font-size:13.5px">&#10003; = certified claim (tier 1, unhedged)
+&middot; &#126; = approximate claim (tier 2 fused vote / tier 3 measured proxy, hedged)
+&middot; &mdash; = abstained (hover for the reason code). &ldquo;no slot&rdquo; axes are
+certified but intentionally have no prose clause; policy axes are never claimable.</p>
+<table class="axes">
+<tr><th style="text-align:left">axis</th><th style="text-align:left">prose slot</th>
+<th style="text-align:left">instrument</th><th>present</th>
+<th>grief_woman</th><th>command_deep</th><th>grief_oldman</th><th>joy_woman</th><th>rage_woman</th><th>sly_woman</th><th>tender_man</th><th>fear_child</th><th>long_female</th><th>shift_man</th></tr>
+<tr><td class="ax">gender</td><td class="slot">S1</td><td class="prov">certified store</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="female">&#10003;</td><td class="c-cert" title="male">&#10003;</td><td class="c-cert" title="male">&#10003;</td><td class="c-cert" title="female">&#10003;</td><td class="c-cert" title="female">&#10003;</td><td class="c-cert" title="female">&#10003;</td><td class="c-cert" title="male">&#10003;</td><td class="c-cert" title="female">&#10003;</td><td class="c-cert" title="female">&#10003;</td><td class="c-cert" title="male">&#10003;</td></tr><tr><td class="ax">age</td><td class="slot">S1</td><td class="prov">certified store</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="young-adult">&#10003;</td><td class="c-cert" title="middle-aged">&#10003;</td><td class="c-cert" title="elderly">&#10003;</td><td class="c-cert" title="young-adult">&#10003;</td><td class="c-cert" title="young-adult">&#10003;</td><td class="c-cert" title="young-adult">&#10003;</td><td class="c-cert" title="elderly">&#10003;</td><td class="c-cert" title="young-adult">&#10003;</td><td class="c-cert" title="young-adult">&#10003;</td><td class="c-cert" title="middle-aged">&#10003;</td></tr><tr><td class="ax">accent</td><td class="slot">S1</td><td class="prov">tier2 fused vote</td><td class="np"><b>6</b>/10</td><td class="c-t2" title="australian [approx:qwen3omni_fused_vote]">&#126;</td><td class="c-t2" title="american [approx:qwen3omni_fused_vote]">&#126;</td><td class="c-t2" title="american [approx:qwen3omni_fused_vote]">&#126;</td><td class="c-abs" title="measured_value_absent">&mdash;</td><td class="c-abs" title="measured_value_absent">&mdash;</td><td class="c-t2" title="australian [approx:qwen3omni_fused_vote]">&#126;</td><td class="c-t2" title="american [approx:qwen3omni_fused_vote]">&#126;</td><td class="c-t2" title="american [approx:qwen3omni_fused_vote]">&#126;</td><td class="c-abs" title="measured_value_absent">&mdash;</td><td class="c-abs" title="measured_value_absent">&mdash;</td></tr><tr><td class="ax">affect</td><td class="slot">S1</td><td class="prov">tier2 fused vote</td><td class="np"><b>6</b>/10</td><td class="c-t2" title="sad [approx:fused_affect_vote]">&#126;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-t2" title="angry [approx:fused_affect_vote]">&#126;</td><td class="c-t2" title="angry [approx:fused_affect_vote]">&#126;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-t2" title="fearful [approx:fused_affect_vote]">&#126;</td><td class="c-t2" title="calm [approx:fused_affect_vote]">&#126;</td><td class="c-t2" title="neutral [approx:fused_affect_vote]">&#126;</td></tr><tr><td class="ax">style</td><td class="slot">S1</td><td class="prov">tier2 fused vote</td><td class="np"><b>7</b>/10</td><td class="c-t2" title="conversational [approx:fused_style_vote]">&#126;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-t2" title="monologue [approx:fused_style_vote]">&#126;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-t2" title="monologue [approx:fused_style_vote]">&#126;</td><td class="c-t2" title="narration [approx:fused_style_vote]">&#126;</td><td class="c-t2" title="conversational [approx:fused_style_vote]">&#126;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-t2" title="monologue [approx:fused_style_vote]">&#126;</td><td class="c-t2" title="monologue [approx:fused_style_vote]">&#126;</td></tr><tr><td class="ax">timbre</td><td class="slot">S1</td><td class="prov">tier2 fused vote</td><td class="np"><b>10</b>/10</td><td class="c-t2" title="breathy, bright, nasal [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="resonant, dark, soft [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="warm, nasal, breathy [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="breathy, bright, soft [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="bright, soft, clear [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="bright, breathy, soft [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="breathy, resonant, bright [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="breathy, bright, nasal [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="resonant, breathy, soft [approx:fused_timbre_vote]">&#126;</td><td class="c-t2" title="resonant, warm, rough [approx:fused_timbre_vote]">&#126;</td></tr><tr><td class="ax">phonation</td><td class="slot">S2</td><td class="prov">certified measured</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td><td class="c-cert" title="breathy">&#10003;</td></tr><tr><td class="ax">pitch_register</td><td class="slot">S2</td><td class="prov">certified measured</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="low">&#10003;</td><td class="c-cert" title="low">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="low">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="low">&#10003;</td><td class="c-cert" title="low">&#10003;</td></tr><tr><td class="ax">tempo</td><td class="slot">S2</td><td class="prov">certified measured</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="fast">&#10003;</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="slow">&#10003;</td><td class="c-cert" title="slow">&#10003;</td></tr><tr><td class="ax">vocal_power</td><td class="slot">S2</td><td class="prov">tier3 measured proxy</td><td class="np"><b>8</b>/10</td><td class="c-t3" title="loud [approx:fused_loudness_vote]">&#126;</td><td class="c-t3" title="loud [approx:fused_loudness_vote]">&#126;</td><td class="c-t3" title="soft [approx:fused_loudness_vote]">&#126;</td><td class="c-t3" title="loud [approx:fused_loudness_vote]">&#126;</td><td class="c-t3" title="loud [approx:fused_loudness_vote]">&#126;</td><td class="c-abs" title="measured_value_absent">&mdash;</td><td class="c-t3" title="soft [approx:fused_loudness_vote]">&#126;</td><td class="c-t3" title="soft [approx:fused_loudness_vote]">&#126;</td><td class="c-t3" title="loud [approx:fused_loudness_vote]">&#126;</td><td class="c-abs" title="measured_value_absent">&mdash;</td></tr><tr><td class="ax">prosodic_variability</td><td class="slot">S2</td><td class="prov">certified measured</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="animated">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td><td class="c-cert" title="moderate">&#10003;</td></tr><tr><td class="ax">environment</td><td class="slot">S3</td><td class="prov">certified measured</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td><td class="c-cert" title="high">&#10003;</td></tr><tr><td class="ax">event_placement</td><td class="slot">S4</td><td class="prov">tier2 fused vote</td><td class="np"><b>10</b>/10</td><td class="c-t2" title="gasp, tremble [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="pause [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="pause [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="hum [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="hum, pause [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="hum, pause [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="hum, pause [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="whisper, tremble [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="pause [approx:fused_event_vote]">&#126;</td><td class="c-t2" title="pause [approx:fused_event_vote]">&#126;</td></tr><tr><td class="ax">language</td><td class="slot">no slot</td><td class="prov">certified (no prose slot)</td><td class="np"><b>10</b>/10</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td><td class="c-cert" title="en">&#10003;</td></tr><tr><td class="ax">accent_strength</td><td class="slot">no slot</td><td class="prov">policy abstain</td><td class="np"><b>0</b>/10</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td></tr><tr><td class="ax">resonance</td><td class="slot">no slot</td><td class="prov">policy abstain</td><td class="np"><b>0</b>/10</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td></tr><tr><td class="ax">articulation</td><td class="slot">no slot</td><td class="prov">policy abstain</td><td class="np"><b>0</b>/10</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td></tr><tr><td class="ax">persona</td><td class="slot">no slot</td><td class="prov">policy abstain</td><td class="np"><b>0</b>/10</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td></tr><tr><td class="ax">degree_modifiers</td><td class="slot">no slot</td><td class="prov">policy abstain</td><td class="np"><b>0</b>/10</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td><td class="c-abs" title="no_certified_instrument">&mdash;</td></tr><tr><td class="ax">pathologies</td><td class="slot">no slot</td><td class="prov">policy abstain</td><td class="np"><b>0</b>/10</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td><td class="c-abs" title="policy_no_model_vocabulary">&mdash;</td></tr>
+</table>
+<h2>The 10 samples</h2>
+
+<article class="card" id="grief_woman">
+  <div class="cardhead">
+    <h3>grief_woman</h3>
+    <span class="dur">5.06 s</span>
+    <span class="cov"><b>13</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/grief_woman.flac"></audio>
+  <p class="cap">young adult female voice, appears to be Australian-accented, high-pitched, delivered in what reads as a conversational style, intimate close-mic performance, with what sounds like a sad emotional register, with what sounds like a breathy, bright, and nasal timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, breathy in delivery and with a trembling voice. There is what sounds like tremble. clear recording. medium utterance — 13 words — 2.57 words per second.</p>
+  <details><summary>register provenance (14 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="female">gender</span><span class="chip cert" title="young-adult">age</span><span class="chip t2" title="australian [approx:qwen3omni_fused_vote]">accent~</span><span class="chip t2" title="sad [approx:fused_affect_vote]">affect~</span><span class="chip t2" title="conversational [approx:fused_style_vote]">style~</span><span class="chip t2" title="breathy, bright, nasal [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="high">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip t3" title="loud [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="gasp, tremble [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;young-adult&quot;,
+   &quot;age_years&quot;: 21
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;female&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;high&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;accent&quot;: {
+   &quot;value&quot;: &quot;australian&quot;,
+   &quot;source&quot;: &quot;approx:qwen3omni_fused_vote&quot;
+  },
+  &quot;affect&quot;: {
+   &quot;value&quot;: &quot;sad&quot;,
+   &quot;source&quot;: &quot;approx:fused_affect_vote&quot;
+  },
+  &quot;style&quot;: {
+   &quot;value&quot;: &quot;conversational&quot;,
+   &quot;source&quot;: &quot;approx:fused_style_vote&quot;
+  },
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;loud&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;gasp&quot;,
+    &quot;tremble&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;breathy&quot;,
+    &quot;bright&quot;,
+    &quot;nasal&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="command_deep">
+  <div class="cardhead">
+    <h3>command_deep</h3>
+    <span class="dur">5.68 s</span>
+    <span class="cov"><b>11</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/command_deep.flac"></audio>
+  <p class="cap">middle-aged male voice, appears to be North American-accented, low-pitched, intimate close-mic performance, with what sounds like a resonant, dark, and soft timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, drawled. There is what sounds like pause. clear recording. medium utterance — 8 words — 1.41 words per second.</p>
+  <details><summary>register provenance (12 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="male">gender</span><span class="chip cert" title="middle-aged">age</span><span class="chip t2" title="american [approx:qwen3omni_fused_vote]">accent~</span><span class="chip t2" title="resonant, dark, soft [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="low">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip t3" title="loud [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="pause [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;middle-aged&quot;,
+   &quot;age_years&quot;: 44
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;male&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;low&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;accent&quot;: {
+   &quot;value&quot;: &quot;american&quot;,
+   &quot;source&quot;: &quot;approx:qwen3omni_fused_vote&quot;
+  },
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;loud&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;pause&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;resonant&quot;,
+    &quot;dark&quot;,
+    &quot;soft&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="grief_oldman">
+  <div class="cardhead">
+    <h3>grief_oldman</h3>
+    <span class="dur">7.40 s</span>
+    <span class="cov"><b>12</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/grief_oldman.flac"></audio>
+  <p class="cap">elderly male voice, appears to be North American-accented, low-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like a warm, nasal, and breathy timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a quiet volume, moderate pitch variability, fluent and breathy in delivery. There is what sounds like pause. clear recording. medium utterance — 15 words — 2.03 words per second.</p>
+  <details><summary>register provenance (13 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="male">gender</span><span class="chip cert" title="elderly">age</span><span class="chip t2" title="american [approx:qwen3omni_fused_vote]">accent~</span><span class="chip t2" title="monologue [approx:fused_style_vote]">style~</span><span class="chip t2" title="warm, nasal, breathy [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="low">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip t3" title="soft [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="pause [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;elderly&quot;,
+   &quot;age_years&quot;: 63
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;male&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;low&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;accent&quot;: {
+   &quot;value&quot;: &quot;american&quot;,
+   &quot;source&quot;: &quot;approx:qwen3omni_fused_vote&quot;
+  },
+  &quot;style&quot;: {
+   &quot;value&quot;: &quot;monologue&quot;,
+   &quot;source&quot;: &quot;approx:fused_style_vote&quot;
+  },
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;soft&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;pause&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;warm&quot;,
+    &quot;nasal&quot;,
+    &quot;breathy&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="joy_woman">
+  <div class="cardhead">
+    <h3>joy_woman</h3>
+    <span class="dur">6.26 s</span>
+    <span class="cov"><b>10</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/joy_woman.flac"></audio>
+  <p class="cap">young adult female voice, high-pitched, intimate close-mic performance, with what sounds like a breathy, bright, and soft timbre. The delivery is breathy, fast, rapid pacing, at what sounds like a loud volume, animated, wide pitch movement, breathy in delivery and with a trembling voice. There is what sounds like hum. clear recording. medium utterance — 12 words — 1.92 words per second.</p>
+  <details><summary>register provenance (11 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="female">gender</span><span class="chip cert" title="young-adult">age</span><span class="chip t2" title="breathy, bright, soft [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="high">pitch_register</span><span class="chip cert" title="fast">tempo</span><span class="chip t3" title="loud [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="animated">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="hum [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;young-adult&quot;,
+   &quot;age_years&quot;: 21
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;female&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;high&quot;,
+  &quot;prosodic_variability&quot;: &quot;animated&quot;,
+  &quot;tempo&quot;: &quot;fast&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;loud&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;hum&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;breathy&quot;,
+    &quot;bright&quot;,
+    &quot;soft&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="rage_woman">
+  <div class="cardhead">
+    <h3>rage_woman</h3>
+    <span class="dur">4.66 s</span>
+    <span class="cov"><b>12</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/rage_woman.flac"></audio>
+  <p class="cap">young adult female voice, high-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like an angry emotional register, shifting to strong anger, with what sounds like a bright, soft, and clear timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, clipped. There is what sounds like hum and pause. clear recording. medium utterance — 13 words — 2.79 words per second.</p>
+  <details><summary>register provenance (13 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="female">gender</span><span class="chip cert" title="young-adult">age</span><span class="chip t2" title="angry [approx:fused_affect_vote]">affect~</span><span class="chip t2" title="monologue [approx:fused_style_vote]">style~</span><span class="chip t2" title="bright, soft, clear [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="high">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip t3" title="loud [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="hum, pause [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;young-adult&quot;,
+   &quot;age_years&quot;: 31
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;female&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;high&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;affect&quot;: {
+   &quot;value&quot;: &quot;angry&quot;,
+   &quot;source&quot;: &quot;approx:fused_affect_vote&quot;
+  },
+  &quot;style&quot;: {
+   &quot;value&quot;: &quot;monologue&quot;,
+   &quot;source&quot;: &quot;approx:fused_style_vote&quot;
+  },
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;loud&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;hum&quot;,
+    &quot;pause&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;bright&quot;,
+    &quot;soft&quot;,
+    &quot;clear&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="sly_woman">
+  <div class="cardhead">
+    <h3>sly_woman</h3>
+    <span class="dur">6.68 s</span>
+    <span class="cov"><b>12</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/sly_woman.flac"></audio>
+  <p class="cap">young adult female voice, appears to be Australian-accented, high-pitched, delivered in what reads as a narration style, intimate close-mic performance, with what sounds like an angry emotional register, with what sounds like a bright, breathy, and soft timbre. The delivery is breathy, slow, unhurried pacing, moderate pitch variability, fluent and breathy in delivery. There is what sounds like hum and pause. clear recording. medium utterance — 12 words — 1.8 words per second.</p>
+  <details><summary>register provenance (13 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="female">gender</span><span class="chip cert" title="young-adult">age</span><span class="chip t2" title="australian [approx:qwen3omni_fused_vote]">accent~</span><span class="chip t2" title="angry [approx:fused_affect_vote]">affect~</span><span class="chip t2" title="narration [approx:fused_style_vote]">style~</span><span class="chip t2" title="bright, breathy, soft [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="high">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="hum, pause [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;young-adult&quot;,
+   &quot;age_years&quot;: 31
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;female&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;high&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;accent&quot;: {
+   &quot;value&quot;: &quot;australian&quot;,
+   &quot;source&quot;: &quot;approx:qwen3omni_fused_vote&quot;
+  },
+  &quot;affect&quot;: {
+   &quot;value&quot;: &quot;angry&quot;,
+   &quot;source&quot;: &quot;approx:fused_affect_vote&quot;
+  },
+  &quot;style&quot;: {
+   &quot;value&quot;: &quot;narration&quot;,
+   &quot;source&quot;: &quot;approx:fused_style_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;hum&quot;,
+    &quot;pause&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;bright&quot;,
+    &quot;breathy&quot;,
+    &quot;soft&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="tender_man">
+  <div class="cardhead">
+    <h3>tender_man</h3>
+    <span class="dur">5.22 s</span>
+    <span class="cov"><b>12</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/tender_man.flac"></audio>
+  <p class="cap">elderly male voice, appears to be North American-accented, low-pitched, delivered in what reads as a conversational style, intimate close-mic performance, with what sounds like a breathy, resonant, and bright timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a quiet volume, moderate pitch variability, breathy in delivery and fluent. There is what sounds like hum and pause. clear recording. medium utterance — 10 words — 1.92 words per second.</p>
+  <details><summary>register provenance (13 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="male">gender</span><span class="chip cert" title="elderly">age</span><span class="chip t2" title="american [approx:qwen3omni_fused_vote]">accent~</span><span class="chip t2" title="conversational [approx:fused_style_vote]">style~</span><span class="chip t2" title="breathy, resonant, bright [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="low">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip t3" title="soft [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="hum, pause [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;elderly&quot;,
+   &quot;age_years&quot;: 63
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;male&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;low&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;accent&quot;: {
+   &quot;value&quot;: &quot;american&quot;,
+   &quot;source&quot;: &quot;approx:qwen3omni_fused_vote&quot;
+  },
+  &quot;style&quot;: {
+   &quot;value&quot;: &quot;conversational&quot;,
+   &quot;source&quot;: &quot;approx:fused_style_vote&quot;
+  },
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;soft&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;hum&quot;,
+    &quot;pause&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;breathy&quot;,
+    &quot;resonant&quot;,
+    &quot;bright&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="fear_child">
+  <div class="cardhead">
+    <h3>fear_child</h3>
+    <span class="dur">4.44 s</span>
+    <span class="cov"><b>12</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/fear_child.flac"></audio>
+  <p class="cap">young adult female voice, appears to be North American-accented, high-pitched, intimate close-mic performance, with what sounds like a fearful emotional register, with what sounds like a breathy, bright, and nasal timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a quiet volume, moderate pitch variability, breathy in delivery, whispered, and with a trembling voice. There is what sounds like whisper and tremble. clear recording. medium utterance — 11 words — 2.48 words per second.</p>
+  <details><summary>register provenance (13 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="female">gender</span><span class="chip cert" title="young-adult">age</span><span class="chip t2" title="american [approx:qwen3omni_fused_vote]">accent~</span><span class="chip t2" title="fearful [approx:fused_affect_vote]">affect~</span><span class="chip t2" title="breathy, bright, nasal [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="high">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip t3" title="soft [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="whisper, tremble [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;young-adult&quot;,
+   &quot;age_years&quot;: 21
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;female&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;high&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;accent&quot;: {
+   &quot;value&quot;: &quot;american&quot;,
+   &quot;source&quot;: &quot;approx:qwen3omni_fused_vote&quot;
+  },
+  &quot;affect&quot;: {
+   &quot;value&quot;: &quot;fearful&quot;,
+   &quot;source&quot;: &quot;approx:fused_affect_vote&quot;
+  },
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;soft&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;whisper&quot;,
+    &quot;tremble&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;breathy&quot;,
+    &quot;bright&quot;,
+    &quot;nasal&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="long_female">
+  <div class="cardhead">
+    <h3>long_female</h3>
+    <span class="dur">14.92 s</span>
+    <span class="cov"><b>12</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/long_female.flac"></audio>
+  <p class="cap">young adult female voice, low-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like a calm emotional register, with what sounds like a resonant, breathy, and soft timbre. The delivery is breathy, slow, unhurried pacing, at what sounds like a loud volume, moderate pitch variability, fluent and breathy in delivery. There is what sounds like pause. clear recording. long utterance — 34 words — 2.28 words per second.</p>
+  <details><summary>register provenance (13 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="female">gender</span><span class="chip cert" title="young-adult">age</span><span class="chip t2" title="calm [approx:fused_affect_vote]">affect~</span><span class="chip t2" title="monologue [approx:fused_style_vote]">style~</span><span class="chip t2" title="resonant, breathy, soft [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="low">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip t3" title="loud [approx:fused_loudness_vote]">vocal_power~</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="pause [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;young-adult&quot;,
+   &quot;age_years&quot;: 31
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;female&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;low&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;affect&quot;: {
+   &quot;value&quot;: &quot;calm&quot;,
+   &quot;source&quot;: &quot;approx:fused_affect_vote&quot;
+  },
+  &quot;style&quot;: {
+   &quot;value&quot;: &quot;monologue&quot;,
+   &quot;source&quot;: &quot;approx:fused_style_vote&quot;
+  },
+  &quot;vocal_power&quot;: {
+   &quot;value&quot;: &quot;loud&quot;,
+   &quot;source&quot;: &quot;approx:fused_loudness_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;pause&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;resonant&quot;,
+    &quot;breathy&quot;,
+    &quot;soft&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<article class="card" id="shift_man">
+  <div class="cardhead">
+    <h3>shift_man</h3>
+    <span class="dur">5.58 s</span>
+    <span class="cov"><b>11</b>/20 axes in prose</span>
+  </div>
+  <audio controls preload="none" src="audio/shift_man.flac"></audio>
+  <p class="cap">middle-aged male voice, low-pitched, delivered in what reads as a monologue style, intimate close-mic performance, with what sounds like a neutral emotional register, with what sounds like a resonant, warm, and rough timbre. The delivery is breathy, slow, unhurried pacing, moderate pitch variability. There is what sounds like pause. clear recording. medium utterance — 12 words — 2.15 words per second.</p>
+  <details><summary>register provenance (12 axes claimed)</summary>
+    <div class="chips"><span class="chip cert" title="male">gender</span><span class="chip cert" title="middle-aged">age</span><span class="chip t2" title="neutral [approx:fused_affect_vote]">affect~</span><span class="chip t2" title="monologue [approx:fused_style_vote]">style~</span><span class="chip t2" title="resonant, warm, rough [approx:fused_timbre_vote]">timbre~</span><span class="chip cert" title="breathy">phonation</span><span class="chip cert" title="low">pitch_register</span><span class="chip cert" title="slow">tempo</span><span class="chip cert" title="moderate">prosodic_variability</span><span class="chip cert" title="high">environment</span><span class="chip t2" title="pause [approx:fused_event_vote]">event_placement~</span><span class="chip cert" title="en">language</span></div>
+    <pre class="reg">{
+ &quot;abstained&quot;: {
+  &quot;accent&quot;: &quot;measured_value_absent&quot;,
+  &quot;accent_strength&quot;: &quot;no_certified_instrument&quot;,
+  &quot;affect&quot;: &quot;no_certified_instrument&quot;,
+  &quot;articulation&quot;: &quot;no_certified_instrument&quot;,
+  &quot;degree_modifiers&quot;: &quot;no_certified_instrument&quot;,
+  &quot;event_placement&quot;: &quot;no_witness_spans&quot;,
+  &quot;pathologies&quot;: &quot;policy_no_model_vocabulary&quot;,
+  &quot;persona&quot;: &quot;no_certified_instrument&quot;,
+  &quot;resonance&quot;: &quot;no_certified_instrument&quot;,
+  &quot;style&quot;: &quot;no_certified_instrument&quot;,
+  &quot;timbre&quot;: &quot;no_certified_instrument&quot;,
+  &quot;vocal_power&quot;: &quot;measured_value_absent&quot;
+ },
+ &quot;provenance&quot;: {
+  &quot;age&quot;: &quot;store:spkpass_speaker_vote&quot;,
+  &quot;environment&quot;: &quot;measured:dsp_recording_quality_tier&quot;,
+  &quot;gender&quot;: &quot;store:spkpass_clip_attrs&quot;,
+  &quot;language&quot;: &quot;corpus_metadata:english_only_corpus&quot;,
+  &quot;phonation&quot;: &quot;measured:spkpass_cap_register&quot;,
+  &quot;pitch_register&quot;: &quot;measured:spkpass_cap_pitch&quot;,
+  &quot;prosodic_variability&quot;: &quot;measured:feats_pool_f0_iqr_st&quot;,
+  &quot;tempo&quot;: &quot;measured:spkpass_cap_tempo&quot;
+ },
+ &quot;schema&quot;: &quot;voice_register.v1&quot;,
+ &quot;values&quot;: {
+  &quot;age&quot;: {
+   &quot;age_bin&quot;: &quot;middle-aged&quot;,
+   &quot;age_years&quot;: 44
+  },
+  &quot;environment&quot;: &quot;high&quot;,
+  &quot;gender&quot;: &quot;male&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;phonation&quot;: &quot;breathy&quot;,
+  &quot;pitch_register&quot;: &quot;low&quot;,
+  &quot;prosodic_variability&quot;: &quot;moderate&quot;,
+  &quot;tempo&quot;: &quot;slow&quot;
+ },
+ &quot;approx&quot;: {
+  &quot;affect&quot;: {
+   &quot;value&quot;: &quot;neutral&quot;,
+   &quot;source&quot;: &quot;approx:fused_affect_vote&quot;
+  },
+  &quot;style&quot;: {
+   &quot;value&quot;: &quot;monologue&quot;,
+   &quot;source&quot;: &quot;approx:fused_style_vote&quot;
+  },
+  &quot;event_placement&quot;: {
+   &quot;value&quot;: [
+    &quot;pause&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_event_vote&quot;
+  },
+  &quot;timbre&quot;: {
+   &quot;value&quot;: [
+    &quot;resonant&quot;,
+    &quot;warm&quot;,
+    &quot;rough&quot;
+   ],
+   &quot;source&quot;: &quot;approx:fused_timbre_vote&quot;
+  }
+ }
+}</pre>
+  </details>
+</article>
+<h2>Artifacts</h2>
+<p class="files">
+<a href="proof.json">proof.json</a> &middot;
+<a href="s711rope_v8_proof_10.py">s711rope_v8_proof_10.py</a> &middot;
+<a href="s711rope_v8_proof_v83_10.sh">s711rope_v8_proof_v83_10.sh</a> &middot;
+<a href="../moss_register_v1/review_bundle_v2_fullfit.html">register review bundle</a>
+</p>
+</main>
+<footer><div class="wrap">Prose captioning v8.3 &middot; voice_register.v1 &middot;
+certified adapter register_full_fit_v4 &middot; approximate tier hedged &middot;
+generated proof.json</div></footer>
+</body></html>
