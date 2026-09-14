@@ -145,7 +145,6 @@ footer{margin-top:26px;color:var(--mut);font-size:.82rem;text-align:center}
   <div class="sub" id="statsMeta">Loading…</div>
   <div style="margin:10px 0">
     <button class="btn" id="refreshStats">↻ Refresh</button>
-    <button class="btn" id="resetScores" title="Delete all submitted ratings from the shared store">✕ Reset scores</button>
     <button class="btn" id="dlCsv">⬇ Download CSV</button>
     <button class="btn" id="dlJson">⬇ Download JSON</button>
     <a class="btn" id="permLink" href="#" target="_blank" rel="noopener" style="text-decoration:none">🔗 Permanent stats link</a>
@@ -515,22 +514,6 @@ $("navScore").onclick = ()=>{ location.hash = "#score"; };
 $("navStats").onclick = ()=>{ location.hash = "#stats"; };
 $("statsLink2").onclick = ()=>{ location.hash = "#stats"; };
 window.addEventListener("hashchange", ()=>show(location.hash==="#stats"?"stats":"score"));
-
-/* ================= RESET (admin) ================= */
-$("resetScores").onclick = async () => {
-  if (!confirm("Reset ALL submitted ratings for every rater? This deletes every record from the shared store.")) return;
-  const btn = $("resetScores"); btn.disabled = true; btn.textContent = "⏳ Resetting…";
-  try {
-    const keys = new Set();
-    for (const k of IDX_KEYS) { try { const raw = await tdRead(k); if (raw.trim()) JSON.parse(raw).forEach(e => keys.add(e.k)); } catch(e){} }
-    for (const k of keys) await tdWrite(k, "");
-    for (const k of IDX_KEYS) await tdWrite(k, "[]");
-    await tdWrite(STATS_KEY, "");
-    alert("Done — " + keys.size + " record(s) deleted. Scores reset.");
-    await loadStats();
-  } catch (e) { alert("Reset failed: " + e.message); }
-  btn.disabled = false; btn.textContent = "✕ Reset scores";
-};
 
 /* ================= INIT ================= */
 buildUttSel();
