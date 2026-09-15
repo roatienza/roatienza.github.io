@@ -150,14 +150,14 @@
     full synthesis call only, bracketed by CUDA synchronization; metric computation is excluded.
     <b>RTF ↑ (RPi4)</b> (added 2026-09-08): the same protocol on a Raspberry Pi 4 (quad-core Arm
     Cortex-A72 @ 1.7 GHz, 8 GB RAM, CPU-only, torch 2.7.1+cpu) — no GPU; measured for the
-    previous champion c003 (11.03, i.e. ~11× faster than real time on CPU), Matcha-TTS (0.17) and
-    VITS (0.23) — both SOTA models are <em>slower</em> than real time on the Pi. The current champion
-    v3m was not measured on RPi4 (—); other models marked —.
+    the current champion v3m (11.03, i.e. ~11× faster than real time on CPU; measured 2026-09-15),
+    the previous champion c003 (11.03), Matcha-TTS (0.17) and VITS (0.23) — both SOTA models are
+    <em>slower</em> than real time on the Pi. Other models marked —.
     <br><br>
     Generated 2026-09-14 from
     <code>outputs/loop/v3/train/v3m/lightning_logs/version_0/ema_epoch-last.ckpt</code>
     (champion v3m) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
-    SOTA run 2026-09-05 (30-utterance holdout); re-scored on the 100-utterance holdout 2026-09-14. RPi4 RTF added 2026-09-08 (c003, Matcha, VITS). MOS finalized 2026-09-09 (campaign closed; v3m not in the test).
+    SOTA run 2026-09-05 (30-utterance holdout); re-scored on the 100-utterance holdout 2026-09-14. RPi4 RTF added 2026-09-08 (c003, Matcha, VITS); v3m RPi4 RTF 11.03 added 2026-09-15. MOS finalized 2026-09-09 (campaign closed; v3m not in the test).
   </div>
 </div>
 
@@ -182,7 +182,7 @@ const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS v3m", method:"1-step MeanFlow + NanoVocos (1 NFE) + multi-band FM",  params:"6.78M",
     dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:122.268, sa:.8453, full:.8639 },
-    holdout: { wer:0.0615, wer2:0.0923, utmos:3.7685, sim:0.8775, rtf:164.9416, sa:0.85186, full:0.86924, rtf_rpi4:null, mos:3.43, mos_ci:0.47, mos_k:9 } },
+    holdout: { wer:0.0615, wer2:0.0923, utmos:3.7685, sim:0.8775, rtf:164.9416, sa:0.85186, full:0.86924, rtf_rpi4:11.03, mos:3.43, mos_ci:0.47, mos_k:9 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
     dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:29.8078, sa:.8491, full:.8684 },
     holdout: { wer:0.0590, wer2:0.0828, utmos:3.7467, sim:0.8764, rtf:18.6948, sa:0.8527, full:0.8698, rtf_rpi4:0.2281, mos:4.24, mos_ci:0.31, mos_k:9 } },
