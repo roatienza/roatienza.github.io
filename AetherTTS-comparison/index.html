@@ -75,8 +75,8 @@
   <div class="sub">
     Champion <b style="color:var(--gold)">v3m</b> (c003 recipe + multi-band FM · 40 ep) vs the pre-campaign
     baseline (manual Stage-B ep299), and vs six SOTA TTS models — all speaking the
-    <b>LJSpeech voice</b>. Final human <b>MOS</b> scores (listening test closed
-    2026-09-09) are shown in the SOTA table. <b>SOTA comparison is holdout-only</b> (100 unseen utterances, the gate
+    <b>LJSpeech voice</b>. Final human <b>MOS</b> scores (listening test, 2026-09-15)
+    are shown in the SOTA table. <b>SOTA comparison is holdout-only</b> (100 unseen utterances, the gate
     split); the dev split is kept for the listening tabs and the campaign's own gate-eval record.
     Synthesized with the frozen eval protocol:
     <b>n_steps=1, temp 0.8, length_scale 0.9</b>, 24 kHz.
@@ -157,7 +157,7 @@
     Generated 2026-09-14 from
     <code>outputs/loop/v3/train/v3m/lightning_logs/version_0/ema_epoch-last.ckpt</code>
     (champion v3m) and <code>baseline/logs_stage_b/.../ema_epoch-last.ckpt</code> (baseline).
-    SOTA run 2026-09-05 (30-utterance holdout); re-scored on the 100-utterance holdout 2026-09-14. RPi4 RTF added 2026-09-08 (c003, Matcha, VITS); v3m RPi4 RTF 11.03 added 2026-09-15. MOS finalized 2026-09-09 (campaign closed; v3m not in the test).
+    SOTA run 2026-09-05 (30-utterance holdout); re-scored on the 100-utterance holdout 2026-09-14. RPi4 RTF added 2026-09-08 (c003, Matcha, VITS); v3m RPi4 RTF 11.03 added 2026-09-15. MOS finalized 2026-09-15 (anonymized 8-system listening test, 22 ratings per system over 10 utterances).
   </div>
 </div>
 
@@ -182,25 +182,25 @@ const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS v3m", method:"1-step MeanFlow + NanoVocos (1 NFE) + multi-band FM",  params:"6.78M",
     dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:122.268, sa:.8453, full:.8639 },
-    holdout: { wer:0.0615, wer2:0.0923, utmos:3.7685, sim:0.8775, rtf:164.9416, sa:0.85186, full:0.86924, rtf_rpi4:11.03, mos:3.43, mos_ci:0.47, mos_k:9 } },
+    holdout: { wer:0.0615, wer2:0.0923, utmos:3.7685, sim:0.8775, rtf:164.9416, sa:0.85186, full:0.86924, rtf_rpi4:11.03, mos:3.09, mos_ci:0.38, mos_k:22 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
     dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:29.8078, sa:.8491, full:.8684 },
-    holdout: { wer:0.0590, wer2:0.0828, utmos:3.7467, sim:0.8764, rtf:18.6948, sa:0.8527, full:0.8698, rtf_rpi4:0.2281, mos:4.24, mos_ci:0.31, mos_k:9 } },
+    holdout: { wer:0.0590, wer2:0.0828, utmos:3.7467, sim:0.8764, rtf:18.6948, sa:0.8527, full:0.8698, rtf_rpi4:0.2281, mos:4.00, mos_ci:0.43, mos_k:22 } },
   matcha:     { name:"Matcha-TTS", method:"OT-CFM flow matching + HiFi-GAN (10 NFE)", params:"32.1M",
     dev:     { wer:.0626, wer2:.0831, utmos:3.768, sim:.866, rtf:37.1805, sa:.8532, full:.8692 },
-    holdout: { wer:0.0528, wer2:0.0752, utmos:3.7621, sim:0.8549, rtf:23.8804, sa:0.8578, full:0.8717, rtf_rpi4:0.1686, mos:4.15, mos_ci:0.35, mos_k:9 } },
+    holdout: { wer:0.0528, wer2:0.0752, utmos:3.7621, sim:0.8549, rtf:23.8804, sa:0.8578, full:0.8717, rtf_rpi4:0.1686, mos:4.14, mos_ci:0.42, mos_k:22 } },
   zipvoice:   { name:"ZipVoice", method:"Flow matching + Vocos (16 NFE)",             params:"136.2M",
     dev:     { wer:.0679, wer2:.0891, utmos:3.865, sim:.763, rtf:7.8045, sa:.8585, full:.8631 },
-    holdout: { wer:0.0510, wer2:0.0770, utmos:3.8157, sim:0.7603, rtf:3.3495, sa:0.8628, full:0.8663, rtf_rpi4:null, mos:4.15, mos_ci:0.34, mos_k:9 } },
+    holdout: { wer:0.0510, wer2:0.0770, utmos:3.8157, sim:0.7603, rtf:3.3495, sa:0.8628, full:0.8663, rtf_rpi4:null, mos:3.64, mos_ci:0.35, mos_k:22 } },
   e2:         { name:"E2-TTS Base", method:"Flow matching, masked U-Net (32 NFE)",    params:"347.1M",
     dev:     { wer:.0706, wer2:.0946, utmos:3.514, sim:.802, rtf:7.4217, sa:.8258, full:.8408 },
-    holdout: { wer:0.0605, wer2:0.0840, utmos:3.5364, sim:0.8025, rtf:4.2723, sa:0.8335, full:0.8471, rtf_rpi4:null, mos:3.21, mos_ci:0.37, mos_k:9 } },
+    holdout: { wer:0.0605, wer2:0.0840, utmos:3.5364, sim:0.8025, rtf:4.2723, sa:0.8335, full:0.8471, rtf_rpi4:null, mos:2.82, mos_ci:0.49, mos_k:22 } },
   f5:         { name:"F5-TTS v1 Base", method:"Flow matching, DiT (32 NFE)",          params:"350.6M",
     dev:     { wer:.0619, wer2:.0781, utmos:4.065, sim:.811, rtf:6.1693, sa:.8803, full:.8854 },
-    holdout: { wer:0.0551, wer2:0.0778, utmos:4.0359, sim:0.8052, rtf:2.7547, sa:0.8804, full:0.8848, rtf_rpi4:null, mos:3.79, mos_ci:0.39, mos_k:9 } },
+    holdout: { wer:0.0551, wer2:0.0778, utmos:4.0359, sim:0.8052, rtf:2.7547, sa:0.8804, full:0.8848, rtf_rpi4:null, mos:3.41, mos_ci:0.49, mos_k:22 } },
   chatterbox: { name:"Chatterbox", method:"AR-token LLM + FM vocoder",                params:"796.3M",
     dev:     { wer:.0549, wer2:.0882, utmos:3.894, sim:.797, rtf:1.5058, sa:.8662, full:.8726 },
-    holdout: { wer:0.0480, wer2:0.0765, utmos:3.8733, sim:0.7953, rtf:1.0850, sa:0.8691, full:0.8748, rtf_rpi4:null, mos:4.35, mos_ci:0.27, mos_k:9 } },
+    holdout: { wer:0.0480, wer2:0.0765, utmos:3.8733, sim:0.7953, rtf:1.0850, sa:0.8691, full:0.8748, rtf_rpi4:null, mos:4.32, mos_ci:0.40, mos_k:22 } },
 };
 
 const SPLIT_NOTES = {
@@ -209,11 +209,10 @@ const SPLIT_NOTES = {
 };
 
 // MOS listening test (final, 2026-09-15): anonymized 8-system ITU-T P.800
-// listening test (1–5 scale), campaign closed 2026-09-09. Mean ± 95% CI.
-// The champion's MOS is the c003 (previous champion) value from the closed
-// test; v3m itself was not in the test. GT row is reference only (excluded
-// from best/worst).
-const MOS_GT = { name: "LJSpeech GT (reference)", mos: 4.44, mos_ci: 0.31, mos_k: 9 };
+// listening test (1–5 scale), 22 ratings per system over 10 utterances
+// (176 ratings total; mosx_statistics.json, generated 2026-09-15).
+// Mean ± 95% CI. GT row is reference only (excluded from best/worst).
+const MOS_GT = { name: "LJSpeech GT (reference)", mos: 4.36, mos_ci: 0.42, mos_k: 22 };
 
 let curTab = "champion", curSplit = "dev";
 let SOTA_UTTS = null;   // per-utterance audio manifest, loaded lazily
@@ -268,7 +267,7 @@ function sotaTable() {
   scalar); <b>FULL-comp</b> adds SIM (reference only). All rows = 100-utterance holdout bench
   re-synthesis (2026-09-14). <b>RTF</b> = generated audio /
   synthesis time (higher = faster), batch size 1, on A100-40GB and RPi4 (CPU).</div>
-  <div class="sota-sub"><b>MOS</b> (mean ± 95% CI; final, 2026-09-15): anonymized 8-system listening test (ITU-T P.800 15 scale)</div>
+  <div class="sota-sub"><b>MOS</b> (mean ± 95% CI; final, 2026-09-15): anonymized 8-system listening test (ITU-T P.800, 1–5 scale; 22 ratings per system over 10 utterances)</div>
   <div class="legend"><b>Bold</b> = best per column among the TTS systems; LJSpeech GT is a
   reference row.</div>
   <table class="sota-table"><thead><tr>
