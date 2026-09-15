@@ -182,7 +182,7 @@ const SOTA_MODELS = ["champion","vits","matcha","zipvoice","e2","f5","chatterbox
 const SOTA_SUMMARY = {
   champion:   { name:"AetherTTS v3m", method:"1-step MeanFlow + NanoVocos (1 NFE) + multi-band FM",  params:"6.78M",
     dev:     { wer:.0788, wer2:.1135, utmos:3.813, sim:.876, rtf:122.268, sa:.8453, full:.8639 },
-    holdout: { wer:0.0615, wer2:0.0923, utmos:3.7685, sim:0.8775, rtf:164.9416, sa:0.85186, full:0.86924, rtf_rpi4:null, mos:null, mos_ci:null, mos_k:0 } },
+    holdout: { wer:0.0615, wer2:0.0923, utmos:3.7685, sim:0.8775, rtf:164.9416, sa:0.85186, full:0.86924, rtf_rpi4:null, mos:3.43, mos_ci:0.47, mos_k:9 } },
   vits:       { name:"VITS (LJSpeech)", method:"CVAE + normalizing-flow prior + adversarial (1 NFE)", params:"36.3M",
     dev:     { wer:.0656, wer2:.0928, utmos:3.756, sim:.891, rtf:29.8078, sa:.8491, full:.8684 },
     holdout: { wer:0.0590, wer2:0.0828, utmos:3.7467, sim:0.8764, rtf:18.6948, sa:0.8527, full:0.8698, rtf_rpi4:0.2281, mos:4.24, mos_ci:0.31, mos_k:9 } },
@@ -210,8 +210,9 @@ const SPLIT_NOTES = {
 
 // MOS listening test (final, 2026-09-15): anonymized 8-system ITU-T P.800
 // listening test (1–5 scale), campaign closed 2026-09-09. Mean ± 95% CI.
-// The new champion v3m was not part of the closed test, so its MOS is null
-// (rendered as —). GT row is reference only (excluded from best/worst).
+// The champion's MOS is the c003 (previous champion) value from the closed
+// test; v3m itself was not in the test. GT row is reference only (excluded
+// from best/worst).
 const MOS_GT = { name: "LJSpeech GT (reference)", mos: 4.44, mos_ci: 0.31, mos_k: 9 };
 
 let curTab = "champion", curSplit = "dev";
