@@ -34,8 +34,8 @@ recipe + a multi-band flow-matching loss, warm-started from c003.
   (11.03); other models are marked — until measured on the same hardware.
 - **MOS ↑** (added 2026-09-08; **final 2026-09-15**) — human
   listening-test column (anonymized 8-system scoring, 1–5 sliders). Final data:
-  **ITU-T P.800 listening test** — 22 ratings per system over 10 utterances
-  (176 ratings total; `mosx_statistics.json`, generated 2026-09-15).
+  **ITU-T P.800 listening test** — 26 ratings per system over 10 utterances
+  (208 ratings total; `mosx_statistics.json`, generated 2026-09-15T07:22Z).
   Shown is the **mean ± 95% CI**.
   **GT row** = LJSpeech ground truth, shown for reference (not best/worst-marked).
   Caveats: 10 utterances is a modest sample.
@@ -79,7 +79,7 @@ seed-2024 carve, disjoint from dev). Champion updated c003 → v3m on
 RPi4 RTF column added 2026-09-08 (champion, Matcha, VITS);
 MOS column added 2026-09-08 (cleaned MOS-test stats, GT reference row);
 MOS **final 2026-09-15** — mean ± 95% CI from the anonymized 8-system
-ITU-T P.800 listening test (22 ratings per system over 10 utterances;
-`mosx_statistics.json`).
+ITU-T P.800 listening test (26 ratings per system over 10 utterances;
+`mosx_statistics.json`, generated 2026-09-15T07:22Z).
 Full benchmark write-up: `AetherTTS/docs/sota-benchmark.md` (§3.5 for the
 RPi4 measurement; script `AetherTTS/sota_bench/rpi4_rtf.py`).
