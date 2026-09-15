@@ -34,15 +34,11 @@ recipe + a multi-band flow-matching loss, warm-started from c003.
   models are marked — until measured on the same hardware.
 - **MOS ↑** (added 2026-09-08; **final 2026-09-15**) — human
   listening-test column (anonymized 8-system scoring, 1–5 sliders). Final data:
-  **14 ratings per system over 10 utterances** (1–2 raters each; 112 ratings
-  total). Shown is the **per-utterance mean ± 95% CI** (t-based, df = 9).
-  Outlier cleaning: the two 1-star e2 ratings (the only sub-2 scores in the
-  dataset) were dropped; all 2-star ratings are kept as legitimate lows.
+  **9-utterance ITU-T P.800 listening test** (campaign closed 2026-09-09).
+  Shown is the **mean ± 95% CI**. The new champion v3m was not part of the
+  closed test, so its MOS is — (previous champion c003: 3.43 ± 0.47).
   **GT row** = LJSpeech ground truth, shown for reference (not best/worst-marked).
-  Caveats: 14 ratings per system is a modest sample; the post-hoc removal is
-  diagnostic, not citable. Full analysis: `sandbox/mosx_statistics.json` (raw
-  per-utterance sums + cleaned stats) and `sandbox/mosx_statistics_clean.json`
-  (cleaned + sensitivity views).
+  Caveats: 9 utterances is a modest sample.
 
 ## Champion / baseline protocol (frozen)
 
@@ -82,8 +78,8 @@ seed-2024 carve, disjoint from dev). Champion updated c003 → v3m on
 2026-09-14 (v3m is the best 100-utterance holdout of the campaign).
 RPi4 RTF column added 2026-09-08 (champion, Matcha, VITS);
 MOS column added 2026-09-08 (cleaned MOS-test stats, GT reference row);
-MOS **final 2026-09-15** — per-utterance means ± 95% CI (t-based) from
-`mosx_statistics.json` (14 ratings/system, 10 utterances; the two 1-star e2
-outliers dropped, 2-star ratings kept).
+MOS **final 2026-09-15** — mean ± 95% CI from the anonymized 8-system
+ITU-T P.800 listening test (9 utterances, campaign closed 2026-09-09); the new
+champion v3m was not part of the closed test, so its MOS is —.
 Full benchmark write-up: `AetherTTS/docs/sota-benchmark.md` (§3.5 for the
 RPi4 measurement; script `AetherTTS/sota_bench/rpi4_rtf.py`).
