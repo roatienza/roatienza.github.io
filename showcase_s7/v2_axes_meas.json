@@ -1,0 +1,602 @@
+{
+"base_t0_neutral": {
+"duration_s": 2.84,
+"rate_wps": 3.169,
+"voiced_frac": 0.622,
+"f0_median_hz": 103.779,
+"f0_range_st": 4.875,
+"rms_dbfs": -19.33,
+"hf_floor_db": -60.03,
+"pitch_level": "low"
+},
+"v2_t0_neutral": {
+"duration_s": 2.44,
+"rate_wps": 3.689,
+"voiced_frac": 0.288,
+"f0_median_hz": 94.073,
+"f0_range_st": 3.375,
+"rms_dbfs": -16.18,
+"hf_floor_db": -69.75,
+"pitch_level": "low"
+},
+"base_t1_neutral": {
+"duration_s": 3.44,
+"rate_wps": 2.907,
+"voiced_frac": 0.433,
+"f0_median_hz": 115.483,
+"f0_range_st": 16.705,
+"rms_dbfs": -18.1,
+"hf_floor_db": -68.49,
+"pitch_level": "low"
+},
+"v2_t1_neutral": {
+"duration_s": 2.56,
+"rate_wps": 3.906,
+"voiced_frac": 0.506,
+"f0_median_hz": 123.414,
+"f0_range_st": 5.695,
+"rms_dbfs": -17.22,
+"hf_floor_db": -52.4,
+"pitch_level": "low"
+},
+"base_t2_neutral": {
+"duration_s": 3.24,
+"rate_wps": 3.086,
+"voiced_frac": 0.612,
+"f0_median_hz": 113.172,
+"f0_range_st": 8.75,
+"rms_dbfs": -17.8,
+"hf_floor_db": -53.92,
+"pitch_level": "low"
+},
+"v2_t2_neutral": {
+"duration_s": 2.32,
+"rate_wps": 4.31,
+"voiced_frac": 0.541,
+"f0_median_hz": 97.39,
+"f0_range_st": 9.63,
+"rms_dbfs": -15.74,
+"hf_floor_db": -52.58,
+"pitch_level": "low"
+},
+"base_t3_neutral": {
+"duration_s": 3.84,
+"rate_wps": 3.125,
+"voiced_frac": 0.551,
+"f0_median_hz": 99.092,
+"f0_range_st": 6.52,
+"rms_dbfs": -19.13,
+"hf_floor_db": -52.79,
+"pitch_level": "low"
+},
+"v2_t3_neutral": {
+"duration_s": 2.68,
+"rate_wps": 4.478,
+"voiced_frac": 0.571,
+"f0_median_hz": 117.841,
+"f0_range_st": 7.44,
+"rms_dbfs": -17.82,
+"hf_floor_db": -44.69,
+"pitch_level": "low"
+},
+"base_t4_neutral": {
+"duration_s": 3.08,
+"rate_wps": 3.571,
+"voiced_frac": 0.543,
+"f0_median_hz": 105.593,
+"f0_range_st": 14.32,
+"rms_dbfs": -19.46,
+"hf_floor_db": -67.0,
+"pitch_level": "low"
+},
+"v2_t4_neutral": {
+"duration_s": 2.56,
+"rate_wps": 4.297,
+"voiced_frac": 0.544,
+"f0_median_hz": 135.364,
+"f0_range_st": 7.6,
+"rms_dbfs": -18.3,
+"hf_floor_db": -58.12,
+"pitch_level": "medium"
+},
+"base_t0_whisper": {
+"duration_s": 2.96,
+"rate_wps": 3.041,
+"voiced_frac": 0.547,
+"f0_median_hz": 101.408,
+"f0_range_st": 3.445,
+"rms_dbfs": -19.39,
+"hf_floor_db": -59.38,
+"pitch_level": "low"
+},
+"v2_t0_whisper": {
+"duration_s": 3.88,
+"rate_wps": 2.32,
+"voiced_frac": 0.646,
+"f0_median_hz": 125.572,
+"f0_range_st": 13.86,
+"rms_dbfs": -17.06,
+"hf_floor_db": -69.33,
+"pitch_level": "low"
+},
+"base_t1_whisper": {
+"duration_s": 3.52,
+"rate_wps": 2.841,
+"voiced_frac": 0.441,
+"f0_median_hz": 112.846,
+"f0_range_st": 16.3,
+"rms_dbfs": -17.91,
+"hf_floor_db": -61.23,
+"pitch_level": "low"
+},
+"v2_t1_whisper": {
+"duration_s": 4.04,
+"rate_wps": 2.475,
+"voiced_frac": 0.636,
+"f0_median_hz": 120.596,
+"f0_range_st": 24.1,
+"rms_dbfs": -16.91,
+"hf_floor_db": -50.12,
+"pitch_level": "low"
+},
+"base_t2_whisper": {
+"duration_s": 3.36,
+"rate_wps": 2.976,
+"voiced_frac": 0.528,
+"f0_median_hz": 107.439,
+"f0_range_st": 4.24,
+"rms_dbfs": -18.86,
+"hf_floor_db": -70.29,
+"pitch_level": "low"
+},
+"v2_t2_whisper": {
+"duration_s": 3.92,
+"rate_wps": 2.551,
+"voiced_frac": 0.728,
+"f0_median_hz": 113.827,
+"f0_range_st": 6.465,
+"rms_dbfs": -16.5,
+"hf_floor_db": -51.74,
+"pitch_level": "low"
+},
+"base_t3_whisper": {
+"duration_s": 3.88,
+"rate_wps": 3.093,
+"voiced_frac": 0.459,
+"f0_median_hz": 102.587,
+"f0_range_st": 4.67,
+"rms_dbfs": -20.6,
+"hf_floor_db": -67.14,
+"pitch_level": "low"
+},
+"v2_t3_whisper": {
+"duration_s": 4.48,
+"rate_wps": 2.679,
+"voiced_frac": 0.644,
+"f0_median_hz": 104.985,
+"f0_range_st": 4.3,
+"rms_dbfs": -16.62,
+"hf_floor_db": -59.21,
+"pitch_level": "low"
+},
+"base_t4_whisper": {
+"duration_s": 3.24,
+"rate_wps": 3.395,
+"voiced_frac": 0.444,
+"f0_median_hz": 104.985,
+"f0_range_st": 6.46,
+"rms_dbfs": -19.28,
+"hf_floor_db": -62.58,
+"pitch_level": "low"
+},
+"v2_t4_whisper": {
+"duration_s": 4.08,
+"rate_wps": 2.696,
+"voiced_frac": 0.561,
+"f0_median_hz": 131.511,
+"f0_range_st": 5.3,
+"rms_dbfs": -16.94,
+"hf_floor_db": -71.61,
+"pitch_level": "low"
+},
+"base_t0_loud": {
+"duration_s": 2.88,
+"rate_wps": 3.125,
+"voiced_frac": 0.539,
+"f0_median_hz": 102.587,
+"f0_range_st": 4.775,
+"rms_dbfs": -19.42,
+"hf_floor_db": -59.28,
+"pitch_level": "low"
+},
+"v2_t0_loud": {
+"duration_s": 2.88,
+"rate_wps": 3.125,
+"voiced_frac": 0.775,
+"f0_median_hz": 128.507,
+"f0_range_st": 12.555,
+"rms_dbfs": -15.99,
+"hf_floor_db": -71.72,
+"pitch_level": "low"
+},
+"base_t1_loud": {
+"duration_s": 3.36,
+"rate_wps": 2.976,
+"voiced_frac": 0.389,
+"f0_median_hz": 122.704,
+"f0_range_st": 16.79,
+"rms_dbfs": -16.95,
+"hf_floor_db": -62.28,
+"pitch_level": "low"
+},
+"v2_t1_loud": {
+"duration_s": 3.04,
+"rate_wps": 3.289,
+"voiced_frac": 0.58,
+"f0_median_hz": 128.879,
+"f0_range_st": 9.075,
+"rms_dbfs": -17.41,
+"hf_floor_db": -52.21,
+"pitch_level": "low"
+},
+"base_t2_loud": {
+"duration_s": 3.28,
+"rate_wps": 3.049,
+"voiced_frac": 0.578,
+"f0_median_hz": 124.129,
+"f0_range_st": 16.0,
+"rms_dbfs": -18.08,
+"hf_floor_db": -53.28,
+"pitch_level": "low"
+},
+"v2_t2_loud": {
+"duration_s": 2.68,
+"rate_wps": 3.731,
+"voiced_frac": 0.623,
+"f0_median_hz": 130.753,
+"f0_range_st": 12.02,
+"rms_dbfs": -15.44,
+"hf_floor_db": -51.85,
+"pitch_level": "low"
+},
+"base_t3_loud": {
+"duration_s": 3.64,
+"rate_wps": 3.297,
+"voiced_frac": 0.404,
+"f0_median_hz": 97.672,
+"f0_range_st": 3.03,
+"rms_dbfs": -19.44,
+"hf_floor_db": -60.54,
+"pitch_level": "low"
+},
+"v2_t3_loud": {
+"duration_s": 3.12,
+"rate_wps": 3.846,
+"voiced_frac": 0.567,
+"f0_median_hz": 122.35,
+"f0_range_st": 12.275,
+"rms_dbfs": -17.63,
+"hf_floor_db": -46.33,
+"pitch_level": "low"
+},
+"base_t4_loud": {
+"duration_s": 3.04,
+"rate_wps": 3.618,
+"voiced_frac": 0.476,
+"f0_median_hz": 101.116,
+"f0_range_st": 4.675,
+"rms_dbfs": -19.47,
+"hf_floor_db": -67.61,
+"pitch_level": "low"
+},
+"v2_t4_loud": {
+"duration_s": 3.0,
+"rate_wps": 3.667,
+"voiced_frac": 0.67,
+"f0_median_hz": 145.08,
+"f0_range_st": 16.46,
+"rms_dbfs": -18.67,
+"hf_floor_db": -56.46,
+"pitch_level": "medium"
+},
+"base_t0_fast": {
+"duration_s": 2.76,
+"rate_wps": 3.261,
+"voiced_frac": 0.61,
+"f0_median_hz": 103.181,
+"f0_range_st": 5.3,
+"rms_dbfs": -18.43,
+"hf_floor_db": -61.71,
+"pitch_level": "low"
+},
+"v2_t0_fast": {
+"duration_s": 2.24,
+"rate_wps": 4.018,
+"voiced_frac": 0.744,
+"f0_median_hz": 145.08,
+"f0_range_st": 9.26,
+"rms_dbfs": -14.73,
+"hf_floor_db": -56.82,
+"pitch_level": "medium"
+},
+"base_t1_fast": {
+"duration_s": 3.24,
+"rate_wps": 3.086,
+"voiced_frac": 0.405,
+"f0_median_hz": 102.587,
+"f0_range_st": 8.15,
+"rms_dbfs": -18.77,
+"hf_floor_db": -71.15,
+"pitch_level": "low"
+},
+"v2_t1_fast": {
+"duration_s": 2.32,
+"rate_wps": 4.31,
+"voiced_frac": 0.541,
+"f0_median_hz": 125.572,
+"f0_range_st": 7.015,
+"rms_dbfs": -16.39,
+"hf_floor_db": -45.0,
+"pitch_level": "low"
+},
+"base_t2_fast": {
+"duration_s": 3.2,
+"rate_wps": 3.125,
+"voiced_frac": 0.598,
+"f0_median_hz": 110.587,
+"f0_range_st": 15.715,
+"rms_dbfs": -17.77,
+"hf_floor_db": -54.61,
+"pitch_level": "low"
+},
+"v2_t2_fast": {
+"duration_s": 1.96,
+"rate_wps": 5.102,
+"voiced_frac": 0.902,
+"f0_median_hz": 127.767,
+"f0_range_st": 10.175,
+"rms_dbfs": -15.6,
+"hf_floor_db": -38.24,
+"pitch_level": "low"
+},
+"base_t3_fast": {
+"duration_s": 3.56,
+"rate_wps": 3.371,
+"voiced_frac": 0.518,
+"f0_median_hz": 117.841,
+"f0_range_st": 22.54,
+"rms_dbfs": -18.61,
+"hf_floor_db": -53.06,
+"pitch_level": "low"
+},
+"v2_t3_fast": {
+"duration_s": 2.28,
+"rate_wps": 5.263,
+"voiced_frac": 0.421,
+"f0_median_hz": 119.901,
+"f0_range_st": 6.92,
+"rms_dbfs": -17.81,
+"hf_floor_db": -48.48,
+"pitch_level": "low"
+},
+"base_t4_fast": {
+"duration_s": 2.92,
+"rate_wps": 3.767,
+"voiced_frac": 0.336,
+"f0_median_hz": 100.537,
+"f0_range_st": 7.745,
+"rms_dbfs": -21.75,
+"hf_floor_db": -67.11,
+"pitch_level": "low"
+},
+"v2_t4_fast": {
+"duration_s": 2.36,
+"rate_wps": 4.661,
+"voiced_frac": 0.514,
+"f0_median_hz": 141.766,
+"f0_range_st": 3.535,
+"rms_dbfs": -18.62,
+"hf_floor_db": -46.51,
+"pitch_level": "medium"
+},
+"base_t0_slow": {
+"duration_s": 2.84,
+"rate_wps": 3.169,
+"voiced_frac": 0.64,
+"f0_median_hz": 103.181,
+"f0_range_st": 4.95,
+"rms_dbfs": -19.3,
+"hf_floor_db": -60.15,
+"pitch_level": "low"
+},
+"v2_t0_slow": {
+"duration_s": 4.28,
+"rate_wps": 2.103,
+"voiced_frac": 0.624,
+"f0_median_hz": 118.524,
+"f0_range_st": 9.2,
+"rms_dbfs": -17.63,
+"hf_floor_db": -73.18,
+"pitch_level": "low"
+},
+"base_t1_slow": {
+"duration_s": 3.32,
+"rate_wps": 3.012,
+"voiced_frac": 0.349,
+"f0_median_hz": 121.997,
+"f0_range_st": 16.66,
+"rms_dbfs": -17.42,
+"hf_floor_db": -69.3,
+"pitch_level": "low"
+},
+"v2_t1_slow": {
+"duration_s": 4.56,
+"rate_wps": 2.193,
+"voiced_frac": 0.486,
+"f0_median_hz": 111.872,
+"f0_range_st": 8.465,
+"rms_dbfs": -19.92,
+"hf_floor_db": -58.12,
+"pitch_level": "low"
+},
+"base_t2_slow": {
+"duration_s": 3.24,
+"rate_wps": 3.086,
+"voiced_frac": 0.651,
+"f0_median_hz": 110.587,
+"f0_range_st": 8.515,
+"rms_dbfs": -17.63,
+"hf_floor_db": -54.77,
+"pitch_level": "low"
+},
+"v2_t2_slow": {
+"duration_s": 4.48,
+"rate_wps": 2.232,
+"voiced_frac": 0.563,
+"f0_median_hz": 117.841,
+"f0_range_st": 6.72,
+"rms_dbfs": -17.67,
+"hf_floor_db": -56.84,
+"pitch_level": "low"
+},
+"base_t3_slow": {
+"duration_s": 3.64,
+"rate_wps": 3.297,
+"voiced_frac": 0.395,
+"f0_median_hz": 96.271,
+"f0_range_st": 3.16,
+"rms_dbfs": -19.49,
+"hf_floor_db": -60.88,
+"pitch_level": "low"
+},
+"v2_t3_slow": {
+"duration_s": 5.16,
+"rate_wps": 2.326,
+"voiced_frac": 0.469,
+"f0_median_hz": 107.439,
+"f0_range_st": 5.7,
+"rms_dbfs": -16.76,
+"hf_floor_db": -56.78,
+"pitch_level": "low"
+},
+"base_t4_slow": {
+"duration_s": 3.04,
+"rate_wps": 3.618,
+"voiced_frac": 0.458,
+"f0_median_hz": 100.824,
+"f0_range_st": 4.3,
+"rms_dbfs": -19.89,
+"hf_floor_db": -67.3,
+"pitch_level": "low"
+},
+"v2_t4_slow": {
+"duration_s": 4.52,
+"rate_wps": 2.434,
+"voiced_frac": 0.465,
+"f0_median_hz": 132.272,
+"f0_range_st": 16.82,
+"rms_dbfs": -17.03,
+"hf_floor_db": -51.92,
+"pitch_level": "low"
+},
+"base_t0_emotional": {
+"duration_s": 3.0,
+"rate_wps": 3.0,
+"voiced_frac": 0.507,
+"f0_median_hz": 100.244,
+"f0_range_st": 3.9,
+"rms_dbfs": -19.27,
+"hf_floor_db": -61.55,
+"pitch_level": "low"
+},
+"v2_t0_emotional": {
+"duration_s": 3.56,
+"rate_wps": 2.528,
+"voiced_frac": 0.644,
+"f0_median_hz": 127.031,
+"f0_range_st": 14.39,
+"rms_dbfs": -15.33,
+"hf_floor_db": -57.92,
+"pitch_level": "low"
+},
+"base_t1_emotional": {
+"duration_s": 3.64,
+"rate_wps": 2.747,
+"voiced_frac": 0.553,
+"f0_median_hz": 124.848,
+"f0_range_st": 8.2,
+"rms_dbfs": -18.28,
+"hf_floor_db": -65.7,
+"pitch_level": "low"
+},
+"v2_t1_emotional": {
+"duration_s": 3.68,
+"rate_wps": 2.717,
+"voiced_frac": 0.52,
+"f0_median_hz": 109.633,
+"f0_range_st": 5.3,
+"rms_dbfs": -17.7,
+"hf_floor_db": -52.83,
+"pitch_level": "low"
+},
+"base_t2_emotional": {
+"duration_s": 3.48,
+"rate_wps": 2.874,
+"voiced_frac": 0.526,
+"f0_median_hz": 124.129,
+"f0_range_st": 8.325,
+"rms_dbfs": -19.57,
+"hf_floor_db": -75.27,
+"pitch_level": "low"
+},
+"v2_t2_emotional": {
+"duration_s": 3.28,
+"rate_wps": 3.049,
+"voiced_frac": 0.747,
+"f0_median_hz": 130.753,
+"f0_range_st": 8.655,
+"rms_dbfs": -15.89,
+"hf_floor_db": -41.35,
+"pitch_level": "low"
+},
+"base_t3_emotional": {
+"duration_s": 3.96,
+"rate_wps": 3.03,
+"voiced_frac": 0.573,
+"f0_median_hz": 100.824,
+"f0_range_st": 7.14,
+"rms_dbfs": -18.57,
+"hf_floor_db": -52.88,
+"pitch_level": "low"
+},
+"v2_t3_emotional": {
+"duration_s": 3.92,
+"rate_wps": 3.061,
+"voiced_frac": 0.63,
+"f0_median_hz": 108.374,
+"f0_range_st": 14.635,
+"rms_dbfs": -16.71,
+"hf_floor_db": -49.89,
+"pitch_level": "low"
+},
+"base_t4_emotional": {
+"duration_s": 3.32,
+"rate_wps": 3.313,
+"voiced_frac": 0.446,
+"f0_median_hz": 116.488,
+"f0_range_st": 7.71,
+"rms_dbfs": -18.52,
+"hf_floor_db": -67.36,
+"pitch_level": "low"
+},
+"v2_t4_emotional": {
+"duration_s": 3.68,
+"rate_wps": 2.989,
+"voiced_frac": 0.569,
+"f0_median_hz": 140.138,
+"f0_range_st": 10.96,
+"rms_dbfs": -16.58,
+"hf_floor_db": -62.77,
+"pitch_level": "medium"
+}
+}

@@ -81,6 +81,7 @@ footer .wrap{padding:26px 24px 60px}
   <p class="standfirst">Every clip below is a single checkpoint reading a different line in a
   different voice. Nothing is cloned from a target speaker and nothing is hand-picked per
   clip — the same operating point renders all of them.</p>
+    <p style="margin:10px 0 0;font-size:13.5px"><a href="#v2axes" style="color:var(--amber)">New: V2 design-axes listening test (2026-09-17) &mdash; slow / emotional / high_pitch A/B, s6-40k baseline vs v2-19.5k &rarr;</a></p>
   <div class="switch">
     <span class="lab">checkpoint</span>
     <button class="tog" type="button" data-set="S7" aria-pressed="false">S7</button>
@@ -513,6 +514,117 @@ footer .wrap{padding:26px 24px 60px}
     the codec, so the only thing to judge by ear is the graph path itself. Consensus ASR 19/20 (the same long_deep
     colour→color spelling artifact), UTMOS mean 3.226 vs ttfa's 3.321 (per-clip deltas ≤0.3 except grief_woman −0.52 vs
     its special c32 retake). Engine patch is uncommitted on the streaming worktree; production serve has not loaded it.</p>
+</section>
+
+<section class="tr" id="v2axes" style="max-width:none">
+  <p class="trlab">V2 design-axes listening test &mdash; A/B, same 5 texts, same per-text seeds, same 8 prompts, same reference speaker, same decode (32 steps, caption CFG 4.0)</p>
+  <div class="switch" style="margin:10px 0 14px">
+    <span class="lab">checkpoint</span>
+    <button class="vtog" type="button" data-vset="d6" aria-pressed="false">s6-40k baseline</button>
+    <button class="vtog" type="button" data-vset="v2" aria-pressed="true">v2-19.5k (design-axes)</button>
+    <p class="note">Baseline = ckpt-s6-40k roundtrip (2026-09-16). v2 = v2_design_axes_gp67 best-val 19.5k
+    (0.924961), warm-started from v6b-40k on the afdraft_v2 mixture (774,126 rows = lineage + 33,129
+    certified-affect from the register-stratum lane). Both sides: same 5 held-out texts, seeds 1000&ndash;1004,
+    ref emilia/02adbe2386f16c80b243, 32 steps, caption CFG 4.0. Switch flips every player below (scoped to this section; the checkpoint tabs above are untouched).</p>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr">
+  <article class="chip">
+    <p class="who">text 0 &middot; seed 1000</p>
+    <p class="line">the garden was quiet in the early morning light</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 1 &middot; seed 1001</p>
+    <p class="line">she opened the letter and read it twice before speaking</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 2 &middot; seed 1002</p>
+    <p class="line">we should probably leave before the roads get any worse</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 3 &middot; seed 1003</p>
+    <p class="line">there is a small cafe on the corner that stays open late</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 4 &middot; seed 1004</p>
+    <p class="line">he counted the coins on the table and shook his head</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  </div>
+  <table style="border-collapse:collapse;font-size:13.5px;margin-top:8px">
+    <thead><tr><th style="text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid #444">delta vs neutral (sign-consistency, 5 texts)</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">neutral</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">whisper</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">loud</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">fast</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">slow</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">emotional</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">high_pitch</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">animated</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:5px 10px 5px 0">s6-40k baseline</td><td style="text-align:right;padding:5px 10px">&mdash;</td><td style="text-align:right;padding:5px 10px">-0.04 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">+0.06 <span style="color:#9a9a9a">(20%)</span></td><td style="text-align:right;padding:5px 10px">+0.14 <span style="color:#9a9a9a">(100%)</span></td><td style="text-align:right;padding:5px 10px">+0.06 <span style="color:#9a9a9a">(0%)</span></td><td style="text-align:right;padding:5px 10px">-1.03 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">-0.93 <span style="color:#9a9a9a">(20%)</span></td><td style="text-align:right;padding:5px 10px">+1.32 <span style="color:#9a9a9a">(40%)</span></td></tr>
+      <tr><td style="padding:5px 10px 5px 0">v2-19.5k</td><td style="text-align:right;padding:5px 10px">&mdash;</td><td style="text-align:right;padding:5px 10px">+0.15 <span style="color:#9a9a9a">(0%)</span></td><td style="text-align:right;padding:5px 10px">+0.02 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">+0.53 <span style="color:#9a9a9a">(100%)</span></td><td style="text-align:right;padding:5px 10px">-1.88 <span style="color:#9a9a9a">(100%)</span></td><td style="text-align:right;padding:5px 10px">+4.04 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">+11.32 <span style="color:#9a9a9a">(80%)</span></td><td style="text-align:right;padding:5px 10px">+2.11 <span style="color:#9a9a9a">(60%)</span></td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    What to listen for: <strong>slow</strong> (baseline reads at normal pace; v2 draws out), <strong>emotional</strong>
+    (baseline flat; v2 wide, excited contour), <strong>high_pitch</strong> (baseline sits low; v2 clearly higher).
+    These are the three axes step-5 could not design; the v2 round targets exactly them. Measured deltas vs neutral
+    (mean over the 5 texts, sign-consistency in parens) back the ear: slow rate_wps +0.07 (0%) &rarr; &minus;1.88 (100%),
+    emotional f0_range_st &minus;1.03 (60%) &rarr; +4.04 (60%), high_pitch f0_median_hz &minus;0.94 (20%) &rarr; +11.32 (80%).
+    Honest trade: <strong>whisper</strong> regressed (voiced_frac &minus;0.04 (60%) &rarr; +0.15 (0%)) &mdash; the
+    affect-heavy mixture bought the three axes at some whisper cost; s6-40k / v6b-40k remains the whisper pick.
+    loud/fast/animated hold or improve. Targets: rate_wps in words/s, f0_range_st in semitones, f0_median_hz in Hz,
+    voiced_frac fraction. Full per-clip measurements in <code>v2_axes_meas.json</code> next to this page.</p>
+  <script>
+  (function(){
+    var scope = document.getElementById('v2axes');
+    var buttons = scope.querySelectorAll('button.vtog');
+    function show(which){
+      scope.querySelectorAll('audio[data-vset]').forEach(function(a){
+        var on = a.dataset.vset === which;
+        a.hidden = !on;
+        if(!on){ a.pause(); }
+      });
+      buttons.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.vset === which)); });
+      try { localStorage.setItem('irodori-v2axes', which); } catch(e){}
+    }
+    buttons.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.vset); }); });
+    var saved = null;
+    try { saved = localStorage.getItem('irodori-v2axes'); } catch(e){}
+    show(saved && scope.querySelector('button.vtog[data-vset="'+saved+'"]') ? saved : 'v2');
+  })();
+  </script>
 </section>
 </div></main>
 
