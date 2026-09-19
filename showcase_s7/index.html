@@ -83,6 +83,7 @@ footer .wrap{padding:26px 24px 60px}
   clip — the same operating point renders all of them.</p>
     <p style="margin:10px 0 0;font-size:13.5px"><a href="#v2axes" style="color:var(--amber)">New: V2 design-axes listening test (2026-09-17) &mdash; slow / emotional / high_pitch A/B, s6-40k baseline vs v2-19.5k &rarr;</a></p>
     <p style="margin:6px 0 0;font-size:13.5px"><a href="#ttds2" style="color:var(--amber)">New: S7.11-ttsds2 (2026-09-18) &mdash; one take per prompt, 20-axis voice-register captions &rarr;</a></p>
+    <p style="margin:6px 0 0;font-size:13.5px"><a href="#ttds2v3" style="color:var(--amber)">New: S7.11-ttsds2-v3 (2026-09-19) &mdash; variability-v3 12k, same 20 prompts, TTSDS2 80.78 / PROSODY 83.58 &rarr;</a></p>
   <div class="switch">
     <span class="lab">checkpoint</span>
     <button class="tog" type="button" data-set="S7" aria-pressed="false">S7</button>
@@ -863,6 +864,234 @@ footer .wrap{padding:26px 24px 60px}
     unexpected repeats, 20/20 word-recall complete. The f0-range falsifier from the round report still stands
     on the paired legacy-caption set (17.78 vs 21.10 st); this page is the <strong>owner-ear gate</strong> for
     the round &mdash; the register captions are the deployment surface the model was trained on.</p>
+</section>
+<section class="tr" id="ttds2v3" style="max-width:none">
+  <p class="trlab">S7.11-ttsds2-v3 &mdash; all 20 prompts, one take per prompt, same 20-axis voice-register captions as the S7.11-ttsds2 tab (design &rarr; design_register.v1 &rarr; prose), same texts, same reference speakers, frozen serving path (schedule 64/48/48, first emit 32, eager), seed 1000</p>
+  <p class="note" style="margin:10px 0 14px">The <strong>S7.11-ttsds2-v3</strong> checkpoint (v6a fine-tuned
+    <strong>12k steps</strong> on the <strong>variability-v3 manifest</strong>,
+    <code>train_variability_v3.jsonl</code>, 929,074 rows = the 774,126-row voice-register dataset with the
+    variability re-balancing applied: acted-affect high-variability rows duplicated &times;3 (the affect cap
+    raised, per round-2 item&nbsp;d) and the expressive full1963h subset duplicated &times;2 on top of bucket
+    duplication; trainer consumes physical copies) renders each prompt with the <em>same</em> prose caption the
+    S7.11-ttsds2 tab used &mdash; the only variable between the two tabs is the checkpoint. Reward stack:
+    WER + WER2 + UTMOS + <strong>TTSDS2 composite</strong> (official ttsds 2.1.3 categories). On the official
+    dashboard (20 renders vs the 200-wav register-stratum reference) v3 scores
+    <strong>80.78</strong> overall &mdash; PROSODY <strong>83.58</strong> (best of the seven benched rounds;
+    Pitch 64.53, MPM 89.60, HuBERT-token-SR 87.66, Allosaurus-SR 92.53), SPEAKER 70.57, INTELLIGIBILITY 83.11,
+    GENERIC 85.85 &mdash; vs 80.52 / PROSODY 82.53 for ttsds2-20k on the identical prompt set. Selection-set
+    measurements: UTMOS mean <strong>3.50</strong>, SIM (ECAPA) <strong>0.5489</strong> (best of the table),
+    f0 range mean <strong>15.7 st</strong>, dynamic range mean <strong>57.0 dB</strong>, granite WER
+    <strong>0.0037</strong>, 20/20 word-recall complete (rage_man &times;2, fear_woman &times;1 re-rolls,
+    disclosed per chip; CTC substitutions are decoder spelling noise, not drops).</p>
+  <div class="grid" style="grid-template-columns:1fr">
+  <article class="chip">
+    <p class="who">grief_woman</p>
+    <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_grief_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.12 &middot; f0 range 13.5 st &middot; dyn 60 dB &middot; dur 5.1 s &middot; 10/20 axes claimed &middot; UTMOS −0.38 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, intimate close-mic performance, sad, grieving, heavy emotional register, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, halting with lots of space between phrases, voice breaking, crying and tears, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32, low-pitched, with a warm timbre. Delivered in a sad manner, performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">grief_oldman</p>
+    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_grief_oldman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.53 &middot; f0 range 24.6 st &middot; dyn 53 dB &middot; dur 7.4 s &middot; 9/20 axes claimed &middot; UTMOS −0.40 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An elderly male voice, performed narration, grieving, heavy and sorrowful emotional register, deep resonant breathy timbre, slow drawn-out delivery, low pitch, soft loudness, holding back tears, with a sigh, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, elderly, low-pitched, with a resonant timbre. Performed as a narration delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">grief_young</p>
+    <p class="line">i thought i&#x27;d be fine. i really did. and then i saw your coat.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_grief_young.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.97 &middot; f0 range 10.5 st &middot; dyn 65 dB &middot; dur 5.1 s &middot; 9/20 axes claimed &middot; UTMOS +0.21 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A young adult female voice, intimate close-mic performance, grieving, sorrowful, overwhelmed emotional register, breathy soft bright timbre, slow drawn-out delivery, low pitch, soft loudness, breathy with much air and little phonation, crying, voice breaking, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, low-pitched, with a bright timbre. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">rage_man</p>
+    <p class="line">don&#x27;t. don&#x27;t you dare tell me to calm down right now.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_rage_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.00 &middot; f0 range 16.1 st &middot; dyn 34 dB &middot; dur 3.5 s &middot; 9/20 axes claimed &middot; UTMOS −0.48 vs ttsds2-20k &middot; word-recall re-roll &times;2 (final take word-complete) &middot; CTC 1 substitution (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult male voice, expressive performance, angry, sharp, intense emotional register, bright harsh powerful timbre, fast tempo, high pitch, loud loudness, relentless with no room to breathe, raised voice, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, high-pitched, with a bright timbre. Delivered in an angry manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>9/20 claimed: affect, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">rage_woman</p>
+    <p class="line">i asked you for one thing. one. and you couldn&#x27;t even manage that.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_rage_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.79 &middot; f0 range 16.6 st &middot; dyn 67 dB &middot; dur 5.2 s &middot; 9/20 axes claimed &middot; UTMOS −0.24 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, expressive performance, angry, sharp, intense emotional register, bright harsh powerful timbre, fast tempo, high pitch, loud loudness, rapid-fire, raised voice, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, high-pitched, with a bright timbre. Delivered in an angry manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>9/20 claimed: affect, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">command_deep</p>
+    <p class="line">everyone out. now. i won&#x27;t say it twice.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_command_deep.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.89 &middot; f0 range 34.7 st &middot; dyn 67 dB &middot; dur 5.7 s &middot; 10/20 axes claimed &middot; UTMOS +0.20 vs ttsds2-20k &middot; CTC 1 substitution & 1 insertion (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, calm, commanding, deadpan emotional register, deep resonant dark timbre, slow drawn-out delivery, low pitch, loud loudness, almost no pitch movement, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant timbre. Delivered in a calm manner, performed as a narration delivery, slow, unhurried pacing, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, pitch_register, style, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">fear_woman</p>
+    <p class="line">there&#x27;s someone outside. i heard it again, right by the window.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_fear_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.85 &middot; f0 range 5.7 st &middot; dyn 57 dB &middot; dur 4.7 s &middot; 7/20 axes claimed &middot; UTMOS +0.60 vs ttsds2-20k &middot; word-recall re-roll &times;1 (final take word-complete) &middot; CTC 1 substitution & 1 insertion (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, frightened, trembling, anxious emotional register, breathy soft whispered timbre, slow tempo, low pitch, soft loudness, whispered, unsteady, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched. Performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, pitch_register, style, tempo, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">fear_child</p>
+    <p class="line">don&#x27;t turn the light on. please. just stay here with me.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_fear_child.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 2.46 &middot; f0 range 11.9 st &middot; dyn 68 dB &middot; dur 4.4 s &middot; 9/20 axes claimed &middot; UTMOS +0.96 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A child female voice, intimate close-mic performance, frightened, trembling, anxious emotional register, breathy soft bright timbre, slow tempo, low pitch, soft loudness, halting, unsteady, with lots of space between phrases, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, child, low-pitched, with a bright timbre. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">joy_woman</p>
+    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_joy_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.78 &middot; f0 range 18.2 st &middot; dyn 68 dB &middot; dur 6.4 s &middot; 10/20 axes claimed &middot; UTMOS +0.28 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, delighted, joyful, bright and buoyant, laughing between phrases, bright clear resonant timbre, fast tempo, high pitch, loud loudness, wildly expressive pitch, energetic, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32, high-pitched, with a resonant and bright timbre. Delivered in a laughing manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">laugh_man</p>
+    <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_laugh_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 4.11 &middot; f0 range 23.9 st &middot; dyn 66 dB &middot; dur 4.3 s &middot; 7/20 axes claimed &middot; UTMOS −0.14 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A male voice in his 40s, warm, playful, amused, laughing mid-sentence, animated bouncy prosody, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, aged 42, with a warm timbre. Delivered in a laughing manner, animated, wide pitch movement. Clear studio recording.<br>
+      <strong>7/20 claimed: affect, age, environment, gender, prosodic_variability, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tender_man</p>
+    <p class="line">hey. hey, look at me. you&#x27;re okay. i&#x27;ve got you.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_tender_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 2.96 &middot; f0 range 25.1 st &middot; dyn 62 dB &middot; dur 5.1 s &middot; 10/20 axes claimed &middot; UTMOS −0.10 vs ttsds2-20k &middot; CTC 4 substitutions (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A male voice in his 30s, tender, gentle, intimate close-mic performance, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, whispered, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, young adult, aged 32, low-pitched, with a warm timbre. Delivered in what reads as a tender manner, performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>10/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tender_woman</p>
+    <p class="line">don&#x27;t wake them. just come and look, quietly.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_tender_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.66 &middot; f0 range 17.3 st &middot; dyn 60 dB &middot; dur 4.5 s &middot; 9/20 axes claimed &middot; UTMOS −0.09 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, tender, soft, gentle emotional register, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, whispered, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched, with a warm timbre. Delivered in what reads as a tender manner, performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">awe_deep</p>
+    <p class="line">and then the whole valley opened up beneath us, and nobody said anything at all.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_awe_deep.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.82 &middot; f0 range 9.2 st &middot; dyn 28 dB &middot; dur 6.7 s &middot; 10/20 axes claimed &middot; UTMOS +0.02 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, awestruck, wondering, elevated emotional register, deep resonant warm timbre, slow drawn-out delivery, low pitch, loud loudness, wildly expressive pitch, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant and warm timbre. Performed as a narration delivery, slow, unhurried pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: age, environment, gender, pitch_register, style, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tired_woman</p>
+    <p class="line">yeah. no, it&#x27;s fine. i&#x27;m just tired.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_tired_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.55 &middot; f0 range 18.7 st &middot; dyn 55 dB &middot; dur 4.7 s &middot; 7/20 axes claimed &middot; UTMOS −0.19 vs ttsds2-20k &middot; CTC 1 substitution (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, exhausted, flat, weary emotional register, breathy soft dull timbre, slow drawn-out delivery, low pitch, soft loudness, almost no pitch movement, deadpan, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, pitch_register, style, tempo, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">flat_man</p>
+    <p class="line">it doesn&#x27;t matter. honestly, it doesn&#x27;t.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_flat_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.31 &middot; f0 range 11.6 st &middot; dyn 68 dB &middot; dur 4.3 s &middot; 7/20 axes claimed &middot; UTMOS −0.13 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, flat, indifferent, deadpan emotional register, deep dull breathy timbre, medium tempo, low pitch, soft loudness, almost no pitch movement, continuous with few pauses, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched. Performed as a narration delivery, breathy throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: age, environment, gender, phonation, pitch_register, style, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">sly_woman</p>
+    <p class="line">i may have done something. don&#x27;t be angry. it&#x27;s mostly good news.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_sly_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.36 &middot; f0 range 9.6 st &middot; dyn 69 dB &middot; dur 6.6 s &middot; 8/20 axes claimed &middot; UTMOS +0.02 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A young adult female voice, expressive performance, delighted, mischievous, playful emotional register, bright breathy warm timbre, slow tempo, medium pitch, soft loudness, halting, with lots of space between phrases, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, with a bright and warm timbre. Slow, unhurried pacing, breathy throughout, with what sounds like animated, wide pitch movement. Clear studio recording.<br>
+      <strong>8/20 claimed: age, environment, gender, phonation, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">shift_woman</p>
+    <p class="line">i&#x27;m fine. i&#x27;m fine — no. no, actually, i&#x27;m not fine.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_shift_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 2.99 &middot; f0 range 17.6 st &middot; dyn 56 dB &middot; dur 6.6 s &middot; 7/20 axes claimed &middot; UTMOS +0.22 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, expressive performance, grieving, overwhelmed, breaking emotional register, breathy soft bright timbre, variable tempo, variable pitch, loud loudness, wildly expressive pitch, crying, voice breaking, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, with a bright timbre. Breathy throughout, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">shift_man</p>
+    <p class="line">it was funny at the time. it was. it&#x27;s less funny now.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_shift_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.51 &middot; f0 range 11.3 st &middot; dyn 62 dB &middot; dur 5.5 s &middot; 8/20 axes claimed &middot; UTMOS −0.16 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult male voice, expressive performance, grieving, heavy, sorrowful emotional register, breathy warm soft timbre, slow tempo, low pitch, soft loudness, halting, with lots of space between phrases, holding back tears, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, low-pitched, with a warm timbre. Slow, unhurried pacing, breathy throughout, with what sounds like animated, wide pitch movement. Clear studio recording.<br>
+      <strong>8/20 claimed: environment, gender, phonation, pitch_register, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">long_deep</p>
+    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_long_deep.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.76 &middot; f0 range 10.3 st &middot; dyn 45 dB &middot; dur 14.4 s &middot; 8/20 axes claimed &middot; UTMOS +0.08 vs ttsds2-20k &middot; CTC 2 substitutions (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, calm, reflective, steady emotional register, deep resonant warm timbre, medium tempo, low pitch, medium loudness, continuous with few pauses, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant and warm timbre. Delivered in a calm manner, performed as a narration delivery. Clear studio recording.<br>
+      <strong>8/20 claimed: affect, age, environment, gender, pitch_register, style, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">long_female</p>
+    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_long_female.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.66 &middot; f0 range 7.5 st &middot; dyn 31 dB &middot; dur 13.1 s &middot; 6/20 axes claimed &middot; UTMOS −0.02 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, long-form narration, calm and steady, moderate tempo, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32. Delivered in a calm manner, performed as a narration delivery. Clear studio recording.<br>
+      <strong>6/20 claimed: affect, age, environment, gender, style, +language(default)</strong></p></details>
+  </article>
+  </div>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    Per-clip UTMOS deltas vs the ttsds2-20k tab (same captions, same seed): the fear clips move most
+    (fear_child 1.50 &rarr; 2.46, +0.96; fear_woman 3.25 &rarr; 3.85, +0.60) &mdash; the variability-v3
+    re-balancing bought expressive range where the 20k round was flattest. grief_woman/grief_oldman/rage_man
+    give back 0.38&ndash;0.48; the composite still nets out ahead (TTSDS2 80.78 vs 80.52, PROSODY +1.05).
+    The f0-range falsifier from the round report stands (15.69 vs 17.68 st on this set); the official PROSODY
+    category measures mean-f0/rate distributions, not range &mdash; both are reported.</p>
 </section>
 </div></main>
 
