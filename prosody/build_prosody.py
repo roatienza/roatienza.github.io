@@ -11,7 +11,7 @@ data = json.load(open('/tmp/prosody_data.json'))
 
 SCORES = {
     "ab": {
-        "v3":  {"prosody": 83.25, "overall": 79.87, "utmos": 3.794, "f0st": 16.61},
+        "v3":  {"prosody": 81.97, "overall": 77.42, "utmos": 3.916, "f0st": 15.88},
         "elx": {"prosody": 80.76, "overall": 74.16, "utmos": 4.310, "f0st": 15.79},
     },
     "pt": {
@@ -88,20 +88,20 @@ def build_set(setkey, title, blurb, score_note):
 
 ab_sec = build_set(
     "ab", "ab40 &mdash; held-out product-eval prompts",
-    "40 prompts never used to select the checkpoint, rendered 2026-09-19 on the frozen S7.11 "
-    "serving path (seed 1000, caption withheld). ElevenLabs v3 renders use the fixed voice "
-    "<em>Rachel</em>; ours rotates three reference speakers by register. Same text on both sides.",
+    "40 prompts never used to select the checkpoint, rendered on the frozen S7.11 serving path "
+    "(seed 1000, caption withheld). Speaker-controlled: ElevenLabs v3 uses the fixed voice "
+    "<em>Rachel</em>; ours uses one female reference speaker for all 40 takes. Same text on both sides.",
     "Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200. PROSODY = mean of Pitch, MPM, "
-    "HuBERT-token SR, Allosaurus SR. Ours leads PROSODY by +2.49; ElevenLabs leads UTMOS "
+    "HuBERT-token SR, Allosaurus SR. Ours leads PROSODY by +1.21; ElevenLabs leads UTMOS "
     "(24&nbsp;kHz-native renders, ours through the 48&nbsp;kHz codec).")
 
 pt_sec = build_set(
     "pt", "pt45 &mdash; preference-training prompts",
     "45 prompts (9 registers &times; 5), never used to select the checkpoint. Kokoro-82M renders "
     "use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours as above. Same text on both sides.",
-    "Same instrument and reference. Ours leads PROSODY by +4.13; Kokoro's per-register f0 range "
-    "sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody for all nine. UTMOS again "
-    "favors the external systems.")
+    "Same instrument and reference. Ours leads PROSODY by +4.13 (81.97 vs 78.33); Kokoro's "
+    "per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody "
+    "for all nine. UTMOS again favors the external systems.")
 
 page = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -176,8 +176,9 @@ footer a{{color:var(--dim)}}
 </style></head><body>
 <header class="top"><div class="wrap">
   <h1>PROSODY, <em>by ear.</em></h1>
-  <p class="standfirst">The benchmark report scored three systems with the official ttsds&nbsp;2.1.3
-  suite on independent prompt sets. This page plays the same renders side by side.
+  <p class="standfirst">Three systems, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
+  Our ab40 arm is speaker-controlled: one female reference speaker on our side vs the fixed voice
+  Rachel on ElevenLabs&rsquo;s. This page plays the same renders side by side.
   Play one take alone for a solo A/B, or &ldquo;play both&rdquo; to hear the pair together &mdash;
   the metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
   <nav class="tabs">
@@ -191,7 +192,8 @@ footer a{{color:var(--dim)}}
 </main>
 <footer><div class="wrap">
   <p>Systems: <b>S7.11-ttsds2-v3</b> (checkpoint <span style="font-family:var(--mono)">s7_5_streaming_v6a_ttds2_v3_gp67/checkpoint_final.pt</span>,
-  frozen serving path, seed 1000, caption withheld) &middot; <b>ElevenLabs v3</b> (voice Rachel)
+  frozen serving path, seed 1000, caption withheld; ab40 arm uses one female reference speaker)
+  &middot; <b>ElevenLabs v3</b> (voice Rachel)
   &middot; <b>Kokoro-82M</b> (voice af_heart). Scoring: official ttsds 2.1.3 BenchmarkSuite,
   reference stratum_ref200; full numbers in
   <a href="https://github.com/Tap-Mobile/expressive-tts/blob/streaming-rope-ttds2/docs/PROSODY_SOTA_COMPARISON_20260919.md">docs/PROSODY_SOTA_COMPARISON_20260919.md</a>.</p>
