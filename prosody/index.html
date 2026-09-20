@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>PROSODY &mdash; S7.11-ttsds2-v3 vs SOTA</title>
+<style>
+:root{
+  --ink:#14110D; --line:#332C22; --paper:#F4F0E8; --dim:#B9B1A3; --faint:#7E7768;
+  --amber:#E39A2B; --violet:#B58AD4; --slate:#7C9CB5; --sage:#8FB573;
+  --serif:Charter,"Bitstream Charter","Iowan Old Style",Georgia,serif;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+header.top{border-bottom:1px solid var(--line);
+  background:radial-gradient(120% 100% at 8% -10%,rgba(227,154,43,.10),transparent 60%),
+  linear-gradient(180deg,#181410,transparent)}
+header.top .wrap{padding:56px 24px 34px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,5vw,46px);
+  line-height:1.08;margin:0 0 14px;letter-spacing:-.015em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--amber)}
+.standfirst{max-width:64ch;color:var(--dim);margin:0 0 20px}
+nav.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 6px}
+nav.tabs a{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;
+  padding:8px 14px}
+nav.tabs a:hover{color:var(--paper)}
+.set{padding:30px 0 10px}
+.seth h2{font-family:var(--serif);font-weight:400;font-size:clamp(22px,3vw,30px);
+  margin:0 0 8px}
+.blurb{color:var(--dim);max-width:68ch;margin:0 0 16px;font-size:15px}
+.scorechips{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+.scorechip{border:1px solid var(--line);border-radius:10px;padding:10px 14px;
+  display:flex;flex-direction:column;gap:3px;min-width:230px;
+  background:linear-gradient(180deg,rgba(255,255,255,.022),transparent)}
+.scorechip.ours{border-color:rgba(227,154,43,.55);
+  background:radial-gradient(120% 100% at 0% 0%,rgba(227,154,43,.10),transparent 70%)}
+.sc-name{font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.sc-num{font-family:var(--serif);font-size:22px}
+.scorechip.ours .sc-num{color:var(--amber)}
+.sc-sub{font:400 11.5px/1.4 var(--mono);color:var(--faint)}
+.scorenote{color:var(--faint);font-size:12.5px;max-width:72ch;margin:0 0 6px}
+.rows{padding:8px 0 30px}
+.row{border:1px solid var(--line);border-radius:12px;padding:14px 16px 13px;margin:0 0 14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.022),transparent)}
+.rowhead{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+.cat{font:600 10.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:6px;padding:4px 8px;color:var(--dim)}
+.cat-amber{color:var(--amber)} .cat-violet{color:var(--violet)}
+.cat-slate{color:var(--slate)} .cat-sage{color:var(--sage)}
+.uid{font:400 11px/1 var(--mono);color:var(--faint)}
+.playboth{margin-left:auto;font:600 11px/1 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--paper);background:none;
+  border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+.playboth:hover{border-color:var(--amber);color:var(--amber)}
+.playboth.on{border-color:var(--amber);color:var(--ink);background:var(--amber)}
+.line{margin:2px 0 10px;color:var(--dim);font-size:14.5px;max-width:78ch}
+.arms{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.arm audio{width:100%;height:34px}
+.arm-label{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 5px}
+.arm-ours .arm-label{color:var(--amber)}
+footer{border-top:1px solid var(--line);color:var(--faint);font-size:13px}
+footer .wrap{padding:24px 24px 54px}
+footer a{color:var(--dim)}
+@media (max-width:700px){.arms{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none}}
+</style></head><body>
+<header class="top"><div class="wrap">
+  <h1>PROSODY, <em>by ear.</em></h1>
+  <p class="standfirst">The benchmark report scored three systems with the official ttsds&nbsp;2.1.3
+  suite on independent prompt sets. This page plays the same renders side by side &mdash; the
+  metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
+  <nav class="tabs">
+    <a href="#set-ab">ab40 &middot; vs ElevenLabs v3</a>
+    <a href="#set-pt">pt45 &middot; vs Kokoro-82M</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<section class="set" id="set-ab">
+<div class="sethead">
+  <h2>ab40 &amp;mdash; held-out product-eval prompts</h2>
+  <p class="blurb">40 prompts never used to select the checkpoint, rendered 2026-09-19 on the frozen S7.11 serving path (seed 1000, caption withheld). ElevenLabs v3 renders use the fixed voice <em>Rachel</em>; ours rotates three reference speakers by register. Same text on both sides.</p>
+  <div class="scorechips"><div class="scorechip ours"><span class="sc-name">S7.11-ttsds2-v3</span><span class="sc-num">PROSODY 83.25</span><span class="sc-sub">OVERALL 79.87 &middot; UTMOS 3.794 &middot; f0 16.61 st</span></div>
+<div class="scorechip"><span class="sc-name">ElevenLabs v3 (Rachel)</span><span class="sc-num">PROSODY 80.76</span><span class="sc-sub">OVERALL 74.16 &middot; UTMOS 4.310 &middot; f0 15.79 st</span></div></div>
+  <p class="scorenote">Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200. PROSODY = mean of Pitch, MPM, HuBERT-token SR, Allosaurus SR. Ours leads PROSODY by +2.49; ElevenLabs leads UTMOS (24&nbsp;kHz-native renders, ours through the 48&nbsp;kHz codec).</p>
+</div>
+<div class="rows"><section class="row" id="ab000">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">ab000</span>
+    <button class="playboth" data-uid="ab000" aria-label="play both takes for ab000">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab000_v3.mp3" preload="none" data-arm="v3" data-uid="ab000"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab000_elx.mp3" preload="none" data-arm="elx" data-uid="ab000"></audio>
+</div></div>
+</section>
+<section class="row" id="ab001">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">ab001</span>
+    <button class="playboth" data-uid="ab001" aria-label="play both takes for ab001">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i thought i&#x27;d be fine. i really did. and then i saw your coat.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab001_v3.mp3" preload="none" data-arm="v3" data-uid="ab001"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab001_elx.mp3" preload="none" data-arm="elx" data-uid="ab001"></audio>
+</div></div>
+</section>
+<section class="row" id="ab002">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">ab002</span>
+    <button class="playboth" data-uid="ab002" aria-label="play both takes for ab002">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">please don&#x27;t go. not tonight. just stay until i fall asleep.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab002_v3.mp3" preload="none" data-arm="v3" data-uid="ab002"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab002_elx.mp3" preload="none" data-arm="elx" data-uid="ab002"></audio>
+</div></div>
+</section>
+<section class="row" id="ab003">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">ab003</span>
+    <button class="playboth" data-uid="ab003" aria-label="play both takes for ab003">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i keep picking up the phone to call her. i&#x27;m still doing it.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab003_v3.mp3" preload="none" data-arm="v3" data-uid="ab003"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab003_elx.mp3" preload="none" data-arm="elx" data-uid="ab003"></audio>
+</div></div>
+</section>
+<section class="row" id="ab004">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">ab004</span>
+    <button class="playboth" data-uid="ab004" aria-label="play both takes for ab004">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">it&#x27;s been a year and i still set out two cups in the morning.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab004_v3.mp3" preload="none" data-arm="v3" data-uid="ab004"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab004_elx.mp3" preload="none" data-arm="elx" data-uid="ab004"></audio>
+</div></div>
+</section>
+<section class="row" id="ab005">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">ab005</span>
+    <button class="playboth" data-uid="ab005" aria-label="play both takes for ab005">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab005_v3.mp3" preload="none" data-arm="v3" data-uid="ab005"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab005_elx.mp3" preload="none" data-arm="elx" data-uid="ab005"></audio>
+</div></div>
+</section>
+<section class="row" id="ab006">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">ab006</span>
+    <button class="playboth" data-uid="ab006" aria-label="play both takes for ab006">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">hey. hey, look at me. you&#x27;re okay. i&#x27;ve got you.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab006_v3.mp3" preload="none" data-arm="v3" data-uid="ab006"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab006_elx.mp3" preload="none" data-arm="elx" data-uid="ab006"></audio>
+</div></div>
+</section>
+<section class="row" id="ab007">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">ab007</span>
+    <button class="playboth" data-uid="ab007" aria-label="play both takes for ab007">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">come here. no, closer. there you go.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab007_v3.mp3" preload="none" data-arm="v3" data-uid="ab007"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab007_elx.mp3" preload="none" data-arm="elx" data-uid="ab007"></audio>
+</div></div>
+</section>
+<section class="row" id="ab008">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">ab008</span>
+    <button class="playboth" data-uid="ab008" aria-label="play both takes for ab008">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i love how you laugh before you finish the joke.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab008_v3.mp3" preload="none" data-arm="v3" data-uid="ab008"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab008_elx.mp3" preload="none" data-arm="elx" data-uid="ab008"></audio>
+</div></div>
+</section>
+<section class="row" id="ab009">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">ab009</span>
+    <button class="playboth" data-uid="ab009" aria-label="play both takes for ab009">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">stay like this a minute. i don&#x27;t want to move yet.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab009_v3.mp3" preload="none" data-arm="v3" data-uid="ab009"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab009_elx.mp3" preload="none" data-arm="elx" data-uid="ab009"></audio>
+</div></div>
+</section>
+<section class="row" id="ab010">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">ab010</span>
+    <button class="playboth" data-uid="ab010" aria-label="play both takes for ab010">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">you&#x27;re allowed to be tired. you don&#x27;t have to earn the rest.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab010_v3.mp3" preload="none" data-arm="v3" data-uid="ab010"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab010_elx.mp3" preload="none" data-arm="elx" data-uid="ab010"></audio>
+</div></div>
+</section>
+<section class="row" id="ab011">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">ab011</span>
+    <button class="playboth" data-uid="ab011" aria-label="play both takes for ab011">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">don&#x27;t wake them. just come and look, quietly.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab011_v3.mp3" preload="none" data-arm="v3" data-uid="ab011"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab011_elx.mp3" preload="none" data-arm="elx" data-uid="ab011"></audio>
+</div></div>
+</section>
+<section class="row" id="ab012">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">ab012</span>
+    <button class="playboth" data-uid="ab012" aria-label="play both takes for ab012">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">don&#x27;t. don&#x27;t you dare tell me to calm down right now.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab012_v3.mp3" preload="none" data-arm="v3" data-uid="ab012"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab012_elx.mp3" preload="none" data-arm="elx" data-uid="ab012"></audio>
+</div></div>
+</section>
+<section class="row" id="ab013">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">ab013</span>
+    <button class="playboth" data-uid="ab013" aria-label="play both takes for ab013">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i asked you one thing. one. and you couldn&#x27;t even do that.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab013_v3.mp3" preload="none" data-arm="v3" data-uid="ab013"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab013_elx.mp3" preload="none" data-arm="elx" data-uid="ab013"></audio>
+</div></div>
+</section>
+<section class="row" id="ab014">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">ab014</span>
+    <button class="playboth" data-uid="ab014" aria-label="play both takes for ab014">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">no, you&#x27;re going to listen to me for once.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab014_v3.mp3" preload="none" data-arm="v3" data-uid="ab014"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab014_elx.mp3" preload="none" data-arm="elx" data-uid="ab014"></audio>
+</div></div>
+</section>
+<section class="row" id="ab015">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">ab015</span>
+    <button class="playboth" data-uid="ab015" aria-label="play both takes for ab015">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">get out. i&#x27;m not asking again.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab015_v3.mp3" preload="none" data-arm="v3" data-uid="ab015"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab015_elx.mp3" preload="none" data-arm="elx" data-uid="ab015"></audio>
+</div></div>
+</section>
+<section class="row" id="ab016">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">ab016</span>
+    <button class="playboth" data-uid="ab016" aria-label="play both takes for ab016">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">you knew. the whole time, you knew, and you let me keep going.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab016_v3.mp3" preload="none" data-arm="v3" data-uid="ab016"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab016_elx.mp3" preload="none" data-arm="elx" data-uid="ab016"></audio>
+</div></div>
+</section>
+<section class="row" id="ab017">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">ab017</span>
+    <button class="playboth" data-uid="ab017" aria-label="play both takes for ab017">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">someone&#x27;s outside. i heard it again, right by the window.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab017_v3.mp3" preload="none" data-arm="v3" data-uid="ab017"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab017_elx.mp3" preload="none" data-arm="elx" data-uid="ab017"></audio>
+</div></div>
+</section>
+<section class="row" id="ab018">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">ab018</span>
+    <button class="playboth" data-uid="ab018" aria-label="play both takes for ab018">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">don&#x27;t turn around. just keep walking, and don&#x27;t turn around.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab018_v3.mp3" preload="none" data-arm="v3" data-uid="ab018"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab018_elx.mp3" preload="none" data-arm="elx" data-uid="ab018"></audio>
+</div></div>
+</section>
+<section class="row" id="ab019">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">ab019</span>
+    <button class="playboth" data-uid="ab019" aria-label="play both takes for ab019">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i can&#x27;t find her. she was right here, she was right here a second ago.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab019_v3.mp3" preload="none" data-arm="v3" data-uid="ab019"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab019_elx.mp3" preload="none" data-arm="elx" data-uid="ab019"></audio>
+</div></div>
+</section>
+<section class="row" id="ab020">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">ab020</span>
+    <button class="playboth" data-uid="ab020" aria-label="play both takes for ab020">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">something&#x27;s wrong. i don&#x27;t know what, but something is wrong.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab020_v3.mp3" preload="none" data-arm="v3" data-uid="ab020"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab020_elx.mp3" preload="none" data-arm="elx" data-uid="ab020"></audio>
+</div></div>
+</section>
+<section class="row" id="ab021">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">ab021</span>
+    <button class="playboth" data-uid="ab021" aria-label="play both takes for ab021">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">no. no way — she actually said yes? she actually said yes!</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab021_v3.mp3" preload="none" data-arm="v3" data-uid="ab021"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab021_elx.mp3" preload="none" data-arm="elx" data-uid="ab021"></audio>
+</div></div>
+</section>
+<section class="row" id="ab022">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">ab022</span>
+    <button class="playboth" data-uid="ab022" aria-label="play both takes for ab022">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab022_v3.mp3" preload="none" data-arm="v3" data-uid="ab022"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab022_elx.mp3" preload="none" data-arm="elx" data-uid="ab022"></audio>
+</div></div>
+</section>
+<section class="row" id="ab023">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">ab023</span>
+    <button class="playboth" data-uid="ab023" aria-label="play both takes for ab023">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">we did it. we actually did it!</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab023_v3.mp3" preload="none" data-arm="v3" data-uid="ab023"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab023_elx.mp3" preload="none" data-arm="elx" data-uid="ab023"></audio>
+</div></div>
+</section>
+<section class="row" id="ab024">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">ab024</span>
+    <button class="playboth" data-uid="ab024" aria-label="play both takes for ab024">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">oh my god, look at your face right now.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab024_v3.mp3" preload="none" data-arm="v3" data-uid="ab024"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab024_elx.mp3" preload="none" data-arm="elx" data-uid="ab024"></audio>
+</div></div>
+</section>
+<section class="row" id="ab025">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">ab025</span>
+    <button class="playboth" data-uid="ab025" aria-label="play both takes for ab025">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">yeah. no, it&#x27;s fine. i&#x27;m just tired.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab025_v3.mp3" preload="none" data-arm="v3" data-uid="ab025"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab025_elx.mp3" preload="none" data-arm="elx" data-uid="ab025"></audio>
+</div></div>
+</section>
+<section class="row" id="ab026">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">ab026</span>
+    <button class="playboth" data-uid="ab026" aria-label="play both takes for ab026">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i don&#x27;t really want to talk about it right now.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab026_v3.mp3" preload="none" data-arm="v3" data-uid="ab026"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab026_elx.mp3" preload="none" data-arm="elx" data-uid="ab026"></audio>
+</div></div>
+</section>
+<section class="row" id="ab027">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">ab027</span>
+    <button class="playboth" data-uid="ab027" aria-label="play both takes for ab027">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">it doesn&#x27;t matter. honestly, it doesn&#x27;t.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab027_v3.mp3" preload="none" data-arm="v3" data-uid="ab027"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab027_elx.mp3" preload="none" data-arm="elx" data-uid="ab027"></audio>
+</div></div>
+</section>
+<section class="row" id="ab028">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">ab028</span>
+    <button class="playboth" data-uid="ab028" aria-label="play both takes for ab028">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">sure. whatever you think is best.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab028_v3.mp3" preload="none" data-arm="v3" data-uid="ab028"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab028_elx.mp3" preload="none" data-arm="elx" data-uid="ab028"></audio>
+</div></div>
+</section>
+<section class="row" id="ab029">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">ab029</span>
+    <button class="playboth" data-uid="ab029" aria-label="play both takes for ab029">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">can you grab milk on the way back? and bread, if they have the seeded one.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab029_v3.mp3" preload="none" data-arm="v3" data-uid="ab029"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab029_elx.mp3" preload="none" data-arm="elx" data-uid="ab029"></audio>
+</div></div>
+</section>
+<section class="row" id="ab030">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">ab030</span>
+    <button class="playboth" data-uid="ab030" aria-label="play both takes for ab030">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the meeting moved to four, so i&#x27;ll be about twenty minutes late.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab030_v3.mp3" preload="none" data-arm="v3" data-uid="ab030"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab030_elx.mp3" preload="none" data-arm="elx" data-uid="ab030"></audio>
+</div></div>
+</section>
+<section class="row" id="ab031">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">ab031</span>
+    <button class="playboth" data-uid="ab031" aria-label="play both takes for ab031">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i left it on the counter next to the keys, under the mail.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab031_v3.mp3" preload="none" data-arm="v3" data-uid="ab031"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab031_elx.mp3" preload="none" data-arm="elx" data-uid="ab031"></audio>
+</div></div>
+</section>
+<section class="row" id="ab032">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">ab032</span>
+    <button class="playboth" data-uid="ab032" aria-label="play both takes for ab032">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">it&#x27;s the third door on the left, past the stairwell, right after the lift.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab032_v3.mp3" preload="none" data-arm="v3" data-uid="ab032"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab032_elx.mp3" preload="none" data-arm="elx" data-uid="ab032"></audio>
+</div></div>
+</section>
+<section class="row" id="ab033">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">ab033</span>
+    <button class="playboth" data-uid="ab033" aria-label="play both takes for ab033">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">she said thursday works, but friday would be easier for everyone else.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab033_v3.mp3" preload="none" data-arm="v3" data-uid="ab033"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab033_elx.mp3" preload="none" data-arm="elx" data-uid="ab033"></audio>
+</div></div>
+</section>
+<section class="row" id="ab034">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">ab034</span>
+    <button class="playboth" data-uid="ab034" aria-label="play both takes for ab034">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab034_v3.mp3" preload="none" data-arm="v3" data-uid="ab034"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab034_elx.mp3" preload="none" data-arm="elx" data-uid="ab034"></audio>
+</div></div>
+</section>
+<section class="row" id="ab035">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">ab035</span>
+    <button class="playboth" data-uid="ab035" aria-label="play both takes for ab035">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab035_v3.mp3" preload="none" data-arm="v3" data-uid="ab035"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab035_elx.mp3" preload="none" data-arm="elx" data-uid="ab035"></audio>
+</div></div>
+</section>
+<section class="row" id="ab036">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">ab036</span>
+    <button class="playboth" data-uid="ab036" aria-label="play both takes for ab036">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">we drove for about six hours, stopped twice for petrol, and got there just as it was getting dark, which meant we couldn&#x27;t see the water at all, only hear it.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab036_v3.mp3" preload="none" data-arm="v3" data-uid="ab036"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab036_elx.mp3" preload="none" data-arm="elx" data-uid="ab036"></audio>
+</div></div>
+</section>
+<section class="row" id="ab037">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">ab037</span>
+    <button class="playboth" data-uid="ab037" aria-label="play both takes for ab037">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i&#x27;m fine. i&#x27;m fine — no. no, actually, i&#x27;m not fine.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab037_v3.mp3" preload="none" data-arm="v3" data-uid="ab037"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab037_elx.mp3" preload="none" data-arm="elx" data-uid="ab037"></audio>
+</div></div>
+</section>
+<section class="row" id="ab038">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">ab038</span>
+    <button class="playboth" data-uid="ab038" aria-label="play both takes for ab038">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">it was funny at the time. it was. it&#x27;s less funny now.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab038_v3.mp3" preload="none" data-arm="v3" data-uid="ab038"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab038_elx.mp3" preload="none" data-arm="elx" data-uid="ab038"></audio>
+</div></div>
+</section>
+<section class="row" id="ab039">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">ab039</span>
+    <button class="playboth" data-uid="ab039" aria-label="play both takes for ab039">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">okay. okay, okay, wait — say that again?</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_ab/ab039_v3.mp3" preload="none" data-arm="v3" data-uid="ab039"></audio>
+</div>
+<div class="arm arm-elx">
+  <audio src="audio_ab/ab039_elx.mp3" preload="none" data-arm="elx" data-uid="ab039"></audio>
+</div></div>
+</section></div>
+</section>
+<section class="set" id="set-pt">
+<div class="sethead">
+  <h2>pt45 &amp;mdash; preference-training prompts</h2>
+  <p class="blurb">45 prompts (9 registers &times; 5), never used to select the checkpoint. Kokoro-82M renders use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours as above. Same text on both sides.</p>
+  <div class="scorechips"><div class="scorechip ours"><span class="sc-name">S7.11-ttsds2-v3</span><span class="sc-num">PROSODY 82.46</span><span class="sc-sub">OVERALL 80.09 &middot; UTMOS 3.802 &middot; f0 18.32 st</span></div>
+<div class="scorechip"><span class="sc-name">Kokoro-82M af_heart</span><span class="sc-num">PROSODY 78.33</span><span class="sc-sub">OVERALL 73.64 &middot; UTMOS 4.498 &middot; f0 9.25 st</span></div></div>
+  <p class="scorenote">Same instrument and reference. Ours leads PROSODY by +4.13; Kokoro's per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody for all nine. UTMOS again favors the external systems.</p>
+</div>
+<div class="rows"><section class="row" id="pt000">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">pt000</span>
+    <button class="playboth" data-uid="pt000" aria-label="play both takes for pt000">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the house sold faster than i expected. i didn&#x27;t think it would.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt000_v3.mp3" preload="none" data-arm="v3" data-uid="pt000"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt000_kok.mp3" preload="none" data-arm="kok" data-uid="pt000"></audio>
+</div></div>
+</section>
+<section class="row" id="pt001">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">pt001</span>
+    <button class="playboth" data-uid="pt001" aria-label="play both takes for pt001">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i found her handwriting in the margin. she corrected the newspaper.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt001_v3.mp3" preload="none" data-arm="v3" data-uid="pt001"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt001_kok.mp3" preload="none" data-arm="kok" data-uid="pt001"></audio>
+</div></div>
+</section>
+<section class="row" id="pt002">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">pt002</span>
+    <button class="playboth" data-uid="pt002" aria-label="play both takes for pt002">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">you were right. you were right the whole time, and i&#x27;m sorry.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt002_v3.mp3" preload="none" data-arm="v3" data-uid="pt002"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt002_kok.mp3" preload="none" data-arm="kok" data-uid="pt002"></audio>
+</div></div>
+</section>
+<section class="row" id="pt003">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">pt003</span>
+    <button class="playboth" data-uid="pt003" aria-label="play both takes for pt003">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i didn&#x27;t go to the funeral. i couldn&#x27;t. i still haven&#x27;t.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt003_v3.mp3" preload="none" data-arm="v3" data-uid="pt003"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt003_kok.mp3" preload="none" data-arm="kok" data-uid="pt003"></audio>
+</div></div>
+</section>
+<section class="row" id="pt004">
+  <div class="rowhead">
+    <span class="cat cat-violet">grief</span>
+    <span class="uid">pt004</span>
+    <button class="playboth" data-uid="pt004" aria-label="play both takes for pt004">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">he asked about you again today. i didn&#x27;t know what to tell him.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt004_v3.mp3" preload="none" data-arm="v3" data-uid="pt004"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt004_kok.mp3" preload="none" data-arm="kok" data-uid="pt004"></audio>
+</div></div>
+</section>
+<section class="row" id="pt005">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">pt005</span>
+    <button class="playboth" data-uid="pt005" aria-label="play both takes for pt005">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">your hair is a mess. come here, let me fix it.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt005_v3.mp3" preload="none" data-arm="v3" data-uid="pt005"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt005_kok.mp3" preload="none" data-arm="kok" data-uid="pt005"></audio>
+</div></div>
+</section>
+<section class="row" id="pt006">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">pt006</span>
+    <button class="playboth" data-uid="pt006" aria-label="play both takes for pt006">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i kept your seat warm. it&#x27;s still warm, actually.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt006_v3.mp3" preload="none" data-arm="v3" data-uid="pt006"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt006_kok.mp3" preload="none" data-arm="kok" data-uid="pt006"></audio>
+</div></div>
+</section>
+<section class="row" id="pt007">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">pt007</span>
+    <button class="playboth" data-uid="pt007" aria-label="play both takes for pt007">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">you&#x27;re doing that thing with your eyebrow. i love that thing.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt007_v3.mp3" preload="none" data-arm="v3" data-uid="pt007"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt007_kok.mp3" preload="none" data-arm="kok" data-uid="pt007"></audio>
+</div></div>
+</section>
+<section class="row" id="pt008">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">pt008</span>
+    <button class="playboth" data-uid="pt008" aria-label="play both takes for pt008">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">give me your hand. no reason. i just want it.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt008_v3.mp3" preload="none" data-arm="v3" data-uid="pt008"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt008_kok.mp3" preload="none" data-arm="kok" data-uid="pt008"></audio>
+</div></div>
+</section>
+<section class="row" id="pt009">
+  <div class="rowhead">
+    <span class="cat cat-amber">tender</span>
+    <span class="uid">pt009</span>
+    <button class="playboth" data-uid="pt009" aria-label="play both takes for pt009">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i made too much pasta again. you know what that means.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt009_v3.mp3" preload="none" data-arm="v3" data-uid="pt009"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt009_kok.mp3" preload="none" data-arm="kok" data-uid="pt009"></audio>
+</div></div>
+</section>
+<section class="row" id="pt010">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">pt010</span>
+    <button class="playboth" data-uid="pt010" aria-label="play both takes for pt010">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">that&#x27;s the third time this week. third. i&#x27;m counting.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt010_v3.mp3" preload="none" data-arm="v3" data-uid="pt010"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt010_kok.mp3" preload="none" data-arm="kok" data-uid="pt010"></audio>
+</div></div>
+</section>
+<section class="row" id="pt011">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">pt011</span>
+    <button class="playboth" data-uid="pt011" aria-label="play both takes for pt011">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">you promised. you looked me in the eye and you promised.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt011_v3.mp3" preload="none" data-arm="v3" data-uid="pt011"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt011_kok.mp3" preload="none" data-arm="kok" data-uid="pt011"></audio>
+</div></div>
+</section>
+<section class="row" id="pt012">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">pt012</span>
+    <button class="playboth" data-uid="pt012" aria-label="play both takes for pt012">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">put the phone down. i&#x27;m talking to you.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt012_v3.mp3" preload="none" data-arm="v3" data-uid="pt012"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt012_kok.mp3" preload="none" data-arm="kok" data-uid="pt012"></audio>
+</div></div>
+</section>
+<section class="row" id="pt013">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">pt013</span>
+    <button class="playboth" data-uid="pt013" aria-label="play both takes for pt013">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i&#x27;m not angry about the dish. you know i&#x27;m not angry about the dish.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt013_v3.mp3" preload="none" data-arm="v3" data-uid="pt013"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt013_kok.mp3" preload="none" data-arm="kok" data-uid="pt013"></audio>
+</div></div>
+</section>
+<section class="row" id="pt014">
+  <div class="rowhead">
+    <span class="cat cat-slate">anger</span>
+    <span class="uid">pt014</span>
+    <button class="playboth" data-uid="pt014" aria-label="play both takes for pt014">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">say that again. go on. say it to my face.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt014_v3.mp3" preload="none" data-arm="v3" data-uid="pt014"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt014_kok.mp3" preload="none" data-arm="kok" data-uid="pt014"></audio>
+</div></div>
+</section>
+<section class="row" id="pt015">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">pt015</span>
+    <button class="playboth" data-uid="pt015" aria-label="play both takes for pt015">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the lights just went out. all of them. at once.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt015_v3.mp3" preload="none" data-arm="v3" data-uid="pt015"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt015_kok.mp3" preload="none" data-arm="kok" data-uid="pt015"></audio>
+</div></div>
+</section>
+<section class="row" id="pt016">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">pt016</span>
+    <button class="playboth" data-uid="pt016" aria-label="play both takes for pt016">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">why is the front door open. i closed it. i know i closed it.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt016_v3.mp3" preload="none" data-arm="v3" data-uid="pt016"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt016_kok.mp3" preload="none" data-arm="kok" data-uid="pt016"></audio>
+</div></div>
+</section>
+<section class="row" id="pt017">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">pt017</span>
+    <button class="playboth" data-uid="pt017" aria-label="play both takes for pt017">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">don&#x27;t hang up. please. stay on the line with me.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt017_v3.mp3" preload="none" data-arm="v3" data-uid="pt017"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt017_kok.mp3" preload="none" data-arm="kok" data-uid="pt017"></audio>
+</div></div>
+</section>
+<section class="row" id="pt018">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">pt018</span>
+    <button class="playboth" data-uid="pt018" aria-label="play both takes for pt018">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i keep hearing scratching inside the wall and it stops when i knock.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt018_v3.mp3" preload="none" data-arm="v3" data-uid="pt018"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt018_kok.mp3" preload="none" data-arm="kok" data-uid="pt018"></audio>
+</div></div>
+</section>
+<section class="row" id="pt019">
+  <div class="rowhead">
+    <span class="cat cat-sage">fear</span>
+    <span class="uid">pt019</span>
+    <button class="playboth" data-uid="pt019" aria-label="play both takes for pt019">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">something&#x27;s wrong with the car. it&#x27;s never made that sound before.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt019_v3.mp3" preload="none" data-arm="v3" data-uid="pt019"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt019_kok.mp3" preload="none" data-arm="kok" data-uid="pt019"></audio>
+</div></div>
+</section>
+<section class="row" id="pt020">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">pt020</span>
+    <button class="playboth" data-uid="pt020" aria-label="play both takes for pt020">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">we got it. we actually got it. the yes came through an hour ago.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt020_v3.mp3" preload="none" data-arm="v3" data-uid="pt020"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt020_kok.mp3" preload="none" data-arm="kok" data-uid="pt020"></audio>
+</div></div>
+</section>
+<section class="row" id="pt021">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">pt021</span>
+    <button class="playboth" data-uid="pt021" aria-label="play both takes for pt021">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">she said yes! she actually said yes!</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt021_v3.mp3" preload="none" data-arm="v3" data-uid="pt021"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt021_kok.mp3" preload="none" data-arm="kok" data-uid="pt021"></audio>
+</div></div>
+</section>
+<section class="row" id="pt022">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">pt022</span>
+    <button class="playboth" data-uid="pt022" aria-label="play both takes for pt022">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">guess who just walked into the airport two days early.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt022_v3.mp3" preload="none" data-arm="v3" data-uid="pt022"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt022_kok.mp3" preload="none" data-arm="kok" data-uid="pt022"></audio>
+</div></div>
+</section>
+<section class="row" id="pt023">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">pt023</span>
+    <button class="playboth" data-uid="pt023" aria-label="play both takes for pt023">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i found it. the ring. it was in the coat pocket the whole time.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt023_v3.mp3" preload="none" data-arm="v3" data-uid="pt023"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt023_kok.mp3" preload="none" data-arm="kok" data-uid="pt023"></audio>
+</div></div>
+</section>
+<section class="row" id="pt024">
+  <div class="rowhead">
+    <span class="cat cat-amber">joy</span>
+    <span class="uid">pt024</span>
+    <button class="playboth" data-uid="pt024" aria-label="play both takes for pt024">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the test came back and the doctor was smiling. she was smiling!</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt024_v3.mp3" preload="none" data-arm="v3" data-uid="pt024"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt024_kok.mp3" preload="none" data-arm="kok" data-uid="pt024"></audio>
+</div></div>
+</section>
+<section class="row" id="pt025">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">pt025</span>
+    <button class="playboth" data-uid="pt025" aria-label="play both takes for pt025">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i&#x27;m holding it together. ask me again in an hour.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt025_v3.mp3" preload="none" data-arm="v3" data-uid="pt025"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt025_kok.mp3" preload="none" data-arm="kok" data-uid="pt025"></audio>
+</div></div>
+</section>
+<section class="row" id="pt026">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">pt026</span>
+    <button class="playboth" data-uid="pt026" aria-label="play both takes for pt026">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">don&#x27;t. not here. we&#x27;ll talk about it at home.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt026_v3.mp3" preload="none" data-arm="v3" data-uid="pt026"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt026_kok.mp3" preload="none" data-arm="kok" data-uid="pt026"></audio>
+</div></div>
+</section>
+<section class="row" id="pt027">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">pt027</span>
+    <button class="playboth" data-uid="pt027" aria-label="play both takes for pt027">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">it&#x27;s over. it&#x27;s done. there&#x27;s nothing left to say about it.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt027_v3.mp3" preload="none" data-arm="v3" data-uid="pt027"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt027_kok.mp3" preload="none" data-arm="kok" data-uid="pt027"></audio>
+</div></div>
+</section>
+<section class="row" id="pt028">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">pt028</span>
+    <button class="playboth" data-uid="pt028" aria-label="play both takes for pt028">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">thank you for coming. really. you didn&#x27;t have to.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt028_v3.mp3" preload="none" data-arm="v3" data-uid="pt028"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt028_kok.mp3" preload="none" data-arm="kok" data-uid="pt028"></audio>
+</div></div>
+</section>
+<section class="row" id="pt029">
+  <div class="rowhead">
+    <span class="cat cat-slate">restraint</span>
+    <span class="uid">pt029</span>
+    <button class="playboth" data-uid="pt029" aria-label="play both takes for pt029">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i&#x27;ll be okay. i just need a minute. one minute.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt029_v3.mp3" preload="none" data-arm="v3" data-uid="pt029"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt029_kok.mp3" preload="none" data-arm="kok" data-uid="pt029"></audio>
+</div></div>
+</section>
+<section class="row" id="pt030">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">pt030</span>
+    <button class="playboth" data-uid="pt030" aria-label="play both takes for pt030">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the kitchen clock stopped the week after the funeral, and nobody in this house has suggested fixing it, and nobody ever will.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt030_v3.mp3" preload="none" data-arm="v3" data-uid="pt030"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt030_kok.mp3" preload="none" data-arm="kok" data-uid="pt030"></audio>
+</div></div>
+</section>
+<section class="row" id="pt031">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">pt031</span>
+    <button class="playboth" data-uid="pt031" aria-label="play both takes for pt031">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">she used to water that plant every sunday morning. it&#x27;s plastic. it always was. she knew, and she watered it anyway, every sunday, for eleven years.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt031_v3.mp3" preload="none" data-arm="v3" data-uid="pt031"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt031_kok.mp3" preload="none" data-arm="kok" data-uid="pt031"></audio>
+</div></div>
+</section>
+<section class="row" id="pt032">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">pt032</span>
+    <button class="playboth" data-uid="pt032" aria-label="play both takes for pt032">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the number you&#x27;re looking for is four hundred and six. it hasn&#x27;t changed since march, and it isn&#x27;t going to change before june.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt032_v3.mp3" preload="none" data-arm="v3" data-uid="pt032"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt032_kok.mp3" preload="none" data-arm="kok" data-uid="pt032"></audio>
+</div></div>
+</section>
+<section class="row" id="pt033">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">pt033</span>
+    <button class="playboth" data-uid="pt033" aria-label="play both takes for pt033">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i want the report on my desk by friday, and i want the numbers double-checked, because the last three times the totals didn&#x27;t match the invoice and i had to explain it to the board.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt033_v3.mp3" preload="none" data-arm="v3" data-uid="pt033"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt033_kok.mp3" preload="none" data-arm="kok" data-uid="pt033"></audio>
+</div></div>
+</section>
+<section class="row" id="pt034">
+  <div class="rowhead">
+    <span class="cat cat-sage">long</span>
+    <span class="uid">pt034</span>
+    <button class="playboth" data-uid="pt034" aria-label="play both takes for pt034">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">we drove the whole coast road in one day. eleven towns, four lighthouses, one flat tire outside a village whose name i still can&#x27;t pronounce, and the best meal i have ever eaten.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt034_v3.mp3" preload="none" data-arm="v3" data-uid="pt034"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt034_kok.mp3" preload="none" data-arm="kok" data-uid="pt034"></audio>
+</div></div>
+</section>
+<section class="row" id="pt035">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">pt035</span>
+    <button class="playboth" data-uid="pt035" aria-label="play both takes for pt035">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">can you pick up coffee on your way in? the good one, not the office one.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt035_v3.mp3" preload="none" data-arm="v3" data-uid="pt035"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt035_kok.mp3" preload="none" data-arm="kok" data-uid="pt035"></audio>
+</div></div>
+</section>
+<section class="row" id="pt036">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">pt036</span>
+    <button class="playboth" data-uid="pt036" aria-label="play both takes for pt036">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the meeting moved to thursday. same time, same room.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt036_v3.mp3" preload="none" data-arm="v3" data-uid="pt036"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt036_kok.mp3" preload="none" data-arm="kok" data-uid="pt036"></audio>
+</div></div>
+</section>
+<section class="row" id="pt037">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">pt037</span>
+    <button class="playboth" data-uid="pt037" aria-label="play both takes for pt037">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">your package is on the kitchen counter. signature wasn&#x27;t required.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt037_v3.mp3" preload="none" data-arm="v3" data-uid="pt037"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt037_kok.mp3" preload="none" data-arm="kok" data-uid="pt037"></audio>
+</div></div>
+</section>
+<section class="row" id="pt038">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">pt038</span>
+    <button class="playboth" data-uid="pt038" aria-label="play both takes for pt038">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">the plumber comes tomorrow between ten and twelve. someone has to be here.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt038_v3.mp3" preload="none" data-arm="v3" data-uid="pt038"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt038_kok.mp3" preload="none" data-arm="kok" data-uid="pt038"></audio>
+</div></div>
+</section>
+<section class="row" id="pt039">
+  <div class="rowhead">
+    <span class="cat cat-violet">plain</span>
+    <span class="uid">pt039</span>
+    <button class="playboth" data-uid="pt039" aria-label="play both takes for pt039">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i left the tickets under the mat, like you asked.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt039_v3.mp3" preload="none" data-arm="v3" data-uid="pt039"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt039_kok.mp3" preload="none" data-arm="kok" data-uid="pt039"></audio>
+</div></div>
+</section>
+<section class="row" id="pt040">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">pt040</span>
+    <button class="playboth" data-uid="pt040" aria-label="play both takes for pt040">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">i&#x27;m not upset. i said i&#x27;m not upset. why would you think i&#x27;m upset?</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt040_v3.mp3" preload="none" data-arm="v3" data-uid="pt040"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt040_kok.mp3" preload="none" data-arm="kok" data-uid="pt040"></audio>
+</div></div>
+</section>
+<section class="row" id="pt041">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">pt041</span>
+    <button class="playboth" data-uid="pt041" aria-label="play both takes for pt041">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">it&#x27;s fine. it&#x27;s completely fine. no, actually, it&#x27;s not fine at all.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt041_v3.mp3" preload="none" data-arm="v3" data-uid="pt041"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt041_kok.mp3" preload="none" data-arm="kok" data-uid="pt041"></audio>
+</div></div>
+</section>
+<section class="row" id="pt042">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">pt042</span>
+    <button class="playboth" data-uid="pt042" aria-label="play both takes for pt042">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">wait. wait, wait. go back. what did you just say?</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt042_v3.mp3" preload="none" data-arm="v3" data-uid="pt042"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt042_kok.mp3" preload="none" data-arm="kok" data-uid="pt042"></audio>
+</div></div>
+</section>
+<section class="row" id="pt043">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">pt043</span>
+    <button class="playboth" data-uid="pt043" aria-label="play both takes for pt043">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">oh. oh no. no, no, this can&#x27;t be happening.</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt043_v3.mp3" preload="none" data-arm="v3" data-uid="pt043"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt043_kok.mp3" preload="none" data-arm="kok" data-uid="pt043"></audio>
+</div></div>
+</section>
+<section class="row" id="pt044">
+  <div class="rowhead">
+    <span class="cat cat-amber">shift</span>
+    <span class="uid">pt044</span>
+    <button class="playboth" data-uid="pt044" aria-label="play both takes for pt044">&#9654;&nbsp;play both</button>
+  </div>
+  <p class="line">that&#x27;s... that&#x27;s actually brilliant. why didn&#x27;t you say that a week ago?</p>
+  <div class="arms"><div class="arm arm-ours">
+  <audio src="audio_pt/pt044_v3.mp3" preload="none" data-arm="v3" data-uid="pt044"></audio>
+</div>
+<div class="arm arm-kok">
+  <audio src="audio_pt/pt044_kok.mp3" preload="none" data-arm="kok" data-uid="pt044"></audio>
+</div></div>
+</section></div>
+</section>
+</main>
+<footer><div class="wrap">
+  <p>Systems: <b>S7.11-ttsds2-v3</b> (checkpoint <span style="font-family:var(--mono)">s7_5_streaming_v6a_ttds2_v3_gp67/checkpoint_final.pt</span>,
+  frozen serving path, seed 1000, caption withheld) &middot; <b>ElevenLabs v3</b> (voice Rachel)
+  &middot; <b>Kokoro-82M</b> (voice af_heart). Scoring: official ttsds 2.1.3 BenchmarkSuite,
+  reference stratum_ref200; full numbers in
+  <a href="https://github.com/Tap-Mobile/expressive-tts/blob/streaming-rope-ttds2/docs/PROSODY_SOTA_COMPARISON_20260919.md">docs/PROSODY_SOTA_COMPARISON_20260919.md</a>.</p>
+  <p>Caveat: UTMOS favors the external systems partly through render sample rate (24&nbsp;kHz native
+  vs our 48&nbsp;kHz codec path); PROSODY sub-scores split by axis &mdash; ElevenLabs owns the
+  distributional pitch axes, ours the rate/token axes. No per-prompt confidence intervals exist
+  for set-level suite scores; treat small deltas as directional.</p>
+</div></footer>
+<script>
+(function(){
+  var audios = Array.prototype.slice.call(document.querySelectorAll('audio'));
+  var byUid = {};
+  audios.forEach(function(a){
+    var u = a.dataset.uid;
+    (byUid[u] = byUid[u] || []).push(a);
+  });
+  function stopAll(exceptUid){
+    audios.forEach(function(a){
+      if (a.dataset.uid !== exceptUid) { a.pause(); a.currentTime = 0; }
+    });
+    document.querySelectorAll('.playboth.on').forEach(function(b){
+      if (b.dataset.uid !== exceptUid) b.classList.remove('on');
+    });
+  }
+  document.querySelectorAll('.playboth').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var uid = btn.dataset.uid;
+      var group = byUid[uid] || [];
+      var anyPlaying = group.some(function(a){ return !a.paused; });
+      if (anyPlaying) {
+        group.forEach(function(a){ a.pause(); a.currentTime = 0; });
+        btn.classList.remove('on');
+        return;
+      }
+      stopAll(uid);
+      group.forEach(function(a){ a.currentTime = 0; a.play(); });
+      btn.classList.add('on');
+      var first = group[0];
+      function off(){
+        var done = group.every(function(a){ return a.paused || a.ended; });
+        if (done) { btn.classList.remove('on'); cleanup(); }
+      }
+      function cleanup(){
+        group.forEach(function(a){ a.removeEventListener('ended', off); a.removeEventListener('pause', off); });
+      }
+      group.forEach(function(a){ a.addEventListener('ended', off); a.addEventListener('pause', off); });
+    });
+  });
+  audios.forEach(function(a){
+    a.addEventListener('play', function(){ stopAll(a.dataset.uid); });
+  });
+  window.addEventListener('pagehide', function(){
+    audios.forEach(function(a){ a.pause(); });
+  });
+})();
+</script>
+</body></html>
