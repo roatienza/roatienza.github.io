@@ -11,11 +11,11 @@ data = json.load(open('/tmp/prosody_data.json'))
 
 SCORES = {
     "ab": {
-        "v3":  {"prosody": 81.97, "overall": 77.42, "utmos": 3.916, "f0st": 15.88},
+        "v3":  {"prosody": 79.83, "overall": 78.28, "utmos": 3.689, "f0st": 14.29},
         "elx": {"prosody": 80.76, "overall": 74.16, "utmos": 4.310, "f0st": 15.79},
     },
     "pt": {
-        "v3":  {"prosody": 82.46, "overall": 80.09, "utmos": 3.802, "f0st": 18.32},
+        "v3":  {"prosody": 83.22, "overall": 79.55, "utmos": 3.767, "f0st": 13.05},
         "kok": {"prosody": 78.33, "overall": 73.64, "utmos": 4.498, "f0st": 9.25},
     },
 }
@@ -89,17 +89,24 @@ def build_set(setkey, title, blurb, score_note):
 ab_sec = build_set(
     "ab", "ab40 &mdash; held-out product-eval prompts",
     "40 prompts never used to select the checkpoint, rendered on the frozen S7.11 serving path "
-    "(seed 1000, caption withheld). Speaker-controlled: ElevenLabs v3 uses the fixed voice "
-    "<em>Rachel</em>; ours uses one female reference speaker for all 40 takes. Same text on both sides.",
+    "(seed 1000). Speaker-controlled: ElevenLabs v3 uses the fixed voice <em>Rachel</em>; ours "
+    "uses one female reference speaker for all 40 takes. Each take is conditioned on a "
+    "register-matched prose caption (the same caption grammar the showcase was selected with). "
+    "Texts are the current canon of the prompt suite &mdash; the 2026-09-19 page had three rows "
+    "(ab001, ab005, ab021) rendered from a superseded list; those are re-rendered here. Same "
+    "text on both sides, verified by the canonical ASR (WER 0.008).",
     "Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200. PROSODY = mean of Pitch, MPM, "
-    "HuBERT-token SR, Allosaurus SR. Ours leads PROSODY by +1.21; ElevenLabs leads UTMOS "
-    "(24&nbsp;kHz-native renders, ours through the 48&nbsp;kHz codec).")
+    "HuBERT-token SR, Allosaurus SR. ElevenLabs leads PROSODY by +0.93 (80.76 vs 79.83) and "
+    "UTMOS (24&nbsp;kHz-native renders, ours through the 48&nbsp;kHz codec); ours leads "
+    "OVERALL by +4.12.")
 
 pt_sec = build_set(
     "pt", "pt45 &mdash; preference-training prompts",
     "45 prompts (9 registers &times; 5), never used to select the checkpoint. Kokoro-82M renders "
-    "use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours as above. Same text on both sides.",
-    "Same instrument and reference. Ours leads PROSODY by +4.13 (81.97 vs 78.33); Kokoro's "
+    "use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours uses one female reference speaker "
+    "with register-matched prose captions, as in ab40. Same text on both sides, verified by the "
+    "canonical ASR (WER 0.014; the only flags are number normalization).",
+    "Same instrument and reference. Ours leads PROSODY by +4.89 (83.22 vs 78.33); Kokoro's "
     "per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody "
     "for all nine. UTMOS again favors the external systems.")
 
@@ -177,8 +184,9 @@ footer a{{color:var(--dim)}}
 <header class="top"><div class="wrap">
   <h1>PROSODY, <em>by ear.</em></h1>
   <p class="standfirst">Three systems, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
-  Our ab40 arm is speaker-controlled: one female reference speaker on our side vs the fixed voice
-  Rachel on ElevenLabs&rsquo;s. This page plays the same renders side by side.
+  Our arms are speaker-controlled: one female reference speaker on our side vs the fixed voice
+  Rachel on ElevenLabs&rsquo;s and af_heart on Kokoro&rsquo;s, each take conditioned on a
+  register-matched prose caption. This page plays the same renders side by side.
   Play one take alone for a solo A/B, or &ldquo;play both&rdquo; to hear the pair together &mdash;
   the metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
   <nav class="tabs">
@@ -192,7 +200,8 @@ footer a{{color:var(--dim)}}
 </main>
 <footer><div class="wrap">
   <p>Systems: <b>S7.11-ttsds2-v3</b> (checkpoint <span style="font-family:var(--mono)">s7_5_streaming_v6a_ttds2_v3_gp67/checkpoint_final.pt</span>,
-  frozen serving path, seed 1000, caption withheld; ab40 arm uses one female reference speaker)
+  frozen serving path, seed 1000; both arms use one female reference speaker and register-matched
+  prose captioning, ab40 texts from the current prompt-suite canon)
   &middot; <b>ElevenLabs v3</b> (voice Rachel)
   &middot; <b>Kokoro-82M</b> (voice af_heart). Scoring: official ttsds 2.1.3 BenchmarkSuite,
   reference stratum_ref200; full numbers in
