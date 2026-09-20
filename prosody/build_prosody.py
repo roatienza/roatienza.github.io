@@ -11,23 +11,27 @@ data = json.load(open('/tmp/prosody_data.json'))
 
 SCORES = {
     "ab": {
-        "v3":  {"prosody": 79.83, "overall": 78.28, "utmos": 3.689, "f0st": 14.29},
-        "elx": {"prosody": 80.76, "overall": 74.16, "utmos": 4.310, "f0st": 15.79},
+        "v3":    {"prosody": 79.83, "overall": 78.28, "utmos": 3.689, "f0st": 14.29},
+        "elx":   {"prosody": 80.76, "overall": 74.16, "utmos": 4.310, "f0st": 15.79},
+        "ex10k": {"prosody": 76.27, "overall": 75.78, "utmos": 3.746, "f0st": 20.41},
     },
     "pt": {
-        "v3":  {"prosody": 83.22, "overall": 79.55, "utmos": 3.767, "f0st": 13.05},
-        "kok": {"prosody": 78.33, "overall": 73.64, "utmos": 4.498, "f0st": 9.25},
+        "v3":    {"prosody": 83.22, "overall": 79.55, "utmos": 3.767, "f0st": 13.05},
+        "kok":   {"prosody": 78.33, "overall": 73.64, "utmos": 4.498, "f0st": 9.25},
+        "ex10k": {"prosody": 72.39, "overall": 74.25, "utmos": 3.842, "f0st": 19.77},
     },
 }
 
 ARMS = {
     "ab": [
-        ("v3",  "S7.11-ttsds2-v3", "ours",  "audio_ab/{id}_v3.mp3"),
-        ("elx", "ElevenLabs v3 (Rachel)", "elx", "audio_ab/{id}_elx.mp3"),
+        ("v3",    "S7.11-ttsds2-v3",              "ours",  "audio_ab/{id}_v3.mp3"),
+        ("elx",   "ElevenLabs v3 (Rachel)",       "elx",   "audio_ab/{id}_elx.mp3"),
+        ("ex10k", "EX10K stage-1 (voice design)", "ex10k", "audio_ab/{id}_ex10k.mp3"),
     ],
     "pt": [
-        ("v3",  "S7.11-ttsds2-v3", "ours",  "audio_pt/{id}_v3.mp3"),
-        ("kok", "Kokoro-82M af_heart", "kok", "audio_pt/{id}_kok.mp3"),
+        ("v3",    "S7.11-ttsds2-v3",              "ours",  "audio_pt/{id}_v3.mp3"),
+        ("kok",   "Kokoro-82M af_heart",          "kok",   "audio_pt/{id}_kok.mp3"),
+        ("ex10k", "EX10K stage-1 (voice design)", "ex10k", "audio_pt/{id}_ex10k.mp3"),
     ],
 }
 
@@ -96,9 +100,10 @@ ab_sec = build_set(
     "(ab001, ab005, ab021) rendered from a superseded list; those are re-rendered here. Same "
     "text on both sides, verified by the canonical ASR (WER 0.008).",
     "Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200. PROSODY = mean of Pitch, MPM, "
-    "HuBERT-token SR, Allosaurus SR. ElevenLabs leads PROSODY by +0.93 (80.76 vs 79.83) and "
-    "UTMOS (24&nbsp;kHz-native renders, ours through the 48&nbsp;kHz codec); ours leads "
-    "OVERALL by +4.12.")
+    "HuBERT-token SR, Allosaurus SR. ElevenLabs leads PROSODY by +0.93 over v3 (80.76 vs 79.83) "
+    "and UTMOS (24&nbsp;kHz-native renders, ours through the 48&nbsp;kHz codec); v3 leads "
+    "OVERALL by +4.12 over ElevenLabs. The EX10K stage-1 voice-design checkpoint trails both "
+    "(76.27) &mdash; see the ex10k note below.")
 
 pt_sec = build_set(
     "pt", "pt45 &mdash; preference-training prompts",
@@ -106,9 +111,10 @@ pt_sec = build_set(
     "use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours uses one female reference speaker "
     "with register-matched prose captions, as in ab40. Same text on both sides, verified by the "
     "canonical ASR (WER 0.014; the only flags are number normalization).",
-    "Same instrument and reference. Ours leads PROSODY by +4.89 (83.22 vs 78.33); Kokoro's "
-    "per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody "
-    "for all nine. UTMOS again favors the external systems.")
+    "Same instrument and reference. v3 leads PROSODY by +4.89 over Kokoro (83.22 vs 78.33); "
+    "Kokoro's per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; "
+    "one prosody for all nine. UTMOS again favors the external systems. The EX10K stage-1 "
+    "voice-design checkpoint trails both (72.39) &mdash; see the ex10k note below.")
 
 page = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -170,15 +176,17 @@ nav.tabs a:hover{{color:var(--paper)}}
 .playboth:hover{{border-color:var(--amber);color:var(--amber)}}
 .playboth.on{{border-color:var(--amber);color:var(--ink);background:var(--amber)}}
 .line{{margin:2px 0 10px;color:var(--dim);font-size:14.5px;max-width:78ch}}
-.arms{{display:grid;gap:12px;grid-template-columns:1fr 1fr}}
+.arms{{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr}}
 .arm audio{{width:100%;height:40px;display:block}}
 .arm-label{{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
   color:var(--faint);margin:0 0 5px}}
 .arm-ours .arm-label{{color:var(--amber)}}
+.arm-ex10k .arm-label{{color:var(--violet)}}
 footer{{border-top:1px solid var(--line);color:var(--faint);font-size:13px}}
 footer .wrap{{padding:24px 24px 54px}}
 footer a{{color:var(--dim)}}
 @media (max-width:700px){{.arms{{grid-template-columns:1fr}}}}
+@media (max-width:900px) and (min-width:701px){{.arms{{grid-template-columns:1fr 1fr}}}}
 @media (prefers-reduced-motion:reduce){{*{{transition:none}}}}
 </style></head><body>
 <header class="top"><div class="wrap">
@@ -203,13 +211,24 @@ footer a{{color:var(--dim)}}
   frozen serving path, seed 1000; both arms use one female reference speaker and register-matched
   prose captioning, ab40 texts from the current prompt-suite canon)
   &middot; <b>ElevenLabs v3</b> (voice Rachel)
-  &middot; <b>Kokoro-82M</b> (voice af_heart). Scoring: official ttsds 2.1.3 BenchmarkSuite,
-  reference stratum_ref200; full numbers in
-  <a href="https://github.com/Tap-Mobile/expressive-tts/blob/streaming-rope-ttds2/docs/PROSODY_SOTA_COMPARISON_20260919.md">docs/PROSODY_SOTA_COMPARISON_20260919.md</a>.</p>
-  <p>Caveat: UTMOS favors the external systems partly through render sample rate (24&nbsp;kHz native
-  vs our 48&nbsp;kHz codec path); PROSODY sub-scores split by axis &mdash; ElevenLabs owns the
-  distributional pitch axes, ours the rate/token axes. No per-prompt confidence intervals exist
-  for set-level suite scores; treat small deltas as directional.</p>
+  &middot; <b>Kokoro-82M</b> (voice af_heart)
+  &middot; <b>EX10K stage-1</b> (voice-design prompt-LoRA line, branch <span style="font-family:var(--mono)">claude/ex10k</span>, best milestone
+  <span style="font-family:var(--mono)">checkpoint_0125000.pt</span> &mdash; init from the Japanese release
+  <span style="font-family:var(--mono)">ckpt-v4-small-en-swap</span>, trained on 3.5M rows / 16,106 speakers with
+  6-view ablation captions; rendered on the <em>same</em> female reference speaker, register
+  captions, serving path and seed as the v3 arms, so the only variable is the checkpoint).
+  Scoring: official ttsds 2.1.3 BenchmarkSuite, reference stratum_ref200; full numbers in
+  <a href="https://github.com/Tap-Mobile/expressive-tts/blob/streaming-rope-ttds2/docs/PROSODY_EX10K_COMPARISON_20260920.md">docs/PROSODY_EX10K_COMPARISON_20260920.md</a>
+  and <a href="https://github.com/Tap-Mobile/expressive-tts/blob/streaming-rope-ttds2/docs/PROSODY_SOTA_COMPARISON_20260919.md">docs/PROSODY_SOTA_COMPARISON_20260919.md</a>.</p>
+  <p>EX10K stage-1 read: the 10k-hour voice-design run is <b>behind the production v3 on
+  prosody on both independent sets</b> (ab40 76.27 vs 79.83, pt45 72.39 vs 83.22) and behind
+  ElevenLabs on ab40 (76.27 vs 80.76) and Kokoro on pt45 (72.39 vs 78.33). Its pt45
+  HuBERT-token SR collapses to 63.5 (v3: 90.9) &mdash; the same rate/token axis the ex10k
+  handoff flagged as the short-prompt fault. UTMOS is slightly ahead of v3 (3.75/3.84 vs
+  3.69/3.77) and its f0 range is much wider (20.4/19.8 vs 14.3/13.1&nbsp;st): more energetic,
+  less controlled. Caveat as before: UTMOS favors the external systems partly through render
+  sample rate; PROSODY sub-scores split by axis; no per-prompt confidence intervals exist for
+  set-level suite scores &mdash; treat small deltas as directional.</p>
 </div></footer>
 <script>
 (function(){{
