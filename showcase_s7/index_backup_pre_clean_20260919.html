@@ -1,0 +1,1120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Irodori-EN — S7.11 Showcase</title>
+<style>
+:root{
+  --ink:#14110D; --line:#332C22; --paper:#F4F0E8; --dim:#B9B1A3; --faint:#7E7768;
+  --amber:#E39A2B; --violet:#B58AD4; --slate:#7C9CB5; --sage:#8FB573;
+  --serif:Charter,"Bitstream Charter","Iowan Old Style",Georgia,serif;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px}
+header.top{border-bottom:1px solid var(--line);
+  background:radial-gradient(120% 100% at 8% -10%,rgba(227,154,43,.10),transparent 60%),
+  linear-gradient(180deg,#181410,transparent)}
+header.top .wrap{padding:64px 24px 40px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(32px,5.2vw,52px);
+  line-height:1.08;margin:0 0 18px;letter-spacing:-.015em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--amber)}
+.standfirst{max-width:60ch;color:var(--dim);margin:0 0 28px}
+
+/* The switch. Two takes of the same prompt, one page, no reload. */
+.switch{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:14px 0 2px;border-top:1px solid var(--line)}
+.switch .lab{font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-right:4px}
+button.tog{appearance:none;cursor:pointer;font:600 13px/1 var(--sans);
+  color:var(--dim);background:transparent;border:1px solid var(--line);
+  border-radius:999px;padding:9px 18px;transition:background .16s,color .16s,border-color .16s}
+button.tog:hover{color:var(--paper);border-color:#4b4132}
+button.tog[aria-pressed="true"]{background:var(--amber);border-color:var(--amber);color:#1a1509}
+button.tog:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+.switch .note{flex:1 1 100%;color:var(--faint);font-size:13px;margin:8px 0 0}
+
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  padding:34px 0 64px}
+.chip{border:1px solid var(--line);border-radius:12px;padding:14px 15px 13px;
+  background:linear-gradient(180deg,rgba(255,255,255,.022),transparent)}
+.chip .vox{display:flex;align-items:center;gap:7px;font:600 11px/1 var(--mono);
+  letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.chip.violet .dot{background:var(--violet)} .chip.slate .dot{background:var(--slate)}
+.chip.sage .dot{background:var(--sage)}
+.chip .who{font-family:var(--serif);font-size:17px;margin:9px 0 3px}
+.chip .line{color:var(--dim);font-size:14px;margin:0 0 10px}
+.chip audio{width:100%;height:32px;margin-top:2px}
+.chip .cond{color:var(--faint);font-size:12px;margin:9px 0 0;font-family:var(--mono);
+  line-height:1.45}
+.chip .absent{color:var(--faint);font-size:12.5px;font-style:italic;margin:6px 0 0;
+  padding:7px 9px;border:1px dashed var(--line);border-radius:8px}
+footer{border-top:1px solid var(--line);color:var(--faint);font-size:13px}
+footer .wrap{padding:26px 24px 60px}
+@media (prefers-reduced-motion:reduce){button.tog{transition:none}}
+
+
+@media (max-width:640px){
+  .ear-tag{white-space:normal;letter-spacing:.05em;line-height:1.35;padding:5px 6px}
+  .ear-row audio{min-width:150px}
+}
+.wer{font:600 10.5px/1 var(--mono);color:var(--faint);border:1px dashed var(--line);border-radius:6px;padding:5px 7px;white-space:nowrap}
+.rep{color:var(--amber)}
+.tr{margin:10px 0 14px;padding:10px 14px;border-left:3px solid var(--line);
+  background:rgba(255,255,255,.025);max-width:72ch}
+.tr .trlab{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 6px}
+.tr p{margin:4px 0;color:var(--paper);font-size:15px;line-height:1.55}
+.tr .win{color:var(--faint)}
+.tr .win b{color:var(--amber);font-weight:600}
+.tr .cue{font:600 10px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--dim);border:1px solid var(--line);border-radius:5px;padding:2px 6px;
+  white-space:nowrap;margin-right:6px}
+
+</style></head><body>
+<header class="top"><div class="wrap">
+  <h1>One model. <em>Many people.</em></h1>
+  <p class="standfirst">Every clip below is a single checkpoint reading a different line in a
+  different voice. Nothing is cloned from a target speaker and nothing is hand-picked per
+  clip — the same operating point renders all of them.</p>
+    <p style="margin:10px 0 0;font-size:13.5px"><a href="#v2axes" style="color:var(--amber)">New: V2 design-axes listening test (2026-09-17) &mdash; slow / emotional / high_pitch A/B, s6-40k baseline vs v2-19.5k &rarr;</a></p>
+    <p style="margin:6px 0 0;font-size:13.5px"><a href="#ttds2" style="color:var(--amber)">New: S7.11-ttsds2 (2026-09-18) &mdash; one take per prompt, 20-axis voice-register captions &rarr;</a></p>
+    <p style="margin:6px 0 0;font-size:13.5px"><a href="#ttds2v3" style="color:var(--amber)">New: S7.11-ttsds2-v3 (2026-09-19) &mdash; variability-v3 12k, same 20 prompts, TTSDS2 80.78 / PROSODY 83.58 &rarr;</a></p>
+  <div class="switch">
+    <span class="lab">checkpoint</span>
+    <button class="tog" type="button" data-set="S7" aria-pressed="false">S7</button>
+    <button class="tog" type="button" data-set="S7.1" aria-pressed="false">S7.1</button>
+    <button class="tog" type="button" data-set="S7.2" aria-pressed="false">S7.2</button>
+    <button class="tog" type="button" data-set="S7.3" aria-pressed="false">S7.3</button>
+    <button class="tog" type="button" data-set="S7.4" aria-pressed="false">S7.4</button>
+    <button class="tog" type="button" data-set="S7.5" aria-pressed="false">S7.5</button>
+    <button class="tog" type="button" data-set="S7.6" aria-pressed="true">S7.6</button>
+    <button class="tog" type="button" data-set="S7.10" aria-pressed="false">S7.10</button>
+    <button class="tog" type="button" data-set="S7.11" aria-pressed="false">S7.11</button>
+    <button class="tog" type="button" data-set="S7.11-ttfa" aria-pressed="false">S7.11-ttfa</button>
+    <button class="tog" type="button" data-set="S7.11-ttfa-fast" aria-pressed="false">S7.11-ttfa-fast</button>
+    <button class="tog" type="button" data-set="S7.11-rope" aria-pressed="false">S7.11-rope</button>
+    <button class="tog" type="button" data-set="S7.11-ttsds2" aria-pressed="false">S7.11-ttsds2</button>
+    <p class="note">Ten checkpoints, the same 20 prompts and the same operating point (text/caption CFG 8.0, caption CFG 8.0, 32 steps, sway -1.0, best-of-4, seed 20260808). S7 is the shipped 32-dim JP32 model. S7.1 is the experimental 60k checkpoint trained from scratch on the exact unchanged S7 English corpus with JP32 latents. S7.2 is the Meta128 successor trained with prose captions (120k steps, warm-started from S7.1 step-60k). S7.3 is S7.2 retrained with gender-corrected prose captions (120k steps, best checkpoint at step 110K, val loss 1.5778). S7.4 is the JP32 model retrained with gender-corrected prose captions (120k steps, best checkpoint at step 106K, val loss 1.5622). S7.5 is S7.4 retrained with Tier 2 prose captions — per-source tempo reclassification, intensity/arousal, and silence modeling (120k steps, warm-started from S7.4 step-106K, best checkpoint at step 108K, val loss 1.5601). Speaker CFG 5.0. S7.6 is S7.5-stream-v2 retrained for full streaming — 0% offline, 100% chunk-causal masks with a sliding-window loss (clean past, noised current chunk, pure-noise future), discrete 8-step timesteps matching the streaming Euler schedule, 48-frame left-context bounding, and exposure-bias noise on past frames (50k steps, warm-started from S7.5-stream-v2 step-37K, best checkpoint at step 40K, cc_loss 0.8924). It is the first fully streaming checkpoint with no ASR regression against the offline-capable S7.5-stream-v2, fixing the v5 word-repetition regressions; at the 8-step incremental decode it reaches 174ms time-to-first-audio (3.2× faster than offline). The S7.6 tab renders at the shared operating point (32 steps, chunk-causal 16/2, CFG 8/8/5, seed 20260823, best-of-4). All nine use the English text tower. S7.10 and S7.11 are the same S7.6 checkpoint served by the streaming engine (fast_stream), one guard apart. S7.10 (engine <code>d363026</code>): window-atomic long-form streaming with the sibilant coda gate, fricative-protected breath trim, min-window merge, variable chunk schedule (32/48/rest) with full lookahead, 40 ms crossfade joins, pause-aware joins (560 ms sentence / 100 ms clause) with adaptive room tone and a 760 ms pause budget, window tail guard, and window onset guard (re-rolls non-lexical lead-ins), at hq() — 16 steps, CFG 8/8, lc128, pacing windows, early stop, duration_scale 1.1, prosody register gate off, CUDA graphs off. S7.11 (engine <code>cdaa33d</code>) adds the window head guard: a window that opens with a quiet sub-speech tonal burst (the tender_man "ringing" before "you're okay.") gets it trimmed deterministically instead of re-rolled; everything else is identical, so the two tabs differ by exactly that guard. Same 20 prompts, captions and references as every other tab; single seed 42, no best-of-4 (streaming emits one take). S7.11-ttfa and S7.11-ttfa-fast are the same engine (<code>2d91a37</code>) rendered through the two serve presets from <code>serve_worker.build_streamer</code> instead of hq(). <strong>S7.11-ttfa</strong> (quality-first serve, the new default): 64-frame first denoise commitment (schedule 64/48/48/rest, first_chunk_emit 32, latent_steps_multiple 8) — the commitment-sweep joint optimum that fixes both ear findings: the most expressive arm in the sweep (f0 range 15.55 st vs the 96-commit’s flattest 13.42 st) and it recovers the long-line regression (long_female 3.77 → 4.15 UTMOS vs the 32-commit). Runs eager (graphs off pending the multi-graph replay-corruption root cause, <code>graph_order_repro.py</code>). <strong>S7.11-ttfa-fast</strong> (latency-first serve): unchanged fixed-geometry (32,48,48,rest) schedule with an 8-step opening chunk — standard-streaming quality at roughly half the ttfa latency. All three tabs share prompts, captions and references; the perf table below measures all three on the same GPU. <strong>Ear-check retake (2026-08-31):</strong> on the first ttfa renders the paralinguistic events Rowel hears in S7.11 — grief_woman’s heavy almost-crying breathing and sly_woman’s breaking mixed laugh-and-speech — had sunk below the audibility line (fewer discrete audible events, longer quiet gaps, breath energy shifted from the 4–12 kHz band into a darker mid-band). Both clips were re-rendered through the identical ttfa preset, reference and engine at a per-clip seed (grief_woman seed 43, sly_woman seed 64) chosen from a 6-seed sweep that measured event count, gap structure, breath-band spectrum, UTMOS and ASR; the retakes restore the events (grief_woman 11→14 audible runs, breath band back to 49% hi-band; sly_woman 14→19 runs, matching the S7.11 hq take’s event density) with ASR word-perfect on both. The other 18 clips are untouched seed-42 takes. <strong>Retake round 2 (laugh_man, 2026-08-31):</strong> the seed-42 c64 take of “a man, losing it” flattened the mixed articulation-and-laugh between the words — the same commitment-averaging that hid grief_woman’s sob. Census of the non-speech frames (10 ms envelope, −58…−26 dB window): the S7.11 hq take’s events are voiced (44% of their energy below 300 Hz — the glottal, breaking laugh texture), the c64 take’s are breath-dominant (20%). laugh_man was re-rendered through a 12-take sweep (c32/c48 commitments × seeds 42–47, everything else identical to the ttfa preset — engine <code>2d91a37</code>, v6a checkpoint, same reference, GPU 7, eager) scored on voiced laugh-band energy, event runs, UTMOS and wav2vec2 CTC; the deployed take is c48 seed 44 (sub-300 Hz 50%, 10 runs, UTMOS 3.96, TTFA 191 ms, ASR word-perfect) — the only deviation from the c64 preset on this tab, documented here and in the render manifest. Prior takes kept: <code>_s42_c64_orig</code> (deployed until this retake). <strong>Retake round 3 (laugh_man, 2026-08-31, owner direction reversed):</strong> the round-2 take was picked <em>for</em> the voiced laugh texture &mdash; the owner now flags the opposite: the line is <em>&ldquo;stop it. stop, i'm serious, i can't breathe&rdquo;</em> and the laugh should not be there. Root cause is the prose caption itself: <em>&ldquo;amused, laughing &hellip; There is laughter.&rdquo;</em> contradicts the line text, and at caption CFG 8 every seed obeys the caption (round-2 sweep: 28&ndash;54% voiced non-speech energy on all 12 takes). A new laugh detector (per non-speech run: voiced share &times; 3&ndash;10&nbsp;Hz envelope periodicity &mdash; a laugh is periodic bursts, a breath is aperiodic) calibrates on the published takes: hq 9.6, deployed ttfa 9.0, ttfa-fast 10.5. Six corrected-caption arms &times; 6 seeds through the identical ttfa preset (engine <code>2d91a37</code>, v6a checkpoint, same reference, GPU 7, eager): timid edits that keep <em>breathless/rapid-fire/high pitch</em> stay laugh-heavy (8.6&ndash;14.8); removing the laugh register and the laugh-adjacent delivery features drops it 3&ndash;5&times;. Deployed take: caption <em>&ldquo;urgent, tense, breathless, pressed, fast&rdquo;</em> (laughter sentence removed, no negation), seed 42 &mdash; laugh score 2.9 vs 9.0 deployed / 9.6 hq, one borderline voiced run (110&nbsp;ms) vs three long voiced laugh runs in the round-2 take, UTMOS 3.99, TTFA 265&nbsp;ms warm, ASR word-perfect. The displayed caption above is updated to match the render caption. Prior takes kept: <code>_s44_c48_round2</code>, <code>_s42_c64_orig</code>. <strong>Retake round 2 (grief_woman only, 2026-08-31):</strong> the seed-43 c64 retake still hid the sob — a breath census across all six c64 seeds showed the 64-frame commitment itself softens the sob, not the seed: voiced 1–4 kHz sob energy stays at 18–33% of breath-frame energy vs <strong>53% in the S7.11 hq take</strong>, and breaths run 82–110 ms vs hq’s 145 ms. The deployed take is the ttfa preset with a <strong>32-frame first commitment</strong> (schedule 32/48/48/rest — the hq commitment; every other preset field identical, engine <code>2d91a37</code>, v6a checkpoint, seed 47 from a 12-render c32/c48 sweep): sob energy 51% (hq 53%), 13 breath runs, ASR word-perfect on granite+qwen, UTMOS 3.233, TTFA 182 ms. This is the one clip on the tab that deviates from the 64-frame default — on it the sob matters more than the ~20 ms of TTFA. S7.11-ttsds2 is the v6a checkpoint fine-tuned 20k steps on the voice-register-dataset (774,126 rows = 740,997 lineage + 33,129 certified-affect; 1,071 h) with the TTSDS2 composite added to the reward stack (WER/WER2/UTMOS + speaker/intelligibility/prosody/naturalness terms), warm-started from the S7.11-rope checkpoint; the tab renders its 20k final under the frozen S7.11 serving path (schedule 64/48/48, first emit 32, eager), one take per prompt (seed 1000) on the 5 prompts below, each caption rewritten through the 20-axis voice register.</p>
+    <p class="note">The <strong>S7.11-ttsds2</strong> tab shows one take per chip (seed 1000) with the caption rewritten through the 20-axis voice register (design &rarr; design_register.v1 &rarr; prose) &mdash; same as every other tab.</p>
+  </div>
+</div></header>
+<main class="wrap"><div class="grid">
+  <article class="chip amber">
+    <div class="vox"><span class="dot"></span>female voice</div>
+    <p class="who">a woman, breaking</p>
+    <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
+    <audio controls preload="none" data-set="S7" src="audio/grief_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/grief_woman_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/grief_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/grief_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/grief_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/grief_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/grief_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/grief_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/grief_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/grief_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/grief_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/grief_woman_S7.11-rope.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttsds2" src="audio_ttds2/ttds2vr_grief_woman.mp3" title="S7.11-ttsds2 20k final, 20-axis register caption"></audio>
+    <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, halting, lots of space between phrases</p>
+  </article>
+  <article class="chip slate">
+    <div class="vox"><span class="dot"></span>deep male voice</div>
+    <p class="who">an older man, holding it together</p>
+    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
+    <audio controls preload="none" data-set="S7" src="audio/grief_oldman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/grief_oldman_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/grief_oldman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/grief_oldman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/grief_oldman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/grief_oldman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/grief_oldman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/grief_oldman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/grief_oldman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/grief_oldman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/grief_oldman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/grief_oldman_S7.11-rope.flac"></audio>
+    <p class="cond">performed narration, grieving, heavy, holding back tears, slow, drawn out</p>
+  </article>
+  <article class="chip violet">
+    <div class="vox"><span class="dot"></span>bright female voice</div>
+    <p class="who">a young woman, undone</p>
+    <p class="line">i thought i&#x27;d be fine. i really did. and then i saw your coat.</p>
+    <audio controls preload="none" data-set="S7" src="audio/grief_young_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/grief_young_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/grief_young_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/grief_young_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/grief_young_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/grief_young_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/grief_young_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/grief_young_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/grief_young_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/grief_young_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/grief_young_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/grief_young_S7.11-rope.flac"></audio>
+    <p class="cond">intimate close-mic performance, crying, tearful, voice breaking, breathy, much air and little phonation</p>
+  </article>
+  <article class="chip sage">
+    <div class="vox"><span class="dot"></span>male voice</div>
+    <p class="who">a man, at the edge</p>
+    <p class="line">don&#x27;t. don&#x27;t you dare tell me to calm down right now.</p>
+    <audio controls preload="none" data-set="S7" src="audio/rage_man_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/rage_man_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/rage_man_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/rage_man_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/rage_man_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/rage_man_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/rage_man_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/rage_man_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/rage_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/rage_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/rage_man_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/rage_man_S7.11-rope.flac"></audio>
+    <p class="cond">expressive performance, angry, sharp, raised voice, relentless, no room to breathe</p>
+  </article>
+  <article class="chip amber">
+    <div class="vox"><span class="dot"></span>female voice</div>
+    <p class="who">a woman, done pretending</p>
+    <p class="line">i asked you for one thing. one. and you couldn&#x27;t even manage that.</p>
+    <audio controls preload="none" data-set="S7" src="audio/rage_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/rage_woman_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/rage_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/rage_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/rage_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/rage_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/rage_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/rage_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/rage_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/rage_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/rage_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/rage_woman_S7.11-rope.flac"></audio>
+    <p class="cond">expressive performance, angry, sharp, raised voice, fast, rapid-fire</p>
+  </article>
+  <article class="chip slate">
+    <div class="vox"><span class="dot"></span>deep male voice</div>
+    <p class="who">a commander, no volume needed</p>
+    <p class="line">everyone out. now. i won&#x27;t say it twice.</p>
+    <audio controls preload="none" data-set="S7" src="audio/command_deep_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/command_deep_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/command_deep_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/command_deep_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/command_deep_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/command_deep_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/command_deep_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/command_deep_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/command_deep_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/command_deep_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/command_deep_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/command_deep_S7.11-rope.flac"></audio>
+    <p class="cond">performed narration, deadpan, almost no pitch movement, slow, drawn out</p>
+  </article>
+  <article class="chip amber">
+    <div class="vox"><span class="dot"></span>female voice</div>
+    <p class="who">a woman, listening in the dark</p>
+    <p class="line">there&#x27;s someone outside. i heard it again, right by the window.</p>
+    <audio controls preload="none" data-set="S7" src="audio/fear_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/fear_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/fear_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/fear_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/fear_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/fear_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/fear_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/fear_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/fear_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/fear_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/fear_woman_S7.11-rope.flac"></audio>
+    <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
+    <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, whispered, mostly breath</p>
+  </article>
+  <article class="chip violet">
+    <div class="vox"><span class="dot"></span>bright female voice</div>
+    <p class="who">a child, hiding</p>
+    <p class="line">don&#x27;t turn the light on. please. just stay here with me.</p>
+    <audio controls preload="none" data-set="S7" src="audio/fear_child_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/fear_child_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/fear_child_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/fear_child_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/fear_child_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/fear_child_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/fear_child_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/fear_child_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/fear_child_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/fear_child_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/fear_child_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/fear_child_S7.11-rope.flac"></audio>
+    <p class="cond">intimate close-mic performance, frightened, trembling, unsteady, halting, lots of space between phrases</p>
+  </article>
+  <article class="chip violet">
+    <div class="vox"><span class="dot"></span>bright female voice</div>
+    <p class="who">a woman, delighted</p>
+    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
+    <audio controls preload="none" data-set="S7" src="audio/joy_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/joy_woman_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/joy_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/joy_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/joy_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/joy_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/joy_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/joy_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/joy_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/joy_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/joy_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/joy_woman_S7.11-rope.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttsds2" src="audio_ttds2/ttds2vr_joy_woman.mp3" title="S7.11-ttsds2 20k final, 20-axis register caption"></audio>
+    <p class="cond">expressive performance, delighted, bright, buoyant, wildly expressive pitch</p>
+  </article>
+  <article class="chip sage">
+    <div class="vox"><span class="dot"></span>male voice</div>
+    <p class="who">a man, losing it</p>
+    <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
+    <audio controls preload="none" data-set="S7" src="audio/laugh_man_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/laugh_man_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/laugh_man_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/laugh_man_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/laugh_man_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/laugh_man_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/laugh_man_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/laugh_man_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/laugh_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/laugh_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/laugh_man_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/laugh_man_S7.11-rope.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttsds2" src="audio_ttds2/ttds2vr_laugh_man.mp3" title="S7.11-ttsds2 20k final, 20-axis register caption"></audio>
+    <p class="cond">expressive performance, urgent, tense, breathless, pressed, fast</p>
+  </article>
+  <article class="chip amber">
+    <div class="vox"><span class="dot"></span>female voice</div>
+    <p class="who">a woman, at the bedside</p>
+    <p class="line">don&#x27;t wake them. just come and look, quietly.</p>
+    <audio controls preload="none" data-set="S7" src="audio/tender_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/tender_woman_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/tender_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/tender_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/tender_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/tender_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/tender_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/tender_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/tender_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/tender_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/tender_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/tender_woman_S7.11-rope.flac"></audio>
+    <p class="cond">intimate close-mic performance, tender, soft, close, whispered, mostly breath</p>
+  </article>
+  <article class="chip slate">
+    <div class="vox"><span class="dot"></span>deep male voice</div>
+    <p class="who">a narrator, at the edge of something</p>
+    <p class="line">and then the whole valley opened up beneath us, and nobody said anything at all.</p>
+    <audio controls preload="none" data-set="S7" src="audio/awe_deep_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/awe_deep_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/awe_deep_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/awe_deep_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/awe_deep_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/awe_deep_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/awe_deep_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/awe_deep_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/awe_deep_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/awe_deep_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/awe_deep_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/awe_deep_S7.11-rope.flac"></audio>
+    <p class="cond">performed narration, wildly expressive pitch, slow, drawn out</p>
+  </article>
+  <article class="chip slate">
+    <div class="vox"><span class="dot"></span>deep male voice</div>
+    <p class="who">a man, past caring</p>
+    <p class="line">it doesn&#x27;t matter. honestly, it doesn&#x27;t.</p>
+    <audio controls preload="none" data-set="S7" src="audio/flat_man_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/flat_man_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/flat_man_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/flat_man_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/flat_man_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/flat_man_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/flat_man_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/flat_man_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/flat_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/flat_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/flat_man_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/flat_man_S7.11-rope.flac"></audio>
+    <p class="cond">performed narration, deadpan, almost no pitch movement, continuous, few pauses</p>
+  </article>
+  <article class="chip violet">
+    <div class="vox"><span class="dot"></span>bright female voice</div>
+    <p class="who">a woman, up to something</p>
+    <p class="line">i may have done something. don&#x27;t be angry. it&#x27;s mostly good news.</p>
+    <audio controls preload="none" data-set="S7" src="audio/sly_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/sly_woman_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/sly_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/sly_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/sly_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/sly_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/sly_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/sly_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/sly_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/sly_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/sly_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/sly_woman_S7.11-rope.flac"></audio>
+    <p class="cond">expressive performance, delighted, bright, buoyant, halting, lots of space between phrases</p>
+  </article>
+  <article class="chip amber">
+    <div class="vox"><span class="dot"></span>female voice</div>
+    <p class="who">a woman, long line</p>
+    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+    <audio controls preload="none" data-set="S7" src="audio/long_female_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/long_female_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/long_female_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/long_female_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/long_female_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/long_female_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/long_female_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/long_female_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/long_female_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/long_female_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/long_female_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/long_female_S7.11-rope.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttsds2" src="audio_ttds2/ttds2vr_long_female.mp3" title="S7.11-ttsds2 20k final, 20-axis register caption"></audio>
+    <p class="cond">intimate close-mic performance, slow, drawn out</p>
+  </article>
+  <article class="chip amber">
+    <div class="vox"><span class="dot"></span>female voice</div>
+    <p class="who">a woman, running on empty</p>
+    <p class="line">yeah. no, it&#x27;s fine. i&#x27;m just tired.</p>
+    <audio controls preload="none" data-set="S7" src="audio/tired_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/tired_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/tired_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/tired_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/tired_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/tired_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/tired_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/tired_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/tired_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/tired_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/tired_woman_S7.11-rope.flac"></audio>
+    <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
+    <p class="cond">intimate close-mic performance, deadpan, almost no pitch movement, slow, drawn out</p>
+  </article>
+  <article class="chip amber">
+    <div class="vox"><span class="dot"></span>female voice</div>
+    <p class="who">a woman, the mask slipping</p>
+    <p class="line">i&#x27;m fine. i&#x27;m fine — no. no, actually, i&#x27;m not fine.</p>
+    <audio controls preload="none" data-set="S7" src="audio/shift_woman_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/shift_woman_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/shift_woman_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/shift_woman_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/shift_woman_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/shift_woman_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/shift_woman_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/shift_woman_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/shift_woman_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/shift_woman_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/shift_woman_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/shift_woman_S7.11-rope.flac"></audio>
+    <p class="cond">expressive performance, crying, tearful, voice breaking, wildly expressive pitch</p>
+  </article>
+  <article class="chip sage">
+    <div class="vox"><span class="dot"></span>male voice</div>
+    <p class="who">a man, remembering mid-sentence</p>
+    <p class="line">it was funny at the time. it was. it&#x27;s less funny now.</p>
+    <audio controls preload="none" data-set="S7" src="audio/shift_man_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/shift_man_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/shift_man_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/shift_man_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/shift_man_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/shift_man_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/shift_man_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/shift_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/shift_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/shift_man_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/shift_man_S7.11-rope.flac"></audio>
+    <p class="absent" data-set="S7.1">S7.1 did not ship this clip — it failed the voice-class check on that checkpoint.</p>
+    <p class="cond">expressive performance, grieving, heavy, holding back tears, halting, lots of space between phrases</p>
+  </article>
+  <article class="chip slate">
+    <div class="vox"><span class="dot"></span>deep male voice</div>
+    <p class="who">a narrator, long line</p>
+    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
+    <audio controls preload="none" data-set="S7" src="audio/long_deep_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/long_deep_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/long_deep_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/long_deep_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/long_deep_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/long_deep_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/long_deep_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/long_deep_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/long_deep_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/long_deep_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/long_deep_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/long_deep_S7.11-rope.flac"></audio>
+    <p class="cond">performed narration, continuous, few pauses</p>
+  </article>
+  <article class="chip sage">
+    <div class="vox"><span class="dot"></span>male voice</div>
+    <p class="who">a man, gentle</p>
+    <p class="line">hey. hey, look at me. you&#x27;re okay. i&#x27;ve got you.</p>
+    <audio controls preload="none" data-set="S7" src="audio/tender_man_s7.flac"></audio>
+    <audio controls preload="none" data-set="S7.1" src="audio/tender_man_s71.flac"></audio>
+    <audio controls preload="none" data-set="S7.2" src="audio/tender_man_s72.flac"></audio>
+    <audio controls preload="none" data-set="S7.3" src="audio/tender_man_s73.flac"></audio>
+    <audio controls preload="none" data-set="S7.4" src="audio/tender_man_s74_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.5" src="audio/tender_man_s75_spk.flac"></audio>
+    <audio controls preload="none" data-set="S7.6" src="audio/tender_man_s76.flac"></audio>
+    <audio controls preload="none" data-set="S7.10" src="audio/tender_man_S7.10.flac"></audio>
+    <audio controls preload="none" data-set="S7.11" src="audio/tender_man_S7.11.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa" src="audio/tender_man_S7.11-ttfa.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttfa-fast" src="audio/tender_man_S7.11-ttfa-fast.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-rope" src="audio/tender_man_S7.11-rope.flac"></audio>
+    <audio controls preload="none" data-set="S7.11-ttsds2" src="audio_ttds2/ttds2vr_tender_man.mp3" title="S7.11-ttsds2 20k final, 20-axis register caption"></audio>
+    <p class="cond">intimate close-mic performance, tender, soft, close, breathy, much air and little phonation</p>
+  </article>
+
+<section class="tr" id="s711perf" style="max-width:none">
+  <p class="trlab">S7.11 serve presets — measured on the same 20 prompts, same GPU (RTX-pro 6k-class, idle), engine 2d91a37 (ttfa = new 64-frame default), seed 42</p>
+  <table style="border-collapse:collapse;font-size:13.5px;margin-top:8px">
+    <thead><tr>
+      <th style="text-align:left;padding:6px 14px 6px 0;border-bottom:1px solid #444">metric</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11 (hq)</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11-ttfa</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11-ttfa-fast</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11-rope</th>
+      <th style="text-align:right;padding:6px 14px;border-bottom:1px solid #444">S7.11-rope</th>
+    </tr></thead>
+    <tbody>
+      <tr><td style="padding:5px 14px 5px 0">schedule (first commitment)</td><td style="text-align:right;padding:5px 14px">32-frame</td><td style="text-align:right;padding:5px 14px"><b>64-frame</b> (new default)</td><td style="text-align:right;padding:5px 14px">32-frame</td><td style="text-align:right;padding:5px 14px"><b>64-frame</b> (same as ttfa)</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">first chunk steps</td><td style="text-align:right;padding:5px 14px">16</td><td style="text-align:right;padding:5px 14px">16</td><td style="text-align:right;padding:5px 14px"><b>8</b></td><td style="text-align:right;padding:5px 14px">16</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">TTFA p50</td><td style="text-align:right;padding:5px 14px">196 ms</td><td style="text-align:right;padding:5px 14px">200 ms</td><td style="text-align:right;padding:5px 14px"><b>120 ms</b></td><td style="text-align:right;padding:5px 14px"><b>101 ms</b></td></tr>
+      <tr><td style="padding:5px 14px 5px 0">TTFA p95</td><td style="text-align:right;padding:5px 14px">684 ms</td><td style="text-align:right;padding:5px 14px">283 ms</td><td style="text-align:right;padding:5px 14px"><b>155 ms</b></td><td style="text-align:right;padding:5px 14px"><b>106 ms</b></td></tr>
+      <tr><td style="padding:5px 14px 5px 0">TTFA max</td><td style="text-align:right;padding:5px 14px">749 ms</td><td style="text-align:right;padding:5px 14px">285 ms</td><td style="text-align:right;padding:5px 14px"><b>166 ms</b></td><td style="text-align:right;padding:5px 14px"><b>109 ms</b></td></tr>
+      <tr><td style="padding:5px 14px 5px 0">RTF mean (lower = faster than real time)</td><td style="text-align:right;padding:5px 14px">0.221</td><td style="text-align:right;padding:5px 14px"><b>0.130</b></td><td style="text-align:right;padding:5px 14px">0.161</td><td style="text-align:right;padding:5px 14px"><b>0.087</b> (p95 0.102)</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">UTMOS mean</td><td style="text-align:right;padding:5px 14px">3.278</td><td style="text-align:right;padding:5px 14px"><b>3.321</b></td><td style="text-align:right;padding:5px 14px">3.142</td><td style="text-align:right;padding:5px 14px">3.226</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">consensus ASR exact (granite+qwen)</td><td style="text-align:right;padding:5px 14px">19/20</td><td style="text-align:right;padding:5px 14px">19/20</td><td style="text-align:right;padding:5px 14px">19/20</td><td style="text-align:right;padding:5px 14px">19/20</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">worst WER</td><td style="text-align:right;padding:5px 14px">2.4% (colour→color)</td><td style="text-align:right;padding:5px 14px">2.4% (colour→color)</td><td style="text-align:right;padding:5px 14px">2.4% (colour→color)</td><td style="text-align:right;padding:5px 14px">2.4% (colour→color)</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">total audio</td><td style="text-align:right;padding:5px 14px">118.4 s</td><td style="text-align:right;padding:5px 14px">122.0 s</td><td style="text-align:right;padding:5px 14px">122.9 s</td><td style="text-align:right;padding:5px 14px">122.8 s</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">windows / gate retries</td><td style="text-align:right;padding:5px 14px">40 / 2</td><td style="text-align:right;padding:5px 14px">40 / 2</td><td style="text-align:right;padding:5px 14px">40 / 2</td><td style="text-align:right;padding:5px 14px">40 / 0</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">head / tail guard fires</td><td style="text-align:right;padding:5px 14px">3 / 1</td><td style="text-align:right;padding:5px 14px">0 / 1</td><td style="text-align:right;padding:5px 14px">1 / 0</td><td style="text-align:right;padding:5px 14px">same guards on</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">CUDA graphs</td><td style="text-align:right;padding:5px 14px">off</td><td style="text-align:right;padding:5px 14px">off (eager; scheduled path eager by construction)</td><td style="text-align:right;padding:5px 14px">off (eager; graphed 102/111 ms recoverable)</td><td style="text-align:right;padding:5px 14px"><b>on</b> (scheduled graphs + RoPE-lifetime pin; 20/20 latent traces bitwise vs eager)</td></tr>
+      <tr><td style="padding:5px 14px 5px 0">best for</td><td style="text-align:right;padding:5px 14px">render / A-B baseline</td><td style="text-align:right;padding:5px 14px"><b>serve: quality-first</b></td><td style="text-align:right;padding:5px 14px"><b>serve: latency-first</b></td><td style="text-align:right;padding:5px 14px"><b>serve: fastest, quality-parity</b> (pending owner ear check)</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    ttfa is now the 64-frame commitment (ofirkris's 2d91a37), the sweep's joint optimum: most expressive arm (f0 15.55 st in
+    the 6-clip sweep vs the 96-commit's flattest 13.42 st — UTMOS alone rewards the "clear but flat" failure) and it recovers
+    the long-line regression (long_female 3.77 → 4.15 vs the 32-commit). On these 20 prompts it measures the best UTMOS of the
+    three (3.321 after the 2026-08-31 ear-check retakes) at p50 200 ms; commitment size is nearly free in latency because denoise is launch-bound — only step count
+    and emit granularity move TTFA. ttfa-fast trades ≈0.16 UTMOS for a 120 ms p50 (the 8-step opening chunk), matching the
+    serve bench (p50 103 / p95 107 eager). The one non-exact ASR row in every tab is long_deep's colour→color spelling
+    artifact, not a model error. The scheduled path now runs eager by construction (capture invalidates earlier graphs;
+    training/streaming/graph_order_repro.py), which costs nothing on ttfa-fast.</p>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    <strong>S7.11-rope (2026-09-01, pending owner validation — code uncommitted):</strong> the quality-preserving speed
+    result. Root cause of the eager-only rule above: later graph captures replaced the vendor model's RoPE cache tensor
+    (<code>_freqs_cis_cache</code>), letting the allocator recycle memory still read by earlier graphs — capture-order
+    corruption. The ported fix pins the exact captured allocation per graph entry
+    (<code>graph_pin_rope_cache</code>, 12 lines in training/streaming/fast_stream.py, byte-identical to the validated
+    codex_graph_matrix_20260831 scratch; unit test tests/test_graph_lifetime.py). The S7.11-rope tab is the <em>same
+    renders as S7.11-ttfa</em> — identical prompts, captions, per-clip seeds (grief_woman 47/c32, sly_woman 64, rest
+    42/c64), reference, guards, v6a checkpoint — with the scheduled path graphed. Measured on the same 20 prompts, GPU 7:
+    TTFA p50/p95 101/106 ms vs ttfa's 200/283 eager (−48% p50), RTF p50/p95 0.087/0.102 vs 0.130, at ~62 s additional
+    boot warmup (capture set). Parity: all 20 pre-codec latent traces bitwise-identical graph vs eager (10 after each
+    capture, 10 after the full capture set, eager null controls bitwise), 0 mid-request captures, c32/c64/c96 and
+    auto/no-cuDNN matrix green in the scratch evidence. The graph and eager paths feed byte-identical BF16 latents into
+    the codec, so the only thing to judge by ear is the graph path itself. Consensus ASR 19/20 (the same long_deep
+    colour→color spelling artifact), UTMOS mean 3.226 vs ttfa's 3.321 (per-clip deltas ≤0.3 except grief_woman −0.52 vs
+    its special c32 retake). Engine patch is uncommitted on the streaming worktree; production serve has not loaded it.</p>
+</section>
+
+<section class="tr" id="v2axes" style="max-width:none">
+  <p class="trlab">V2 design-axes listening test &mdash; A/B, same 5 texts, same per-text seeds, same 8 prompts, same reference speaker, same decode (32 steps, caption CFG 4.0)</p>
+  <div class="switch" style="margin:10px 0 14px">
+    <span class="lab">checkpoint</span>
+    <button class="vtog" type="button" data-vset="d6" aria-pressed="false">s6-40k baseline</button>
+    <button class="vtog" type="button" data-vset="v2" aria-pressed="true">v2-19.5k (design-axes)</button>
+    <p class="note">Baseline = ckpt-s6-40k roundtrip (2026-09-16). v2 = v2_design_axes_gp67 best-val 19.5k
+    (0.924961), warm-started from v6b-40k on the afdraft_v2 mixture (774,126 rows = lineage + 33,129
+    certified-affect from the register-stratum lane). Both sides: same 5 held-out texts, seeds 1000&ndash;1004,
+    ref emilia/02adbe2386f16c80b243, 32 steps, caption CFG 4.0. Switch flips every player below (scoped to this section; the checkpoint tabs above are untouched).</p>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr">
+  <article class="chip">
+    <p class="who">text 0 &middot; seed 1000</p>
+    <p class="line">the garden was quiet in the early morning light</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t0_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t0_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 1 &middot; seed 1001</p>
+    <p class="line">she opened the letter and read it twice before speaking</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t1_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t1_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 2 &middot; seed 1002</p>
+    <p class="line">we should probably leave before the roads get any worse</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t2_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t2_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 3 &middot; seed 1003</p>
+    <p class="line">there is a small cafe on the corner that stays open late</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t3_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t3_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  <article class="chip">
+    <p class="who">text 4 &middot; seed 1004</p>
+    <p class="line">he counted the coins on the table and shook his head</p>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">neutral</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_neutral.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_neutral.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">whisper</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_whisper.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_whisper.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">loud</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_loud.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_loud.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">fast</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_fast.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_fast.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">slow</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_slow.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_slow.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">emotional</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_emotional.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_emotional.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">high_pitch</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_high_pitch.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_high_pitch.mp3" title="v2-19.5k"></audio></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);min-width:86px">animated</span><audio controls preload="none" data-vset="d6" src="audio_v2/d6_t4_animated.mp3" title="s6-40k baseline"></audio><audio controls preload="none" data-vset="v2" src="audio_v2/v2_t4_animated.mp3" title="v2-19.5k"></audio></div>
+  </article>
+  </div>
+  <table style="border-collapse:collapse;font-size:13.5px;margin-top:8px">
+    <thead><tr><th style="text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid #444">delta vs neutral (sign-consistency, 5 texts)</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">neutral</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">whisper</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">loud</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">fast</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">slow</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">emotional</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">high_pitch</th><th style="text-align:right;padding:6px 10px;border-bottom:1px solid #444">animated</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:5px 10px 5px 0">s6-40k baseline</td><td style="text-align:right;padding:5px 10px">&mdash;</td><td style="text-align:right;padding:5px 10px">-0.04 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">+0.06 <span style="color:#9a9a9a">(20%)</span></td><td style="text-align:right;padding:5px 10px">+0.14 <span style="color:#9a9a9a">(100%)</span></td><td style="text-align:right;padding:5px 10px">+0.06 <span style="color:#9a9a9a">(0%)</span></td><td style="text-align:right;padding:5px 10px">-1.03 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">-0.93 <span style="color:#9a9a9a">(20%)</span></td><td style="text-align:right;padding:5px 10px">+1.32 <span style="color:#9a9a9a">(40%)</span></td></tr>
+      <tr><td style="padding:5px 10px 5px 0">v2-19.5k</td><td style="text-align:right;padding:5px 10px">&mdash;</td><td style="text-align:right;padding:5px 10px">+0.15 <span style="color:#9a9a9a">(0%)</span></td><td style="text-align:right;padding:5px 10px">+0.02 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">+0.53 <span style="color:#9a9a9a">(100%)</span></td><td style="text-align:right;padding:5px 10px">-1.88 <span style="color:#9a9a9a">(100%)</span></td><td style="text-align:right;padding:5px 10px">+4.04 <span style="color:#9a9a9a">(60%)</span></td><td style="text-align:right;padding:5px 10px">+11.32 <span style="color:#9a9a9a">(80%)</span></td><td style="text-align:right;padding:5px 10px">+2.11 <span style="color:#9a9a9a">(60%)</span></td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    What to listen for: <strong>slow</strong> (baseline reads at normal pace; v2 draws out), <strong>emotional</strong>
+    (baseline flat; v2 wide, excited contour), <strong>high_pitch</strong> (baseline sits low; v2 clearly higher).
+    These are the three axes step-5 could not design; the v2 round targets exactly them. Measured deltas vs neutral
+    (mean over the 5 texts, sign-consistency in parens) back the ear: slow rate_wps +0.07 (0%) &rarr; &minus;1.88 (100%),
+    emotional f0_range_st &minus;1.03 (60%) &rarr; +4.04 (60%), high_pitch f0_median_hz &minus;0.94 (20%) &rarr; +11.32 (80%).
+    Honest trade: <strong>whisper</strong> regressed (voiced_frac &minus;0.04 (60%) &rarr; +0.15 (0%)) &mdash; the
+    affect-heavy mixture bought the three axes at some whisper cost; s6-40k / v6b-40k remains the whisper pick.
+    loud/fast/animated hold or improve. Targets: rate_wps in words/s, f0_range_st in semitones, f0_median_hz in Hz,
+    voiced_frac fraction. Full per-clip measurements in <code>v2_axes_meas.json</code> next to this page.</p>
+  <script>
+  (function(){
+    var scope = document.getElementById('v2axes');
+    var buttons = scope.querySelectorAll('button.vtog');
+    function show(which){
+      scope.querySelectorAll('audio[data-vset]').forEach(function(a){
+        var on = a.dataset.vset === which;
+        a.hidden = !on;
+        if(!on){ a.pause(); }
+      });
+      buttons.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.vset === which)); });
+      try { localStorage.setItem('irodori-v2axes', which); } catch(e){}
+    }
+    buttons.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.vset); }); });
+    var saved = null;
+    try { saved = localStorage.getItem('irodori-v2axes'); } catch(e){}
+    show(saved && scope.querySelector('button.vtog[data-vset="'+saved+'"]') ? saved : 'v2');
+  })();
+  </script>
+</section>
+<section class="tr" id="ttds2" style="max-width:none">
+  <p class="trlab">S7.11-ttsds2 &mdash; all 20 prompts, one take per prompt, every prompt rewritten through the 20-axis voice register (design &rarr; design_register.v1 &rarr; prose caption), same texts, same reference speakers, frozen serving path (schedule 64/48/48, first emit 32, eager), seed 1000</p>
+  <p class="note" style="margin:10px 0 14px">The <strong>S7.11-ttsds2</strong> checkpoint (v6a fine-tuned 20k steps on the
+    <strong>voice-register-dataset</strong>, 774,126 rows = 740,997 lineage + 33,129 certified-affect from
+    ravdess/expresso_improvised/cremad/esd, 1,071.09 h, 4,778 speakers) renders each prompt with the caption
+    produced by <code>training/moss_caption/voice_design_to_prose.py</code>: the free-text voice design below is parsed
+    into the <strong>design_register.v1</strong> register (deterministic lexicon, provenance-tracked) and composed into a
+    v8.3-style prose caption &mdash; the exact string the model heard. Axes the design does not name are
+    <strong>abstained</strong> (omitted from the caption, never imputed), the same discipline the training captions follow
+    (schema sha dbc64880&hellip;). Reward stack: WER + WER2 + UTMOS + <strong>TTSDS2 composite</strong>
+    (speaker .25 / intelligibility .25 / prosody .25 / naturalness .25, official ttsds 2.1.3 category weights).</p>
+  <p class="note" style="margin:0 0 14px"><strong>Word-recall gate (new, S7.11b).</strong> The earlier take of
+    <em>joy_woman</em> dropped the final &ldquo;said&rdquo; &mdash; the owner heard &ldquo;she actually yes&rdquo;, and
+    granite, Qwen <em>and</em> the CTC arbiter all confirmed the word was missing while every audio-domain guard passed.
+    Every render on this page now passes a <strong>word-recall gate</strong>: the CTC arbiter
+    (<code>wav2vec2-base-960h</code>, greedy &mdash; the one decoder that cannot normalise a dropped word away) scores
+    each window against its text and any window with a <strong>deletion</strong> is re-rolled (seed+7, up to 3 attempts),
+    plus a clip-level pass on the joined audio. This page: 20/20 clips word-complete, 0 deletions
+    (rage_man needed one re-roll; disclosed per chip). CTC substitutions (&ldquo;calm down&rdquo; heard as
+    &ldquo;come down&rdquo;) are decoder spelling noise, not drops, and are reported as such.</p>
+  <div class="grid" style="grid-template-columns:1fr">
+  <article class="chip">
+    <p class="who">grief_woman</p>
+    <p class="line">i'm sorry. i'm sorry, i didn't mean for any of this to happen.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_grief_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.50 &middot; f0 range 14.0 st &middot; dyn 56 dB &middot; dur 5.1 s &middot; 10/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, intimate close-mic performance, sad, grieving, heavy emotional register, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, halting with lots of space between phrases, voice breaking, crying and tears, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32, low-pitched, with a warm timbre. Delivered in a sad manner, performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, vocal_power, prosodic_variability, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">grief_oldman</p>
+    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_grief_oldman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.94 &middot; f0 range 22.9 st &middot; dyn 49 dB &middot; dur 7.5 s &middot; 9/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An elderly male voice, performed narration, grieving, heavy and sorrowful emotional register, deep resonant breathy timbre, slow drawn-out delivery, low pitch, soft loudness, holding back tears, with a sigh, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, elderly, low-pitched, with a resonant timbre. Performed as a narration delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, vocal_power, prosodic_variability, affect, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">grief_young</p>
+    <p class="line">i thought i'd be fine. i really did. and then i saw your coat.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_grief_young.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.75 &middot; f0 range 11.0 st &middot; dyn 59 dB &middot; dur 5.0 s &middot; 9/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A young adult female voice, intimate close-mic performance, grieving, sorrowful, overwhelmed emotional register, breathy soft bright timbre, slow drawn-out delivery, low pitch, soft loudness, breathy with much air and little phonation, crying, voice breaking, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, low-pitched, with a bright timbre. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, vocal_power, prosodic_variability, affect, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">rage_man</p>
+    <p class="line">don't. don't you dare tell me to calm down right now.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_rage_man.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.48 &middot; f0 range 22.1 st &middot; dyn 36 dB &middot; dur 3.4 s &middot; 9/20 axes claimed &middot; word-recall re-roll &times;1 (final take word-complete)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult male voice, expressive performance, angry, sharp, intense emotional register, bright harsh powerful timbre, fast tempo, high pitch, loud loudness, relentless with no room to breathe, raised voice, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, high-pitched, with a bright timbre. Delivered in an angry manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>9/20 claimed: affect, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong> &middot; <strong>abstained:</strong> age, accent, accent_strength, phonation, persona, style, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">rage_woman</p>
+    <p class="line">i asked you for one thing. one. and you couldn't even manage that.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_rage_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 4.03 &middot; f0 range 15.2 st &middot; dyn 67 dB &middot; dur 5.0 s &middot; 9/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, expressive performance, angry, sharp, intense emotional register, bright harsh powerful timbre, fast tempo, high pitch, loud loudness, rapid-fire, raised voice, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, high-pitched, with a bright timbre. Delivered in an angry manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>9/20 claimed: affect, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong> &middot; <strong>abstained:</strong> age, accent, accent_strength, phonation, persona, style, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">command_deep</p>
+    <p class="line">everyone out. now. i won't say it twice.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_command_deep.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.70 &middot; f0 range 34.3 st &middot; dyn 67 dB &middot; dur 5.7 s &middot; 10/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, calm, commanding, deadpan emotional register, deep resonant dark timbre, slow drawn-out delivery, low pitch, loud loudness, almost no pitch movement, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant timbre. Delivered in a calm manner, performed as a narration delivery, slow, unhurried pacing, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, pitch_register, style, tempo, timbre, vocal_power, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, phonation, prosodic_variability, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">fear_woman</p>
+    <p class="line">there's someone outside. i heard it again, right by the window.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_fear_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.25 &middot; f0 range 4.9 st &middot; dyn 57 dB &middot; dur 5.6 s &middot; 7/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, frightened, trembling, anxious emotional register, breathy soft whispered timbre, slow tempo, low pitch, soft loudness, whispered, unsteady, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched. Performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, pitch_register, style, tempo, +language(default)</strong> &middot; <strong>abstained:</strong> age, accent, accent_strength, vocal_power, timbre, prosodic_variability, affect, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">fear_child</p>
+    <p class="line">don't turn the light on. please. just stay here with me.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_fear_child.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 1.50 &middot; f0 range 9.7 st &middot; dyn 58 dB &middot; dur 4.3 s &middot; 9/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A child female voice, intimate close-mic performance, frightened, trembling, anxious emotional register, breathy soft bright timbre, slow tempo, low pitch, soft loudness, halting, unsteady, with lots of space between phrases, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, child, low-pitched, with a bright timbre. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, vocal_power, prosodic_variability, affect, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">joy_woman</p>
+    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_joy_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.50 &middot; f0 range 18.0 st &middot; dyn 57 dB &middot; dur 6.5 s &middot; 10/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, delighted, joyful, bright and buoyant, laughing between phrases, bright clear resonant timbre, fast tempo, high pitch, loud loudness, wildly expressive pitch, energetic, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32, high-pitched, with a resonant and bright timbre. Delivered in a laughing manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, phonation, persona, style, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">laugh_man</p>
+    <p class="line">stop it. stop, i'm serious, i can't breathe.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_laugh_man.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 4.25 &middot; f0 range 24.8 st &middot; dyn 53 dB &middot; dur 4.0 s &middot; 7/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A male voice in his 40s, warm, playful, amused, laughing mid-sentence, animated bouncy prosody, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, aged 42, with a warm timbre. Delivered in a laughing manner, animated, wide pitch movement. Clear studio recording.<br>
+      <strong>7/20 claimed: affect, age, environment, gender, prosodic_variability, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, pitch_register, vocal_power, phonation, tempo, persona, style, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tender_man</p>
+    <p class="line">hey. hey, look at me. you're okay. i've got you.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_tender_man.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.06 &middot; f0 range 34.9 st &middot; dyn 60 dB &middot; dur 5.1 s &middot; 10/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A male voice in his 30s, tender, gentle, intimate close-mic performance, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, whispered, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, young adult, aged 32, low-pitched, with a warm timbre. Delivered in what reads as a tender manner, performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>10/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, vocal_power, prosodic_variability, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tender_woman</p>
+    <p class="line">don't wake them. just come and look, quietly.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_tender_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.74 &middot; f0 range 15.5 st &middot; dyn 60 dB &middot; dur 4.5 s &middot; 9/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, tender, soft, gentle emotional register, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, whispered, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched, with a warm timbre. Delivered in what reads as a tender manner, performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> age, accent, accent_strength, vocal_power, prosodic_variability, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">awe_deep</p>
+    <p class="line">and then the whole valley opened up beneath us, and nobody said anything at all.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_awe_deep.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.80 &middot; f0 range 8.9 st &middot; dyn 24 dB &middot; dur 6.3 s &middot; 10/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, awestruck, wondering, elevated emotional register, deep resonant warm timbre, slow drawn-out delivery, low pitch, loud loudness, wildly expressive pitch, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant and warm timbre. Performed as a narration delivery, slow, unhurried pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: age, environment, gender, pitch_register, style, tempo, timbre, vocal_power, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, phonation, affect, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tired_woman</p>
+    <p class="line">yeah. no, it's fine. i'm just tired.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_tired_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.74 &middot; f0 range 16.6 st &middot; dyn 50 dB &middot; dur 4.5 s &middot; 7/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, exhausted, flat, weary emotional register, breathy soft dull timbre, slow drawn-out delivery, low pitch, soft loudness, almost no pitch movement, deadpan, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, pitch_register, style, tempo, +language(default)</strong> &middot; <strong>abstained:</strong> age, accent, accent_strength, vocal_power, timbre, prosodic_variability, affect, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">flat_man</p>
+    <p class="line">it doesn't matter. honestly, it doesn't.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_flat_man.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.44 &middot; f0 range 27.4 st &middot; dyn 68 dB &middot; dur 4.4 s &middot; 7/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, flat, indifferent, deadpan emotional register, deep dull breathy timbre, medium tempo, low pitch, soft loudness, almost no pitch movement, continuous with few pauses, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched. Performed as a narration delivery, breathy throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: age, environment, gender, phonation, pitch_register, style, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, vocal_power, timbre, tempo, prosodic_variability, affect, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">sly_woman</p>
+    <p class="line">i may have done something. don't be angry. it's mostly good news.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_sly_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.35 &middot; f0 range 12.0 st &middot; dyn 69 dB &middot; dur 7.1 s &middot; 8/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A young adult female voice, expressive performance, delighted, mischievous, playful emotional register, bright breathy warm timbre, slow tempo, medium pitch, soft loudness, halting, with lots of space between phrases, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, with a bright and warm timbre. Slow, unhurried pacing, breathy throughout, with what sounds like animated, wide pitch movement. Clear studio recording.<br>
+      <strong>8/20 claimed: age, environment, gender, phonation, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, pitch_register, vocal_power, affect, persona, style, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">shift_woman</p>
+    <p class="line">i'm fine. i'm fine — no. no, actually, i'm not fine.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_shift_woman.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 2.77 &middot; f0 range 16.5 st &middot; dyn 55 dB &middot; dur 6.4 s &middot; 7/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, expressive performance, grieving, overwhelmed, breaking emotional register, breathy soft bright timbre, variable tempo, variable pitch, loud loudness, wildly expressive pitch, crying, voice breaking, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, with a bright timbre. Breathy throughout, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, timbre, vocal_power, +language(default)</strong> &middot; <strong>abstained:</strong> age, accent, accent_strength, pitch_register, tempo, affect, persona, style, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">shift_man</p>
+    <p class="line">it was funny at the time. it was. it's less funny now.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_shift_man.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.66 &middot; f0 range 13.2 st &middot; dyn 55 dB &middot; dur 5.6 s &middot; 8/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult male voice, expressive performance, grieving, heavy, sorrowful emotional register, breathy warm soft timbre, slow tempo, low pitch, soft loudness, halting, with lots of space between phrases, holding back tears, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, low-pitched, with a warm timbre. Slow, unhurried pacing, breathy throughout, with what sounds like animated, wide pitch movement. Clear studio recording.<br>
+      <strong>8/20 claimed: environment, gender, phonation, pitch_register, tempo, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> age, accent, accent_strength, vocal_power, affect, persona, style, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">long_deep</p>
+    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don't think either of us would have chosen, but the tree is still there, and it's much bigger than i remembered.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_long_deep.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.68 &middot; f0 range 21.5 st &middot; dyn 42 dB &middot; dur 14.2 s &middot; 8/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, calm, reflective, steady emotional register, deep resonant warm timbre, medium tempo, low pitch, medium loudness, continuous with few pauses, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant and warm timbre. Delivered in a calm manner, performed as a narration delivery. Clear studio recording.<br>
+      <strong>8/20 claimed: affect, age, environment, gender, pitch_register, style, timbre, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, vocal_power, phonation, tempo, prosodic_variability, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  <article class="chip">
+    <p class="who">long_female</p>
+    <p class="line">the thing nobody tells you is that it doesn't arrive all at once. it comes in small pieces, on ordinary afternoons, when you're doing something completely unrelated and you suddenly have to sit down.</p>
+    <audio controls preload="none" src="audio_ttds2/ttds2vr_long_female.mp3" title="S7.11-ttsds2 20k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.68 &middot; f0 range 10.0 st &middot; dyn 35 dB &middot; dur 13.6 s &middot; 6/20 axes claimed</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, long-form narration, calm and steady, moderate tempo, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32. Delivered in a calm manner, performed as a narration delivery. Clear studio recording.<br>
+      <strong>6/20 claimed: affect, age, environment, gender, style, +language(default)</strong> &middot; <strong>abstained:</strong> accent, accent_strength, pitch_register, vocal_power, timbre, phonation, tempo, prosodic_variability, persona, articulation, resonance, degree_modifiers, voice_effect, event_placement</p></details>
+  </article>
+  </div>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    Measured on this set (20 clips, seed 1000): UTMOS mean <strong>3.49</strong>, f0 range mean
+    <strong>17.7 st</strong>, dynamic range mean <strong>53.8 dB</strong>, granite WER
+    <strong>0.0037</strong> (1 substitution in 270 words), qwen WER <strong>0.0037</strong>, zero
+    unexpected repeats, 20/20 word-recall complete. The f0-range falsifier from the round report still stands
+    on the paired legacy-caption set (17.78 vs 21.10 st); this page is the <strong>owner-ear gate</strong> for
+    the round &mdash; the register captions are the deployment surface the model was trained on.</p>
+</section>
+<section class="tr" id="ttds2v3" style="max-width:none">
+  <p class="trlab">S7.11-ttsds2-v3 &mdash; all 20 prompts, one take per prompt, same 20-axis voice-register captions as the S7.11-ttsds2 tab (design &rarr; design_register.v1 &rarr; prose), same texts, same reference speakers, frozen serving path (schedule 64/48/48, first emit 32, eager), seed 1000</p>
+  <p class="note" style="margin:10px 0 14px">The <strong>S7.11-ttsds2-v3</strong> checkpoint (v6a fine-tuned
+    <strong>12k steps</strong> on the <strong>variability-v3 manifest</strong>,
+    <code>train_variability_v3.jsonl</code>, 929,074 rows = the 774,126-row voice-register dataset with the
+    variability re-balancing applied: acted-affect high-variability rows duplicated &times;3 (the affect cap
+    raised, per round-2 item&nbsp;d) and the expressive full1963h subset duplicated &times;2 on top of bucket
+    duplication; trainer consumes physical copies) renders each prompt with the <em>same</em> prose caption the
+    S7.11-ttsds2 tab used &mdash; the only variable between the two tabs is the checkpoint. Reward stack:
+    WER + WER2 + UTMOS + <strong>TTSDS2 composite</strong> (official ttsds 2.1.3 categories). On the official
+    dashboard (20 renders vs the 200-wav register-stratum reference) v3 scores
+    <strong>80.78</strong> overall &mdash; PROSODY <strong>83.58</strong> (best of the seven benched rounds;
+    Pitch 64.53, MPM 89.60, HuBERT-token-SR 87.66, Allosaurus-SR 92.53), SPEAKER 70.57, INTELLIGIBILITY 83.11,
+    GENERIC 85.85 &mdash; vs 80.52 / PROSODY 82.53 for ttsds2-20k on the identical prompt set. Selection-set
+    measurements: UTMOS mean <strong>3.50</strong>, SIM (ECAPA) <strong>0.5489</strong> (best of the table),
+    f0 range mean <strong>15.7 st</strong>, dynamic range mean <strong>57.0 dB</strong>, granite WER
+    <strong>0.0037</strong>, 20/20 word-recall complete (rage_man &times;2, fear_woman &times;1 re-rolls,
+    disclosed per chip; CTC substitutions are decoder spelling noise, not drops).</p>
+  <div class="grid" style="grid-template-columns:1fr">
+  <article class="chip">
+    <p class="who">grief_woman</p>
+    <p class="line">i&#x27;m sorry. i&#x27;m sorry, i didn&#x27;t mean for any of this to happen.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_grief_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.12 &middot; f0 range 13.5 st &middot; dyn 60 dB &middot; dur 5.1 s &middot; 10/20 axes claimed &middot; UTMOS −0.38 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, intimate close-mic performance, sad, grieving, heavy emotional register, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, halting with lots of space between phrases, voice breaking, crying and tears, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32, low-pitched, with a warm timbre. Delivered in a sad manner, performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">grief_oldman</p>
+    <p class="line">she kept every letter. i found them this morning, in the drawer by the bed.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_grief_oldman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.53 &middot; f0 range 24.6 st &middot; dyn 53 dB &middot; dur 7.4 s &middot; 9/20 axes claimed &middot; UTMOS −0.40 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An elderly male voice, performed narration, grieving, heavy and sorrowful emotional register, deep resonant breathy timbre, slow drawn-out delivery, low pitch, soft loudness, holding back tears, with a sigh, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, elderly, low-pitched, with a resonant timbre. Performed as a narration delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">grief_young</p>
+    <p class="line">i thought i&#x27;d be fine. i really did. and then i saw your coat.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_grief_young.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.97 &middot; f0 range 10.5 st &middot; dyn 65 dB &middot; dur 5.1 s &middot; 9/20 axes claimed &middot; UTMOS +0.21 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A young adult female voice, intimate close-mic performance, grieving, sorrowful, overwhelmed emotional register, breathy soft bright timbre, slow drawn-out delivery, low pitch, soft loudness, breathy with much air and little phonation, crying, voice breaking, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, low-pitched, with a bright timbre. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">rage_man</p>
+    <p class="line">don&#x27;t. don&#x27;t you dare tell me to calm down right now.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_rage_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.00 &middot; f0 range 16.1 st &middot; dyn 34 dB &middot; dur 3.5 s &middot; 9/20 axes claimed &middot; UTMOS −0.48 vs ttsds2-20k &middot; word-recall re-roll &times;2 (final take word-complete) &middot; CTC 1 substitution (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult male voice, expressive performance, angry, sharp, intense emotional register, bright harsh powerful timbre, fast tempo, high pitch, loud loudness, relentless with no room to breathe, raised voice, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, high-pitched, with a bright timbre. Delivered in an angry manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>9/20 claimed: affect, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">rage_woman</p>
+    <p class="line">i asked you for one thing. one. and you couldn&#x27;t even manage that.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_rage_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.79 &middot; f0 range 16.6 st &middot; dyn 67 dB &middot; dur 5.2 s &middot; 9/20 axes claimed &middot; UTMOS −0.24 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, expressive performance, angry, sharp, intense emotional register, bright harsh powerful timbre, fast tempo, high pitch, loud loudness, rapid-fire, raised voice, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, high-pitched, with a bright timbre. Delivered in an angry manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>9/20 claimed: affect, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">command_deep</p>
+    <p class="line">everyone out. now. i won&#x27;t say it twice.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_command_deep.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.89 &middot; f0 range 34.7 st &middot; dyn 67 dB &middot; dur 5.7 s &middot; 10/20 axes claimed &middot; UTMOS +0.20 vs ttsds2-20k &middot; CTC 1 substitution & 1 insertion (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, calm, commanding, deadpan emotional register, deep resonant dark timbre, slow drawn-out delivery, low pitch, loud loudness, almost no pitch movement, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant timbre. Delivered in a calm manner, performed as a narration delivery, slow, unhurried pacing, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, pitch_register, style, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">fear_woman</p>
+    <p class="line">there&#x27;s someone outside. i heard it again, right by the window.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_fear_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.85 &middot; f0 range 5.7 st &middot; dyn 57 dB &middot; dur 4.7 s &middot; 7/20 axes claimed &middot; UTMOS +0.60 vs ttsds2-20k &middot; word-recall re-roll &times;1 (final take word-complete) &middot; CTC 1 substitution & 1 insertion (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, frightened, trembling, anxious emotional register, breathy soft whispered timbre, slow tempo, low pitch, soft loudness, whispered, unsteady, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched. Performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, pitch_register, style, tempo, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">fear_child</p>
+    <p class="line">don&#x27;t turn the light on. please. just stay here with me.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_fear_child.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 2.46 &middot; f0 range 11.9 st &middot; dyn 68 dB &middot; dur 4.4 s &middot; 9/20 axes claimed &middot; UTMOS +0.96 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A child female voice, intimate close-mic performance, frightened, trembling, anxious emotional register, breathy soft bright timbre, slow tempo, low pitch, soft loudness, halting, unsteady, with lots of space between phrases, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, child, low-pitched, with a bright timbre. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">joy_woman</p>
+    <p class="line">no. no way — she actually said yes? she actually said yes!</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_joy_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.78 &middot; f0 range 18.2 st &middot; dyn 68 dB &middot; dur 6.4 s &middot; 10/20 axes claimed &middot; UTMOS +0.28 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, delighted, joyful, bright and buoyant, laughing between phrases, bright clear resonant timbre, fast tempo, high pitch, loud loudness, wildly expressive pitch, energetic, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32, high-pitched, with a resonant and bright timbre. Delivered in a laughing manner, fast, rapid pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: affect, age, environment, gender, pitch_register, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">laugh_man</p>
+    <p class="line">stop it. stop, i&#x27;m serious, i can&#x27;t breathe.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_laugh_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 4.11 &middot; f0 range 23.9 st &middot; dyn 66 dB &middot; dur 4.3 s &middot; 7/20 axes claimed &middot; UTMOS −0.14 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A male voice in his 40s, warm, playful, amused, laughing mid-sentence, animated bouncy prosody, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, aged 42, with a warm timbre. Delivered in a laughing manner, animated, wide pitch movement. Clear studio recording.<br>
+      <strong>7/20 claimed: affect, age, environment, gender, prosodic_variability, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tender_man</p>
+    <p class="line">hey. hey, look at me. you&#x27;re okay. i&#x27;ve got you.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_tender_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 2.96 &middot; f0 range 25.1 st &middot; dyn 62 dB &middot; dur 5.1 s &middot; 10/20 axes claimed &middot; UTMOS −0.10 vs ttsds2-20k &middot; CTC 4 substitutions (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A male voice in his 30s, tender, gentle, intimate close-mic performance, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, whispered, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, young adult, aged 32, low-pitched, with a warm timbre. Delivered in what reads as a tender manner, performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>10/20 claimed: age, environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tender_woman</p>
+    <p class="line">don&#x27;t wake them. just come and look, quietly.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_tender_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.66 &middot; f0 range 17.3 st &middot; dyn 60 dB &middot; dur 4.5 s &middot; 9/20 axes claimed &middot; UTMOS −0.09 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, tender, soft, gentle emotional register, breathy soft warm timbre, slow drawn-out delivery, low pitch, soft loudness, whispered, mostly breath, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched, with a warm timbre. Delivered in what reads as a tender manner, performed as an intimate delivery, slow, unhurried pacing, whispered throughout. Clear studio recording.<br>
+      <strong>9/20 claimed: environment, gender, phonation, pitch_register, style, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">awe_deep</p>
+    <p class="line">and then the whole valley opened up beneath us, and nobody said anything at all.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_awe_deep.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.82 &middot; f0 range 9.2 st &middot; dyn 28 dB &middot; dur 6.7 s &middot; 10/20 axes claimed &middot; UTMOS +0.02 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, awestruck, wondering, elevated emotional register, deep resonant warm timbre, slow drawn-out delivery, low pitch, loud loudness, wildly expressive pitch, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant and warm timbre. Performed as a narration delivery, slow, unhurried pacing, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>10/20 claimed: age, environment, gender, pitch_register, style, tempo, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">tired_woman</p>
+    <p class="line">yeah. no, it&#x27;s fine. i&#x27;m just tired.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_tired_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.55 &middot; f0 range 18.7 st &middot; dyn 55 dB &middot; dur 4.7 s &middot; 7/20 axes claimed &middot; UTMOS −0.19 vs ttsds2-20k &middot; CTC 1 substitution (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, intimate close-mic performance, exhausted, flat, weary emotional register, breathy soft dull timbre, slow drawn-out delivery, low pitch, soft loudness, almost no pitch movement, deadpan, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, low-pitched. Performed as an intimate delivery, slow, unhurried pacing, breathy throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, pitch_register, style, tempo, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">flat_man</p>
+    <p class="line">it doesn&#x27;t matter. honestly, it doesn&#x27;t.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_flat_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.31 &middot; f0 range 11.6 st &middot; dyn 68 dB &middot; dur 4.3 s &middot; 7/20 axes claimed &middot; UTMOS −0.13 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, flat, indifferent, deadpan emotional register, deep dull breathy timbre, medium tempo, low pitch, soft loudness, almost no pitch movement, continuous with few pauses, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched. Performed as a narration delivery, breathy throughout. Clear studio recording.<br>
+      <strong>7/20 claimed: age, environment, gender, phonation, pitch_register, style, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">sly_woman</p>
+    <p class="line">i may have done something. don&#x27;t be angry. it&#x27;s mostly good news.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_sly_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.36 &middot; f0 range 9.6 st &middot; dyn 69 dB &middot; dur 6.6 s &middot; 8/20 axes claimed &middot; UTMOS +0.02 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A young adult female voice, expressive performance, delighted, mischievous, playful emotional register, bright breathy warm timbre, slow tempo, medium pitch, soft loudness, halting, with lots of space between phrases, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, with a bright and warm timbre. Slow, unhurried pacing, breathy throughout, with what sounds like animated, wide pitch movement. Clear studio recording.<br>
+      <strong>8/20 claimed: age, environment, gender, phonation, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">shift_woman</p>
+    <p class="line">i&#x27;m fine. i&#x27;m fine — no. no, actually, i&#x27;m not fine.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_shift_woman.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 2.99 &middot; f0 range 17.6 st &middot; dyn 56 dB &middot; dur 6.6 s &middot; 7/20 axes claimed &middot; UTMOS +0.22 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult female voice, expressive performance, grieving, overwhelmed, breaking emotional register, breathy soft bright timbre, variable tempo, variable pitch, loud loudness, wildly expressive pitch, crying, voice breaking, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, with a bright timbre. Breathy throughout, with what sounds like animated, wide pitch movement, loud, projected delivery. Clear studio recording.<br>
+      <strong>7/20 claimed: environment, gender, phonation, timbre, vocal_power, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">shift_man</p>
+    <p class="line">it was funny at the time. it was. it&#x27;s less funny now.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_shift_man.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.51 &middot; f0 range 11.3 st &middot; dyn 62 dB &middot; dur 5.5 s &middot; 8/20 axes claimed &middot; UTMOS −0.16 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> An adult male voice, expressive performance, grieving, heavy, sorrowful emotional register, breathy warm soft timbre, slow tempo, low pitch, soft loudness, halting, with lots of space between phrases, holding back tears, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, low-pitched, with a warm timbre. Slow, unhurried pacing, breathy throughout, with what sounds like animated, wide pitch movement. Clear studio recording.<br>
+      <strong>8/20 claimed: environment, gender, phonation, pitch_register, tempo, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">long_deep</p>
+    <p class="line">i went back to the house last week. the fence is gone, and someone painted the door a colour i don&#x27;t think either of us would have chosen, but the tree is still there, and it&#x27;s much bigger than i remembered.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_long_deep.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.76 &middot; f0 range 10.3 st &middot; dyn 45 dB &middot; dur 14.4 s &middot; 8/20 axes claimed &middot; UTMOS +0.08 vs ttsds2-20k &middot; CTC 2 substitutions (decoder spelling, not drops)</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A middle-aged male voice, performed narration, calm, reflective, steady emotional register, deep resonant warm timbre, medium tempo, low pitch, medium loudness, continuous with few pauses, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A male voice, middle-aged, low-pitched, with a resonant and warm timbre. Delivered in a calm manner, performed as a narration delivery. Clear studio recording.<br>
+      <strong>8/20 claimed: affect, age, environment, gender, pitch_register, style, timbre, +language(default)</strong></p></details>
+  </article>
+  <article class="chip">
+    <p class="who">long_female</p>
+    <p class="line">the thing nobody tells you is that it doesn&#x27;t arrive all at once. it comes in small pieces, on ordinary afternoons, when you&#x27;re doing something completely unrelated and you suddenly have to sit down.</p>
+    <audio controls preload="none" src="audio_ttds2v3/v3_long_female.mp3" title="S7.11-ttsds2-v3 12k final &middot; 20-axis register caption &middot; seed 1000"></audio>
+    <p class="cond">UTMOS 3.66 &middot; f0 range 7.5 st &middot; dyn 31 dB &middot; dur 13.1 s &middot; 6/20 axes claimed &middot; UTMOS −0.02 vs ttsds2-20k</p>
+    <details style="margin-top:6px"><summary style="cursor:pointer;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">20-axis register caption &middot; design &rarr; register &rarr; prose</summary>
+      <p style="color:var(--faint);font-size:12.5px;line-height:1.5;margin:6px 0 0"><strong>voice design (input):</strong> A female voice in her 30s, long-form narration, calm and steady, moderate tempo, clear recording.<br>
+      <strong>prose caption (rendered):</strong> A female voice, young adult, aged 32. Delivered in a calm manner, performed as a narration delivery. Clear studio recording.<br>
+      <strong>6/20 claimed: affect, age, environment, gender, style, +language(default)</strong></p></details>
+  </article>
+  </div>
+  <p style="margin-top:10px;font-size:13px;color:#9a9a9a;max-width:100ch">
+    Per-clip UTMOS deltas vs the ttsds2-20k tab (same captions, same seed): the fear clips move most
+    (fear_child 1.50 &rarr; 2.46, +0.96; fear_woman 3.25 &rarr; 3.85, +0.60) &mdash; the variability-v3
+    re-balancing bought expressive range where the 20k round was flattest. grief_woman/grief_oldman/rage_man
+    give back 0.38&ndash;0.48; the composite still nets out ahead (TTSDS2 80.78 vs 80.52, PROSODY +1.05).
+    The f0-range falsifier from the round report stands (15.69 vs 17.68 st on this set); the official PROSODY
+    category measures mean-f0/rate distributions, not range &mdash; both are reported.</p>
+</section>
+</div></main>
+
+<footer><div class="wrap">A clip missing under a checkpoint failed the voice-class check on that checkpoint and is reported rather than replaced.</div></footer>
+<script>
+(function(){
+  var buttons = document.querySelectorAll('button.tog');
+  function show(which){
+    document.querySelectorAll('audio[data-set]').forEach(function(a){
+      var on = a.dataset.set === which;
+      a.hidden = !on;
+      if(!on){ a.pause(); }          // switching away must not leave a take playing unseen
+    });
+    document.querySelectorAll('.absent[data-set]').forEach(function(n){
+      n.hidden = n.dataset.set !== which;
+    });
+    buttons.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.set === which)); });
+    try { localStorage.setItem('irodori-set-v9', which); } catch(e){}
+  }
+  buttons.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.set); }); });
+  var saved = null;
+  try { saved = localStorage.getItem('irodori-set-v9'); } catch(e){}
+  show(saved && document.querySelector('button.tog[data-set="'+saved+'"]') ? saved : 'S7.6');
+})();
+</script>
+</body></html>
