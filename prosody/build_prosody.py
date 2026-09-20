@@ -61,7 +61,8 @@ def build_set(setkey, title, blurb, score_note):
         for key, name, kind, pat in arms:
             src = pat.format(id=uid)
             cells.append(f'''<div class="arm arm-{kind}">
-  <audio src="{esc(src)}" preload="none" data-arm="{key}" data-uid="{uid}"></audio>
+  <div class="arm-label">{esc(name)}</div>
+  <audio controls preload="none" src="{esc(src)}" data-arm="{key}" data-uid="{uid}"></audio>
 </div>''')
         cells_html = "\n".join(cells)
         rows.append(f'''<section class="row" id="{uid}">
@@ -163,7 +164,7 @@ nav.tabs a:hover{{color:var(--paper)}}
 .playboth.on{{border-color:var(--amber);color:var(--ink);background:var(--amber)}}
 .line{{margin:2px 0 10px;color:var(--dim);font-size:14.5px;max-width:78ch}}
 .arms{{display:grid;gap:12px;grid-template-columns:1fr 1fr}}
-.arm audio{{width:100%;height:34px}}
+.arm audio{{width:100%;height:40px;display:block}}
 .arm-label{{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
   color:var(--faint);margin:0 0 5px}}
 .arm-ours .arm-label{{color:var(--amber)}}
@@ -176,8 +177,9 @@ footer a{{color:var(--dim)}}
 <header class="top"><div class="wrap">
   <h1>PROSODY, <em>by ear.</em></h1>
   <p class="standfirst">The benchmark report scored three systems with the official ttsds&nbsp;2.1.3
-  suite on independent prompt sets. This page plays the same renders side by side &mdash; the
-  metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
+  suite on independent prompt sets. This page plays the same renders side by side.
+  Play one take alone for a solo A/B, or &ldquo;play both&rdquo; to hear the pair together &mdash;
+  the metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
   <nav class="tabs">
     <a href="#set-ab">ab40 &middot; vs ElevenLabs v3</a>
     <a href="#set-pt">pt45 &middot; vs Kokoro-82M</a>
@@ -206,13 +208,23 @@ footer a{{color:var(--dim)}}
     var u = a.dataset.uid;
     (byUid[u] = byUid[u] || []).push(a);
   }});
-  function stopAll(exceptUid){{
+  function stopOthers(keep){{
     audios.forEach(function(a){{
-      if (a.dataset.uid !== exceptUid) {{ a.pause(); a.currentTime = 0; }}
+      if (a !== keep) {{ a.pause(); a.currentTime = 0; }}
     }});
-    document.querySelectorAll('.playboth.on').forEach(function(b){{
-      if (b.dataset.uid !== exceptUid) b.classList.remove('on');
-    }});
+    document.querySelectorAll('.playboth.on').forEach(function(b){{ b.classList.remove('on'); }});
+  }}
+  function syncBtn(uid){{
+    var group = byUid[uid] || [];
+    var btn = document.querySelector('.playboth[data-uid="' + uid + '"]');
+    if (!btn) return;
+    var any = group.some(function(a){{ return !a.paused && !a.ended; }});
+    if (!any) btn.classList.remove('on');
+  }}
+  var suppressUid = null, suppressLeft = 0, suppressTimer = null;
+  function clearSuppress(){{
+    suppressUid = null; suppressLeft = 0;
+    if (suppressTimer) {{ clearTimeout(suppressTimer); suppressTimer = null; }}
   }}
   document.querySelectorAll('.playboth').forEach(function(btn){{
     btn.addEventListener('click', function(){{
@@ -222,24 +234,33 @@ footer a{{color:var(--dim)}}
       if (anyPlaying) {{
         group.forEach(function(a){{ a.pause(); a.currentTime = 0; }});
         btn.classList.remove('on');
+        clearSuppress();
         return;
       }}
-      stopAll(uid);
+      stopOthers(null);
+      suppressUid = uid; suppressLeft = group.length;
+      if (suppressTimer) clearTimeout(suppressTimer);
+      suppressTimer = setTimeout(clearSuppress, 1500);
       group.forEach(function(a){{ a.currentTime = 0; a.play(); }});
       btn.classList.add('on');
-      var first = group[0];
       function off(){{
         var done = group.every(function(a){{ return a.paused || a.ended; }});
-        if (done) {{ btn.classList.remove('on'); cleanup(); }}
-      }}
-      function cleanup(){{
-        group.forEach(function(a){{ a.removeEventListener('ended', off); a.removeEventListener('pause', off); }});
+        if (done) {{ btn.classList.remove('on'); }}
       }}
       group.forEach(function(a){{ a.addEventListener('ended', off); a.addEventListener('pause', off); }});
     }});
   }});
   audios.forEach(function(a){{
-    a.addEventListener('play', function(){{ stopAll(a.dataset.uid); }});
+    a.addEventListener('play', function(){{
+      if (suppressUid === a.dataset.uid) {{
+        suppressLeft -= 1;
+        if (suppressLeft <= 0) clearSuppress();
+        return;
+      }}
+      stopOthers(a);
+    }});
+    a.addEventListener('ended', function(){{ syncBtn(a.dataset.uid); }});
+    a.addEventListener('pause', function(){{ syncBtn(a.dataset.uid); }});
   }});
   window.addEventListener('pagehide', function(){{
     audios.forEach(function(a){{ a.pause(); }});
