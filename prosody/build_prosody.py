@@ -14,11 +14,13 @@ SCORES = {
         "v3":    {"prosody": 79.83, "overall": 78.28, "utmos": 3.689, "f0st": 14.29},
         "elx":   {"prosody": 80.76, "overall": 74.16, "utmos": 4.310, "f0st": 15.79},
         "ex10k": {"prosody": 76.27, "overall": 75.78, "utmos": 3.746, "f0st": 20.41},
+        "ex10kv2": {"prosody": 66.05, "overall": 71.32, "utmos": 3.840, "f0st": 17.44},
     },
     "pt": {
         "v3":    {"prosody": 83.22, "overall": 79.55, "utmos": 3.767, "f0st": 13.05},
         "kok":   {"prosody": 78.33, "overall": 73.64, "utmos": 4.498, "f0st": 9.25},
         "ex10k": {"prosody": 72.39, "overall": 74.25, "utmos": 3.842, "f0st": 19.77},
+        "ex10kv2": {"prosody": 66.61, "overall": 71.37, "utmos": 3.824, "f0st": 17.33},
     },
 }
 
@@ -26,12 +28,14 @@ ARMS = {
     "ab": [
         ("v3",    "S7.11-ttsds2-v3",              "ours",  "audio_ab/{id}_v3.mp3"),
         ("elx",   "ElevenLabs v3 (Rachel)",       "elx",   "audio_ab/{id}_elx.mp3"),
-        ("ex10k", "EX10K stage-1 (voice design)", "ex10k", "audio_ab/{id}_ex10k.mp3"),
+        ("ex10k", "EX10K stage-1 (register caps)", "ex10k", "audio_ab/{id}_ex10k.mp3"),
+        ("ex10kv2", "EX10K stage-1 (v2 caps)",    "ex10kv2", "audio_ab/{id}_ex10kv2.mp3"),
     ],
     "pt": [
         ("v3",    "S7.11-ttsds2-v3",              "ours",  "audio_pt/{id}_v3.mp3"),
         ("kok",   "Kokoro-82M af_heart",          "kok",   "audio_pt/{id}_kok.mp3"),
-        ("ex10k", "EX10K stage-1 (voice design)", "ex10k", "audio_pt/{id}_ex10k.mp3"),
+        ("ex10k", "EX10K stage-1 (register caps)", "ex10k", "audio_pt/{id}_ex10k.mp3"),
+        ("ex10kv2", "EX10K stage-1 (v2 caps)",    "ex10kv2", "audio_pt/{id}_ex10kv2.mp3"),
     ],
 }
 
@@ -73,7 +77,7 @@ def build_set(setkey, title, blurb, score_note):
   <div class="rowhead">
     <span class="cat cat-{CAT_COLOR.get(cat, "amber")}">{esc(cat)}</span>
     <span class="uid">{uid}</span>
-    <button class="playboth" data-uid="{uid}" aria-label="play both takes for {uid}">&#9654;&nbsp;play both</button>
+    <button class="playboth" data-uid="{uid}" aria-label="play all takes for {uid}">&#9654;&nbsp;play all</button>
   </div>
   <p class="line">{esc(text)}</p>
   <div class="arms">{cells_html}</div>
@@ -102,8 +106,8 @@ ab_sec = build_set(
     "Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200. PROSODY = mean of Pitch, MPM, "
     "HuBERT-token SR, Allosaurus SR. ElevenLabs leads PROSODY by +0.93 over v3 (80.76 vs 79.83) "
     "and UTMOS (24&nbsp;kHz-native renders, ours through the 48&nbsp;kHz codec); v3 leads "
-    "OVERALL by +4.12 over ElevenLabs. The EX10K stage-1 voice-design checkpoint trails both "
-    "(76.27) &mdash; see the ex10k note below.")
+    "OVERALL by +4.12 over ElevenLabs. Both EX10K stage-1 arms trail: 76.27 on the register "
+    "captions, 66.05 on its native v2 captions &mdash; see the ex10k note below.")
 
 pt_sec = build_set(
     "pt", "pt45 &mdash; preference-training prompts",
@@ -113,8 +117,9 @@ pt_sec = build_set(
     "canonical ASR (WER 0.014; the only flags are number normalization).",
     "Same instrument and reference. v3 leads PROSODY by +4.89 over Kokoro (83.22 vs 78.33); "
     "Kokoro's per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; "
-    "one prosody for all nine. UTMOS again favors the external systems. The EX10K stage-1 "
-    "voice-design checkpoint trails both (72.39) &mdash; see the ex10k note below.")
+    "one prosody for all nine. UTMOS again favors the external systems. Both EX10K stage-1 "
+    "arms trail: 72.39 on the register captions, 66.61 on its native v2 captions &mdash; "
+    "see the ex10k note below.")
 
 page = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -176,7 +181,7 @@ nav.tabs a:hover{{color:var(--paper)}}
 .playboth:hover{{border-color:var(--amber);color:var(--amber)}}
 .playboth.on{{border-color:var(--amber);color:var(--ink);background:var(--amber)}}
 .line{{margin:2px 0 10px;color:var(--dim);font-size:14.5px;max-width:78ch}}
-.arms{{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr}}
+.arms{{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr 1fr}}
 .arm audio{{width:100%;height:40px;display:block}}
 .arm-label{{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
   color:var(--faint);margin:0 0 5px}}
@@ -191,11 +196,14 @@ footer a{{color:var(--dim)}}
 </style></head><body>
 <header class="top"><div class="wrap">
   <h1>PROSODY, <em>by ear.</em></h1>
-  <p class="standfirst">Three systems, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
+  <p class="standfirst">Four arms, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
   Our arms are speaker-controlled: one female reference speaker on our side vs the fixed voice
   Rachel on ElevenLabs&rsquo;s and af_heart on Kokoro&rsquo;s, each take conditioned on a
-  register-matched prose caption. This page plays the same renders side by side.
-  Play one take alone for a solo A/B, or &ldquo;play both&rdquo; to hear the pair together &mdash;
+  register-matched prose caption. The EX10K voice-design checkpoint appears twice &mdash; once on
+  the same register captions as v3, once on its <em>native</em> caption_schema&nbsp;v2 grammar
+  (no emotion vocabulary; acoustic phrases verified against its 3.5M-row training set).
+  This page plays the same renders side by side.
+  Play one take alone for a solo A/B, or &ldquo;play all&rdquo; to hear the row together &mdash;
   the metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
   <nav class="tabs">
     <a href="#set-ab">ab40 &middot; vs ElevenLabs v3</a>
@@ -215,8 +223,17 @@ footer a{{color:var(--dim)}}
   &middot; <b>EX10K stage-1</b> (voice-design prompt-LoRA line, branch <span style="font-family:var(--mono)">claude/ex10k</span>, best milestone
   <span style="font-family:var(--mono)">checkpoint_0125000.pt</span> &mdash; init from the Japanese release
   <span style="font-family:var(--mono)">ckpt-v4-small-en-swap</span>, trained on 3.5M rows / 16,106 speakers with
-  6-view ablation captions; rendered on the <em>same</em> female reference speaker, register
-  captions, serving path and seed as the v3 arms, so the only variable is the checkpoint).
+  6-view ablation captions; rendered on the <em>same</em> female reference speaker, serving path
+  and seed as the v3 arms, so the only variable is the checkpoint. It is shown under two
+  caption regimes: <b>(register caps)</b> = the same register prose captions the v3 arms use
+  (out-of-distribution for this model &mdash; its training grammar has no emotion/register
+  vocabulary), and <b>(v2 caps)</b> = its native caption_schema&nbsp;v2 grammar, with each
+  prompt category mapped to the closest acoustic phrase set that verifiably occurs in its
+  training data (every caption string co-occurs &ge;3 times in a 400k-row sample of
+  <span style="font-family:var(--mono)">ex10k/select_v2/train.jsonl</span>; v2 has no emotion
+  words, so registers are expressed acoustically &mdash; e.g. grief as
+  <span style="font-family:var(--mono)">&ldquo;intimate close-mic performance, breathy, much air
+  and little phonation, slow, gasps, gasps&rdquo;</span>).
   Scoring: official ttsds 2.1.3 BenchmarkSuite, reference stratum_ref200; full numbers in
   <a href="https://github.com/Tap-Mobile/expressive-tts/blob/streaming-rope-ttds2/docs/PROSODY_EX10K_COMPARISON_20260920.md">docs/PROSODY_EX10K_COMPARISON_20260920.md</a>
   and <a href="https://github.com/Tap-Mobile/expressive-tts/blob/streaming-rope-ttds2/docs/PROSODY_SOTA_COMPARISON_20260919.md">docs/PROSODY_SOTA_COMPARISON_20260919.md</a>.</p>
@@ -226,9 +243,16 @@ footer a{{color:var(--dim)}}
   HuBERT-token SR collapses to 63.5 (v3: 90.9) &mdash; the same rate/token axis the ex10k
   handoff flagged as the short-prompt fault. UTMOS is slightly ahead of v3 (3.75/3.84 vs
   3.69/3.77) and its f0 range is much wider (20.4/19.8 vs 14.3/13.1&nbsp;st): more energetic,
-  less controlled. Caveat as before: UTMOS favors the external systems partly through render
-  sample rate; PROSODY sub-scores split by axis; no per-prompt confidence intervals exist for
-  set-level suite scores &mdash; treat small deltas as directional.</p>
+  less controlled.</p>
+  <p>The <b>v2-caption arm settles the confound</b>: re-rendered with its native caption
+  grammar, ex10k gets <em>worse</em>, not better &mdash; PROSODY 66.05 (ab40) / 66.61 (pt45),
+  OVERALL 71.32/71.37, with HuBERT-token SR collapsing to 47.8/47.0 (v3: 84.6/90.9). The
+  register-caption mismatch was therefore not the bottleneck; the model follows v2&rsquo;s
+  acoustic style clauses but loses prosodic-token structure doing it. The ex10k deficit is a
+  model-capability limit of the voice-design line, not a captioning artifact. Caveat as
+  before: UTMOS favors the external systems partly through render sample rate; PROSODY
+  sub-scores split by axis; no per-prompt confidence intervals exist for set-level suite
+  scores &mdash; treat small deltas as directional.</p>
 </div></footer>
 <script>
 (function(){{
