@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blind A/B listening — S7.11 vs ElevenLabs v3 / Qwen3-TTS</title>
+<style>
+  body{font:16px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;max-width:720px;margin:40px auto;padding:0 20px;color:#1a1a1a}
+  h1{font-size:1.5rem;margin-bottom:.3em}
+  p.sub{color:#666;margin-top:0}
+  .card{border:1px solid #ddd;border-radius:10px;padding:18px 20px;margin:18px 0}
+  .card h2{font-size:1.1rem;margin:0 0 6px}
+  .card p{margin:6px 0}
+  a.btn{display:inline-block;background:#1a56db;color:#fff;text-decoration:none;padding:8px 16px;border-radius:8px;font-weight:600}
+  a.btn:hover{background:#12409f}
+  ol{padding-left:1.2em}
+  code{background:#f2f2f2;padding:2px 6px;border-radius:4px;font-size:.9em}
+  .note{color:#666;font-size:.9em}
+</style>
+</head>
+<body>
+<h1>Blind A/B listening</h1>
+<p class="sub">S7.11-ttsds2 (ours) vs frontier systems &middot; 27 trials each &middot; ~10&ndash;15 min per session</p>
+
+<div class="card">
+  <h2>Session 1 &mdash; vs ElevenLabs v3</h2>
+  <p>20 real prompts + 3 catch + 4 control trials, randomized sides.</p>
+  <a class="btn" href="eleven/">Start session 1 &rarr;</a>
+</div>
+
+<div class="card">
+  <h2>Session 2 &mdash; vs Qwen3-TTS</h2>
+  <p>Same prompt set, different competitor and side randomization.</p>
+  <a class="btn" href="qwen/">Start session 2 &rarr;</a>
+</div>
+
+<h2>How it works</h2>
+<ol>
+  <li>Each trial plays two clips, <b>A then B</b>. You can replay either as many times as you like.</li>
+  <li>Pick which clip expresses the prompt's emotion better (or &ldquo;no difference&rdquo;).</li>
+  <li>At the end the page shows a <b>completion code</b> like <code>ab20261001:12s21...</code> &mdash; copy it and send it back. The code is the whole result; no audio or answers leave your browser.</li>
+</ol>
+
+<p class="note">Both clips are preloaded before each trial is offered. Headphones recommended.</p>
+</body>
+</html>

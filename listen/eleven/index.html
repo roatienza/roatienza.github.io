@@ -1,0 +1,248 @@
+<!doctype html><meta charset=utf-8><title>Blind A/B</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="noindex,nofollow">
+<style>
+ :root{--bg:#12100f;--fg:#efe9e3;--dim:#8d8480;--line:#2b2724;--acc:#d98b5f;--ok:#7fa86a;
+       --bad:#c9705f}
+ @media(prefers-color-scheme:light){:root{--bg:#faf7f4;--fg:#1c1917;--dim:#6b625c;--line:#e3ddd6}}
+ *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);
+   font:16px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+   display:flex;justify-content:center;padding:32px 20px}
+ main{width:100%;max-width:620px}
+ .bar{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:10px}
+ .bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+ .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+ .meta{color:var(--dim);font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin:0}
+ .fin{border:0;background:none;color:var(--dim);font:inherit;font-size:13px;cursor:pointer;
+   text-decoration:underline;padding:0;width:auto;flex:none}
+ .fin:hover{color:var(--acc)}
+ blockquote{margin:14px 0 26px;padding-left:14px;border-left:2px solid var(--acc);
+   font-size:19px}
+ .row{display:flex;gap:12px;margin-bottom:12px}
+ button{flex:1;padding:14px;border:1px solid var(--line);background:transparent;color:var(--fg);
+   border-radius:9px;font:inherit;cursor:pointer;transition:border-color .15s,opacity .15s}
+ button:hover:not(:disabled){border-color:var(--acc)}
+ button:focus-visible{outline:2px solid var(--acc)}
+ button:disabled{opacity:.35;cursor:not-allowed}
+ button.heard{border-color:var(--ok)}
+ button.playing{border-color:var(--acc);background:rgba(217,139,95,.12)}
+ .pick{margin-top:22px} .pick button{font-weight:600}
+ .same{opacity:.8;font-weight:400!important}
+ .hint{color:var(--dim);font-size:13px;margin:4px 0 0}
+ .rev{margin-top:20px;border:1px solid var(--line);border-radius:11px;padding:16px 18px}
+ .rev h3{margin:0 0 8px;font-size:15px}
+ .rev p{margin:0 0 6px;font-size:14px}
+ .you{color:var(--acc);font-weight:600}
+ .tally{color:var(--dim);font-size:13px;margin-top:10px}
+ .done{padding:12px 0}
+ table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+ th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+ th{color:var(--dim);font-weight:400;text-transform:uppercase;letter-spacing:.06em;
+   font-size:11px}
+ td.w{color:var(--ok)} td.l{color:var(--bad)} td.t{color:var(--dim)}
+ .score{font-size:22px;margin:6px 0 2px}
+ code{background:var(--line);padding:2px 6px;border-radius:4px;font-size:13px}
+ textarea{width:100%;min-height:74px;background:var(--line);color:var(--fg);border:0;
+   border-radius:9px;padding:12px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+   resize:vertical}
+ .small{font-size:13px;padding:9px}
+</style>
+<main>
+ <div class=bar><i id=pb style=width:0></i></div>
+ <div class=top><p class=meta id=hd></p><button class=fin id=fin>Finish now</button></div>
+ <div id=app></div>
+</main>
+<script>
+const T=[{"trial": 0, "s1": "audio/t000_1.wav", "s2": "audio/t000_2.wav", "text": "i'm sorry. i'm sorry, i didn't mean for any of this to happen."}, {"trial": 1, "s1": "audio/t001_1.wav", "s2": "audio/t001_2.wav", "text": "stop it. stop, i'm serious, i can't breathe."}, {"trial": 2, "s1": "audio/t002_1.wav", "s2": "audio/t002_2.wav", "text": "something's wrong. i don't know what, but something is wrong."}, {"trial": 3, "s1": "audio/t003_1.wav", "s2": "audio/t003_2.wav", "text": "get out. i'm not asking again."}, {"trial": 4, "s1": "audio/t004_1.wav", "s2": "audio/t004_2.wav", "text": "we did it. we actually did it!"}, {"trial": 5, "s1": "audio/t005_1.wav", "s2": "audio/t005_2.wav", "text": "it was funny at the time. it was. it's less funny now."}, {"trial": 6, "s1": "audio/t006_1.wav", "s2": "audio/t006_2.wav", "text": "it was funny at the time. it was. it's less funny now."}, {"trial": 7, "s1": "audio/t007_1.wav", "s2": "audio/t007_2.wav", "text": "i thought i'd be fine. i really did. and then i saw your coat by the door."}, {"trial": 8, "s1": "audio/t008_1.wav", "s2": "audio/t008_2.wav", "text": "you're allowed to be tired. you don't have to earn the rest."}, {"trial": 9, "s1": "audio/t009_1.wav", "s2": "audio/t009_2.wav", "text": "okay. okay, okay, wait — say that again?"}, {"trial": 10, "s1": "audio/t010_1.wav", "s2": "audio/t010_2.wav", "text": "can you grab milk on the way back? and bread, if they have the seeded one."}, {"trial": 11, "s1": "audio/t011_1.wav", "s2": "audio/t011_2.wav", "text": "the thing nobody tells you is that it doesn't arrive all at once. it comes in small pieces, on ordinary afternoons, when you're doing something completely unrelated and you suddenly have to sit down."}, {"trial": 12, "s1": "audio/t012_1.wav", "s2": "audio/t012_2.wav", "text": "don't. don't you dare tell me to calm down right now."}, {"trial": 13, "s1": "audio/t013_1.wav", "s2": "audio/t013_2.wav", "text": "don't. don't you dare tell me to calm down right now."}, {"trial": 14, "s1": "audio/t014_1.wav", "s2": "audio/t014_2.wav", "text": "hey. hey, look at me. you're okay. i've got you."}, {"trial": 15, "s1": "audio/t015_1.wav", "s2": "audio/t015_2.wav", "text": "i left it on the counter next to the keys, under the mail."}, {"trial": 16, "s1": "audio/t016_1.wav", "s2": "audio/t016_2.wav", "text": "it doesn't matter. honestly, it doesn't."}, {"trial": 17, "s1": "audio/t017_1.wav", "s2": "audio/t017_2.wav", "text": "i asked you one thing. one. and you couldn't even do that."}, {"trial": 18, "s1": "audio/t018_1.wav", "s2": "audio/t018_2.wav", "text": "i don't really want to talk about it right now."}, {"trial": 19, "s1": "audio/t019_1.wav", "s2": "audio/t019_2.wav", "text": "please don't go. not tonight. just stay until i fall asleep."}, {"trial": 20, "s1": "audio/t020_1.wav", "s2": "audio/t020_2.wav", "text": "please don't go. not tonight. just stay until i fall asleep."}, {"trial": 21, "s1": "audio/t021_1.wav", "s2": "audio/t021_2.wav", "text": "someone's outside. i heard it again, right by the window."}, {"trial": 22, "s1": "audio/t022_1.wav", "s2": "audio/t022_2.wav", "text": "we drove for about six hours, stopped twice for petrol, and got there just as it was getting dark, which meant we couldn't see the water at all, only hear it."}, {"trial": 23, "s1": "audio/t023_1.wav", "s2": "audio/t023_2.wav", "text": "something's wrong. i don't know what, but something is wrong."}, {"trial": 24, "s1": "audio/t024_1.wav", "s2": "audio/t024_2.wav", "text": "the meeting moved to four, so i'll be about twenty minutes late."}, {"trial": 25, "s1": "audio/t025_1.wav", "s2": "audio/t025_2.wav", "text": "i'm sorry. i'm sorry, i didn't mean for any of this to happen."}, {"trial": 26, "s1": "audio/t026_1.wav", "s2": "audio/t026_2.wav", "text": "you're allowed to be tired. you don't have to earn the rest."}], REV=[], SID="ab20261001", KEY="blindab:"+SID;
+const RV={}; for(const r of REV) RV[r.t]=r;
+const app=document.getElementById('app'), pb=document.getElementById('pb'),
+      hd=document.getElementById('hd'), fin=document.getElementById('fin');
+let R={};
+try{ R=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ R={}; }
+const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(R)); }catch(e){} };
+const firstUnanswered=()=>{ for(let k=0;k<T.length;k++) if(R[T[k].trial]===undefined) return k;
+                            return T.length; };
+let i=firstUnanswered(), ended=false;
+
+/* Decode ahead of time. `new Audio(src).play()` on a click fetches over the network while the
+   listener waits, and a stall on one side is indistinguishable from a defect in that side. */
+const cache=new Map();
+function load(src){
+ if(cache.has(src)) return cache.get(src);
+ const a=new Audio(); a.preload='auto'; a.src=src;
+ const p=new Promise(res=>{
+   if(a.readyState>=3) return res(a);
+   a.addEventListener('canplaythrough',()=>res(a),{once:true});
+   a.addEventListener('error',()=>res(a),{once:true});
+   setTimeout(()=>res(a),12000);   /* never wedge the session on one bad fetch */
+ });
+ const rec={el:a,ready:p}; cache.set(src,rec); return rec;
+}
+function prefetch(k){ if(k<T.length){ load(T[k].s1); load(T[k].s2); } }
+
+let heard={1:false,2:false};
+function stopAll(){ for(const r of cache.values()){ try{ r.el.pause(); r.el.currentTime=0; }
+                    catch(e){} } }
+function play(n){
+ const t=T[i], src=(n===1?t.s1:t.s2), rec=load(src);
+ stopAll();
+ const b=document.getElementById('p'+n); if(!b) return;
+ rec.ready.then(()=>{
+   if(T[i]!==t) return;                    /* moved on while it loaded */
+   const bb=document.getElementById('p'+n); if(!bb) return;
+   bb.classList.add('playing');
+   rec.el.currentTime=0;
+   rec.el.onended=()=>{ bb.classList.remove('playing'); bb.classList.add('heard');
+                        heard[n]=true; gate(); };
+   rec.el.play().catch(()=>{ bb.classList.remove('playing'); heard[n]=true; gate(); });
+ });
+}
+function gate(){
+ const on=heard[1]&&heard[2];
+ for(const id of ['c1','cs','c2']){ const e=document.getElementById(id); if(e) e.disabled=!on; }
+ const h=document.getElementById('hint');
+ if(h) h.textContent = on ? 'keys: 1 / 2 to replay  ·  ← prefer 1  ·  ↓ no difference  ·  → prefer 2'
+                          : 'play BOTH clips through before choosing.';
+}
+function tally(){
+ let a=0,b=0,t=0;
+ for(const tr of T){ const r=RV[tr.trial]; if(!r||r.kind!=='real') continue;
+  const v=R[tr.trial]; if(v===undefined) continue;
+  if(v==='same') t++; else if((v==='1')===(r.a===1)) a++; else b++; }
+ return {a:a,b:b,t:t};
+}
+function header(){
+ const n=Object.keys(R).length;
+ pb.style.width=(n/T.length*100)+'%';
+ hd.textContent=n+' of '+T.length+' answered';
+ fin.style.display=(ended||n===0)?'none':'';
+ fin.textContent=(n<T.length)?'Finish now':'See results';
+}
+function chose(t,v){
+ R[t.trial]=v; save(); stopAll();
+ const r=RV[t.trial];
+ if(!r){ i=firstUnanswered(); prefetch(i+1); render(); return; }
+ showReveal(t,v,r);
+}
+function showReveal(t,v,r){
+ header();
+ let body='';
+ if(r.kind==='catch'){
+  body='<h3>'+r.say+'</h3><p>'+(v==='same'?'You said no difference — right.'
+       :'You picked clip '+v+'. There was nothing to pick.')+'</p>';
+ } else if(r.kind==='control'){
+  const good=(v!=='same'&&Number(v)===r.good);
+  body='<h3>'+r.say+'</h3><p>'+(v==='same'?'You said no difference.'
+       :(good?'You picked the clean one.':'You picked the degraded one.'))+'</p>';
+ } else {
+  const p1=(r.a===1)?r.la:r.lb, p2=(r.a===1)?r.lb:r.la;
+  const picked=(v==='same')?null:((v==='1')?p1:p2);
+  body='<h3>1 = '+p1+' &nbsp;·&nbsp; 2 = '+p2+'</h3>'+
+       '<p>'+(picked?('You picked <span class=you>'+picked+'</span>.')
+                    :'You said no difference.')+'</p>';
+  const s=tally();
+  body+='<p class=tally>So far: '+r.la+' '+s.a+' &nbsp;·&nbsp; '+r.lb+' '+s.b+
+        ' &nbsp;·&nbsp; no difference '+s.t+'</p>';
+ }
+ app.innerHTML='<p class=meta>Trial '+(i+1)+' of '+T.length+'</p>'+
+   '<blockquote>'+(t.text||'')+'</blockquote>'+
+   '<div class=rev>'+body+'</div>'+
+   '<div class=row style="margin-top:18px"><button id=nx>Next  &rarr;</button></div>';
+ const go=()=>{ i=firstUnanswered(); prefetch(i+1); render(); };
+ document.getElementById('nx').onclick=go;
+ document.getElementById('nx').focus();
+}
+function render(){
+ header();
+ if(ended || i>=T.length){ done(); return; }
+ const t=T[i];
+ heard={1:false,2:false};
+ app.innerHTML=
+  '<p class=meta>Trial '+(i+1)+' of '+T.length+'</p>'+
+  '<blockquote>'+(t.text||'')+'</blockquote>'+
+  '<div class=row><button id=p1>▶ Play 1</button><button id=p2>▶ Play 2</button></div>'+
+  '<div class="row pick"><button id=c1 disabled>Prefer 1</button>'+
+  '<button id=cs class=same disabled>No difference</button>'+
+  '<button id=c2 disabled>Prefer 2</button></div>'+
+  '<p class=hint id=hint></p>';
+ document.getElementById('p1').onclick=()=>play(1);
+ document.getElementById('p2').onclick=()=>play(2);
+ document.getElementById('c1').onclick=()=>chose(t,'1');
+ document.getElementById('c2').onclick=()=>chose(t,'2');
+ document.getElementById('cs').onclick=()=>chose(t,'same');
+ gate(); load(t.s1); load(t.s2); prefetch(i+1);
+}
+function code(){
+ return SID+':'+T.map(t=>{const v=R[t.trial]; return v==='1'?'1':v==='2'?'2':v==='same'?'s':'.';}).join('');
+}
+function resultsTable(){
+ if(!REV.length) return '';
+ let rows='';
+ for(let k=0;k<T.length;k++){
+  const tr=T[k], r=RV[tr.trial], v=R[tr.trial];
+  if(v===undefined || !r || r.kind!=='real') continue;
+  const p1=(r.a===1)?r.la:r.lb, p2=(r.a===1)?r.lb:r.la;
+  const picked=(v==='same')?'no difference':((v==='1')?p1:p2);
+  const cls=(v==='same')?'t':(picked===r.la?'w':'l');
+  rows+='<tr><td>'+(tr.text||'').slice(0,58)+'</td><td class='+cls+'>'+picked+'</td></tr>';
+ }
+ if(!rows) return '';
+ return '<table><tr><th>line</th><th>you picked</th></tr>'+rows+'</table>';
+}
+function done(){
+ ended=true; header();
+ const n=Object.keys(R).length, s=tally();
+ let head='';
+ if(REV.length){
+  const la=REV.find(r=>r.kind==='real'), A=la?la.la:'A', B=la?la.lb:'B';
+  const lead=(s.a>s.b)?A:((s.b>s.a)?B:'neither');
+  head='<p class=meta>'+(n<T.length?'Stopped early — '+n+' of '+T.length:'Session complete')+
+       '</p><p class=score>'+A+' '+s.a+' &nbsp;·&nbsp; '+B+' '+s.b+
+       (s.t?(' &nbsp;·&nbsp; no difference '+s.t):'')+'</p>'+
+       '<p class=hint>'+(lead==='neither'?'Level.':(lead+' ahead on your ear.'))+
+       ' Decided trials: '+(s.a+s.b)+'.</p>'+resultsTable();
+ } else {
+  head='<p class=meta>'+(n<T.length?'Stopped early — '+n+' of '+T.length+' answered'
+                                   :'Session complete')+'</p>';
+ }
+ app.innerHTML='<div class=done>'+head+
+  '<p>Send back this code — it is the whole result.</p>'+
+  '<textarea id=cd readonly></textarea>'+
+  '<div class=row style="margin-top:10px"><button id=cp class=small>Copy code</button>'+
+  (n<T.length?'<button id=rz class=small>Keep going</button>':'')+
+  '<button id=ex class=small>Download</button>'+
+  '<button id=rs class=small>Start over</button></div>'+
+  '<p class=hint>Nothing is uploaded. One character per trial, in order; '+
+  '<code>.</code> means not answered.</p></div>';
+ const ta=document.getElementById('cd'); ta.value=code();
+ document.getElementById('cp').onclick=()=>{ ta.select();
+   (navigator.clipboard?navigator.clipboard.writeText(ta.value):Promise.reject())
+     .catch(()=>document.execCommand('copy'));
+   document.getElementById('cp').textContent='Copied'; };
+ const rz=document.getElementById('rz');
+ if(rz) rz.onclick=()=>{ ended=false; i=firstUnanswered(); prefetch(i+1); render(); };
+ document.getElementById('ex').onclick=()=>{
+  const rows=Object.entries(R).map(([t,c])=>({trial:+t,choice:c}));
+  const b=new Blob([JSON.stringify({session:SID,responses:rows},null,1)],
+                   {type:'application/json'});
+  const u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='responses.json';a.click();URL.revokeObjectURL(u);};
+ document.getElementById('rs').onclick=()=>{
+  if(!confirm('Discard all '+Object.keys(R).length+' answers and start again?')) return;
+  R={}; save(); ended=false; i=0; render(); };
+}
+fin.onclick=()=>{ stopAll(); ended=true; done(); };
+document.addEventListener('keydown',e=>{
+ if(ended || i>=T.length) return;
+ const nx=document.getElementById('nx');
+ if(nx){ if(e.key==='Enter'||e.key===' '||e.key==='ArrowRight'){ nx.click(); e.preventDefault(); }
+         return; }
+ if(e.key==='1'){ play(1); e.preventDefault(); }
+ else if(e.key==='2'){ play(2); e.preventDefault(); }
+ else if(!(heard[1]&&heard[2])) return;
+ else if(e.key==='ArrowLeft'){ document.getElementById('c1').click(); e.preventDefault(); }
+ else if(e.key==='ArrowRight'){ document.getElementById('c2').click(); e.preventDefault(); }
+ else if(e.key==='ArrowDown'){ document.getElementById('cs').click(); e.preventDefault(); }
+});
+render();
+</script>
