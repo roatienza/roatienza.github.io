@@ -126,7 +126,7 @@ pt_sec = build_set(
     "use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours uses one female reference speaker "
     "with register-matched prose captions (the 40k arm through the 20-axis voice-register "
     "caption pipeline), as in ab40. Same text on both sides, verified by canonical ASR: the "
-    "40k arm's mean WER is <b>0.97%</b> (9 errors in 581 words &mdash; mostly number "
+    "40k arm's mean WER is <b>0.85%</b> (7 errors in 582 words &mdash; mostly number "
     "normalization; the only true speech-level substitution is pt039 "
     "&ldquo;asked&rarr;ask&rdquo;, itself a tail-articulation case).",
     "Same instrument and reference, scored on the padded audio (S7.11c +500&nbsp;ms tail "
@@ -272,10 +272,10 @@ footer a{{color:var(--dim)}}
   </table>
   <p><b>Text fidelity (whisper medium.en, temperature 0, canonical normalization, jiwer)</b>:
   ab40 mean WER <b>0.21%</b> macro / 0.20% micro (1 error / 500 reference words);
-  pt45 mean WER <b>0.97%</b> macro / 1.55% micro (9 / 581); combined <b>0.61%</b> macro /
-  0.93% micro (10 / 1081). Every error is number/punctuation normalization except one true
+  pt45 mean WER <b>0.85%</b> macro / 1.20% micro (7 / 582); combined <b>0.56%</b> macro /
+  0.74% micro (8 / 1082). Every error is number/punctuation normalization except one true
   speech-level substitution, pt039 &ldquo;asked&rarr;ask&rdquo; &mdash; itself the
-  tail-articulation class the S7.11c pad addresses.</p>
+  tail-articulation class the S7.11c pad and S7.11d gate address.</p>
   <p><b>S7.11c trailing-decay pad (2026-10-17)</b>: the 40k checkpoint ends its final window
   closer to the last phoneme than v3 (end-gap after the final word: median 140&ndash;160&nbsp;ms
   vs v3's 219&nbsp;ms; ab011 &ldquo;quietly.&rdquo; lost the final-syllable swell and read as
@@ -285,10 +285,28 @@ footer a{{color:var(--dim)}}
   seed-derived room tone (level matched to the window's own quiet floor, 60&nbsp;ms fades at
   both edges). On the padded renders the end-gap is 620&ndash;660&nbsp;ms median (v3:
   219&nbsp;ms), all 16 NO_END_ROOM flags clear, WER unchanged (0.21%/0.97%). The pad cannot
-  create a final-syllable swell the checkpoint did not render &mdash; a few files still
-  compress the last word relative to v3 (ab006/ab011/pt005/pt008) and pt039 keeps the
-  &ldquo;ask&rdquo; ending; that residue is checkpoint behavior, addressable only by
-  training or re-rolls.</p>
+  create a final-syllable swell the checkpoint did not render &mdash; that residue is
+  what the S7.11d gate below addresses.</p>
+  <p><b>S7.11d final-word swell gate (2026-10-17)</b>: the pad fixed the room
+  <em>after</em> the last word, but five takes still compressed the final word itself
+  (ab011 &ldquo;quietly.&rdquo; 0.24&nbsp;s / 1 energy burst vs v3's 0.70&nbsp;s / 3
+  &mdash; the ear hears &ldquo;quiet&rdquo;; ab027 &ldquo;doesn't.&rdquo; 0.28&nbsp;s /
+  1 burst vs 0.48&nbsp;s / 2; plus ab000/pt019/pt043). The word transcribes complete
+  (whisper and the CTC arbiter both hear it), so no ASR-based gate can bind &mdash; the
+  defect is prosodic. Measured seed-stochastic (a 5-seed probe rendered
+  &ldquo;quietly&rdquo; with the full swell at 2 of 5 seeds), so the fix is the engine's
+  standard re-roll: <span style="font-family:var(--mono)">StreamSettings.final_swell_gate</span>
+  bounds the final word's span with the CTC arbiter's character offsets, counts energy
+  bursts at 15% of the span peak, and re-rolls the last window (seed+7 per attempt,
+  &le;3) until the final multi-syllable word carries &ge;2 bursts &mdash; keeping only
+  takes that still pass the recall gate, and only swapping when the candidate is
+  strictly more articulated. All five takes re-rendered clean (ab011 &ldquo;quietly.&rdquo;
+  now 0.94&nbsp;s / 2 bursts, end-gap 719&nbsp;ms; ab027 2 bursts, 500&nbsp;ms);
+  the other 80 files are byte-identical. WER: ab 0.21% unchanged, pt 0.97&rarr;0.85%
+  (pt033's &ldquo;double-checked&rdquo; now resolves). Residual: pt039 keeps the
+  &ldquo;ask&rdquo; ending (whisper-only artifact &mdash; the CTC arbiter hears
+  &ldquo;ASKED&rdquo;), and single-syllable final words match v3's duration
+  distribution exactly (p50 0.34&nbsp;s both arms).</p>
   <p><b>The dense67-40k read (instrument)</b>: on the pre-pad renders the 40k checkpoint took
   PROSODY on both independent sets &mdash; ab40 83.80 (vs ElevenLabs 80.76, +3.04; vs v3
   79.83, +3.97) and pt45 83.60 (vs Kokoro 78.33, +5.27; vs v3 83.22, +0.38), with
