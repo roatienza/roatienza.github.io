@@ -1898,6 +1898,32 @@ footer a{color:var(--dim)}
   external systems (sample-rate artifact of our 48&nbsp;kHz codec, as before). Caveats as
   before: PROSODY sub-scores split by axis; no per-prompt confidence intervals exist for
   set-level suite scores &mdash; treat small deltas as directional.</p>
+  <p><b>Q&amp;A &mdash; how were the dense67 eval captions authored?</b> Neither hand-written
+  nor LLM-written: they are <b>machine-authored from the reference clips' DSP plus certified
+  labels</b>, by <span style="font-family:var(--mono)">dense67_20axis_caption.py</span>
+  (commits <span style="font-family:var(--mono)">df8bf7eb</span>, gender fix
+  <span style="font-family:var(--mono)">a3d9b5a8</span>; CPU-only, no learned model in the
+  path). Three inputs: (1) <b>DSP on the reference clips</b> &mdash; pYIN f0, f0-std in
+  semitones, RMS peak-norm, voiced ratio, syllable rate, spectral tilt, jitter
+  (887,858&nbsp;+&nbsp;323,749 measured rows) &mdash; decides pitch_register,
+  prosodic_variability, vocal_power, phonation, tempo and environment through frozen
+  thresholds; (2) <b>non-DSP slots</b> &mdash; gender/age/accent from the certified speaker
+  inventory (91&ndash;99% of those axes), timbre/style words mined from the pools' existing
+  captions; (3) a <b>fixed v8 prose template</b> (voice_register.v1, schema
+  <span style="font-family:var(--mono)">dbc64880</span>) renders the string deterministically
+  &mdash; an axis with no instrument abstains (clause omitted, never guessed): 6.2M
+  abstentions, 0 contract violations, ~19.6k unique strings over 887,858 rows. Full-file
+  provenance audit: pitch_register 100% <span style="font-family:var(--mono)">measured:dsp_pyin_vs_gender_norm</span>,
+  prosodic_variability 98.4% DSP tercile, vocal_power 100% DSP, phonation 100% DSP, tempo 94%
+  DSP, environment 56% DSP + 43% ingest tags, style 68% caption-word lane + 31% DSP, language
+  100% corpus metadata. So the prose strings tabulated above are the deterministic output of
+  that pipeline &mdash; the same design the Cs-line's
+  <span style="font-family:var(--mono)">register20.py</span> follows (FluidV3 labels + yin DSP
+  + the leading <span style="font-family:var(--mono)">&lt;emo:&gt;</span> tag, validators, no
+  reference-audio axes at eval). Artifacts:
+  <span style="font-family:var(--mono)">dataset/manifests/dense67_register_prose.jsonl</span>
+  (md5 <span style="font-family:var(--mono)">66fd97a1&hellip;</span>),
+  <span style="font-family:var(--mono)">dense67_contrast_manifest.jsonl</span>.</p>
 </div></footer>
 <script>
 (function(){
