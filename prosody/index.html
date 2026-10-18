@@ -58,7 +58,7 @@ nav.tabs a:hover{color:var(--paper)}
 .playboth:hover{border-color:var(--amber);color:var(--amber)}
 .playboth.on{border-color:var(--amber);color:var(--ink);background:var(--amber)}
 .line{margin:2px 0 10px;color:var(--dim);font-size:14.5px;max-width:78ch}
-.arms{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr}
+.arms{display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}
 .arm audio{width:100%;height:40px;display:block}
 .arm-label{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
   color:var(--faint);margin:0 0 5px}
@@ -75,18 +75,20 @@ footer .wrap{padding:24px 24px 54px}
 footer a{color:var(--dim)}
 @media (max-width:700px){.arms{grid-template-columns:1fr}}
 @media (max-width:900px) and (min-width:701px){.arms{grid-template-columns:1fr 1fr}}
+@media (min-width:901px) and (max-width:1100px){.arms{grid-template-columns:repeat(2,1fr)}}
 @media (prefers-reduced-motion:reduce){*{transition:none}}
 </style></head><body>
 <header class="top"><div class="wrap">
   <h1>PROSODY, <em>by ear.</em></h1>
-  <p class="standfirst">Three arms, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
+  <p class="standfirst">Four arms, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
   Our arms are speaker-controlled: one female reference speaker on our side vs the fixed voice
   Rachel on ElevenLabs&rsquo;s and af_heart on Kokoro&rsquo;s, each take conditioned on a
   register-matched prose caption. The dense67-40k arm is captioned through the 20-axis
   voice-register pipeline (design_register.v1 parsed to prose at render time &mdash; the exact
-  prose strings are tabulated below) and carries the S7.11c trailing-decay pad
-  (+500&nbsp;ms of room tone after the final phoneme, added by the renderer, not the
-  checkpoint).
+  prose strings are tabulated below) and appears twice: <b>unpadded</b> (the raw renders,
+  <span style="font-family:var(--mono)">final_pad_ms=0</span>) and <b>padded</b> (the S7.11c
+  trailing-decay pad, +500&nbsp;ms of room tone after the final phoneme, added by the
+  renderer, not the checkpoint).
   This page plays the same renders side by side.
   Play one take alone for a solo A/B, or &ldquo;play all&rdquo; to hear the row together &mdash;
   the metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
@@ -99,11 +101,12 @@ footer a{color:var(--dim)}
 <section class="set" id="set-ab">
 <div class="sethead">
   <h2>ab40 &amp;mdash; held-out product-eval prompts</h2>
-  <p class="blurb">40 prompts never used to select the checkpoint, rendered on the frozen S7.11 serving path (seed 1000). Speaker-controlled: ElevenLabs v3 uses the fixed voice <em>Rachel</em>; ours uses one female reference speaker for all 40 takes. Each take is conditioned on a register-matched prose caption &mdash; the 40k arm through the 20-axis voice-register caption pipeline (design_register.v1 parsed to prose at render time; the exact prose strings are tabulated in the footer). Texts are the current canon of the prompt suite. Same text on both sides, verified by canonical ASR (whisper medium.en): the 40k arm's mean WER is <b>0.21%</b> (1 error in 500 reference words &mdash; a &ldquo;twenty&rarr;20&rdquo; normalization, not a speech error).</p>
+  <p class="blurb">40 prompts never used to select the checkpoint, rendered on the frozen S7.11 serving path (seed 1000). Speaker-controlled: ElevenLabs v3 uses the fixed voice <em>Rachel</em>; ours uses one female reference speaker for all 40 takes. Each take is conditioned on a register-matched prose caption &mdash; the 40k arms through the 20-axis voice-register caption pipeline (design_register.v1 parsed to prose at render time; the exact prose strings are tabulated in the footer). Texts are the current canon of the prompt suite. Same text on both sides, verified by canonical ASR (whisper medium.en): the 40k arm's mean WER is <b>0.21%</b> (1 error in 500 reference words &mdash; a &ldquo;twenty&rarr;20&rdquo; normalization, not a speech error).</p>
   <div class="scorechips"><div class="scorechip ours"><span class="sc-name">S7.11-ttsds2-v3</span><span class="sc-num">PROSODY 79.83</span><span class="sc-sub">OVERALL 78.28 &middot; UTMOS 3.689 &middot; f0 14.29 st</span></div>
 <div class="scorechip"><span class="sc-name">ElevenLabs v3 (Rachel)</span><span class="sc-num">PROSODY 80.76</span><span class="sc-sub">OVERALL 74.16 &middot; UTMOS 4.310 &middot; f0 15.79 st</span></div>
+<div class="scorechip ours"><span class="sc-name">S7.11-dense67-40k (20-axis caps, unpadded)</span><span class="sc-num">PROSODY 83.80</span><span class="sc-sub">OVERALL 78.25 &middot; UTMOS 3.688 &middot; f0 15.88 st</span></div>
 <div class="scorechip ours"><span class="sc-name">S7.11-dense67-40k (20-axis caps, padded)</span><span class="sc-num">PROSODY 80.67</span><span class="sc-sub">OVERALL 76.92 &middot; UTMOS 3.668 &middot; f0 17.96 st</span></div></div>
-  <p class="scorenote">Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200, scored on the exact audio this page plays (S7.11c trailing-decay pad, +500&nbsp;ms). PROSODY = mean of Pitch, MPM, HuBERT-token SR, Allosaurus SR. The pad is audible tail room the suite's distribution statistics penalize: PROSODY 80.67 vs 83.80 on the byte-identical pre-pad renders (control re-score of the pre-pad audio reproduces 83.80 exactly, so the delta is the pad, not noise). By ear the padded endings are the correct ones &mdash; the pre-pad arm cut the final syllable's release (ab011 &ldquo;quietly&rdquo; read as &ldquo;quiet&rdquo;).</p>
+  <p class="scorenote">Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200, each arm scored on the exact audio this page plays. The <b>unpadded</b> 40k chip is the raw render (final_pad_ms=0): PROSODY 83.80 &mdash; above ElevenLabs (+3.04) and v3 (+3.97). The <b>padded</b> 40k chip is the same takes after the S7.11c trailing-decay pad (+500&nbsp;ms): PROSODY 80.67, the suite's distribution statistics penalizing the added room tone (a control re-score of the byte-identical pre-pad audio reproduces 83.80 exactly, so the delta is the pad, not noise). By ear the padded endings are the correct ones &mdash; the unpadded arm cut the final syllable's release (ab011 &ldquo;quietly&rdquo; read as &ldquo;quiet&rdquo;).</p>
 </div>
 <div class="rows"><section class="row" id="ab000">
   <div class="rowhead">
@@ -119,6 +122,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab000_elx.mp3" data-arm="elx" data-uid="ab000"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab000_40kraw.mp3" data-arm="40kraw" data-uid="ab000"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -141,6 +148,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab001_elx.mp3" data-arm="elx" data-uid="ab001"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab001_40kraw.mp3" data-arm="40kraw" data-uid="ab001"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab001_40k.mp3" data-arm="40k" data-uid="ab001"></audio>
 </div></div>
@@ -159,6 +170,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab002_elx.mp3" data-arm="elx" data-uid="ab002"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab002_40kraw.mp3" data-arm="40kraw" data-uid="ab002"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -181,6 +196,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab003_elx.mp3" data-arm="elx" data-uid="ab003"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab003_40kraw.mp3" data-arm="40kraw" data-uid="ab003"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab003_40k.mp3" data-arm="40k" data-uid="ab003"></audio>
 </div></div>
@@ -199,6 +218,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab004_elx.mp3" data-arm="elx" data-uid="ab004"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab004_40kraw.mp3" data-arm="40kraw" data-uid="ab004"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -221,6 +244,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab005_elx.mp3" data-arm="elx" data-uid="ab005"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab005_40kraw.mp3" data-arm="40kraw" data-uid="ab005"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab005_40k.mp3" data-arm="40k" data-uid="ab005"></audio>
 </div></div>
@@ -239,6 +266,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab006_elx.mp3" data-arm="elx" data-uid="ab006"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab006_40kraw.mp3" data-arm="40kraw" data-uid="ab006"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -261,6 +292,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab007_elx.mp3" data-arm="elx" data-uid="ab007"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab007_40kraw.mp3" data-arm="40kraw" data-uid="ab007"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab007_40k.mp3" data-arm="40k" data-uid="ab007"></audio>
 </div></div>
@@ -279,6 +314,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab008_elx.mp3" data-arm="elx" data-uid="ab008"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab008_40kraw.mp3" data-arm="40kraw" data-uid="ab008"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -301,6 +340,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab009_elx.mp3" data-arm="elx" data-uid="ab009"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab009_40kraw.mp3" data-arm="40kraw" data-uid="ab009"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab009_40k.mp3" data-arm="40k" data-uid="ab009"></audio>
 </div></div>
@@ -319,6 +362,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab010_elx.mp3" data-arm="elx" data-uid="ab010"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab010_40kraw.mp3" data-arm="40kraw" data-uid="ab010"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -341,6 +388,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab011_elx.mp3" data-arm="elx" data-uid="ab011"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab011_40kraw.mp3" data-arm="40kraw" data-uid="ab011"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab011_40k.mp3" data-arm="40k" data-uid="ab011"></audio>
 </div></div>
@@ -359,6 +410,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab012_elx.mp3" data-arm="elx" data-uid="ab012"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab012_40kraw.mp3" data-arm="40kraw" data-uid="ab012"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -381,6 +436,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab013_elx.mp3" data-arm="elx" data-uid="ab013"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab013_40kraw.mp3" data-arm="40kraw" data-uid="ab013"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab013_40k.mp3" data-arm="40k" data-uid="ab013"></audio>
 </div></div>
@@ -399,6 +458,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab014_elx.mp3" data-arm="elx" data-uid="ab014"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab014_40kraw.mp3" data-arm="40kraw" data-uid="ab014"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -421,6 +484,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab015_elx.mp3" data-arm="elx" data-uid="ab015"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab015_40kraw.mp3" data-arm="40kraw" data-uid="ab015"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab015_40k.mp3" data-arm="40k" data-uid="ab015"></audio>
 </div></div>
@@ -439,6 +506,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab016_elx.mp3" data-arm="elx" data-uid="ab016"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab016_40kraw.mp3" data-arm="40kraw" data-uid="ab016"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -461,6 +532,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab017_elx.mp3" data-arm="elx" data-uid="ab017"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab017_40kraw.mp3" data-arm="40kraw" data-uid="ab017"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab017_40k.mp3" data-arm="40k" data-uid="ab017"></audio>
 </div></div>
@@ -479,6 +554,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab018_elx.mp3" data-arm="elx" data-uid="ab018"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab018_40kraw.mp3" data-arm="40kraw" data-uid="ab018"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -501,6 +580,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab019_elx.mp3" data-arm="elx" data-uid="ab019"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab019_40kraw.mp3" data-arm="40kraw" data-uid="ab019"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab019_40k.mp3" data-arm="40k" data-uid="ab019"></audio>
 </div></div>
@@ -519,6 +602,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab020_elx.mp3" data-arm="elx" data-uid="ab020"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab020_40kraw.mp3" data-arm="40kraw" data-uid="ab020"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -541,6 +628,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab021_elx.mp3" data-arm="elx" data-uid="ab021"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab021_40kraw.mp3" data-arm="40kraw" data-uid="ab021"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab021_40k.mp3" data-arm="40k" data-uid="ab021"></audio>
 </div></div>
@@ -559,6 +650,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab022_elx.mp3" data-arm="elx" data-uid="ab022"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab022_40kraw.mp3" data-arm="40kraw" data-uid="ab022"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -581,6 +676,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab023_elx.mp3" data-arm="elx" data-uid="ab023"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab023_40kraw.mp3" data-arm="40kraw" data-uid="ab023"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab023_40k.mp3" data-arm="40k" data-uid="ab023"></audio>
 </div></div>
@@ -599,6 +698,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab024_elx.mp3" data-arm="elx" data-uid="ab024"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab024_40kraw.mp3" data-arm="40kraw" data-uid="ab024"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -621,6 +724,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab025_elx.mp3" data-arm="elx" data-uid="ab025"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab025_40kraw.mp3" data-arm="40kraw" data-uid="ab025"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab025_40k.mp3" data-arm="40k" data-uid="ab025"></audio>
 </div></div>
@@ -639,6 +746,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab026_elx.mp3" data-arm="elx" data-uid="ab026"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab026_40kraw.mp3" data-arm="40kraw" data-uid="ab026"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -661,6 +772,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab027_elx.mp3" data-arm="elx" data-uid="ab027"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab027_40kraw.mp3" data-arm="40kraw" data-uid="ab027"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab027_40k.mp3" data-arm="40k" data-uid="ab027"></audio>
 </div></div>
@@ -679,6 +794,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab028_elx.mp3" data-arm="elx" data-uid="ab028"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab028_40kraw.mp3" data-arm="40kraw" data-uid="ab028"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -701,6 +820,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab029_elx.mp3" data-arm="elx" data-uid="ab029"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab029_40kraw.mp3" data-arm="40kraw" data-uid="ab029"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab029_40k.mp3" data-arm="40k" data-uid="ab029"></audio>
 </div></div>
@@ -719,6 +842,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab030_elx.mp3" data-arm="elx" data-uid="ab030"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab030_40kraw.mp3" data-arm="40kraw" data-uid="ab030"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -741,6 +868,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab031_elx.mp3" data-arm="elx" data-uid="ab031"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab031_40kraw.mp3" data-arm="40kraw" data-uid="ab031"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab031_40k.mp3" data-arm="40k" data-uid="ab031"></audio>
 </div></div>
@@ -759,6 +890,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab032_elx.mp3" data-arm="elx" data-uid="ab032"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab032_40kraw.mp3" data-arm="40kraw" data-uid="ab032"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -781,6 +916,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab033_elx.mp3" data-arm="elx" data-uid="ab033"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab033_40kraw.mp3" data-arm="40kraw" data-uid="ab033"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab033_40k.mp3" data-arm="40k" data-uid="ab033"></audio>
 </div></div>
@@ -799,6 +938,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab034_elx.mp3" data-arm="elx" data-uid="ab034"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab034_40kraw.mp3" data-arm="40kraw" data-uid="ab034"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -821,6 +964,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab035_elx.mp3" data-arm="elx" data-uid="ab035"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab035_40kraw.mp3" data-arm="40kraw" data-uid="ab035"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab035_40k.mp3" data-arm="40k" data-uid="ab035"></audio>
 </div></div>
@@ -839,6 +986,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab036_elx.mp3" data-arm="elx" data-uid="ab036"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab036_40kraw.mp3" data-arm="40kraw" data-uid="ab036"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -861,6 +1012,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab037_elx.mp3" data-arm="elx" data-uid="ab037"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab037_40kraw.mp3" data-arm="40kraw" data-uid="ab037"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab037_40k.mp3" data-arm="40k" data-uid="ab037"></audio>
 </div></div>
@@ -879,6 +1034,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-elx">
   <div class="arm-label">ElevenLabs v3 (Rachel)</div>
   <audio controls preload="none" src="audio_ab/ab038_elx.mp3" data-arm="elx" data-uid="ab038"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab038_40kraw.mp3" data-arm="40kraw" data-uid="ab038"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -901,6 +1060,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_ab/ab039_elx.mp3" data-arm="elx" data-uid="ab039"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_ab/ab039_40kraw.mp3" data-arm="40kraw" data-uid="ab039"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_ab/ab039_40k.mp3" data-arm="40k" data-uid="ab039"></audio>
 </div></div>
@@ -909,11 +1072,12 @@ footer a{color:var(--dim)}
 <section class="set" id="set-pt">
 <div class="sethead">
   <h2>pt45 &amp;mdash; preference-training prompts</h2>
-  <p class="blurb">45 prompts (9 registers &times; 5), never used to select the checkpoint. Kokoro-82M renders use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours uses one female reference speaker with register-matched prose captions (the 40k arm through the 20-axis voice-register caption pipeline), as in ab40. Same text on both sides, verified by canonical ASR: the 40k arm's mean WER is <b>0.85%</b> (7 errors in 582 words &mdash; mostly number normalization; the only true speech-level substitution is pt039 &ldquo;asked&rarr;ask&rdquo;, itself a tail-articulation case).</p>
+  <p class="blurb">45 prompts (9 registers &times; 5), never used to select the checkpoint. Kokoro-82M renders use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours uses one female reference speaker with register-matched prose captions (the 40k arms through the 20-axis voice-register caption pipeline), as in ab40. Same text on both sides, verified by canonical ASR: the 40k arm's mean WER is <b>0.85%</b> (7 errors in 582 words &mdash; mostly number normalization; the only true speech-level substitution is pt039 &ldquo;asked&rarr;ask&rdquo;, itself a tail-articulation case).</p>
   <div class="scorechips"><div class="scorechip ours"><span class="sc-name">S7.11-ttsds2-v3</span><span class="sc-num">PROSODY 83.22</span><span class="sc-sub">OVERALL 79.55 &middot; UTMOS 3.767 &middot; f0 13.05 st</span></div>
 <div class="scorechip"><span class="sc-name">Kokoro-82M af_heart</span><span class="sc-num">PROSODY 78.33</span><span class="sc-sub">OVERALL 73.64 &middot; UTMOS 4.498 &middot; f0 9.25 st</span></div>
+<div class="scorechip ours"><span class="sc-name">S7.11-dense67-40k (20-axis caps, unpadded)</span><span class="sc-num">PROSODY 83.60</span><span class="sc-sub">OVERALL 79.10 &middot; UTMOS 3.869 &middot; f0 15.78 st</span></div>
 <div class="scorechip ours"><span class="sc-name">S7.11-dense67-40k (20-axis caps, padded)</span><span class="sc-num">PROSODY 79.60</span><span class="sc-sub">OVERALL 77.52 &middot; UTMOS 3.842 &middot; f0 19.92 st</span></div></div>
-  <p class="scorenote">Same instrument and reference, scored on the padded audio (S7.11c +500&nbsp;ms tail room). PROSODY 79.60 vs 83.60 on the pre-pad renders (same pad penalty as ab40; pre-pad, the arm led Kokoro by +5.27 and v3 by +0.38). Kokoro's per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody for all nine. UTMOS again favors the external systems.</p>
+  <p class="scorenote">Same instrument and reference, each arm scored on the exact audio this page plays. The <b>unpadded</b> 40k chip (final_pad_ms=0): PROSODY 83.60 &mdash; above Kokoro by +5.27 and v3 by +0.38. The <b>padded</b> chip (S7.11c +500&nbsp;ms tail room): PROSODY 79.60, the same pad penalty as ab40. Kokoro's per-register f0 range sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody for all nine. UTMOS again favors the external systems.</p>
 </div>
 <div class="rows"><section class="row" id="pt000">
   <div class="rowhead">
@@ -929,6 +1093,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt000_kok.mp3" data-arm="kok" data-uid="pt000"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt000_40kraw.mp3" data-arm="40kraw" data-uid="pt000"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -951,6 +1119,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt001_kok.mp3" data-arm="kok" data-uid="pt001"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt001_40kraw.mp3" data-arm="40kraw" data-uid="pt001"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt001_40k.mp3" data-arm="40k" data-uid="pt001"></audio>
 </div></div>
@@ -969,6 +1141,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt002_kok.mp3" data-arm="kok" data-uid="pt002"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt002_40kraw.mp3" data-arm="40kraw" data-uid="pt002"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -991,6 +1167,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt003_kok.mp3" data-arm="kok" data-uid="pt003"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt003_40kraw.mp3" data-arm="40kraw" data-uid="pt003"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt003_40k.mp3" data-arm="40k" data-uid="pt003"></audio>
 </div></div>
@@ -1009,6 +1189,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt004_kok.mp3" data-arm="kok" data-uid="pt004"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt004_40kraw.mp3" data-arm="40kraw" data-uid="pt004"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1031,6 +1215,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt005_kok.mp3" data-arm="kok" data-uid="pt005"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt005_40kraw.mp3" data-arm="40kraw" data-uid="pt005"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt005_40k.mp3" data-arm="40k" data-uid="pt005"></audio>
 </div></div>
@@ -1049,6 +1237,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt006_kok.mp3" data-arm="kok" data-uid="pt006"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt006_40kraw.mp3" data-arm="40kraw" data-uid="pt006"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1071,6 +1263,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt007_kok.mp3" data-arm="kok" data-uid="pt007"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt007_40kraw.mp3" data-arm="40kraw" data-uid="pt007"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt007_40k.mp3" data-arm="40k" data-uid="pt007"></audio>
 </div></div>
@@ -1089,6 +1285,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt008_kok.mp3" data-arm="kok" data-uid="pt008"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt008_40kraw.mp3" data-arm="40kraw" data-uid="pt008"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1111,6 +1311,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt009_kok.mp3" data-arm="kok" data-uid="pt009"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt009_40kraw.mp3" data-arm="40kraw" data-uid="pt009"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt009_40k.mp3" data-arm="40k" data-uid="pt009"></audio>
 </div></div>
@@ -1129,6 +1333,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt010_kok.mp3" data-arm="kok" data-uid="pt010"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt010_40kraw.mp3" data-arm="40kraw" data-uid="pt010"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1151,6 +1359,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt011_kok.mp3" data-arm="kok" data-uid="pt011"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt011_40kraw.mp3" data-arm="40kraw" data-uid="pt011"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt011_40k.mp3" data-arm="40k" data-uid="pt011"></audio>
 </div></div>
@@ -1169,6 +1381,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt012_kok.mp3" data-arm="kok" data-uid="pt012"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt012_40kraw.mp3" data-arm="40kraw" data-uid="pt012"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1191,6 +1407,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt013_kok.mp3" data-arm="kok" data-uid="pt013"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt013_40kraw.mp3" data-arm="40kraw" data-uid="pt013"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt013_40k.mp3" data-arm="40k" data-uid="pt013"></audio>
 </div></div>
@@ -1209,6 +1429,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt014_kok.mp3" data-arm="kok" data-uid="pt014"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt014_40kraw.mp3" data-arm="40kraw" data-uid="pt014"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1231,6 +1455,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt015_kok.mp3" data-arm="kok" data-uid="pt015"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt015_40kraw.mp3" data-arm="40kraw" data-uid="pt015"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt015_40k.mp3" data-arm="40k" data-uid="pt015"></audio>
 </div></div>
@@ -1249,6 +1477,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt016_kok.mp3" data-arm="kok" data-uid="pt016"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt016_40kraw.mp3" data-arm="40kraw" data-uid="pt016"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1271,6 +1503,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt017_kok.mp3" data-arm="kok" data-uid="pt017"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt017_40kraw.mp3" data-arm="40kraw" data-uid="pt017"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt017_40k.mp3" data-arm="40k" data-uid="pt017"></audio>
 </div></div>
@@ -1289,6 +1525,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt018_kok.mp3" data-arm="kok" data-uid="pt018"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt018_40kraw.mp3" data-arm="40kraw" data-uid="pt018"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1311,6 +1551,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt019_kok.mp3" data-arm="kok" data-uid="pt019"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt019_40kraw.mp3" data-arm="40kraw" data-uid="pt019"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt019_40k.mp3" data-arm="40k" data-uid="pt019"></audio>
 </div></div>
@@ -1329,6 +1573,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt020_kok.mp3" data-arm="kok" data-uid="pt020"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt020_40kraw.mp3" data-arm="40kraw" data-uid="pt020"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1351,6 +1599,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt021_kok.mp3" data-arm="kok" data-uid="pt021"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt021_40kraw.mp3" data-arm="40kraw" data-uid="pt021"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt021_40k.mp3" data-arm="40k" data-uid="pt021"></audio>
 </div></div>
@@ -1369,6 +1621,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt022_kok.mp3" data-arm="kok" data-uid="pt022"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt022_40kraw.mp3" data-arm="40kraw" data-uid="pt022"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1391,6 +1647,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt023_kok.mp3" data-arm="kok" data-uid="pt023"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt023_40kraw.mp3" data-arm="40kraw" data-uid="pt023"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt023_40k.mp3" data-arm="40k" data-uid="pt023"></audio>
 </div></div>
@@ -1409,6 +1669,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt024_kok.mp3" data-arm="kok" data-uid="pt024"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt024_40kraw.mp3" data-arm="40kraw" data-uid="pt024"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1431,6 +1695,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt025_kok.mp3" data-arm="kok" data-uid="pt025"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt025_40kraw.mp3" data-arm="40kraw" data-uid="pt025"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt025_40k.mp3" data-arm="40k" data-uid="pt025"></audio>
 </div></div>
@@ -1449,6 +1717,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt026_kok.mp3" data-arm="kok" data-uid="pt026"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt026_40kraw.mp3" data-arm="40kraw" data-uid="pt026"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1471,6 +1743,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt027_kok.mp3" data-arm="kok" data-uid="pt027"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt027_40kraw.mp3" data-arm="40kraw" data-uid="pt027"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt027_40k.mp3" data-arm="40k" data-uid="pt027"></audio>
 </div></div>
@@ -1489,6 +1765,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt028_kok.mp3" data-arm="kok" data-uid="pt028"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt028_40kraw.mp3" data-arm="40kraw" data-uid="pt028"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1511,6 +1791,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt029_kok.mp3" data-arm="kok" data-uid="pt029"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt029_40kraw.mp3" data-arm="40kraw" data-uid="pt029"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt029_40k.mp3" data-arm="40k" data-uid="pt029"></audio>
 </div></div>
@@ -1529,6 +1813,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt030_kok.mp3" data-arm="kok" data-uid="pt030"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt030_40kraw.mp3" data-arm="40kraw" data-uid="pt030"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1551,6 +1839,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt031_kok.mp3" data-arm="kok" data-uid="pt031"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt031_40kraw.mp3" data-arm="40kraw" data-uid="pt031"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt031_40k.mp3" data-arm="40k" data-uid="pt031"></audio>
 </div></div>
@@ -1569,6 +1861,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt032_kok.mp3" data-arm="kok" data-uid="pt032"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt032_40kraw.mp3" data-arm="40kraw" data-uid="pt032"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1591,6 +1887,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt033_kok.mp3" data-arm="kok" data-uid="pt033"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt033_40kraw.mp3" data-arm="40kraw" data-uid="pt033"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt033_40k.mp3" data-arm="40k" data-uid="pt033"></audio>
 </div></div>
@@ -1609,6 +1909,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt034_kok.mp3" data-arm="kok" data-uid="pt034"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt034_40kraw.mp3" data-arm="40kraw" data-uid="pt034"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1631,6 +1935,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt035_kok.mp3" data-arm="kok" data-uid="pt035"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt035_40kraw.mp3" data-arm="40kraw" data-uid="pt035"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt035_40k.mp3" data-arm="40k" data-uid="pt035"></audio>
 </div></div>
@@ -1649,6 +1957,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt036_kok.mp3" data-arm="kok" data-uid="pt036"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt036_40kraw.mp3" data-arm="40kraw" data-uid="pt036"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1671,6 +1983,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt037_kok.mp3" data-arm="kok" data-uid="pt037"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt037_40kraw.mp3" data-arm="40kraw" data-uid="pt037"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt037_40k.mp3" data-arm="40k" data-uid="pt037"></audio>
 </div></div>
@@ -1689,6 +2005,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt038_kok.mp3" data-arm="kok" data-uid="pt038"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt038_40kraw.mp3" data-arm="40kraw" data-uid="pt038"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1711,6 +2031,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt039_kok.mp3" data-arm="kok" data-uid="pt039"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt039_40kraw.mp3" data-arm="40kraw" data-uid="pt039"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt039_40k.mp3" data-arm="40k" data-uid="pt039"></audio>
 </div></div>
@@ -1729,6 +2053,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt040_kok.mp3" data-arm="kok" data-uid="pt040"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt040_40kraw.mp3" data-arm="40kraw" data-uid="pt040"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1751,6 +2079,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt041_kok.mp3" data-arm="kok" data-uid="pt041"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt041_40kraw.mp3" data-arm="40kraw" data-uid="pt041"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt041_40k.mp3" data-arm="40k" data-uid="pt041"></audio>
 </div></div>
@@ -1769,6 +2101,10 @@ footer a{color:var(--dim)}
 <div class="arm arm-kok">
   <div class="arm-label">Kokoro-82M af_heart</div>
   <audio controls preload="none" src="audio_pt/pt042_kok.mp3" data-arm="kok" data-uid="pt042"></audio>
+</div>
+<div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt042_40kraw.mp3" data-arm="40kraw" data-uid="pt042"></audio>
 </div>
 <div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
@@ -1791,6 +2127,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt043_kok.mp3" data-arm="kok" data-uid="pt043"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt043_40kraw.mp3" data-arm="40kraw" data-uid="pt043"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt043_40k.mp3" data-arm="40k" data-uid="pt043"></audio>
 </div></div>
@@ -1811,6 +2151,10 @@ footer a{color:var(--dim)}
   <audio controls preload="none" src="audio_pt/pt044_kok.mp3" data-arm="kok" data-uid="pt044"></audio>
 </div>
 <div class="arm arm-ours">
+  <div class="arm-label">S7.11-dense67-40k (20-axis caps, unpadded)</div>
+  <audio controls preload="none" src="audio_pt/pt044_40kraw.mp3" data-arm="40kraw" data-uid="pt044"></audio>
+</div>
+<div class="arm arm-ours">
   <div class="arm-label">S7.11-dense67-40k (20-axis caps, padded)</div>
   <audio controls preload="none" src="audio_pt/pt044_40k.mp3" data-arm="40k" data-uid="pt044"></audio>
 </div></div>
@@ -1829,7 +2173,11 @@ footer a{color:var(--dim)}
   <span style="font-family:var(--mono)">voice_design_to_prose.design_to_prose</span>
   (design_register.v1) into the same prose grammar at render time &mdash; the caption the model
   heard is recorded in the arm manifest. The v3 arm keeps its original 9-register prose
-  captions, so the page shows both caption regimes on their own checkpoints.)
+  captions, so the page shows both caption regimes on their own checkpoints. The 40k arm
+  appears twice &mdash; <b>unpadded</b> (raw renders, <span style="font-family:var(--mono)">final_pad_ms=0</span>,
+  the byte-different takes behind the 83.80/83.60 chips) and <b>padded</b> (S7.11c
+  +500&nbsp;ms trailing-decay pad, the same takes plus renderer-added tail room) &mdash;
+  so the pad's PROSODY cost and its audible benefit can be compared take by take.)
   &middot; <b>ElevenLabs v3</b> (voice Rachel)
   &middot; <b>Kokoro-82M</b> (voice af_heart)
   Scoring: official ttsds 2.1.3 BenchmarkSuite, reference stratum_ref200; full numbers in
@@ -1888,7 +2236,8 @@ footer a{color:var(--dim)}
   &ldquo;ask&rdquo; ending (whisper-only artifact &mdash; the CTC arbiter hears
   &ldquo;ASKED&rdquo;), and single-syllable final words match v3's duration
   distribution exactly (p50 0.34&nbsp;s both arms).</p>
-  <p><b>The dense67-40k read (instrument)</b>: on the pre-pad renders the 40k checkpoint took
+  <p><b>The dense67-40k read (instrument)</b>: on the <b>unpadded</b> renders (final_pad_ms=0,
+  the 40kraw arm above) the 40k checkpoint took
   PROSODY on both independent sets &mdash; ab40 83.80 (vs ElevenLabs 80.76, +3.04; vs v3
   79.83, +3.97) and pt45 83.60 (vs Kokoro 78.33, +5.27; vs v3 83.22, +0.38), with
   HuBERT-token SR 91.85/91.05 (v3: 84.56/90.94). The S7.11c pad costs the suite's

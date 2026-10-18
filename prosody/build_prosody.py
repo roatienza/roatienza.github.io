@@ -21,14 +21,17 @@ SCORES = {
     "ab": {
         "v3":    {"prosody": 79.83, "overall": 78.28, "utmos": 3.689, "f0st": 14.29},
         "elx":   {"prosody": 80.76, "overall": 74.16, "utmos": 4.310, "f0st": 15.79},
-        # 40k chips = the PADDED renders (the audio on this page), S7.11c
-        # trailing-decay pad +500 ms; pre-pad instrument numbers in the footnote.
+        # 40k chips = the PADDED renders (audio_ab/{id}_40k.mp3), S7.11c
+        # trailing-decay pad +500 ms; 40kraw = the byte-different UNPADDED
+        # takes (audio_ab/{id}_40kraw.mp3), final_pad_ms=0.
         "40k":   {"prosody": 80.67, "overall": 76.92, "utmos": 3.668, "f0st": 17.96},
+        "40kraw": {"prosody": 83.80, "overall": 78.25, "utmos": 3.688, "f0st": 15.88},
     },
     "pt": {
         "v3":    {"prosody": 83.22, "overall": 79.55, "utmos": 3.767, "f0st": 13.05},
         "kok":   {"prosody": 78.33, "overall": 73.64, "utmos": 4.498, "f0st": 9.25},
         "40k":   {"prosody": 79.60, "overall": 77.52, "utmos": 3.842, "f0st": 19.92},
+        "40kraw": {"prosody": 83.60, "overall": 79.10, "utmos": 3.869, "f0st": 15.78},
     },
 }
 
@@ -36,11 +39,13 @@ ARMS = {
     "ab": [
         ("v3",    "S7.11-ttsds2-v3",              "ours",  "audio_ab/{id}_v3.mp3"),
         ("elx",   "ElevenLabs v3 (Rachel)",       "elx",   "audio_ab/{id}_elx.mp3"),
+        ("40kraw", "S7.11-dense67-40k (20-axis caps, unpadded)", "ours", "audio_ab/{id}_40kraw.mp3"),
         ("40k",   "S7.11-dense67-40k (20-axis caps, padded)", "ours", "audio_ab/{id}_40k.mp3"),
     ],
     "pt": [
         ("v3",    "S7.11-ttsds2-v3",              "ours",  "audio_pt/{id}_v3.mp3"),
         ("kok",   "Kokoro-82M af_heart",          "kok",   "audio_pt/{id}_kok.mp3"),
+        ("40kraw", "S7.11-dense67-40k (20-axis caps, unpadded)", "ours", "audio_pt/{id}_40kraw.mp3"),
         ("40k",   "S7.11-dense67-40k (20-axis caps, padded)", "ours", "audio_pt/{id}_40k.mp3"),
     ],
 }
@@ -105,33 +110,34 @@ ab_sec = build_set(
     "40 prompts never used to select the checkpoint, rendered on the frozen S7.11 serving path "
     "(seed 1000). Speaker-controlled: ElevenLabs v3 uses the fixed voice <em>Rachel</em>; ours "
     "uses one female reference speaker for all 40 takes. Each take is conditioned on a "
-    "register-matched prose caption &mdash; the 40k arm through the 20-axis voice-register "
+    "register-matched prose caption &mdash; the 40k arms through the 20-axis voice-register "
     "caption pipeline (design_register.v1 parsed to prose at render time; the exact prose "
     "strings are tabulated in the footer). Texts are the current canon of the prompt suite. "
     "Same text on both sides, verified by canonical ASR (whisper medium.en): the 40k arm's "
     "mean WER is <b>0.21%</b> (1 error in 500 reference words &mdash; a "
     "&ldquo;twenty&rarr;20&rdquo; normalization, not a speech error).",
-    "Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200, scored on the exact audio this "
-    "page plays (S7.11c trailing-decay pad, +500&nbsp;ms). PROSODY = mean of Pitch, MPM, "
-    "HuBERT-token SR, Allosaurus SR. The pad is audible tail room the suite's "
-    "distribution statistics penalize: PROSODY 80.67 vs 83.80 on the byte-identical "
-    "pre-pad renders (control re-score of the pre-pad audio reproduces 83.80 exactly, so "
-    "the delta is the pad, not noise). By ear the padded endings are the correct ones "
-    "&mdash; the pre-pad arm cut the final syllable's release (ab011 &ldquo;quietly&rdquo; "
-    "read as &ldquo;quiet&rdquo;).")
+    "Official ttsds 2.1.3 BenchmarkSuite vs stratum_ref200, each arm scored on the exact audio "
+    "this page plays. The <b>unpadded</b> 40k chip is the raw render (final_pad_ms=0): PROSODY "
+    "83.80 &mdash; above ElevenLabs (+3.04) and v3 (+3.97). The <b>padded</b> 40k chip is the "
+    "same takes after the S7.11c trailing-decay pad (+500&nbsp;ms): PROSODY 80.67, the "
+    "suite's distribution statistics penalizing the added room tone (a control re-score of "
+    "the byte-identical pre-pad audio reproduces 83.80 exactly, so the delta is the pad, not "
+    "noise). By ear the padded endings are the correct ones &mdash; the unpadded arm cut the "
+    "final syllable's release (ab011 &ldquo;quietly&rdquo; read as &ldquo;quiet&rdquo;).")
 
 pt_sec = build_set(
     "pt", "pt45 &mdash; preference-training prompts",
     "45 prompts (9 registers &times; 5), never used to select the checkpoint. Kokoro-82M renders "
     "use the fixed voice <em>af_heart</em> at 24&nbsp;kHz; ours uses one female reference speaker "
-    "with register-matched prose captions (the 40k arm through the 20-axis voice-register "
+    "with register-matched prose captions (the 40k arms through the 20-axis voice-register "
     "caption pipeline), as in ab40. Same text on both sides, verified by canonical ASR: the "
     "40k arm's mean WER is <b>0.85%</b> (7 errors in 582 words &mdash; mostly number "
     "normalization; the only true speech-level substitution is pt039 "
     "&ldquo;asked&rarr;ask&rdquo;, itself a tail-articulation case).",
-    "Same instrument and reference, scored on the padded audio (S7.11c +500&nbsp;ms tail "
-    "room). PROSODY 79.60 vs 83.60 on the pre-pad renders (same pad penalty as ab40; "
-    "pre-pad, the arm led Kokoro by +5.27 and v3 by +0.38). Kokoro's per-register f0 range "
+    "Same instrument and reference, each arm scored on the exact audio this page plays. The "
+    "<b>unpadded</b> 40k chip (final_pad_ms=0): PROSODY 83.60 &mdash; above Kokoro by +5.27 "
+    "and v3 by +0.38. The <b>padded</b> chip (S7.11c +500&nbsp;ms tail room): PROSODY 79.60, "
+    "the same pad penalty as ab40. Kokoro's per-register f0 range "
     "sits at 8.7&ndash;10.2&nbsp;st in every register &mdash; one prosody for all nine. "
     "UTMOS again favors the external systems.")
 
@@ -195,7 +201,7 @@ nav.tabs a:hover{{color:var(--paper)}}
 .playboth:hover{{border-color:var(--amber);color:var(--amber)}}
 .playboth.on{{border-color:var(--amber);color:var(--ink);background:var(--amber)}}
 .line{{margin:2px 0 10px;color:var(--dim);font-size:14.5px;max-width:78ch}}
-.arms{{display:grid;gap:12px;grid-template-columns:1fr 1fr 1fr}}
+.arms{{display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}}
 .arm audio{{width:100%;height:40px;display:block}}
 .arm-label{{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
   color:var(--faint);margin:0 0 5px}}
@@ -212,18 +218,20 @@ footer .wrap{{padding:24px 24px 54px}}
 footer a{{color:var(--dim)}}
 @media (max-width:700px){{.arms{{grid-template-columns:1fr}}}}
 @media (max-width:900px) and (min-width:701px){{.arms{{grid-template-columns:1fr 1fr}}}}
+@media (min-width:901px) and (max-width:1100px){{.arms{{grid-template-columns:repeat(2,1fr)}}}}
 @media (prefers-reduced-motion:reduce){{*{{transition:none}}}}
 </style></head><body>
 <header class="top"><div class="wrap">
   <h1>PROSODY, <em>by ear.</em></h1>
-  <p class="standfirst">Three arms, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
+  <p class="standfirst">Four arms, official ttsds&nbsp;2.1.3 suite, independent prompt sets.
   Our arms are speaker-controlled: one female reference speaker on our side vs the fixed voice
   Rachel on ElevenLabs&rsquo;s and af_heart on Kokoro&rsquo;s, each take conditioned on a
   register-matched prose caption. The dense67-40k arm is captioned through the 20-axis
   voice-register pipeline (design_register.v1 parsed to prose at render time &mdash; the exact
-  prose strings are tabulated below) and carries the S7.11c trailing-decay pad
-  (+500&nbsp;ms of room tone after the final phoneme, added by the renderer, not the
-  checkpoint).
+  prose strings are tabulated below) and appears twice: <b>unpadded</b> (the raw renders,
+  <span style="font-family:var(--mono)">final_pad_ms=0</span>) and <b>padded</b> (the S7.11c
+  trailing-decay pad, +500&nbsp;ms of room tone after the final phoneme, added by the
+  renderer, not the checkpoint).
   This page plays the same renders side by side.
   Play one take alone for a solo A/B, or &ldquo;play all&rdquo; to hear the row together &mdash;
   the metric is on the chips, the verdict is yours. One take per prompt, nothing hand-picked.</p>
@@ -248,7 +256,11 @@ footer a{{color:var(--dim)}}
   <span style="font-family:var(--mono)">voice_design_to_prose.design_to_prose</span>
   (design_register.v1) into the same prose grammar at render time &mdash; the caption the model
   heard is recorded in the arm manifest. The v3 arm keeps its original 9-register prose
-  captions, so the page shows both caption regimes on their own checkpoints.)
+  captions, so the page shows both caption regimes on their own checkpoints. The 40k arm
+  appears twice &mdash; <b>unpadded</b> (raw renders, <span style="font-family:var(--mono)">final_pad_ms=0</span>,
+  the byte-different takes behind the 83.80/83.60 chips) and <b>padded</b> (S7.11c
+  +500&nbsp;ms trailing-decay pad, the same takes plus renderer-added tail room) &mdash;
+  so the pad's PROSODY cost and its audible benefit can be compared take by take.)
   &middot; <b>ElevenLabs v3</b> (voice Rachel)
   &middot; <b>Kokoro-82M</b> (voice af_heart)
   Scoring: official ttsds 2.1.3 BenchmarkSuite, reference stratum_ref200; full numbers in
@@ -307,7 +319,8 @@ footer a{{color:var(--dim)}}
   &ldquo;ask&rdquo; ending (whisper-only artifact &mdash; the CTC arbiter hears
   &ldquo;ASKED&rdquo;), and single-syllable final words match v3's duration
   distribution exactly (p50 0.34&nbsp;s both arms).</p>
-  <p><b>The dense67-40k read (instrument)</b>: on the pre-pad renders the 40k checkpoint took
+  <p><b>The dense67-40k read (instrument)</b>: on the <b>unpadded</b> renders (final_pad_ms=0,
+  the 40kraw arm above) the 40k checkpoint took
   PROSODY on both independent sets &mdash; ab40 83.80 (vs ElevenLabs 80.76, +3.04; vs v3
   79.83, +3.97) and pt45 83.60 (vs Kokoro 78.33, +5.27; vs v3 83.22, +0.38), with
   HuBERT-token SR 91.85/91.05 (v3: 84.56/90.94). The S7.11c pad costs the suite's
