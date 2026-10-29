@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homograph pronunciation &mdash; what the fix helps, and what it breaks</title>
+<style>
+:root{--ink:#16181d;--mut:#6b7280;--line:#e3e6ea;--bg:#fff;--soft:#f7f8fa;
+      --help:#0f7b3f;--hurt:#b42318;--noop:#8a6d00;--part:#7a4bd0}
+*{box-sizing:border-box}
+body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+     color:var(--ink);background:var(--bg);max-width:1000px;margin:0 auto;padding:36px 20px 80px}
+h1{font-size:1.85rem;line-height:1.2;margin:0 0 .35em;letter-spacing:-.02em}
+h2{font-size:1.15rem;margin:2.2em 0 .5em;letter-spacing:-.01em}
+h3{font-size:1rem;margin:0 0 .3em}
+p.sub{color:var(--mut);margin:0 0 1.4em;font-size:1.02rem}
+p{margin:.55em 0}
+a{color:#1a56db}
+code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:.88em;
+     border:1px solid var(--line)}
+.muted{color:var(--mut)}
+.lede{border-left:3px solid var(--ink);padding:2px 0 2px 16px;margin:1.4em 0;
+      font-size:1.02rem}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:1.2em 0}
+.tile{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tile .n{font-size:1.6rem;font-weight:650;line-height:1.1;letter-spacing:-.02em}
+.tile .k{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.tile.help .n{color:var(--help)} .tile.hurt .n{color:var(--hurt)}
+.tile.noop .n{color:var(--noop)}
+.item{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;
+      background:#fff}
+.item.hurt{border-color:#f3c6c1;background:#fffafa}
+.item.helped{border-color:#c7e7d4;background:#fafffb}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.word{font-weight:650}
+.tag{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;
+     border-radius:99px;border:1px solid;white-space:nowrap}
+.tag.helped{color:var(--help);border-color:#b7dfc8;background:#eefaf2}
+.tag.hurt{color:var(--hurt);border-color:#f3c6c1;background:#fdeeed}
+.tag.unchanged,.tag.both{color:var(--noop);border-color:#eadfae;background:#fdf8e6}
+.tag.failed,.tag.partial{color:var(--part);border-color:#d9cbf2;background:#f5f0fe}
+.tag.unscored{color:var(--mut);border-color:var(--line);background:var(--soft)}
+.said{font-size:.95rem;margin:.5em 0}
+.said b{font-weight:600}
+.said s{color:#b42318;text-decoration-thickness:1px}
+.said em{color:#0f7b3f;font-style:normal;font-weight:600}
+.arms{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:.7em 0 .2em}
+@media(max-width:640px){.arms{grid-template-columns:1fr}}
+.arm{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:var(--soft)}
+.arm .lab{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);
+          margin-bottom:6px}
+.arm audio{width:100%;height:34px}
+.ipa{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}
+.ipa.exact{color:var(--help);font-weight:600}
+.ipa.near{color:var(--part)}
+.ipa.wrong{color:var(--hurt);font-weight:600}
+.gloss{color:var(--mut);font-size:.86em;margin-left:6px}
+.gloss:before{content:"\201C"} .gloss:after{content:"\201D"}
+.ref{font-size:.86rem;color:var(--mut);margin-top:.5em}
+.ref audio{height:28px;vertical-align:middle;width:190px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:1em 0}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+th{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);
+   font-weight:600}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.warn{background:#fffafa;border:1px solid #f3c6c1;border-radius:10px;padding:14px 16px;margin:1.2em 0}
+.note{background:var(--soft);border:1px solid var(--line);border-radius:10px;
+      padding:14px 16px;margin:1.2em 0;font-size:.95rem}
+footer{margin-top:3em;padding-top:1.2em;border-top:1px solid var(--line);color:var(--mut);
+       font-size:.86rem}
+</style>
+</head>
+<body>
+
+<h1>Homograph pronunciation: what the fix helps, and what it breaks</h1>
+<p class="sub">Paired listening demo &middot; 31 sentences &middot; same checkpoint, same steps,
+same seed &middot; the only difference between the two clips is the spelling of one word</p>
+
+<div class="lede">
+<p>English homographs are spelled the same and said differently: <i>a lead pipe</i> vs
+<i>lead the team</i>, <i>a bass</i> vs <i>play bass</i>. A text-to-speech model sees only letters,
+so it has to guess. The fix is to rewrite the word as a spelling that can only be said one way
+&mdash; <code>lead</code>&rarr;<code>led</code>, <code>bow</code>&rarr;<code>bough</code> &mdash;
+chosen by looking for context words nearby.</p>
+<p>The rewrite is a guess twice over: first that the context words were found, second that the
+replacement spelling actually makes the model say the intended sounds. Both are measurable, and
+on this page the second one fails often enough that the feature is not shipped.</p>
+</div>
+
+<div class="tiles">
+  <div class="tile"><div class="n">31</div><div class="k">sentences</div></div>
+  <div class="tile"><div class="n">18</div><div class="k">rewritten by the rule</div></div>
+  <div class="tile help"><div class="n">6</div><div class="k">helped</div></div>
+  <div class="tile hurt"><div class="n">1</div><div class="k">hurt</div></div>
+  <div class="tile noop"><div class="n">7</div>
+    <div class="k">no effect</div></div>
+  <div class="tile noop"><div class="n">13</div>
+    <div class="k">rule didn't fire</div></div>
+  <div class="tile"><div class="n">4</div>
+    <div class="k">still wrong</div></div>
+</div>
+
+<div class="warn">
+<h3>The rule breaks 1 sentences the model already got right</h3>
+<p>This is the finding a one-armed demo cannot show, because a success and a failure look
+identical from one side: both are just audio. Playing the plain clip first shows the model was
+already correct, and the fixed clip then shows it being made wrong.</p>
+<p>The worst case is <code>dove</code>: plain text <i>"she dove into the pool"</i> already
+produced the intended <span class="ipa exact">do&#650;v</span>. The rule rewrote it to
+<code>dohv</code> and the model said <span class="ipa wrong">d&#593;v</span> &mdash; a
+pronunciation that is not a word. The replacement spelling never appears in English, so the model
+has no reason to map it to the sounds the table assumed.</p>
+</div>
+
+<h2>Every sentence, worst first</h2>
+<p class="muted">Phones are the recogniser's decode of the model's audio at the target word, not
+the table's expectation. Green = the needed reading exactly; red = a different reading;
+purple = nearer the needed one but not it. The quoted gloss is a rough English respelling to
+sound it out.</p>
+
+<div class="item hurt">
+  <div class="head">
+    <div><span class="word">dove</span> &middot; reading B
+      <span class="muted">&middot; plain was already right</span></div>
+    <span class="tag hurt">hurt</span>
+  </div>
+  <p class="said">Plain: she dove into the pool &nbsp;&rarr;&nbsp; Fix: she <em>dohv</em> into the pool</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/dove-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">doʊv</span><span class="gloss">dohv</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/dove-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">dɑv</span><span class="gloss">dahv</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>dohv</code>): <audio controls preload="none" src="audio/dove-b_ref.mp3"></audio></div>
+</div>
+<div class="item failed">
+  <div class="head">
+    <div><span class="word">does</span> &middot; reading A
+      <span class="muted">&middot; neither exact</span></div>
+    <span class="tag failed">failed</span>
+  </div>
+  <p class="said">Plain: two does grazed &nbsp;&rarr;&nbsp; Fix: two <em>dohz</em> grazed</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/does-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">dʌz</span><span class="gloss">duz</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/does-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">dɑz</span><span class="gloss">dahz</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>dohz</code>): <audio controls preload="none" src="audio/does-a_ref.mp3"></audio></div>
+</div>
+<div class="item failed">
+  <div class="head">
+    <div><span class="word">sow</span> &middot; reading A
+      <span class="muted">&middot; neither exact</span></div>
+    <span class="tag failed">failed</span>
+  </div>
+  <p class="said">Plain: the sow nursed her piglets &nbsp;&rarr;&nbsp; Fix: the <em>sau</em> nursed her piglets</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/sow-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">soʊ</span><span class="gloss">soh</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/sow-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">sɑ</span><span class="gloss">sah</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>sau</code>): <audio controls preload="none" src="audio/sow-a_ref.mp3"></audio></div>
+</div>
+<div class="item failed">
+  <div class="head">
+    <div><span class="word">wind</span> &middot; reading B
+      <span class="muted">&middot; neither exact</span></div>
+    <span class="tag failed">failed</span>
+  </div>
+  <p class="said">Plain: wind the clock &nbsp;&rarr;&nbsp; Fix: <em>wined</em> the clock</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/wind-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa near">waɪn</span><span class="gloss">weyen</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/wind-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa near">waɪn</span><span class="gloss">weyen</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>wined</code>): <audio controls preload="none" src="audio/wind-b_ref.mp3"></audio></div>
+</div>
+<div class="item partial">
+  <div class="head">
+    <div><span class="word">sewer</span> &middot; reading B
+      <span class="muted">&middot; closer, not exact</span></div>
+    <span class="tag partial">partial</span>
+  </div>
+  <p class="said">Plain: a skilled sewer &nbsp;&rarr;&nbsp; Fix: a skilled <em>sower</em></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/sewer-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">suə</span><span class="gloss">soouh</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/sewer-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa near">saʊə</span><span class="gloss">sowuh</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>sower</code>): <audio controls preload="none" src="audio/sewer-b_ref.mp3"></audio></div>
+</div>
+<div class="item helped">
+  <div class="head">
+    <div><span class="word">lead</span> &middot; reading A
+      <span class="muted">&middot; fix is right</span></div>
+    <span class="tag helped">helped</span>
+  </div>
+  <p class="said">Plain: it is a lead pipe &nbsp;&rarr;&nbsp; Fix: it is a <em>led</em> pipe</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/lead-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">lid</span><span class="gloss">leed</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/lead-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">lɛd</span><span class="gloss">led</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>led</code>): <audio controls preload="none" src="audio/lead-a_ref.mp3"></audio></div>
+</div>
+<div class="item helped">
+  <div class="head">
+    <div><span class="word">lead</span> &middot; reading A
+      <span class="muted">&middot; fix is right</span></div>
+    <span class="tag helped">helped</span>
+  </div>
+  <p class="said">Plain: a lead pipe is on the shelf and they lead the team &nbsp;&rarr;&nbsp; Fix: a <em>led</em> pipe is on the shelf and they <em>leed</em> the team</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/bleed-lead-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">lid</span><span class="gloss">leed</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/bleed-lead-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">lɛd</span><span class="gloss">led</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>led</code>): <audio controls preload="none" src="audio/bleed-lead-a_ref.mp3"></audio></div>
+</div>
+<div class="item helped">
+  <div class="head">
+    <div><span class="word">minute</span> &middot; reading B
+      <span class="muted">&middot; fix is right</span></div>
+    <span class="tag helped">helped</span>
+  </div>
+  <p class="said">Plain: a minute detail &nbsp;&rarr;&nbsp; Fix: a <em>mynoot</em> detail</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/minute-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">mɪnɪt</span><span class="gloss">minit</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/minute-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">maɪnut</span><span class="gloss">meyenoot</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>mynoot</code>): <audio controls preload="none" src="audio/minute-b_ref.mp3"></audio></div>
+</div>
+<div class="item helped">
+  <div class="head">
+    <div><span class="word">read</span> &middot; reading B
+      <span class="muted">&middot; fix is right</span></div>
+    <span class="tag helped">helped</span>
+  </div>
+  <p class="said">Plain: i read nightly &nbsp;&rarr;&nbsp; Fix: i <em>reed</em> nightly</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/read-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">ɹɛd</span><span class="gloss">red</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/read-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">ɹid</span><span class="gloss">reed</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>reed</code>): <audio controls preload="none" src="audio/read-b_ref.mp3"></audio></div>
+</div>
+<div class="item helped">
+  <div class="head">
+    <div><span class="word">row</span> &middot; reading B
+      <span class="muted">&middot; fix is right</span></div>
+    <span class="tag helped">helped</span>
+  </div>
+  <p class="said">Plain: a noisy row &nbsp;&rarr;&nbsp; Fix: a noisy <em>rhow</em></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/row-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">ɹoʊ</span><span class="gloss">roh</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/row-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">ɹaʊ</span><span class="gloss">row</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>rhow</code>): <audio controls preload="none" src="audio/row-b_ref.mp3"></audio></div>
+</div>
+<div class="item helped">
+  <div class="head">
+    <div><span class="word">wound</span> &middot; reading B
+      <span class="muted">&middot; fix is right</span></div>
+    <span class="tag helped">helped</span>
+  </div>
+  <p class="said">Plain: wound the watch &nbsp;&rarr;&nbsp; Fix: <em>wownd</em> the watch</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/wound-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa near">waʊn</span><span class="gloss">wown</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/wound-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">waʊnd</span><span class="gloss">wownd</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>wownd</code>): <audio controls preload="none" src="audio/wound-b_ref.mp3"></audio></div>
+</div>
+<div class="item both">
+  <div class="head">
+    <div><span class="word">bass</span> &middot; reading B
+      <span class="muted">&middot; both right</span></div>
+    <span class="tag both">both</span>
+  </div>
+  <p class="said">Plain: she plays bass in the band &nbsp;&rarr;&nbsp; Fix: she plays <em>base</em> in the band</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/bass-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">beɪs</span><span class="gloss">bays</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/bass-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">beɪs</span><span class="gloss">bays</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>base</code>): <audio controls preload="none" src="audio/bass-b_ref.mp3"></audio></div>
+</div>
+<div class="item both">
+  <div class="head">
+    <div><span class="word">bass</span> &middot; reading A
+      <span class="muted">&middot; both right</span></div>
+    <span class="tag both">both</span>
+  </div>
+  <p class="said">Plain: he caught a bass and she plays bass in the band &nbsp;&rarr;&nbsp; Fix: he caught a bass and she plays <em>base</em> in the band</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/bleed-bass-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">beɪs</span><span class="gloss">bays</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/bleed-bass-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">beɪs</span><span class="gloss">bays</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>basse</code>): <audio controls preload="none" src="audio/bleed-bass-a_ref.mp3"></audio></div>
+</div>
+<div class="item both">
+  <div class="head">
+    <div><span class="word">bow</span> &middot; reading A
+      <span class="muted">&middot; both right</span></div>
+    <span class="tag both">both</span>
+  </div>
+  <p class="said">Plain: take a bow &nbsp;&rarr;&nbsp; Fix: take a <em>bough</em></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/bow-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">baʊ</span><span class="gloss">bow</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/bow-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">baʊ</span><span class="gloss">bow</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>bough</code>): <audio controls preload="none" src="audio/bow-a_ref.mp3"></audio></div>
+</div>
+<div class="item both">
+  <div class="head">
+    <div><span class="word">bow</span> &middot; reading B
+      <span class="muted">&middot; both right</span></div>
+    <span class="tag both">both</span>
+  </div>
+  <p class="said">Plain: bow and arrow &nbsp;&rarr;&nbsp; Fix: <em>boh</em> and arrow</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/bow-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">boʊ</span><span class="gloss">boh</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/bow-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">boʊ</span><span class="gloss">boh</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>boh</code>): <audio controls preload="none" src="audio/bow-b_ref.mp3"></audio></div>
+</div>
+<div class="item both">
+  <div class="head">
+    <div><span class="word">lead</span> &middot; reading B
+      <span class="muted">&middot; both right</span></div>
+    <span class="tag both">both</span>
+  </div>
+  <p class="said">Plain: please lead the team &nbsp;&rarr;&nbsp; Fix: please <em>leed</em> the team</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/lead-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">lid</span><span class="gloss">leed</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/lead-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">lid</span><span class="gloss">leed</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>leed</code>): <audio controls preload="none" src="audio/lead-b_ref.mp3"></audio></div>
+</div>
+<div class="item both">
+  <div class="head">
+    <div><span class="word">read</span> &middot; reading A
+      <span class="muted">&middot; both right</span></div>
+    <span class="tag both">both</span>
+  </div>
+  <p class="said">Plain: i read yesterday &nbsp;&rarr;&nbsp; Fix: i <em>red</em> yesterday</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/read-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">ɹɛd</span><span class="gloss">red</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/read-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">ɹɛd</span><span class="gloss">red</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>red</code>): <audio controls preload="none" src="audio/read-a_ref.mp3"></audio></div>
+</div>
+<div class="item both">
+  <div class="head">
+    <div><span class="word">tear</span> &middot; reading B
+      <span class="muted">&middot; both right</span></div>
+    <span class="tag both">both</span>
+  </div>
+  <p class="said">Plain: tear the paper &nbsp;&rarr;&nbsp; Fix: <em>tair</em> the paper</p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/tear-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">tɛɹ</span><span class="gloss">tair</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/tear-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">tɛɹ</span><span class="gloss">tair</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>tair</code>): <audio controls preload="none" src="audio/tear-b_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">does</span> &middot; reading B
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>she does her job</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/does-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">dʌz</span><span class="gloss">duz</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/does-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">dʌz</span><span class="gloss">duz</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>does</code>): <audio controls preload="none" src="audio/does-b_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">dove</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>a dove flew by</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/dove-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">dʌv</span><span class="gloss">duv</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/dove-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">dʌv</span><span class="gloss">duv</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>dove</code>): <audio controls preload="none" src="audio/dove-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">intimate</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>an intimate dinner</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/intimate-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/intimate-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>intimate</code>): <audio controls preload="none" src="audio/intimate-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">invalid</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>an invalid license</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/invalid-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/invalid-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>invalid</code>): <audio controls preload="none" src="audio/invalid-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">minute</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>wait a minute</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/minute-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">mɪnɪt</span><span class="gloss">minit</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/minute-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">mɪnɪt</span><span class="gloss">minit</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>minute</code>): <audio controls preload="none" src="audio/minute-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">number</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>a phone number</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/number-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/number-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>number</code>): <audio controls preload="none" src="audio/number-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">row</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>a row of seats</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/row-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">ɹoʊ</span><span class="gloss">roh</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/row-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">ɹoʊ</span><span class="gloss">roh</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>row</code>): <audio controls preload="none" src="audio/row-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">sewer</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>a sewer line</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/sewer-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">suə</span><span class="gloss">soouh</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/sewer-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">suə</span><span class="gloss">soouh</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>sewer</code>): <audio controls preload="none" src="audio/sewer-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">sow</span> &middot; reading B
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>sow the seeds</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/sow-b_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">soʊ</span><span class="gloss">soh</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/sow-b_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">soʊ</span><span class="gloss">soh</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>sow</code>): <audio controls preload="none" src="audio/sow-b_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">tear</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>a tear in her eye</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/tear-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">tiɹ</span><span class="gloss">teer</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/tear-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa wrong">tiɹ</span><span class="gloss">teer</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>tear</code>): <audio controls preload="none" src="audio/tear-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">unionized</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>unionized workers</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/unionized-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/unionized-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="muted">not scored</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>unionized</code>): <audio controls preload="none" src="audio/unionized-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">wind</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>the wind blew</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/wind-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">wɪnd</span><span class="gloss">wind</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/wind-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">wɪnd</span><span class="gloss">wind</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>wind</code>): <audio controls preload="none" src="audio/wind-a_ref.mp3"></audio></div>
+</div>
+<div class="item unchanged">
+  <div class="head">
+    <div><span class="word">wound</span> &middot; reading A
+      <span class="muted">&middot; rule did not fire</span></div>
+    <span class="tag unchanged">unchanged</span>
+  </div>
+  <p class="said">Both arms: <b>a knife wound</b></p>
+  <div class="arms">
+    <div class="arm"><div class="lab">plain text</div>
+      <audio controls preload="none" src="audio/wound-a_plain.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">wund</span><span class="gloss">woond</span></div></div>
+    <div class="arm"><div class="lab">with the fix</div>
+      <audio controls preload="none" src="audio/wound-a_fix.mp3"></audio>
+      <div style="margin-top:6px"><span class="ipa exact">wund</span><span class="gloss">woond</span></div></div>
+  </div>
+  <div class="ref">what the reading should sound like (espeak, carrier <code>wound</code>): <audio controls preload="none" src="audio/wound-a_ref.mp3"></audio></div>
+</div>
+
+
+<h2>Why the headline number is a range, not a point</h2>
+<p>The published figure was <b>22/27 = 0.815</b>. It cannot be reproduced, and the reason is in
+the runtime: <code>SamplingRequest.seed</code> defaults to <code>None</code>, and
+<code>inference_runtime.py:1207</code> turns <code>None</code> into
+<code>secrets.randbits(63)</code>. The first end-to-end render passed no seed, so that number is
+one draw from a distribution nobody recorded. Re-rendering identical text, steps and checkpoint
+gives 21/27, with three items swapping verdict.</p>
+<p>So the same 5 seeds were run on <b>both</b> arms, paired per seed (item <i>i</i> of
+seed <i>s</i> uses seed <code>s*1000+i</code> in each arm, so the arms differ only in spelling):</p>
+<table>
+<tr><th>run</th><th>plain exact</th><th>fix exact</th><th>plain near</th><th>fix near</th></tr>
+<tr><td>seed 0</td><td class='num'>17/27</td><td class='num'>22/27</td><td class='num'>18/27</td><td class='num'>24/27</td></tr><tr><td>seed 1</td><td class='num'>16/27</td><td class='num'>20/27</td><td class='num'>18/27</td><td class='num'>22/27</td></tr><tr><td>seed 2</td><td class='num'>18/27</td><td class='num'>22/27</td><td class='num'>18/27</td><td class='num'>24/27</td></tr><tr><td>seed 3</td><td class='num'>14/27</td><td class='num'>21/27</td><td class='num'>15/27</td><td class='num'>23/27</td></tr><tr><td>seed 4</td><td class='num'>14/27</td><td class='num'>20/27</td><td class='num'>16/27</td><td class='num'>22/27</td></tr>
+<tr><td><b>mean</b></td><td class="num"><b>15.80</b></td>
+<td class="num"><b>21.00</b></td>
+<td class="num"><b>17.00</b></td>
+<td class="num"><b>23.00</b></td></tr>
+</table>
+<p class="muted">5 of 27 scored items change verdict depending on the
+seed. An item that flips is one this 27-item suite cannot decide, so quoting it as a pass or a
+fail is arbitrary:</p>
+<table><tr><th>item</th><th>exact on</th></tr><tr><td><code>bow-a</code></td><td class='num'>4/5</td></tr><tr><td><code>tear-a</code></td><td class='num'>2/5</td></tr><tr><td><code>tear-b</code></td><td class='num'>2/5</td></tr><tr><td><code>wind-b</code></td><td class='num'>3/5</td></tr><tr><td><code>wound-b</code></td><td class='num'>4/5</td></tr></table>
+
+
+<h2>How this was measured</h2>
+<p>Both arms are the production English checkpoint
+<code>Cs2rft1d_67m_ema600.pt</code> at 40 steps, rendered through
+<code>training/serve_worker.py --mode jobs</code>. The <b>plain</b> arm runs in a git worktree of
+the branch's parent commit, where <code>prepare_spoken_text</code> exists but does not rewrite
+homographs; the <b>fix</b> arm runs on the branch. Neither is a flag that pretends to be the
+other &mdash; the pre-fix behaviour is a real checkout of the pre-fix code.</p>
+<p>A control confirms the pairing: the 13 sentences the rule does not touch are
+<b>bit-identical</b> between arms, and all 18 it does touch differ. So every
+audible difference on this page is the rewrite and nothing else.</p>
+<p>Scoring is the recogniser's own decode, compared character by character against both readings
+(<code>facebook/wav2vec2-lv-60-espeak-cv-ft</code>). The page reports the exact-match verdict
+only. A paired forced-choice instrument was also run and returned 27/27, which is an artefact: a
+forced choice cannot answer &ldquo;neither&rdquo;, so a third pronunciation is always nearer one
+of the two. Those rows are labelled <code>wrong</code> here even when forced choice called them
+right.</p>
+
+<div class="note">
+<h3>What is not shown, and would change the answer</h3>
+<p>This checkpoint was trained on text that was <b>not</b> rewritten. Every clip here asks it to
+say a spelling it may never have seen &mdash; which is exactly why <code>dohv</code> and
+<code>dohz</code> fail. A model trained on the rewritten text is the real test of the approach,
+and that run has not been done. Until it is, these numbers measure a frozen model meeting new
+spellings, not the ceiling of the idea.</p>
+</div>
+
+<footer>
+Rule version <code>2026-10-28.3</code> &middot; checkpoint
+<code>Cs2rft1d_67m_ema600.pt</code> &middot; 40 steps &middot;
+branch <code>onit/homographs</code> &middot; generated build_page.py
+</footer>
+
+</body>
+</html>
