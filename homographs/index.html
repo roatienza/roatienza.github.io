@@ -50,6 +50,15 @@
 Same code, both engines, and nothing lost on either &mdash; which the single shared table could
 not do.</p>
 
+<p class="note"><b>Updated 2026-10-30.</b> The rule now decides by <b>grammar</b> and never by
+frequency: a bare operator, a modal, do-support or a perfect auxiliary decides
+<code>read</code>, a determiner decides <code>wind</code>, and an occurrence with no
+grammatical signal is <b>left as written</b>. On the held-out set that took the wrong rewrites
+from <b>17 to 0</b> and the default-decided share of the corpus from <b>26.9 % to 0</b>. The
+suite numbers below are unchanged, and they are unchanged <i>because the fix did not touch a
+single suite sentence</i> &mdash; verified by diffing the two rules' text output over all 31
+rows, both models: <b>0 differences</b>.</p>
+
 <p class="note">The rule that shipped on 2026-10-28 helped Cs2 by +5 and <b>hurt</b> the 4B by
 &minus;2, because one carrier table was applied to whichever model was serving. <code>dohv</code>
 works on Cs2 (437-entry byte vocabulary) and fails on the 4B, whose tokenizer splits it
@@ -601,55 +610,263 @@ already right and the table deliberately left it alone; that decision is what th
 
 
     <section>
-      <h2>The defect the corpus check found</h2>
-      <p class="lede">974 688 rows across four manifests. <b>26.9 %</b> of Cs2's rewrites and
-      <b>21.2 %</b> of the 4B's were applied where <b>no cue was in range</b> &mdash; the
-      frequency fallback chose the reading. <code>read</code> falls back to the present tense,
-      so these become <code>reed</code>. Listen to what the method does when nobody asked it
-      about the sentence.</p>
+      <h2>Held out: 173 sentences the table was never fitted to</h2>
+      <p class="lede">The suite above is <b>in-sample</b> &mdash; the carrier table was mined on
+      those 29 sentences and scored on those same 29, so a number on it is an upper bound. This
+      set is <b>173 sentences</b>, 22 of 25 pairs, with <b>zero overlap</b> with the mining
+      sentences. It is the only out-of-sample evidence here. (The TSV has no header row &mdash;
+      its first line is data &mdash; so reading it with a CSV reader silently loses a sentence
+      and reports 172.)</p>
+      <table>
+        <tr><th>rule</th><th>rewrites</th><th>right reading</th><th>wrong reading</th></tr>
+        <tr><td class="m">2026-10-28.3 (before)</td><td>49</td><td>32</td><td><b>17</b></td></tr>
+        <tr><td class="m">2026-10-30.1 (after)</td><td>32</td>
+          <td>32</td>
+          <td><b>0</b></td></tr>
+      </table>
+      <p class="lede small">That table is <b>text</b>: which reading the rule chose, against the
+      gold label. The rows underneath are <b>audio</b>: what the model actually said, decoded to
+      phones. They are different measurements and the second is the one that matters.</p>
+      <p class="lede small">On the 173 rows the rule fires 32 times,
+      8 gained and 1 lost &mdash;
+      <b>+7</b> on the fired set, 122 &rarr;
+      129 exact over the whole set. Before the fix the same 173 rows
+      produced 17 <b>wrong</b> rewrites: 13 <code>read</code> past tense turned into
+      <code>reed</code>, and 4 <code>wind</code> nouns turned into <code>whined</code>.</p>
       
         <div class="item bad">
-          <div class="hd"><span class="tag bad">corpus</span> <b>read</b>
-            reading A <span class="dec">past tense; no cue in range, so the default (B, present) chose</span></div>
-          <div class="txt"><span class="lbl">plain</span> too long, didn't read</div>
-          <div class="au"><audio controls preload="none" src="audio/corpus_too_long_didnt_read_plain.mp3"></audio></div>
-          <div class="txt"><span class="lbl">common</span> <span class="strike">too long, didn't read</span></div>
-          <div class="au"><audio controls preload="none" src="audio/corpus_too_long_didnt_read_common.mp3"></audio></div>
+          <div class="hd"><span class="tag bad">lost</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I'm just trying to wind down a bit before bed.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_100_plain.mp3"></audio>
+            <span class="ph">/waɪnd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> I'm just trying to whined down a bit before bed.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_100_after.mp3"></audio>
+            <span class="ph">/waɪn/</span></div>
         </div>
-        <div class="item bad">
-          <div class="hd"><span class="tag bad">corpus</span> <b>read</b>
-            reading A <span class="dec">a noun; the B cue list does not cover it and nothing else does</span></div>
-          <div class="txt"><span class="lbl">plain</span> we all met for a cold read in a conference room</div>
-          <div class="au"><audio controls preload="none" src="audio/corpus_we_all_met_for_a_cold_read_in_a_conference_room_plain.mp3"></audio></div>
-          <div class="txt"><span class="lbl">common</span> <span class="strike">we all met for a cold read in a conference room</span></div>
-          <div class="au"><audio controls preload="none" src="audio/corpus_we_all_met_for_a_cold_read_in_a_conference_room_common.mp3"></audio></div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Did you read that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_000_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> Did you reed that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_000_after.mp3"></audio>
+            <span class="ph">/ɹid/</span></div>
         </div>
-        <div class="item bad">
-          <div class="hd"><span class="tag bad">corpus</span> <b>read</b>
-            reading A <span class="dec">`never` is in the B cue list, so this one arrives LABELLED as cue-decided</span></div>
-          <div class="txt"><span class="lbl">plain</span> i never read that</div>
-          <div class="au"><audio controls preload="none" src="audio/corpus_i_never_read_that_plain.mp3"></audio></div>
-          <div class="txt"><span class="lbl">common</span> <span class="strike">i never read that</span></div>
-          <div class="au"><audio controls preload="none" src="audio/corpus_i_never_read_that_common.mp3"></audio></div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Why don't I read the story and we can just relax for a bit.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_002_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> Why don't I reed the story and we can just relax for a bit.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_002_after.mp3"></audio>
+            <span class="ph">/ɹid/</span></div>
         </div>
-      <p class="lede small">These three are rendered on Cs2 from the corpus text itself, both
-      arms, same seed. <code>Step.provenance</code> now records <code>cue</code> vs
-      <code>default</code>, so this is counted rather than argued &mdash; but counting it did
-      not fix it. The cue list still needs the past-tense cases.</p>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yes, I am struggling slightly. I did not read far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_005_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> Yes, I am struggling slightly. I did not reed far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_005_after.mp3"></audio>
+            <span class="ph">/ɹid/</span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I read it every year.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_023_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> I reed it every year.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_023_after.mp3"></audio>
+            <span class="ph">/ɹid/</span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>lead</b>
+            reading A <span class="dec">lead:A:carrier:cue</span>
+            <span class="tgt">needs /A/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> My heart is cold and it feels like a lead weight.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_068_plain.mp3"></audio>
+            <span class="ph">/lid/</span></div>
+          <div class="txt"><span class="lbl">rule</span> My heart is cold and it feels like a led weight.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_068_after.mp3"></audio>
+            <span class="ph">/lɛd/</span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I take a long piece and wind it tightly around your wrists.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_103_plain.mp3"></audio>
+            <span class="ph">/wɪnd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> I take a long piece and whined it tightly around your wrists.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_103_after.mp3"></audio>
+            <span class="ph">/waɪnd/</span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Afterwards I turn around and wind my arms around your neck, and we gently kiss.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_107_plain.mp3"></audio>
+            <span class="ph">/wɪnd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> Afterwards I turn around and whined my arms around your neck, and we gently kiss.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_107_after.mp3"></audio>
+            <span class="ph">/waɪnd/</span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Someone knew that the jasmine would wind its way up the posts of the fence.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_108_plain.mp3"></audio>
+            <span class="ph">/wɪnd/</span></div>
+          <div class="txt"><span class="lbl">rule</span> Someone knew that the jasmine would whined its way up the posts of the fence.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_108_after.mp3"></audio>
+            <span class="ph">/waɪnd/</span></div>
+        </div>
+        <div class="item warn">
+          <div class="hd"><span class="tag warn">still wrong</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I thought, what better way to help you fall asleep than to read you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_010_plain.mp3"></audio>
+            <span class="ph">/ɹidʒ/</span></div>
+          <div class="txt"><span class="lbl">rule</span> I thought, what better way to help you fall asleep than to reed you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_010_after.mp3"></audio>
+            <span class="ph">/ɹidʒ/</span></div>
+        </div>
+        <div class="item warn">
+          <div class="hd"><span class="tag warn">still wrong</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Or maybe you want to get some rest or wind down and put your feet up.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_099_plain.mp3"></audio>
+            <span class="ph">/waɪn/</span></div>
+          <div class="txt"><span class="lbl">rule</span> Or maybe you want to get some rest or whined down and put your feet up.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_099_after.mp3"></audio>
+            <span class="ph">/waɪn/</span></div>
+        </div>
+        <div class="item warn">
+          <div class="hd"><span class="tag warn">still wrong</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/
+              <i></i></span></div>
+          <div class="txt"><span class="lbl">plain</span> It is time to wind down. Take a deep breath.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_106_plain.mp3"></audio>
+            <span class="ph">/waɪn/</span></div>
+          <div class="txt"><span class="lbl">rule</span> It is time to whined down. Take a deep breath.</div>
+          <div class="au"><audio controls preload="none" src="audio/ho_106_after.mp3"></audio>
+            <span class="ph">/waɪn/</span></div>
+        </div>
+      <p class="lede small">Every row above is a pair: same sentence, same seed, same
+      checkpoint. The one <b>lost</b> row is <code>wind down</code> &mdash; the carrier
+      <code>whined</code> is right for <code>wind up</code> and wrong before
+      <code>down</code>, which is a carrier problem, not a reading problem.</p>
     </section>
 
-<p class="note">The previous version of this page &mdash; one model, one shared table, the
-A/B that produced Cs2 +5 and 4B &minus;2 &mdash; is kept as
-<a href="cs2-single-table.html">cs2-single-table.html</a>. It is the record of what the
-single-table design did; this page is what replaced it.</p>
+
+    <section>
+      <h2>What the fix changed in real corpus text</h2>
+      <p class="lede">The corpus check reads 4 494 335 rows across four manifests. Before the
+      fix, <b>26.9 %</b> of Cs2's rewrites and <b>21.2 %</b> of the 4B's had <b>no cue in
+      range</b> &mdash; the frequency fallback chose the reading. After the fix that share is
+      <b>0</b>: an occurrence the table cannot decide is left as written. Cs2's rewrites went
+      <b>5 188 &rarr; 13 043</b>, which is not the direction you would guess, and the reason
+      is below.</p>
+      
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">rewritten</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span></div>
+          <div class="txt"><span class="lbl">plain</span> too long, didn't read</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_too_long_didnt_read_plain.mp3"></audio></div>
+          <div class="txt"><span class="lbl">before</span> <span class="strike"></span></div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_too_long_didnt_read_before.mp3"></audio></div>
+          <div class="txt"><span class="lbl">after</span> too long, didn't reed</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_too_long_didnt_read_after.mp3"></audio></div>
+          <div class="dec" style="margin-top:.35rem">still fires, and correctly: `didn't` is do-support, so the verb is the bare infinitive /ri:d/. The old rule wrote the same string from the frequency default with no cue in range -- right answer, wrong reason.</div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">left alone</span> <b>read</b>
+            reading A <span class="dec">none</span></div>
+          <div class="txt"><span class="lbl">plain</span> we all met for a cold read in a conference room</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_we_all_met_for_a_cold_read_in_a_conference_room_plain.mp3"></audio></div>
+          <div class="txt"><span class="lbl">before</span> <span class="strike"></span></div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_we_all_met_for_a_cold_read_in_a_conference_room_before.mp3"></audio></div>
+          <div class="txt"><span class="lbl">after</span> we all met for a cold read in a conference room</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_we_all_met_for_a_cold_read_in_a_conference_room_after.mp3"></audio></div>
+          <div class="dec" style="margin-top:.35rem">no longer rewritten. A noun, and the old B cue list reached it anyway.</div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">left alone</span> <b>read</b>
+            reading A <span class="dec">none</span></div>
+          <div class="txt"><span class="lbl">plain</span> i never read that</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_i_never_read_that_plain.mp3"></audio></div>
+          <div class="txt"><span class="lbl">before</span> <span class="strike"></span></div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_i_never_read_that_before.mp3"></audio></div>
+          <div class="txt"><span class="lbl">after</span> i never read that</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_i_never_read_that_after.mp3"></audio></div>
+          <div class="dec" style="margin-top:.35rem">no longer rewritten, and it is genuinely ambiguous: `never` was a PRESENT cue in the old list, which is not grammar. The lab's grammar port declines it too.</div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">left alone</span> <b>wind</b>
+            reading A <span class="dec">wind:A:keep_plain:grammar</span></div>
+          <div class="txt"><span class="lbl">plain</span> the wind was picking up</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_the_wind_was_picking_up_plain.mp3"></audio></div>
+          
+          <div class="txt"><span class="lbl">after</span> the wind was picking up</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_the_wind_was_picking_up_after.mp3"></audio></div>
+          <div class="dec" style="margin-top:.35rem">no longer rewritten. The bare particle `up` was a wind-B cue, and it belonged to `picking`.</div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">rewritten</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span></div>
+          <div class="txt"><span class="lbl">plain</span> The shareholders will vote to wind up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_The_shareholders_will_vote_to_wind_up_the_compan_plain.mp3"></audio></div>
+          
+          <div class="txt"><span class="lbl">after</span> The shareholders will vote to whined up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/corpus_The_shareholders_will_vote_to_wind_up_the_compan_after.mp3"></audio></div>
+          <div class="dec" style="margin-top:.35rem">still fires, and the carrier is the weak part: `whined` is right for `wind up` here, wrong before `wind down`. That is a carrier defect, not a reading defect.</div>
+        </div>
+      <p class="lede small">The first row is the one to read carefully. <code>didn't read</code>
+      is do-support, so the verb is a bare infinitive /ri:d/ &mdash; the rewrite is
+      <b>correct</b>, and the previous version of this page called it a defect. The old rule
+      reached the same string from the frequency default with no cue in range: right answer,
+      wrong reason. The rewrite count rose because <code>read</code> B is now decided by modals
+      and do-support, which transcript English uses constantly (&ldquo;i'm going to read&rdquo;,
+      &ldquo;do you want me to read&rdquo;), and those were previously left undecided.</p>
+    </section>
 
 <footer>
   Checkpoints: <code>Cs2rft1d_67m_ema600.pt</code> (67M, 40 steps) and
   <code>tts4b_fs8_pronrft2_20261029.pt</code> (3.31B, 8 steps). Plain arms render in a checkout
   of <code>3c285ba1</code>, the commit before the rule, so the control is the model's own
   inference. Phones are decoded by <code>wav2vec2-lv-60-espeak-cv-ft</code> at the target word.
-  <br>Source, tables and the corpus run: <code>docs/HOMOGRAPH_COMMON_20261029.md</code> on
-  <code>onit/homographs</code>. Not a ship recommendation &mdash; the default-decided share is
-  still 27 %.
+  Rule <code>2026-10-30.1</code>; the previous version of this page described
+  <code>2026-10-28.3</code>.
+  <br>Source, tables and the corpus run: <code>docs/HOMOGRAPH_COMMON_20261029.md</code> and
+  <code>docs/HOMOGRAPH_FIX_20261030.md</code> on <code>onit/homographs</code>.
+  <b>Still not a ship recommendation:</b> the 4B's held-out firing set is 2 sentences, and one
+  carrier (<code>whined</code>) is wrong before <code>wind down</code>. What is fixed is that
+  the rule no longer decides a reading from frequency alone.
 </footer>
 </body></html>
