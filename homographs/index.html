@@ -1431,10 +1431,10 @@ validated as &ldquo;the phones match&rdquo;, never as &ldquo;this sounds right&r
   
       <tr><td class="m">Cs2 67M</td><td>11,902</td><td>27</td>
         <td>0.23 %</td><td>0</td>
-        <td>50 &micro;s</td><td>326 &micro;s</td></tr>
+        <td>58 &micro;s</td><td>336 &micro;s</td></tr>
       <tr><td class="m">4B accent1</td><td>11,902</td><td>20</td>
         <td>0.17 %</td><td>0</td>
-        <td>50 &micro;s</td><td>323 &micro;s</td></tr>
+        <td>82 &micro;s</td><td>493 &micro;s</td></tr>
 </table>
 <p class="lede small">Two held-out manifests, <b>11 902</b> real sentences. The rule changes
 <b>0.2 %</b> of them and never touches markup. The rewrite is a few tens of microseconds against
@@ -1490,6 +1490,10 @@ with <code>build_deploy.py</code>; do not use <code>deploy.sh</code> to ship thi
   spelling differs between the pair.
   <br>Source, tables, the plan and its retractions: <code>docs/HOMOGRAPH_TEST_PLAN_20261030.md</code>
   and <code>docs/HOMOGRAPH_FIX_20261030.md</code> on <code>onit/homographs</code>.
+  The superseded single-table page is kept at
+  <a href="cs2-single-table.html">cs2-single-table.html</a> &mdash; it describes the 2026-10-29
+  rule with one shared table, and its own numbers are what made the per-model measurement
+  necessary.
   <b>What this page does not show:</b> a naturalness rating; a magnitude for the production
   benefit (27 and 20 rewritten sentences per 11 902 are counts, not a measured improvement in
   comprehension); the 37 untouched 4B rows and 30 untouched 67M rows whose
