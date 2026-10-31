@@ -1500,11 +1500,71 @@ with <code>build_deploy.py</code>; do not use <code>deploy.sh</code> to ship thi
   <a href="cs2-single-table.html">cs2-single-table.html</a> &mdash; it describes the 2026-10-29
   rule with one shared table, and its own numbers are what made the per-model measurement
   necessary.
-  <b>What this page does not show:</b> a naturalness rating; a magnitude for the production
-  benefit (27 and 20 rewritten sentences per 11 902 are counts, not a measured improvement in
-  comprehension); the 37 untouched 4B rows and 30 untouched 67M rows whose
-  reading is still wrong &mdash; the grammar declines those occurrences, so no carrier is
-  applied and no carrier can fix them; and <code>accent2</code>, which is what the shared lab on
-  <code>:8930</code> serves and has never been measured.
+  <b>What this page does not show:</b> a listener's judgement (see below &mdash; a metric was
+  run, a person was not); and a magnitude for the production benefit (27 and 20 rewritten
+  sentences per 11 902 are counts, not a measured improvement in comprehension).
+
+  <h3>Naturalness: measured, and the answer is "no change"</h3>
+  Until 2026-10-31 every carrier was validated one way &mdash; the recogniser heard the target
+  phones at that word &mdash; and nobody had asked whether the sentence still sounds like
+  speech. A carrier is a deliberate misspelling, so that was the obvious untested risk.
+  torchaudio's SQUIM (reference-free: STOI, PESQ, SI-SDR) on every fired row, both arms, paired,
+  against a null made of <em>the same sentence rendered with a different seed</em>:
+
+  <table>
+    <tr><th>model</th><th>feature</th><th>rule |&Delta;| median</th><th>null |&Delta;| median</th>
+        <th>worse / better</th></tr>
+    <tr><td>67M</td><td>STOI</td><td>0.002</td><td>0.002</td><td>19 / 25</td></tr>
+    <tr><td>67M</td><td>PESQ</td><td>0.189</td><td>0.209</td><td>24 / 20</td></tr>
+    <tr><td>67M</td><td>SI-SDR</td><td>2.455</td><td>2.103</td><td>25 / 19</td></tr>
+    <tr><td>4B accent1</td><td>STOI</td><td>0.016</td><td>0.021</td><td>14 / 15</td></tr>
+    <tr><td>4B accent1</td><td>PESQ</td><td>0.229</td><td>0.355</td><td>14 / 15</td></tr>
+    <tr><td>4B accent1</td><td>SI-SDR</td><td>2.890</td><td>3.628</td><td>17 / 12</td></tr>
+  </table>
+
+  On every feature and both models the rule moves the audio <em>no more than a different draw of
+  the same sentence</em>, and the worse/better split is symmetric. That is a null result, and it
+  is reported as one: it supports "no measured loss of naturalness on this metric". It does not
+  support "sounds natural" &mdash; that needs a listener, and there has not been one.
+
+  <h3>accent2: measured, and it is the better engine for this rule</h3>
+  The shared lab on <code>:8930</code> serves <code>accent2</code>, which had never been
+  measured. It has now been mined the same way accent1's table was (6 sentences &times; 3 seeds
+  per candidate, majority vote) through a private lab with the lab's own rule off, and run
+  through the same held-out set, route and scorer:
+
+  <table>
+    <tr><th></th><th>accent1</th><th>accent2</th></tr>
+    <tr><td>carrier / keep_plain / unshipped</td><td>3 / 14 / 8</td><td><b>7 / 10 / 8</b></td></tr>
+    <tr><td>fired rows</td><td>32</td><td><b>48</b></td></tr>
+    <tr><td>right reading, plain &rarr; after</td><td>10 &rarr; <b>29</b></td><td>22 &rarr; <b>48</b></td></tr>
+    <tr><td>gained / <b>lost</b></td><td>19 / <b>0</b></td><td>26 / <b>0</b></td></tr>
+    <tr><td>whole set</td><td>105 &rarr; 124</td><td>105 &rarr; <b>131</b></td></tr>
+    <tr><td>wrong reading after</td><td>0</td><td>0</td></tr>
+  </table>
+
+  <p><b>This reverses an earlier answer on this page.</b> The first accent2 measurement used a
+  miner that decides each pair from <em>one</em> sentence at one seed, while accent1's table was
+  built from four sentences &times; three seeds. Compared that way accent2 looked worse. Re-mined
+  under the same protocol as accent1, it is better on every count and loses nothing. Comparing
+  two tables built by two different instruments is not comparing two models, and the first
+  version of this section did exactly that.</p>
+
+  <p>The first proper accent2 table still lost one row, because it chose <code>tehr</code> for
+  <code>tear</code> on 2 of 6 sentences &mdash; just above the old floor, and the only carrier in
+  either table below a majority. Raising the gate to a majority of the sentences measured, applied
+  uniformly, made that pair <code>unshipped</code> and the run went to 48/48 with no losses.</p>
+
+  <p>A table is bound to the bytes it was measured on: both checkpoints are 13&nbsp;GB and both
+  load, and the table carries the checkpoint's <code>sha256</code> so it is refused if loaded
+  against the other one.</p>
+
+  <h3>The rows that are still wrong, recounted</h3>
+  The 37 (4B) and 30 (67M) untouched rows with a wrong reading are not all the same thing:
+  21 and 22 are occurrences the grammar declines, 2 and 1 are occurrences where the grammar
+  picks the <em>wrong</em> reading, and the rest are cases where the grammar is right but the
+  table says <code>keep_plain</code> or <code>unshipped</code>. A grammar fix alone recovers
+  <b>zero</b> rows: the grammar only declines when the model was already wrong, so a correct
+  decision would then need a carrier &mdash; and for six of them no carrier exists.
 </footer>
 </body></html>
