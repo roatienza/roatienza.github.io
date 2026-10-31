@@ -1268,10 +1268,16 @@ added together.</p>
 <p class="lede small">A row the rule does not rewrite is handed to the engine as the same string
 with the same seed, so any difference would be the box, not the feature. Every one of them came
 back with the same md5 &mdash; hashed twice, once by the scorer and once independently. The last
-column is the control for that claim: on the same runs, every fired row <i>did</i> change, so
-&ldquo;identical&rdquo; above means &ldquo;left alone&rdquo;, not &ldquo;nothing ever changes
-here&rdquo;. On <code>/stream</code> the 4B changed fewer fired rows (13 of 29) because the lab
-applies its own cue before synthesising, so some plain-arm clips already said the target reading.</p>
+column is the control for that claim: on the 67M and on the 4B's <code>/tts</code> route every
+fired row changed, so &ldquo;identical&rdquo; above means &ldquo;left alone&rdquo;, not
+&ldquo;nothing ever changes here&rdquo;.</p>
+<p class="lede small">On <code>/stream</code> the 4B changed only 13 of its 29 fired rows, and
+the 16 that did not are all rows the lab engine had <b>already</b> made right: it applies its own
+homograph cue to the text before synthesising, so on those rows our rewrite and the lab's land on
+the same reading and the audio is byte-identical. The 13 that changed went 5 &rarr; 13 right, so
+the +8 on that route is the residue the lab's cue misses. That is also the honest reading of the
+route: <b>on <code>/stream</code> the feature is partly redundant with the engine it calls</b>,
+and the 16 rows are not evidence of the rule working &mdash; they are evidence of it agreeing.</p>
 
 <h2>What it does to the voice, on the rows it touches</h2>
 <p class="lede">A rewrite that fixes the word but flattens the delivery is not a fix. The control
@@ -1431,10 +1437,10 @@ validated as &ldquo;the phones match&rdquo;, never as &ldquo;this sounds right&r
   
       <tr><td class="m">Cs2 67M</td><td>11,902</td><td>27</td>
         <td>0.23 %</td><td>0</td>
-        <td>58 &micro;s</td><td>336 &micro;s</td></tr>
+        <td>56 &micro;s</td><td>344 &micro;s</td></tr>
       <tr><td class="m">4B accent1</td><td>11,902</td><td>20</td>
         <td>0.17 %</td><td>0</td>
-        <td>82 &micro;s</td><td>493 &micro;s</td></tr>
+        <td>61 &micro;s</td><td>363 &micro;s</td></tr>
 </table>
 <p class="lede small">Two held-out manifests, <b>11 902</b> real sentences. The rule changes
 <b>0.2 %</b> of them and never touches markup. The rewrite is a few tens of microseconds against
