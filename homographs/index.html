@@ -17,6 +17,7 @@
   th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line) }
   th { color:var(--dim); font-weight:600; font-size:.82rem; text-transform:uppercase; letter-spacing:.03em }
   td.m { font-weight:600 }
+  td.tagcell { white-space:nowrap }
   .item { border:1px solid var(--line); border-left-width:4px; border-radius:6px;
            padding:.7rem .85rem; margin:.7rem 0; background:#fff }
   .item.ok { border-left-color:var(--ok) }
@@ -41,758 +42,1328 @@
   code { background:#f0ece5; padding:.05rem .3rem; border-radius:3px; font-size:.86em }
   .note { border-left:3px solid var(--line); padding:.2rem 0 .2rem .9rem; color:var(--dim);
            margin:1.2rem 0; font-size:.92rem }
+  .note.warn { border-left-color:var(--warn) }
   footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
             color:var(--dim); font-size:.84rem }
 </style></head><body>
 
 <h1>One homograph fix, two models</h1>
-<p class="lede">The reading is decided once, by context. The spelling is measured per model.
-Same code, both engines, and nothing lost on either &mdash; which the single shared table could
-not do.</p>
+<p class="lede">The reading is decided once, by grammar. The spelling is measured per model.
+Every number below was rendered <b>through the route that serves</b>, not by a harness.</p>
 
-<p class="note"><b>Updated 2026-10-30.</b> The rule now decides by <b>grammar</b> and never by
-frequency: a bare operator, a modal, do-support or a perfect auxiliary decides
-<code>read</code>, a determiner decides <code>wind</code>, and an occurrence with no
-grammatical signal is <b>left as written</b>. On the held-out set that took the wrong rewrites
-from <b>17 to 0</b> and the default-decided share of the corpus from <b>26.9 % to 0</b>. The
-suite numbers below are unchanged, and they are unchanged <i>because the fix did not touch a
-single suite sentence</i> &mdash; verified by diffing the two rules' text output over all 31
-rows, both models: <b>0 differences</b>.</p>
+<p class="note"><b>Updated 2026-10-31.</b> Three things on this page changed and one of them
+changed the 4B's headline. The 4B that serves is <code>accent1</code>, so the table shown is
+<code>tts4b_fs8_accent1_20261030</code>; the previous version of this page described
+<code>pronrft2</code>, a checkpoint no request can reach. The 67M numbers now come from
+<code>POST /v1/audio/speech</code> with <code>TTS_CKPT</code> pinned to <code>Cs2rft1d</code>,
+because production had been serving <code>Cs2rft1b</code> while every Cs2 render in the repo was
+made on <code>Cs2rft1d</code>. And the 4B now has a streaming column, which is not a copy of its
+<code>/tts</code> column.</p>
 
-<p class="note">The rule that shipped on 2026-10-28 helped Cs2 by +5 and <b>hurt</b> the 4B by
-&minus;2, because one carrier table was applied to whichever model was serving. <code>dohv</code>
-works on Cs2 (437-entry byte vocabulary) and fails on the 4B, whose tokenizer splits it
-<code>['do','hv']</code> and says &ldquo;duhiv&rdquo;. The carrier was chosen by looking at it,
-never by asking the model. Now each model is asked.</p>
-
-<h2>Both models, paired</h2>
+<h2>Measured, on the routes that serve</h2>
 <table>
-  <tr><th>model</th><th>suite plain</th><th>suite common</th><th>gained / lost</th><th>table</th></tr>
+  <tr><th>model / route</th><th>fires</th><th>right reading, fired rows</th>
+    <th>gained / lost</th><th>right reading, all 173</th><th>untouched, byte-identical</th></tr>
   
-      <tr><td class="m">Cs2 67M</td>
-        <td>17/31</td>
-        <td><b>24/31</b></td>
-        <td>7 / 0</td>
-        <td>6 carrier, 15 keep-plain,
-            4 unshipped</td></tr>
-      <tr><td class="m">4B 3.31B</td>
-        <td>16/31</td>
-        <td><b>21/31</b></td>
-        <td>5 / 0</td>
-        <td>4 carrier, 15 keep-plain,
-            6 unshipped</td></tr>
+      <tr><td class="m">Cs2 67M<br><span class="dec">POST /v1/audio/speech</span></td>
+        <td>44</td>
+        <td>32 &rarr; <b>44</b></td>
+        <td>+12 / &minus;0</td>
+        <td>120 &rarr; <b>132</b></td>
+        <td>129 / 129</td></tr>
+      <tr><td class="m">4B 3.31B<br><span class="dec">POST /tts</span></td>
+        <td>29</td>
+        <td>8 &rarr; <b>27</b></td>
+        <td>+19 / &minus;0</td>
+        <td>105 &rarr; <b>124</b></td>
+        <td>144 / 144</td></tr>
+      <tr><td class="m">4B 3.31B<br><span class="dec">POST /stream</span></td>
+        <td>29</td>
+        <td>21 &rarr; <b>29</b></td>
+        <td>+8 / &minus;0</td>
+        <td>123 &rarr; <b>131</b></td>
+        <td>144 / 144</td></tr>
 </table>
-<p class="lede small">Every row below is a pair: the same sentence, the same seed, the same
-checkpoint &mdash; only the spelling of one word differs. <b>held</b> means the plain text was
-already right and the table deliberately left it alone; that decision is what the 4B needed.</p>
+<p class="lede small">173 held-out sentences, 22 of 25 pairs, zero overlap with the 29 sentences
+the tables were mined on. &ldquo;Right reading&rdquo; is the phoneme decoder's verdict on the
+target word in the rendered audio, against the gold label &mdash; not what the rule intended.
+<b>No row loses a reading on any route.</b> Two fired rows on the 4B's <code>/tts</code> route
+are still not right after the rewrite (the reading is correct, the decoded span is not), so
+&ldquo;gained&rdquo; understates what changed and &ldquo;after&rdquo; is the column to read. The
+three runs are separate measurements: the two 4B routes do not share a baseline and must not be
+added together.</p>
 
 
     <section>
-      <h2>Cs2 67M <span class="sub">the shipping student, 40 steps</span></h2>
-      <p class="lede">Table: <b>6</b> carrier, <b>15</b>
-      keep-plain, <b>4</b> unshipped, of 25 pairs.
-      Suite: <b>17/31</b> plain &rarr;
-      <b>24/31</b> common.</p>
+      <h2>Cs2 67M <span class="sub">the shipping student, 40 steps &middot; POST /v1/audio/speech</span></h2>
+      <p class="lede">Table <code>Cs2rft1d_67m_ema600</code>: <b>7</b>
+      carrier, <b>14</b> keep-plain,
+      <b>4</b> unshipped, of 25 pairs.
+      Fires on <b>44</b> of 173 held-out rows; the other
+      129 are left as written and
+      <b>129 of 129</b> come back byte-identical.</p>
       
         <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>lead</b> reading A
-            <span class="dec">carrier: <code>led</code></span>
-            <span class="tgt">needs /lɛd/ <i>led</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a lead pipe is on the shelf and they lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bleed-lead-a_plain.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a led pipe is on the shelf and they lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bleed-lead-a_common.mp3"></audio>
-            <span class="ph">/lɛd/ <i>led</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>bow</b> reading B
-            <span class="dec">carrier: <code>bo</code></span>
-            <span class="tgt">needs /boʊ/ <i>boh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> bow and arrow</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bow-b_plain.mp3"></audio>
-            <span class="ph">/baʊ/ <i>bow</i></span></div>
-          <div class="txt"><span class="lbl">common</span> bo and arrow</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bow-b_common.mp3"></audio>
-            <span class="ph">/boʊ/ <i>boh</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>does</b> reading A
-            <span class="dec">carrier: <code>doze</code></span>
-            <span class="tgt">needs /doʊz/ <i>dohz</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> two does grazed</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_does-a_plain.mp3"></audio>
-            <span class="ph">/dʌz/ <i>duz</i></span></div>
-          <div class="txt"><span class="lbl">common</span> two doze grazed</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_does-a_common.mp3"></audio>
-            <span class="ph">/doʊz/ <i>dohz</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>lead</b> reading A
-            <span class="dec">carrier: <code>led</code></span>
-            <span class="tgt">needs /lɛd/ <i>led</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> it is a lead pipe</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_lead-a_plain.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">common</span> it is a led pipe</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_lead-a_common.mp3"></audio>
-            <span class="ph">/lɛd/ <i>led</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>minute</b> reading B
-            <span class="dec">carrier: <code>mynoot</code></span>
-            <span class="tgt">needs /maɪnut/ <i>meyenoot</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a minute detail</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_minute-b_plain.mp3"></audio>
-            <span class="ph">/mɪnɪt/ <i>minit</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a mynoot detail</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_minute-b_common.mp3"></audio>
-            <span class="ph">/maɪnut/ <i>meyenoot</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>read</b> reading B
-            <span class="dec">carrier: <code>reed</code></span>
-            <span class="tgt">needs /ɹid/ <i>reed</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> i read nightly</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_read-b_plain.mp3"></audio>
-            <span class="ph">/ɹɛd/ <i>red</i></span></div>
-          <div class="txt"><span class="lbl">common</span> i reed nightly</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_read-b_common.mp3"></audio>
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yeah, we can read your favorite book tomorrow.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_001_plain.mp3"></audio>
+            <span class="ph">/ɹi/ <i>ree</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yeah, we can reed your favorite book tomorrow.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_001_after.mp3"></audio>
             <span class="ph">/ɹid/ <i>reed</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>wind</b> reading B
-            <span class="dec">carrier: <code>whined</code></span>
-            <span class="tgt">needs /waɪnd/ <i>weyend</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> wind the clock</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wind-b_plain.mp3"></audio>
-            <span class="ph">/waɪn/ <i>weyen</i></span></div>
-          <div class="txt"><span class="lbl">common</span> whined the clock</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wind-b_common.mp3"></audio>
-            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>bass</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /beɪs/ <i>bays</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> she plays bass in the band</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bass-b_plain.mp3"></audio>
-            <span class="ph">/beɪs/ <i>bays</i></span></div>
-          <div class="txt"><span class="lbl">common</span> she plays bass in the band</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bass-b_common.mp3"></audio>
-            <span class="ph">/beɪs/ <i>bays</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>bow</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /baʊ/ <i>bow</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> take a bow</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bow-a_plain.mp3"></audio>
-            <span class="ph">/baʊ/ <i>bow</i></span></div>
-          <div class="txt"><span class="lbl">common</span> take a bow</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_bow-a_common.mp3"></audio>
-            <span class="ph">/baʊ/ <i>bow</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>does</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /dʌz/ <i>duz</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> she does her job</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_does-b_plain.mp3"></audio>
-            <span class="ph">/dʌz/ <i>duz</i></span></div>
-          <div class="txt"><span class="lbl">common</span> she does her job</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_does-b_common.mp3"></audio>
-            <span class="ph">/dʌz/ <i>duz</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>dove</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /dʌv/ <i>duv</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a dove flew by</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_dove-a_plain.mp3"></audio>
-            <span class="ph">/dʌv/ <i>duv</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a dove flew by</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_dove-a_common.mp3"></audio>
-            <span class="ph">/dʌv/ <i>duv</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>dove</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /doʊv/ <i>dohv</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> she dove into the pool</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_dove-b_plain.mp3"></audio>
-            <span class="ph">/doʊv/ <i>dohv</i></span></div>
-          <div class="txt"><span class="lbl">common</span> she dove into the pool</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_dove-b_common.mp3"></audio>
-            <span class="ph">/doʊv/ <i>dohv</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>lead</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> please lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_lead-b_plain.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">common</span> please lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_lead-b_common.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>minute</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /mɪnɪt/ <i>minit</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> wait a minute</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_minute-a_plain.mp3"></audio>
-            <span class="ph">/mɪnɪt/ <i>minit</i></span></div>
-          <div class="txt"><span class="lbl">common</span> wait a minute</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_minute-a_common.mp3"></audio>
-            <span class="ph">/mɪnɪt/ <i>minit</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>read</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /ɹɛd/ <i>red</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> i read yesterday</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_read-a_plain.mp3"></audio>
-            <span class="ph">/ɹɛd/ <i>red</i></span></div>
-          <div class="txt"><span class="lbl">common</span> i read yesterday</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_read-a_common.mp3"></audio>
-            <span class="ph">/ɹɛd/ <i>red</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>row</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /ɹoʊ/ <i>roh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a row of seats</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_row-a_plain.mp3"></audio>
-            <span class="ph">/ɹoʊ/ <i>roh</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a row of seats</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_row-a_common.mp3"></audio>
-            <span class="ph">/ɹoʊ/ <i>roh</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>row</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /ɹaʊ/ <i>row</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a noisy row</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_row-b_plain.mp3"></audio>
-            <span class="ph">/ɹaʊ/ <i>row</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a noisy row</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_row-b_common.mp3"></audio>
-            <span class="ph">/ɹaʊ/ <i>row</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>sewer</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /suə/ <i>soouh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a sewer line</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_sewer-a_plain.mp3"></audio>
-            <span class="ph">/suə/ <i>soouh</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a sewer line</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_sewer-a_common.mp3"></audio>
-            <span class="ph">/suə/ <i>soouh</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>sow</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /soʊ/ <i>soh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> sow the seeds</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_sow-b_plain.mp3"></audio>
-            <span class="ph">/soʊ/ <i>soh</i></span></div>
-          <div class="txt"><span class="lbl">common</span> sow the seeds</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_sow-b_common.mp3"></audio>
-            <span class="ph">/soʊ/ <i>soh</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>wind</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /wɪnd/ <i>wind</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> the wind blew</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wind-a_plain.mp3"></audio>
-            <span class="ph">/wɪnd/ <i>wind</i></span></div>
-          <div class="txt"><span class="lbl">common</span> the wind blew</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wind-a_common.mp3"></audio>
-            <span class="ph">/wɪnd/ <i>wind</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>wound</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /wund/ <i>woond</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a knife wound</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wound-a_plain.mp3"></audio>
-            <span class="ph">/wund/ <i>woond</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a knife wound</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wound-a_common.mp3"></audio>
-            <span class="ph">/wund/ <i>woond</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>wound</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /waʊnd/ <i>wownd</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> wound the watch</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wound-b_plain.mp3"></audio>
-            <span class="ph">/waʊnd/ <i>wownd</i></span></div>
-          <div class="txt"><span class="lbl">common</span> wound the watch</div>
-          <div class="au"><audio controls preload="none" src="audio/Cs2rft1d_67m_ema600_wound-b_common.mp3"></audio>
-            <span class="ph">/waʊnd/ <i>wownd</i></span></div>
-        </div>
-    </section>
-    <section>
-      <h2>4B 3.31B <span class="sub">the lab engine, 8 steps</span></h2>
-      <p class="lede">Table: <b>4</b> carrier, <b>15</b>
-      keep-plain, <b>6</b> unshipped, of 25 pairs.
-      Suite: <b>16/31</b> plain &rarr;
-      <b>21/31</b> common.</p>
-      
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>lead</b> reading A
-            <span class="dec">carrier: <code>led</code></span>
-            <span class="tgt">needs /lɛd/ <i>led</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a lead pipe is on the shelf and they lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bleed-lead-a_plain.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a led pipe is on the shelf and they lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bleed-lead-a_common.mp3"></audio>
-            <span class="ph">/lɛd/ <i>led</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>does</b> reading A
-            <span class="dec">carrier: <code>doughs</code></span>
-            <span class="tgt">needs /doʊz/ <i>dohz</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> two does grazed</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_does-a_plain.mp3"></audio>
-            <span class="ph">/dʌz/ <i>duz</i></span></div>
-          <div class="txt"><span class="lbl">common</span> two doughs grazed</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_does-a_common.mp3"></audio>
-            <span class="ph">/doʊz/ <i>dohz</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>lead</b> reading A
-            <span class="dec">carrier: <code>led</code></span>
-            <span class="tgt">needs /lɛd/ <i>led</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> it is a lead pipe</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_lead-a_plain.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">common</span> it is a led pipe</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_lead-a_common.mp3"></audio>
-            <span class="ph">/lɛd/ <i>led</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>sewer</b> reading B
-            <span class="dec">carrier: <code>soa</code></span>
-            <span class="tgt">needs /soʊə/ <i>sohuh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a skilled sewer</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_sewer-b_plain.mp3"></audio>
-            <span class="ph">/suə/ <i>soouh</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a skilled soa</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_sewer-b_common.mp3"></audio>
-            <span class="ph">/soʊə/ <i>sohuh</i></span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span>
-            <b>sow</b> reading B
-            <span class="dec">carrier: <code>so</code></span>
-            <span class="tgt">needs /soʊ/ <i>soh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> sow the seeds</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_sow-b_plain.mp3"></audio>
-            <span class="ph">/sæl/ <i>sal</i></span></div>
-          <div class="txt"><span class="lbl">common</span> so the seeds</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_sow-b_common.mp3"></audio>
-            <span class="ph">/soʊ/ <i>soh</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>bass</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /beɪs/ <i>bays</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> she plays bass in the band</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bass-b_plain.mp3"></audio>
-            <span class="ph">/beɪs/ <i>bays</i></span></div>
-          <div class="txt"><span class="lbl">common</span> she plays bass in the band</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bass-b_common.mp3"></audio>
-            <span class="ph">/beɪs/ <i>bays</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>bow</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /baʊ/ <i>bow</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> take a bow</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bow-a_plain.mp3"></audio>
-            <span class="ph">/baʊ/ <i>bow</i></span></div>
-          <div class="txt"><span class="lbl">common</span> take a bow</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bow-a_common.mp3"></audio>
-            <span class="ph">/baʊ/ <i>bow</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>bow</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /boʊ/ <i>boh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> bow and arrow</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bow-b_plain.mp3"></audio>
-            <span class="ph">/boʊ/ <i>boh</i></span></div>
-          <div class="txt"><span class="lbl">common</span> bow and arrow</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_bow-b_common.mp3"></audio>
-            <span class="ph">/boʊ/ <i>boh</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>does</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /dʌz/ <i>duz</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> she does her job</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_does-b_plain.mp3"></audio>
-            <span class="ph">/dʌz/ <i>duz</i></span></div>
-          <div class="txt"><span class="lbl">common</span> she does her job</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_does-b_common.mp3"></audio>
-            <span class="ph">/dʌz/ <i>duz</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>dove</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /dʌv/ <i>duv</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a dove flew by</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_dove-a_plain.mp3"></audio>
-            <span class="ph">/dʌv/ <i>duv</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a dove flew by</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_dove-a_common.mp3"></audio>
-            <span class="ph">/dʌv/ <i>duv</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>dove</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /doʊv/ <i>dohv</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> she dove into the pool</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_dove-b_plain.mp3"></audio>
-            <span class="ph">/doʊv/ <i>dohv</i></span></div>
-          <div class="txt"><span class="lbl">common</span> she dove into the pool</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_dove-b_common.mp3"></audio>
-            <span class="ph">/doʊv/ <i>dohv</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>lead</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> please lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_lead-b_plain.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-          <div class="txt"><span class="lbl">common</span> please lead the team</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_lead-b_common.mp3"></audio>
-            <span class="ph">/lid/ <i>leed</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>minute</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /mɪnɪt/ <i>minit</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> wait a minute</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_minute-a_plain.mp3"></audio>
-            <span class="ph">/mɪnɪt/ <i>minit</i></span></div>
-          <div class="txt"><span class="lbl">common</span> wait a minute</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_minute-a_common.mp3"></audio>
-            <span class="ph">/mɪnɪt/ <i>minit</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>read</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /ɹɛd/ <i>red</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> i read yesterday</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_read-a_plain.mp3"></audio>
-            <span class="ph">/ɹɛd/ <i>red</i></span></div>
-          <div class="txt"><span class="lbl">common</span> i read yesterday</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_read-a_common.mp3"></audio>
-            <span class="ph">/ɹɛd/ <i>red</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>read</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /ɹid/ <i>reed</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> i read nightly</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_read-b_plain.mp3"></audio>
-            <span class="ph">/ɹid/ <i>reed</i></span></div>
-          <div class="txt"><span class="lbl">common</span> i read nightly</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_read-b_common.mp3"></audio>
-            <span class="ph">/ɹid/ <i>reed</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>row</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /ɹoʊ/ <i>roh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a row of seats</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_row-a_plain.mp3"></audio>
-            <span class="ph">/ɹoʊ/ <i>roh</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a row of seats</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_row-a_common.mp3"></audio>
-            <span class="ph">/ɹoʊ/ <i>roh</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>row</b> reading B
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /ɹaʊ/ <i>row</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a noisy row</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_row-b_plain.mp3"></audio>
-            <span class="ph">/ɹaʊ/ <i>row</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a noisy row</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_row-b_common.mp3"></audio>
-            <span class="ph">/ɹaʊ/ <i>row</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>sewer</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /suə/ <i>soouh</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a sewer line</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_sewer-a_plain.mp3"></audio>
-            <span class="ph">/suə/ <i>soouh</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a sewer line</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_sewer-a_common.mp3"></audio>
-            <span class="ph">/suə/ <i>soouh</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>wind</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /wɪnd/ <i>wind</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> the wind blew</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_wind-a_plain.mp3"></audio>
-            <span class="ph">/wɪnd/ <i>wind</i></span></div>
-          <div class="txt"><span class="lbl">common</span> the wind blew</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_wind-a_common.mp3"></audio>
-            <span class="ph">/wɪnd/ <i>wind</i></span></div>
-        </div>
-        <div class="item neutral">
-          <div class="hd"><span class="tag neutral">held</span>
-            <b>wound</b> reading A
-            <span class="dec">keep_plain</span>
-            <span class="tgt">needs /wund/ <i>woond</i></span></div>
-          <div class="txt"><span class="lbl">plain</span> a knife wound</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_wound-a_plain.mp3"></audio>
-            <span class="ph">/wund/ <i>woond</i></span></div>
-          <div class="txt"><span class="lbl">common</span> a knife wound</div>
-          <div class="au"><audio controls preload="none" src="audio/tts4b_fs8_pronrft2_20261029_wound-a_common.mp3"></audio>
-            <span class="ph">/wund/ <i>woond</i></span></div>
-        </div>
-    </section>
-
-
-    <section>
-      <h2>Held out: 173 sentences the table was never fitted to</h2>
-      <p class="lede">The suite above is <b>in-sample</b> &mdash; the carrier table was mined on
-      those 29 sentences and scored on those same 29, so a number on it is an upper bound. This
-      set is <b>173 sentences</b>, 22 of 25 pairs, with <b>zero overlap</b> with the mining
-      sentences. It is the only out-of-sample evidence here. (The TSV has no header row &mdash;
-      its first line is data &mdash; so reading it with a CSV reader silently loses a sentence
-      and reports 172.)</p>
-      <table>
-        <tr><th>rule</th><th>rewrites</th><th>right reading</th><th>wrong reading</th></tr>
-        <tr><td class="m">2026-10-28.3 (before)</td><td>49</td><td>32</td><td><b>17</b></td></tr>
-        <tr><td class="m">2026-10-30.1 (after)</td><td>32</td>
-          <td>32</td>
-          <td><b>0</b></td></tr>
-      </table>
-      <p class="lede small">That table is <b>text</b>: which reading the rule chose, against the
-      gold label. The rows underneath are <b>audio</b>: what the model actually said, decoded to
-      phones. They are different measurements and the second is the one that matters.</p>
-      <p class="lede small">On the 173 rows the rule fires 32 times,
-      8 gained and 1 lost &mdash;
-      <b>+7</b> on the fired set, 122 &rarr;
-      129 exact over the whole set. Before the fix the same 173 rows
-      produced 17 <b>wrong</b> rewrites: 13 <code>read</code> past tense turned into
-      <code>reed</code>, and 4 <code>wind</code> nouns turned into <code>whined</code>.</p>
-      
-        <div class="item bad">
-          <div class="hd"><span class="tag bad">lost</span> <b>wind</b>
-            reading B <span class="dec">wind:B:carrier:cue</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
-          <div class="txt"><span class="lbl">plain</span> I'm just trying to wind down a bit before bed.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_100_plain.mp3"></audio>
-            <span class="ph">/waɪnd/</span></div>
-          <div class="txt"><span class="lbl">rule</span> I'm just trying to whined down a bit before bed.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_100_after.mp3"></audio>
-            <span class="ph">/waɪn/</span></div>
         </div>
         <div class="item ok">
           <div class="hd"><span class="tag ok">gained</span> <b>read</b>
             reading B <span class="dec">read:B:carrier:grammar</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
-          <div class="txt"><span class="lbl">plain</span> Did you read that too?</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_000_plain.mp3"></audio>
-            <span class="ph">/ɹɛd/</span></div>
-          <div class="txt"><span class="lbl">rule</span> Did you reed that too?</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_000_after.mp3"></audio>
-            <span class="ph">/ɹid/</span></div>
-        </div>
-        <div class="item ok">
-          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
-            reading B <span class="dec">read:B:carrier:grammar</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
           <div class="txt"><span class="lbl">plain</span> Why don't I read the story and we can just relax for a bit.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_002_plain.mp3"></audio>
-            <span class="ph">/ɹɛd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_002_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
           <div class="txt"><span class="lbl">rule</span> Why don't I reed the story and we can just relax for a bit.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_002_after.mp3"></audio>
-            <span class="ph">/ɹid/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_002_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
         </div>
         <div class="item ok">
           <div class="hd"><span class="tag ok">gained</span> <b>read</b>
             reading B <span class="dec">read:B:carrier:grammar</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
-          <div class="txt"><span class="lbl">plain</span> Yes, I am struggling slightly. I did not read far into the Jane Austen books you recommended.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_005_plain.mp3"></audio>
-            <span class="ph">/ɹɛd/</span></div>
-          <div class="txt"><span class="lbl">rule</span> Yes, I am struggling slightly. I did not reed far into the Jane Austen books you recommended.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_005_after.mp3"></audio>
-            <span class="ph">/ɹid/</span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I thought, what better way to help you fall asleep than to read you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_010_plain.mp3"></audio>
+            <span class="ph">/ɹidʒ/ <i>reej</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I thought, what better way to help you fall asleep than to reed you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_010_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
         </div>
         <div class="item ok">
           <div class="hd"><span class="tag ok">gained</span> <b>read</b>
             reading B <span class="dec">read:B:carrier:grammar</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> What should we read today?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_018_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> What should we reed today?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_018_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
           <div class="txt"><span class="lbl">plain</span> I read it every year.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_023_plain.mp3"></audio>
-            <span class="ph">/ɹɛd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_023_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
           <div class="txt"><span class="lbl">rule</span> I reed it every year.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_023_after.mp3"></audio>
-            <span class="ph">/ɹid/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_023_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> So I didn't think anyone had read the whole thing.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_027_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> So I didn't think anyone had red the whole thing.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_027_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Have you actually read this? You haven't, seriously.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_031_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Have you actually red this? You haven't, seriously.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_031_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> You should have read the contract yourself, rather than just sign it.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_049_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> You should have red the contract yourself, rather than just sign it.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_049_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
         </div>
         <div class="item ok">
           <div class="hd"><span class="tag ok">gained</span> <b>lead</b>
             reading A <span class="dec">lead:A:carrier:cue</span>
-            <span class="tgt">needs /A/
-              <i></i></span></div>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
           <div class="txt"><span class="lbl">plain</span> My heart is cold and it feels like a lead weight.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_068_plain.mp3"></audio>
-            <span class="ph">/lid/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_068_plain.mp3"></audio>
+            <span class="ph">/lid/ <i>leed</i></span></div>
           <div class="txt"><span class="lbl">rule</span> My heart is cold and it feels like a led weight.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_068_after.mp3"></audio>
-            <span class="ph">/lɛd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_068_after.mp3"></audio>
+            <span class="ph">/lɛd/ <i>led</i></span></div>
         </div>
         <div class="item ok">
           <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
             reading B <span class="dec">wind:B:carrier:cue</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
           <div class="txt"><span class="lbl">plain</span> I take a long piece and wind it tightly around your wrists.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_103_plain.mp3"></audio>
-            <span class="ph">/wɪnd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_103_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
           <div class="txt"><span class="lbl">rule</span> I take a long piece and whined it tightly around your wrists.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_103_after.mp3"></audio>
-            <span class="ph">/waɪnd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_103_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
         </div>
         <div class="item ok">
           <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
             reading B <span class="dec">wind:B:carrier:cue</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
           <div class="txt"><span class="lbl">plain</span> Afterwards I turn around and wind my arms around your neck, and we gently kiss.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_107_plain.mp3"></audio>
-            <span class="ph">/wɪnd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_107_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
           <div class="txt"><span class="lbl">rule</span> Afterwards I turn around and whined my arms around your neck, and we gently kiss.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_107_after.mp3"></audio>
-            <span class="ph">/waɪnd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_107_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
         </div>
         <div class="item ok">
           <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
             reading B <span class="dec">wind:B:carrier:cue</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
           <div class="txt"><span class="lbl">plain</span> Someone knew that the jasmine would wind its way up the posts of the fence.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_108_plain.mp3"></audio>
-            <span class="ph">/wɪnd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_108_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
           <div class="txt"><span class="lbl">rule</span> Someone knew that the jasmine would whined its way up the posts of the fence.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_108_after.mp3"></audio>
-            <span class="ph">/waɪnd/</span></div>
+          <div class="au"><audio controls preload="none" src="audio/67m_108_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
         </div>
-        <div class="item warn">
-          <div class="hd"><span class="tag warn">still wrong</span> <b>read</b>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
             reading B <span class="dec">read:B:carrier:grammar</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
-          <div class="txt"><span class="lbl">plain</span> I thought, what better way to help you fall asleep than to read you a little bedtime story.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_010_plain.mp3"></audio>
-            <span class="ph">/ɹidʒ/</span></div>
-          <div class="txt"><span class="lbl">rule</span> I thought, what better way to help you fall asleep than to reed you a little bedtime story.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_010_after.mp3"></audio>
-            <span class="ph">/ɹidʒ/</span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Did you read that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_000_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Did you reed that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_000_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
         </div>
-        <div class="item warn">
-          <div class="hd"><span class="tag warn">still wrong</span> <b>wind</b>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I want to read a book in two days.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_003_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I want to reed a book in two days.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_003_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Did you read the book?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_004_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Did you reed the book?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_004_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yes, I am struggling slightly. I did not read far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_005_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yes, I am struggling slightly. I did not reed far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_005_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> It is beautiful writing, said Madame, but I cannot read it.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_006_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> It is beautiful writing, said Madame, but I cannot reed it.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_006_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I did read the email you sent the whole committee about this day.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_008_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I did reed the email you sent the whole committee about this day.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_008_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Do you want me to read it to you? I will.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_009_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Do you want me to reed it to you? I will.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_009_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Hold on. Let me read it out loud.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_011_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Hold on. Let me reed it out loud.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_011_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yes, I could read my book, but I could also spend time with you.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_012_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yes, I could reed my book, but I could also spend time with you.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_012_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Why would she want to read that? No. Hey, give it back.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_013_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Why would she want to reed that? No. Hey, give it back.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_013_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I can't wait to read your essay.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_014_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I can't wait to reed your essay.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_014_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Can you just read that article you sent last night and try to finish it, please?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_020_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Can you just reed that article you sent last night and try to finish it, please?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_020_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I have read this awful piece, so I already know.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_026_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I have red this awful piece, so I already know.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_026_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I only have one book published and nobody read it, so I doubt you've heard of me.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_028_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I only have one book published and nobody red it, so I doubt you've heard of me.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_028_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I was so excited I had read twenty pages of Derek's book.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_030_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I was so excited I had red twenty pages of Derek's book.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_030_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Oh no. Uh yeah, no, I've read all her books.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_033_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Oh no. Uh yeah, no, I've red all her books.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_033_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> But as she read on, her joy turned to horror.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_034_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> But as she red on, her joy turned to horror.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_034_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> And I've read a bunch of the old Star Wars books.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_035_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> And I've red a bunch of the old Star Wars books.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_035_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I think I've read that. That sounds familiar.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_043_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I think I've red that. That sounds familiar.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_043_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> When Louis had read the introduction he dismissed all attendants with a wave of the hand.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_044_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> When Louis had red the introduction he dismissed all attendants with a wave of the hand.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_044_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I've read your resume. I know your qualifications.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_046_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I've red your resume. I know your qualifications.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_046_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I've read a bunch of stories about these things.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_047_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I've red a bunch of stories about these things.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_047_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Her eyes visibly widened when she read the part I'd expected.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_050_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Her eyes visibly widened when she red the part I'd expected.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_050_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading A <span class="dec">read:A:carrier:grammar</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Have you read any good books lately?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_052_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Have you red any good books lately?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_052_after.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
             reading B <span class="dec">wind:B:carrier:cue</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
-          <div class="txt"><span class="lbl">plain</span> Or maybe you want to get some rest or wind down and put your feet up.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_099_plain.mp3"></audio>
-            <span class="ph">/waɪn/</span></div>
-          <div class="txt"><span class="lbl">rule</span> Or maybe you want to get some rest or whined down and put your feet up.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_099_after.mp3"></audio>
-            <span class="ph">/waɪn/</span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Hm, you're right. I wind up always hating how these sleeves feel.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_098_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Hm, you're right. I whined up always hating how these sleeves feel.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_098_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
         </div>
-        <div class="item warn">
-          <div class="hd"><span class="tag warn">still wrong</span> <b>wind</b>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
             reading B <span class="dec">wind:B:carrier:cue</span>
-            <span class="tgt">needs /B/
-              <i></i></span></div>
-          <div class="txt"><span class="lbl">plain</span> It is time to wind down. Take a deep breath.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_106_plain.mp3"></audio>
-            <span class="ph">/waɪn/</span></div>
-          <div class="txt"><span class="lbl">rule</span> It is time to whined down. Take a deep breath.</div>
-          <div class="au"><audio controls preload="none" src="audio/ho_106_after.mp3"></audio>
-            <span class="ph">/waɪn/</span></div>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Good clockworks are they: only be careful to wind them up properly!</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_101_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Good clockworks are they: only be careful to whined them up properly!</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_101_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
         </div>
-      <p class="lede small">Every row above is a pair: same sentence, same seed, same
-      checkpoint. The one <b>lost</b> row is <code>wind down</code> &mdash; the carrier
-      <code>whined</code> is right for <code>wind up</code> and wrong before
-      <code>down</code>, which is a carrier problem, not a reading problem.</p>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I knew you would wind up landing on your feet.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_102_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I knew you would whined up landing on your feet.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_102_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Have you ever noticed that when you try not to think about something, you wind up thinking about it more.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_104_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Have you ever noticed that when you try not to think about something, you whined up thinking about it more.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_104_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> The shareholders will vote to wind up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_105_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> The shareholders will vote to whined up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_105_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>bow</b>
+            reading B <span class="dec">bow:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I'm pulling at the ends of the ribbon and the bow comes undone and the gift opens.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_128_plain.mp3"></audio>
+            <span class="ph">/boʊ/ <i>bouu</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I'm pulling at the ends of the ribbon and the bo comes undone and the gift opens.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_128_after.mp3"></audio>
+            <span class="ph">/boʊ/ <i>bouu</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>bow</b>
+            reading B <span class="dec">bow:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> So, do you want me to teach you how to shoot a bow or a crossbow?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_129_plain.mp3"></audio>
+            <span class="ph">/boʊ/ <i>bouu</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> So, do you want me to teach you how to shoot a bo or a crossbow?</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_129_after.mp3"></audio>
+            <span class="ph">/boʊ/ <i>bouu</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>bow</b>
+            reading B <span class="dec">bow:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Sleeves rolled up and a bow tie hanging loosely around my neck.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_131_plain.mp3"></audio>
+            <span class="ph">/boʊ/ <i>bouu</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Sleeves rolled up and a bo tie hanging loosely around my neck.</div>
+          <div class="au"><audio controls preload="none" src="audio/67m_131_after.mp3"></audio>
+            <span class="ph">/boʊ/ <i>bouu</i></span></div>
+        </div>
     </section>
+    <section>
+      <h2>4B 3.31B <span class="sub">accent1, 8 steps &middot; POST /tts</span></h2>
+      <p class="lede">Table <code>tts4b_fs8_accent1_20261030</code>: <b>3</b>
+      carrier, <b>14</b> keep-plain,
+      <b>8</b> unshipped, of 25 pairs.
+      Fires on <b>29</b> of 173 held-out rows; the other
+      144 are left as written and
+      <b>144 of 144</b> come back byte-identical.</p>
+      
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Did you read that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_000_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Did you reed that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_000_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Why don't I read the story and we can just relax for a bit.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_002_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Why don't I reed the story and we can just relax for a bit.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_002_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Did you read the book?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_004_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Did you reed the book?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_004_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yes, I am struggling slightly. I did not read far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_005_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yes, I am struggling slightly. I did not reed far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_005_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I did read the email you sent the whole committee about this day.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_008_plain.mp3"></audio>
+            <span class="ph">/ɹɪd/ <i>rid</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I did reed the email you sent the whole committee about this day.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_008_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I thought, what better way to help you fall asleep than to read you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_010_plain.mp3"></audio>
+            <span class="ph">/ɹidʒ/ <i>reej</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I thought, what better way to help you fall asleep than to reed you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_010_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yes, I could read my book, but I could also spend time with you.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_012_plain.mp3"></audio>
+            <span class="ph">/ɹeɪd/ <i>reid</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yes, I could reed my book, but I could also spend time with you.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_012_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Can you just read that article you sent last night and try to finish it, please?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_020_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Can you just reed that article you sent last night and try to finish it, please?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_020_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I read it every year.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_023_plain.mp3"></audio>
+            <span class="ph">/ɹɛd/ <i>red</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I reed it every year.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_023_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>lead</b>
+            reading A <span class="dec">lead:A:carrier:cue</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> My heart is cold and it feels like a lead weight.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_068_plain.mp3"></audio>
+            <span class="ph">/lid/ <i>leed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> My heart is cold and it feels like a led weight.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_068_after.mp3"></audio>
+            <span class="ph">/lɛd/ <i>led</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Hm, you're right. I wind up always hating how these sleeves feel.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_098_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Hm, you're right. I whined up always hating how these sleeves feel.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_098_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Or maybe you want to get some rest or wind down and put your feet up.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_099_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Or maybe you want to get some rest or whined down and put your feet up.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_099_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I'm just trying to wind down a bit before bed.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_100_plain.mp3"></audio>
+            <span class="ph">/wɪn/ <i>win</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I'm just trying to whined down a bit before bed.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_100_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I knew you would wind up landing on your feet.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_102_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I knew you would whined up landing on your feet.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_102_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I take a long piece and wind it tightly around your wrists.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_103_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I take a long piece and whined it tightly around your wrists.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_103_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Have you ever noticed that when you try not to think about something, you wind up thinking about it more.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_104_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Have you ever noticed that when you try not to think about something, you whined up thinking about it more.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_104_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> It is time to wind down. Take a deep breath.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_106_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> It is time to whined down. Take a deep breath.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_106_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Afterwards I turn around and wind my arms around your neck, and we gently kiss.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_107_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Afterwards I turn around and whined my arms around your neck, and we gently kiss.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_107_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Someone knew that the jasmine would wind its way up the posts of the fence.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_108_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Someone knew that the jasmine would whined its way up the posts of the fence.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_108_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yeah, we can read your favorite book tomorrow.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_001_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yeah, we can reed your favorite book tomorrow.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_001_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I want to read a book in two days.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_003_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I want to reed a book in two days.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_003_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> It is beautiful writing, said Madame, but I cannot read it.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_006_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> It is beautiful writing, said Madame, but I cannot reed it.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_006_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Do you want me to read it to you? I will.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_009_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Do you want me to reed it to you? I will.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_009_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Hold on. Let me read it out loud.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_011_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Hold on. Let me reed it out loud.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_011_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Why would she want to read that? No. Hey, give it back.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_013_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Why would she want to reed that? No. Hey, give it back.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_013_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I can't wait to read your essay.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_014_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I can't wait to reed your essay.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_014_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> What should we read today?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_018_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> What should we reed today?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_018_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Good clockworks are they: only be careful to wind them up properly!</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_101_plain.mp3"></audio>
+            <span class="ph">/wɪn/ <i>win</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Good clockworks are they: only be careful to whined them up properly!</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_101_after.mp3"></audio>
+            <span class="ph">/weɪnd/ <i>weind</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> The shareholders will vote to wind up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_105_plain.mp3"></audio>
+            <span class="ph">/wɪnd/ <i>wind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> The shareholders will vote to whined up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_tts_105_after.mp3"></audio>
+            <span class="ph">/wind/ <i>weend</i></span></div>
+        </div>
+    </section>
+    <section>
+      <h2>4B 3.31B <span class="sub">accent1, 8 steps, the streaming route &middot; POST /stream</span></h2>
+      <p class="lede">Table <code>tts4b_fs8_accent1_20261030</code>: <b>3</b>
+      carrier, <b>14</b> keep-plain,
+      <b>8</b> unshipped, of 25 pairs.
+      Fires on <b>29</b> of 173 held-out rows; the other
+      144 are left as written and
+      <b>144 of 144</b> come back byte-identical.</p>
+      
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Hm, you're right. I wind up always hating how these sleeves feel.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_098_plain.mp3"></audio>
+            <span class="ph">/weɪnd/ <i>weind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Hm, you're right. I whined up always hating how these sleeves feel.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_098_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Or maybe you want to get some rest or wind down and put your feet up.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_099_plain.mp3"></audio>
+            <span class="ph">/waɪn/ <i>weyen</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Or maybe you want to get some rest or whined down and put your feet up.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_099_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I'm just trying to wind down a bit before bed.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_100_plain.mp3"></audio>
+            <span class="ph">/waɪn/ <i>weyen</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I'm just trying to whined down a bit before bed.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_100_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Good clockworks are they: only be careful to wind them up properly!</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_101_plain.mp3"></audio>
+            <span class="ph">/weɪnd/ <i>weind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Good clockworks are they: only be careful to whined them up properly!</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_101_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I take a long piece and wind it tightly around your wrists.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_103_plain.mp3"></audio>
+            <span class="ph">/weɪnd/ <i>weind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I take a long piece and whined it tightly around your wrists.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_103_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Have you ever noticed that when you try not to think about something, you wind up thinking about it more.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_104_plain.mp3"></audio>
+            <span class="ph">/weɪnd/ <i>weind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Have you ever noticed that when you try not to think about something, you whined up thinking about it more.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_104_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> The shareholders will vote to wind up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_105_plain.mp3"></audio>
+            <span class="ph">/weɪnd/ <i>weind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> The shareholders will vote to whined up the company on Friday morning.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_105_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item ok">
+          <div class="hd"><span class="tag ok">gained</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Afterwards I turn around and wind my arms around your neck, and we gently kiss.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_107_plain.mp3"></audio>
+            <span class="ph">/weɪnd/ <i>weind</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Afterwards I turn around and whined my arms around your neck, and we gently kiss.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_107_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Did you read that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_000_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Did you reed that too?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_000_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yeah, we can read your favorite book tomorrow.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_001_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yeah, we can reed your favorite book tomorrow.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_001_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Why don't I read the story and we can just relax for a bit.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_002_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Why don't I reed the story and we can just relax for a bit.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_002_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I want to read a book in two days.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_003_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I want to reed a book in two days.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_003_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Did you read the book?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_004_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Did you reed the book?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_004_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yes, I am struggling slightly. I did not read far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_005_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yes, I am struggling slightly. I did not reed far into the Jane Austen books you recommended.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_005_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> It is beautiful writing, said Madame, but I cannot read it.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_006_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> It is beautiful writing, said Madame, but I cannot reed it.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_006_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I did read the email you sent the whole committee about this day.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_008_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I did reed the email you sent the whole committee about this day.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_008_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Do you want me to read it to you? I will.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_009_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Do you want me to reed it to you? I will.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_009_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I thought, what better way to help you fall asleep than to read you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_010_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I thought, what better way to help you fall asleep than to reed you a little bedtime story.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_010_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Hold on. Let me read it out loud.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_011_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Hold on. Let me reed it out loud.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_011_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Yes, I could read my book, but I could also spend time with you.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_012_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Yes, I could reed my book, but I could also spend time with you.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_012_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Why would she want to read that? No. Hey, give it back.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_013_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Why would she want to reed that? No. Hey, give it back.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_013_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I can't wait to read your essay.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_014_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I can't wait to reed your essay.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_014_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> What should we read today?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_018_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> What should we reed today?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_018_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Can you just read that article you sent last night and try to finish it, please?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_020_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Can you just reed that article you sent last night and try to finish it, please?</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_020_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>read</b>
+            reading B <span class="dec">read:B:carrier:grammar</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I read it every year.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_023_plain.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I reed it every year.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_023_after.mp3"></audio>
+            <span class="ph">/ɹid/ <i>reed</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>lead</b>
+            reading A <span class="dec">lead:A:carrier:cue</span>
+            <span class="tgt">needs /A/ <i>A</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> My heart is cold and it feels like a lead weight.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_068_plain.mp3"></audio>
+            <span class="ph">/lɛd/ <i>led</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> My heart is cold and it feels like a led weight.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_068_after.mp3"></audio>
+            <span class="ph">/lɛd/ <i>led</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> I knew you would wind up landing on your feet.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_102_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> I knew you would whined up landing on your feet.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_102_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> It is time to wind down. Take a deep breath.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_106_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> It is time to whined down. Take a deep breath.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_106_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+        <div class="item neutral">
+          <div class="hd"><span class="tag neutral">already right</span> <b>wind</b>
+            reading B <span class="dec">wind:B:carrier:cue</span>
+            <span class="tgt">needs /B/ <i>B</i></span></div>
+          <div class="txt"><span class="lbl">plain</span> Someone knew that the jasmine would wind its way up the posts of the fence.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_108_plain.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+          <div class="txt"><span class="lbl">rule</span> Someone knew that the jasmine would whined its way up the posts of the fence.</div>
+          <div class="au"><audio controls preload="none" src="audio/4b_stream_108_after.mp3"></audio>
+            <span class="ph">/waɪnd/ <i>weyend</i></span></div>
+        </div>
+    </section>
+
+<h2>The rows it leaves alone</h2>
+<table>
+  <tr><th>run</th><th>untouched rows</th><th>byte-identical</th><th>moved</th>
+    <th>fired rows that changed</th></tr>
+  
+      <tr><td class="m">Cs2 67M POST /v1/audio/speech</td>
+        <td>129</td><td><b>129</b></td>
+        <td>0</td>
+        <td>44 / 44</td></tr>
+      <tr><td class="m">4B 3.31B POST /tts</td>
+        <td>144</td><td><b>144</b></td>
+        <td>0</td>
+        <td>29 / 29</td></tr>
+      <tr><td class="m">4B 3.31B POST /stream</td>
+        <td>144</td><td><b>144</b></td>
+        <td>0</td>
+        <td>13 / 29</td></tr>
+</table>
+<p class="lede small">A row the rule does not rewrite is handed to the engine as the same string
+with the same seed, so any difference would be the box, not the feature. Every one of them came
+back with the same md5 &mdash; hashed twice, once by the scorer and once independently. The last
+column is the control for that claim: on the same runs, every fired row <i>did</i> change, so
+&ldquo;identical&rdquo; above means &ldquo;left alone&rdquo;, not &ldquo;nothing ever changes
+here&rdquo;. On <code>/stream</code> the 4B changed fewer fired rows (13 of 29) because the lab
+applies its own cue before synthesising, so some plain-arm clips already said the target reading.</p>
+
+<h2>What it does to the voice, on the rows it touches</h2>
+<p class="lede">A rewrite that fixes the word but flattens the delivery is not a fix. The control
+that can size this is the spread of a <b>different draw of the same sentence</b> (seeds 0, 1000,
+2000) &mdash; the variation a listener already accepts between two renders. If the rule's
+movement sits inside that, it is not distinguishable from the model's own noise.</p>
+<table>
+  <tr><th>model</th><th>feature</th><th>rule &Delta; (median)</th>
+    <th>seed-to-seed null (median)</th><th>null p90</th><th>verdict</th></tr>
+  
+      <tr><td class="m">67M</td><td>f0 interquartile range (st)</td>
+        <td>+0.325</td>
+        <td>1.100</td>
+        <td>2.775</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">67M</td><td>f0 range (st)</td>
+        <td>+0.390</td>
+        <td>6.270</td>
+        <td>17.660</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">67M</td><td>energy SD (dB)</td>
+        <td>-0.353</td>
+        <td>3.333</td>
+        <td>7.638</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">67M</td><td>pause fraction</td>
+        <td>-0.003</td>
+        <td>0.016</td>
+        <td>0.035</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">67M</td><td>duration (s)</td>
+        <td>+0.080</td>
+        <td>0.000</td>
+        <td>0.000</td>
+        <td class="tagcell"><span class="tag warn">beyond the null</span></td></tr>
+      <tr><td class="m">4B /tts</td><td>f0 interquartile range (st)</td>
+        <td>-0.300</td>
+        <td>1.625</td>
+        <td>4.500</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">4B /tts</td><td>f0 range (st)</td>
+        <td>-0.485</td>
+        <td>3.280</td>
+        <td>6.365</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">4B /tts</td><td>energy SD (dB)</td>
+        <td>-2.129</td>
+        <td>7.459</td>
+        <td>15.420</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">4B /tts</td><td>pause fraction</td>
+        <td>+0.005</td>
+        <td>0.058</td>
+        <td>0.112</td>
+        <td class="tagcell"><span class="tag neutral">inside the null</span></td></tr>
+      <tr><td class="m">4B /tts</td><td>duration (s)</td>
+        <td>+0.080</td>
+        <td>0.000</td>
+        <td>0.000</td>
+        <td class="tagcell"><span class="tag warn">beyond the null</span></td></tr>
+</table>
+<p class="lede small">On every feature but duration the rule moves <b>less than a different draw
+of the same sentence</b>, on both models. Duration is the one real effect and it is not noise:
+the seed never changes length (0.000 on all 73 rows) while the rule adds <b>+0.08 s</b>, which is
+the carrier being a longer word than the one it replaces. A same-text, same-seed repeat control
+was also run and is <b>width zero</b> (0.000 on 25/25 and 15/15 rows): it proves the box is
+deterministic and cannot size an effect, so it is not used here to claim one.</p>
+<p class="note warn">This is a <b>measurement of prosodic features</b>, not a naturalness rating.
+Nobody has yet judged whether a carrier sounds like a person; every carrier on this page is
+validated as &ldquo;the phones match&rdquo;, never as &ldquo;this sounds right&rdquo;.</p>
 
 
     <section>
       <h2>What the fix changed in real corpus text</h2>
-      <p class="lede">The corpus check reads 4 494 335 rows across four manifests. Before the
-      fix, <b>26.9 %</b> of Cs2's rewrites and <b>21.2 %</b> of the 4B's had <b>no cue in
-      range</b> &mdash; the frequency fallback chose the reading. After the fix that share is
-      <b>0</b>: an occurrence the table cannot decide is left as written. Cs2's rewrites went
-      <b>5 188 &rarr; 13 043</b>, which is not the direction you would guess, and the reason
-      is below.</p>
+      <p class="lede">The corpus check reads <b>4,494,335</b> rows across four manifests
+      (<code>v2</code>, <code>base</code>, <code>emilia</code>, <code>yodas</code>). Before the
+      fix, on the 974 688 rows measured on 2026-10-29, <b>26.9 %</b> of Cs2's rewrites and
+      <b>21.2 %</b> of the 4B's had <b>no cue in range</b> &mdash; the frequency fallback chose
+      the reading. After the fix that share is <b>0</b>: an occurrence the table cannot decide
+      is left as written.</p>
+      <table>
+        <tr><th>corpus run</th><th>rows scanned</th><th>rows changed</th>
+          <th>occurrences rewritten</th><th>share of rows</th></tr>
+        <tr><td class="m">Cs2 67M</td><td>4,494,335</td><td>14,561</td>
+          <td>15,592</td><td>0.347 %</td></tr>
+        <tr><td class="m">4B accent1</td><td>4,494,335</td><td>11,808</td>
+          <td>12,564</td><td>0.280 %</td></tr>
+      </table>
+      <p class="lede small">Cs2 rewrites <b>1.2&times;</b> as often as
+      the 4B does on the same text, and that is the table, not the rule: the reading is decided
+      by one shared grammar, the spelling by a per-model measurement, and Cs2 needs a carrier on
+      7 of 25 pairs where accent1 needs one on 3.</p>
       
         <div class="item ok">
           <div class="hd"><span class="tag ok">rewritten</span> <b>read</b>
@@ -829,7 +1400,7 @@ already right and the table deliberately left it alone; that decision is what th
             reading A <span class="dec">wind:A:keep_plain:grammar</span></div>
           <div class="txt"><span class="lbl">plain</span> the wind was picking up</div>
           <div class="au"><audio controls preload="none" src="audio/corpus_the_wind_was_picking_up_plain.mp3"></audio></div>
-          <div class="txt"><span class="lbl">before</span> <span class="strike">the whined was picking up</span></div><div class="au"><span class="ph">not rendered (text recorded, audio never made)</span></div>
+          <div class="txt"><span class="lbl">before</span> <span class="strike">the whined was picking up</span></div><div class="au"><span class="ph">text recorded, audio never made</span></div>
           <div class="txt"><span class="lbl">after</span> the wind was picking up</div>
           <div class="au"><audio controls preload="none" src="audio/corpus_the_wind_was_picking_up_after.mp3"></audio></div>
           <div class="dec" style="margin-top:.35rem">no longer rewritten. The bare particle `up` was a wind-B cue, and it belonged to `picking`.</div>
@@ -839,31 +1410,90 @@ already right and the table deliberately left it alone; that decision is what th
             reading B <span class="dec">wind:B:carrier:cue</span></div>
           <div class="txt"><span class="lbl">plain</span> The shareholders will vote to wind up the company on Friday morning.</div>
           <div class="au"><audio controls preload="none" src="audio/corpus_The_shareholders_will_vote_to_wind_up_the_compan_plain.mp3"></audio></div>
-          <div class="txt"><span class="lbl">before</span> <span class="strike">The shareholders will vote to whined up the company on Friday morning.</span></div><div class="au"><span class="ph">not rendered (text recorded, audio never made)</span></div>
+          <div class="txt"><span class="lbl">before</span> <span class="strike">The shareholders will vote to whined up the company on Friday morning.</span></div><div class="au"><span class="ph">text recorded, audio never made</span></div>
           <div class="txt"><span class="lbl">after</span> The shareholders will vote to whined up the company on Friday morning.</div>
           <div class="au"><audio controls preload="none" src="audio/corpus_The_shareholders_will_vote_to_wind_up_the_compan_after.mp3"></audio></div>
           <div class="dec" style="margin-top:.35rem">still fires, and the carrier is the weak part: `whined` is right for `wind up` here, wrong before `wind down`. That is a carrier defect, not a reading defect.</div>
         </div>
       <p class="lede small">The first row is the one to read carefully. <code>didn't read</code>
       is do-support, so the verb is a bare infinitive /ri:d/ &mdash; the rewrite is
-      <b>correct</b>, and the previous version of this page called it a defect. The old rule
-      reached the same string from the frequency default with no cue in range: right answer,
-      wrong reason. The rewrite count rose because <code>read</code> B is now decided by modals
-      and do-support, which transcript English uses constantly (&ldquo;i'm going to read&rdquo;,
-      &ldquo;do you want me to read&rdquo;), and those were previously left undecided.</p>
+      <b>correct</b>. The old rule reached the same string from the frequency default with no cue
+      in range: right answer, wrong reason. The rewrite count rose because <code>read</code> B is
+      now decided by modals and do-support, which transcript English uses constantly
+      (&ldquo;i'm going to read&rdquo;), and those were previously left undecided.</p>
     </section>
+
+
+<h2>What it costs, and how often it acts</h2>
+<table>
+  <tr><th>model</th><th>rows</th><th>rewritten</th><th>share</th><th>markup touched</th>
+    <th>rewrite, median</th><th>p99</th></tr>
+  
+      <tr><td class="m">Cs2 67M</td><td>11,902</td><td>27</td>
+        <td>0.23 %</td><td>0</td>
+        <td>61 &micro;s</td><td>384 &micro;s</td></tr>
+      <tr><td class="m">4B accent1</td><td>11,902</td><td>20</td>
+        <td>0.17 %</td><td>0</td>
+        <td>60 &micro;s</td><td>363 &micro;s</td></tr>
+</table>
+<p class="lede small">Two held-out manifests, <b>11 902</b> real sentences. The rule changes
+<b>0.2 %</b> of them and never touches markup. The rewrite is a few tens of microseconds against
+a render of seconds, and the table load is a one-off at import. Those are counts of how often the
+feature <i>acts</i>; they are not a measured improvement in comprehension, which nobody has
+tested.</p>
+
+<h2>Where the code runs</h2>
+<p class="lede">The feature is seven files in two trees, plus two generated carrier tables. Six of
+them are on <code>onit/homographs</code>; the hook that calls them is not.</p>
+<table>
+  <tr><th>path</th><th>what it does</th><th>source of truth</th></tr>
+  
+      <tr><td><code>corpus/text/homographs.py</code></td><td>the reading table and the grammar cues</td>
+        <td><span class="tag ok">in git</span></td></tr>
+      <tr><td><code>corpus/text/homograph_core.py</code></td><td>resolve(): which reading this occurrence needs</td>
+        <td><span class="tag ok">in git</span></td></tr>
+      <tr><td><code>corpus/text/homograph_apply.py</code></td><td>plan(): which spelling THIS model needs</td>
+        <td><span class="tag ok">in git</span></td></tr>
+      <tr><td><code>corpus/text/carriers/&amp;lt;model&amp;gt;.json</code></td><td>the measured decisions, one file per checkpoint</td>
+        <td><span class="tag ok">in git</span></td></tr>
+      <tr><td><code>serving/tts/textnorm.py</code></td><td>+35 lines: call the applier last, after textnorm</td>
+        <td><span class="tag ok">in git</span></td></tr>
+      <tr><td><code>corpus/text/normalize_en.py</code></td><td>+43 lines: the same call on the training path</td>
+        <td><span class="tag ok">in git</span></td></tr>
+      <tr><td><code>serving/tts/server.py</code></td><td>the hook itself: <code>_apply_homographs</code> at parse()</td>
+        <td><span class="tag bad">on the box only</span></td></tr>
+</table>
+<p class="lede small">A table is keyed by <code>model_id</code>, and three things are checked
+before a single rewrite is applied, each failing closed to &ldquo;speak the text as written&rdquo;:
+the table's <code>rule_version</code> against the code's, its <code>engine</code> against the
+engine actually serving (<code>run_server.sh</code> defaults <code>TTS_ENGINE=4b</code>, so the
+67M API answers through the 4B lab engine unless that is emptied &mdash; a Cs2 table there would
+describe a voice the box is not using), and its <code>checkpoint_sha256</code> against the
+checkpoint on disk. The last one exists because on 2026-10-30 the systemd drop-in was repointed
+from <code>accent1</code> to <code>accent2</code> while <code>TTS_HOMOGRAPH_MODEL</code> still
+said <code>accent1</code>; both files are 13 224 509 793 bytes and both load.</p>
+<p class="note warn"><b>Deploy note.</b> <code>serving/tts/deploy.sh</code> rsyncs
+<code>serving/tts/</code> with <code>--delete</code>, and the repo's copy of that directory is a
+2026-10-28 lineage while the live tree carries files it does not
+(<code>engine4b.py</code>, <code>clones.py</code>, <code>pro_voices.py</code>,
+<code>seamless.py</code>, <code>limits.py</code>, and the vendored <code>homograph/</code>
+package). Run as-is it would delete 82 files from a live service. Stage the homograph package
+with <code>build_deploy.py</code>; do not use <code>deploy.sh</code> to ship this feature.</p>
 
 <footer>
   Checkpoints: <code>Cs2rft1d_67m_ema600.pt</code> (67M, 40 steps) and
-  <code>tts4b_fs8_pronrft2_20261029.pt</code> (3.31B, 8 steps). Plain arms render in a checkout
-  of <code>3c285ba1</code>, the commit before the rule, so the control is the model's own
-  inference. Phones are decoded by <code>wav2vec2-lv-60-espeak-cv-ft</code> at the target word.
-  Rule <code>2026-10-30.1</code>; the previous version of this page described
-  <code>2026-10-28.3</code>.
-  <br>Source, tables and the corpus run: <code>docs/HOMOGRAPH_COMMON_20261029.md</code> and
-  <code>docs/HOMOGRAPH_FIX_20261030.md</code> on <code>onit/homographs</code>.
-  <b>Still not a ship recommendation:</b> the 4B's held-out firing set is 2 sentences, and one
-  carrier (<code>whined</code>) is wrong before <code>wind down</code>. What is fixed is that
-  the rule no longer decides a reading from frequency alone.
+  <code>tts4b_fs8_accent1_20261030.pt</code> (3.31B, 8 steps). Rule
+  <code>2026-10-30.1</code>, core
+  <code>2026-10-29.1</code>. Phones decoded by
+  <code>wav2vec2-lv-60-espeak-cv-ft</code> at the target word. Plain arms are the model's own
+  inference on the same sentence with the feature disabled and the same seed, so only one word's
+  spelling differs between the pair.
+  <br>Source, tables, the plan and its retractions: <code>docs/HOMOGRAPH_TEST_PLAN_20261030.md</code>
+  and <code>docs/HOMOGRAPH_FIX_20261030.md</code> on <code>onit/homographs</code>.
+  <b>What this page does not show:</b> a naturalness rating; a magnitude for the production
+  benefit (27 and 20 rewritten sentences per 11 902 are counts, not a measured improvement in
+  comprehension); the 48 untouched 4B rows whose reading is still wrong, which are cue errors no
+  carrier can fix; and <code>accent2</code>, which is what the shared lab on <code>:8930</code>
+  serves and has never been measured.
 </footer>
 </body></html>
