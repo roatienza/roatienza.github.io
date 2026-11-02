@@ -12,6 +12,7 @@
   h1 { font-size:1.9rem; line-height:1.2; margin:0 0 .4rem }
   h2 { font-size:1.25rem; margin:2.6rem 0 .5rem; padding-top:1.2rem; border-top:2px solid var(--line) }
   h3 { font-size:1rem; margin:1.6rem 0 .4rem }
+  h4 { font-size:.9rem; margin:1.4rem 0 .3rem; color:var(--fg) }
   .sub { font-weight:400; color:var(--dim); font-size:.9rem }
   .lede { color:var(--dim); margin:.4rem 0 1.2rem }
   .lede.small { font-size:.9rem }
@@ -123,7 +124,21 @@ ASR a sentence to fall into — and it is how the word is spoken in use.</p>
 case). <b>Target WER</b> counts only the word slot. The field band is where the voice — or the
 ASR — falls apart; every number on this row is dominated by medical jargon.</p>
 
-<h2>2 · Listen to the evaluations</h2>
+<h2>2 · Two samples behind each number</h2>
+
+<p>Every number in section 1 comes from real renders. For each headline measure, two of the
+words behind it. The play button is the <b>seed-7 render</b> — the exact clip the ASR scored;
+the script is what was spoken; the three ASR columns are what <code>yoob-asr-2</code> wrote
+back for seeds 7, 11 and 23. <span style="color:var(--ok)">✓ exact</span> means the transcript
+matched the spoken form letter for letter; red is what was heard instead.</p>
+
+<div id="samples"></div>
+
+<p class="lede small">Chosen by hand to bracket each measure — a word the pipeline always gets
+and one it never gets. They illustrate; they don't re-derive. The rates come from all 7,365
+cases, not these 18 words.</p>
+
+<h2>3 · Listen to the evaluations</h2>
 
 <p>Every word below is the <b>seed-7 render</b>, the exact clip the ASR scored. The transcript
 shown is the transcript <i>of that clip</i> — audio and text can never disagree. The three
@@ -156,7 +171,7 @@ columns after the word show how the word fared across all three seeds
 <p class="lede small">Audio is loaded only when you press play. 2,455 clips, ~38 MB total,
 64 kbps MP3, the seed-7 render of each word.</p>
 
-<h2>3 · What Wilson 95% is</h2>
+<h2>4 · What Wilson 95% is</h2>
 
 <p>5,619 of 7,365 cases passed: <b>76.3%</b>. That is a <i>sample</i>. Re-run with different
 seeds and it would not land on 76.3% again. The Wilson score interval is the range of true
@@ -192,7 +207,7 @@ trials, and runs past 100% for <code>24 of 25</code>. Wilson is not symmetric, n
 exact figures.</p>
 <div id="bars"></div>
 
-<h2>4 · The WER of this evaluation, and where it assumes the ASR is accurate</h2>
+<h2>5 · The WER of this evaluation, and where it assumes the ASR is accurate</h2>
 
 <p>WER is <code>(S + D + I) / N</code> — substitutions, deletions and insertions over the
 reference word count. Here the reference is the carrier sentence itself
@@ -247,7 +262,7 @@ the ASR spelled it differently. Everything else is a real mishearing or a real m
 play the clip to tell which.</p>
 <div id="confusions"></div>
 
-<h2>5 · The full word grid</h2>
+<h2>6 · The full word grid</h2>
 <p class="lede small">All 2,455 words in list order. <b>Red</b> = failed seed 7,
 <b>amber</b> = failed seed 7 but the heard form is a homophone of the expected form.
 Hover for the transcript.</p>
@@ -312,6 +327,103 @@ document.querySelector('#bandtable tbody').innerHTML = BANDS.map(([b,k,n,wer,twe
     + `<td class="num">${k.toLocaleString()}</td><td class="num">${fmt1(k/n)}</td>`
     + `<td class="num">${fmt1(lo)}–${fmt1(hi)}</td>`
     + `<td class="num">${fmt(wer)}</td><td class="num">${fmt(twer)}</td></tr>`;
+}).join('');
+
+// ---- section 2: two samples behind each number ------------------------------
+const SAMPLES = [
+  {g:"case",w:"be",b:"core",f:null,e:"be",t:"Please say be again.",a:"be.mp3",nok:2,seeds:[{s:7,h:"be",ok:true},{s:11,h:"the",ok:false},{s:23,h:"be",ok:true}]},
+  {g:"case",w:"in",b:"core",f:null,e:"in",t:"Please say in again.",a:"in.mp3",nok:1,seeds:[{s:7,h:"it",ok:false},{s:11,h:"it",ok:false},{s:23,h:"in",ok:true}]},
+  {g:"word",w:"insulin",b:"field",f:"medical",e:"insulin",t:"Please say insulin again.",a:"insulin.mp3",nok:3,seeds:[{s:7,h:"insulin",ok:true},{s:11,h:"insulin",ok:true},{s:23,h:"insulin",ok:true}]},
+  {g:"word",w:"hypertension",b:"field",f:"medical",e:"hypertension",t:"Please say hypertension again.",a:"hypertension.mp3",nok:0,seeds:[{s:7,h:"horror temptation",ok:false},{s:11,h:"hard temptation",ok:false},{s:23,h:"hortation",ok:false}]},
+  {g:"core",w:"the",b:"core",f:null,e:"the",t:"Please say the again.",a:"the.mp3",nok:3,seeds:[{s:7,h:"the",ok:true},{s:11,h:"the",ok:true},{s:23,h:"the",ok:true}]},
+  {g:"core",w:"ought",b:"core",f:null,e:"ought",t:"Please say ought again.",a:"ought.mp3",nok:0,seeds:[{s:7,h:"odd",ok:false},{s:11,h:"odd",ok:false},{s:23,h:"odd",ok:false}]},
+  {g:"ext",w:"absence",b:"extended",f:null,e:"absence",t:"Please say absence again.",a:"absence.mp3",nok:3,seeds:[{s:7,h:"absence",ok:true},{s:11,h:"absence",ok:true},{s:23,h:"absence",ok:true}]},
+  {g:"ext",w:"award",b:"extended",f:null,e:"award",t:"Please say award again.",a:"award.mp3",nok:2,seeds:[{s:7,h:"a word",ok:false},{s:11,h:"award",ok:true},{s:23,h:"award",ok:true}]},
+  {g:"medical",w:"cerebral",b:"field",f:"medical",e:"cerebral",t:"Please say cerebral again.",a:"cerebral.mp3",nok:3,seeds:[{s:7,h:"cerebral",ok:true},{s:11,h:"cerebral",ok:true},{s:23,h:"cerebral",ok:true}]},
+  {g:"medical",w:"sphygmomanometer",b:"field",f:"medical",e:"sphygmomanometer",t:"Please say sphygmomanometer again.",a:"sphygmomanometer.mp3",nok:0,seeds:[{s:7,h:"spigom almond mater",ok:false},{s:11,h:"spy go home on a meter",ok:false},{s:23,h:"speigel almanometer",ok:false}]},
+  {g:"science",w:"observation",b:"field",f:"science",e:"observation",t:"Please say observation again.",a:"observation.mp3",nok:3,seeds:[{s:7,h:"observation",ok:true},{s:11,h:"observation",ok:true},{s:23,h:"observation",ok:true}]},
+  {g:"science",w:"thermodynamics",b:"field",f:"science",e:"thermodynamics",t:"Please say thermodynamics again.",a:"thermodynamics.mp3",nok:0,seeds:[{s:7,h:"tatum auditions",ok:false},{s:11,h:"totatarmamis",ok:false},{s:23,h:"tamar germans",ok:false}]},
+  {g:"legal",w:"venue",b:"field",f:"legal",e:"venue",t:"Please say venue again.",a:"venue.mp3",nok:3,seeds:[{s:7,h:"venue",ok:true},{s:11,h:"venue",ok:true},{s:23,h:"venue",ok:true}]},
+  {g:"legal",w:"justiciability",b:"field",f:"legal",e:"justiciability",t:"Please say justiciability again.",a:"justiciability.mp3",nok:0,seeds:[{s:7,h:"just the ability",ok:false},{s:11,h:"just a chablity",ok:false},{s:23,h:"just keyability",ok:false}]},
+  {g:"finance",w:"equity",b:"field",f:"finance",e:"equity",t:"Please say equity again.",a:"equity.mp3",nok:3,seeds:[{s:7,h:"equity",ok:true},{s:11,h:"equity",ok:true},{s:23,h:"equity",ok:true}]},
+  {g:"finance",w:"amortization",b:"field",f:"finance",e:"amortization",t:"Please say amortization again.",a:"amortization.mp3",nok:0,seeds:[{s:7,h:"am i to maiden",ok:false},{s:11,h:"amaturment",ok:false},{s:23,h:"enlightenment",ok:false}]},
+  {g:"computing",w:"iteration",b:"field",f:"computing",e:"iteration",t:"Please say iteration again.",a:"iteration.mp3",nok:3,seeds:[{s:7,h:"iteration",ok:true},{s:11,h:"iteration",ok:true},{s:23,h:"iteration",ok:true}]},
+  {g:"computing",w:"repository",b:"field",f:"computing",e:"repository",t:"Please say repository again.",a:"repository.mp3",nok:0,seeds:[{s:7,h:"report totally",ok:false},{s:11,h:"rupajuli",ok:false},{s:23,h:"robotally",ok:false}]},
+];
+
+const GROUPS = [
+  { g:"case", title:"Case-level pass", num:"5,619 / 7,365 = 76.29% (Wilson 95% 75.3\u201377.2)",
+    desc:"One render is one case: the same word, same voice, one seed. Each word below contributes three cases to the 7,365 \u2014 and both split their verdict across seeds, which is why case rates and word rates differ." },
+  { g:"word", title:"Word-level, all 3 seeds exact", num:"1,797 / 2,455 = 73.2% (Wilson 95% 71.4\u201374.9)",
+    desc:"A word passes only if every one of its three renders transcribes back exactly. One word that always lands, one that never does." },
+  { g:"core", title:"Core band", num:"97.5% case / 95.9% word",
+    desc:"The 415 most frequent English words. Almost nothing breaks here \u2014 <i>ought</i> is one of the 31 core cases that fail." },
+  { g:"ext", title:"Extended band", num:"94.6% case / 93.2% word",
+    desc:"The next 819 words. <i>award</i> shows what seed-dependence looks like: garbled once, exact twice." },
+  { g:"field", title:"Field band", num:"38.4% case / 32.0% word",
+    desc:"821 domain words \u2014 where the voice, or the ASR, falls apart. Per-field rates first, then two samples per field." },
+];
+
+const FIELDRATES = [
+  ["medical",    73, 513, 18, 171],
+  ["science",   205, 501, 59, 167],
+  ["legal",     233, 558, 63, 186],
+  ["finance",   152, 345, 41, 115],
+  ["computing", 283, 546, 82, 182],
+];
+
+function verdictLabel(r){
+  if (r.g === "case") return r.nok === 3 ? ["ok", "3 of its 3 cases pass"]
+    : r.nok === 0 ? ["bad", "0 of its 3 cases pass"]
+    : ["warn", `${r.nok} of its 3 cases pass`];
+  if (r.g === "word") return r.nok === 3 ? ["ok", "word passes \u2014 3/3 exact"]
+    : ["bad", "word fails \u2014 0/3 exact"];
+  return r.nok === 3 ? ["ok", "3/3 cases"] : r.nok === 0 ? ["bad", "0/3 cases"]
+    : ["warn", `${r.nok}/3 cases`];
+}
+
+function sampleRow(r){
+  const [vc, vt] = verdictLabel(r);
+  const seedTd = sd => sd.ok
+    ? '<span style="color:var(--ok)">\u2713 exact</span>'
+    : `<span style="color:var(--bad)">${esc(sd.h)}</span>`;
+  return `<tr>`
+    + `<td><button class="play" data-a="${esc(r.a)}" title="play the seed-7 render of &quot;${esc(r.w)}&quot;">\u25b6</button></td>`
+    + `<td class="w">${esc(r.w)}<br><span class="scr">${esc(r.b)}${r.f ? ' \u00b7 ' + esc(r.f) : ''}</span></td>`
+    + `<td class="scr">${esc(r.t)}</td>`
+    + r.seeds.map(sd => `<td class="heard">${seedTd(sd)}</td>`).join("")
+    + `<td><span class="tag ${vc}">${vt}</span></td></tr>`;
+}
+
+function sampleTable(rows){
+  return `<table class="wtable"><thead><tr><th></th><th>word</th><th>script (spoken)</th>`
+    + `<th>ASR seed 7</th><th>ASR seed 11</th><th>ASR seed 23</th><th>verdict</th></tr></thead>`
+    + `<tbody>${rows.map(sampleRow).join("")}</tbody></table>`;
+}
+
+document.getElementById('samples').innerHTML = GROUPS.map(({g,title,num,desc}) => {
+  let html = `<h3>${esc(title)} \u2014 ${num}</h3><p class="lede small">${desc}</p>`
+    + sampleTable(SAMPLES.filter(x => x.g === g));
+  if (g === "field") {
+    const [flo, fhi] = wilson(946, 2463);
+    html += `<p class="lede small" style="margin-top:.8rem">Per-field case rates, all 2,463 field cases:</p>`
+      + `<table class="wtable"><thead><tr><th>field</th><th class="num">cases</th><th class="num">pass</th>`
+      + `<th class="num">case rate</th><th class="num">Wilson 95%</th><th class="num">word rate (3/3 exact)</th></tr></thead><tbody>`
+      + FIELDRATES.map(([f,k,n,kw,nw]) => {
+          const [lo,hi] = wilson(k,n);
+          return `<tr><td>${f}</td><td class="num">${n.toLocaleString()}</td><td class="num">${k}</td>`
+            + `<td class="num">${fmt1(k/n)}</td><td class="num">${fmt1(lo)}\u2013${fmt1(hi)}</td>`
+            + `<td class="num">${fmt1(kw/nw)}</td></tr>`;
+        }).join("")
+      + `<tr><td><b>all field</b></td><td class="num">2,463</td><td class="num">946</td>`
+      + `<td class="num">${fmt1(946/2463)}</td><td class="num">${fmt1(flo)}\u2013${fmt1(fhi)}</td>`
+      + `<td class="num">${fmt1(263/821)}</td></tr></tbody></table>`;
+    html += [["medical","14.2%"],["science","40.9%"],["legal","41.8%"],
+             ["finance","44.1%"],["computing","51.8%"]].map(([f,rate]) =>
+      `<h4>${esc(f)} \u2014 ${rate} of cases pass</h4>`
+      + sampleTable(SAMPLES.filter(x => x.g === f))).join("");
+  }
+  return html;
 }).join('');
 
 // ---- the interval bars -----------------------------------------------------
