@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Common words — sample evaluations</title>
+<style>
+  :root { --bg:#fbfaf8; --fg:#1c1b19; --dim:#6b6760; --line:#e3ded6;
+           --ok:#1c6b3a; --bad:#a32020; --warn:#8a5a00; --neutral:#5a5750;
+           --accent:#8a5a00; }
+  * { box-sizing:border-box }
+  body { margin:0 auto; max-width:62rem; padding:2rem 1.25rem 6rem; background:var(--bg);
+          color:var(--fg); font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  h1 { font-size:1.9rem; line-height:1.2; margin:0 0 .4rem }
+  h2 { font-size:1.25rem; margin:2.6rem 0 .5rem; padding-top:1.2rem; border-top:2px solid var(--line) }
+  h3 { font-size:1rem; margin:1.6rem 0 .4rem }
+  .sub { font-weight:400; color:var(--dim); font-size:.9rem }
+  .lede { color:var(--dim); margin:.4rem 0 1.2rem }
+  .lede.small { font-size:.9rem }
+  a { color:var(--accent) }
+  table { border-collapse:collapse; width:100%; margin:1rem 0; font-size:.92rem }
+  th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+          vertical-align:top }
+  th { color:var(--dim); font-weight:600; font-size:.82rem; text-transform:uppercase;
+       letter-spacing:.03em }
+  td.num { font-variant-numeric:tabular-nums; white-space:nowrap }
+  code { background:#f0ece5; padding:.05rem .3rem; border-radius:3px; font-size:.86em }
+  pre { background:#f0ece5; padding:.8rem 1rem; border-radius:6px; overflow-x:auto;
+        font-size:.84rem; line-height:1.5 }
+  .note { border-left:3px solid var(--line); padding:.2rem 0 .2rem .9rem; color:var(--dim);
+           margin:1.2rem 0; font-size:.92rem }
+  .note.warn { border-left-color:var(--warn) }
+  .note.ok { border-left-color:var(--ok) }
+  .chips { display:flex; gap:.7rem; flex-wrap:wrap; margin:1rem 0 }
+  .chip { border:1px solid var(--line); border-radius:10px; padding:.6rem .9rem; min-width:13rem;
+          background:#fff }
+  .chip .k { font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--dim) }
+  .chip .v { font-size:1.35rem; font-variant-numeric:tabular-nums }
+  .chip .s { font-size:.78rem; color:var(--dim); font-variant-numeric:tabular-nums }
+  .bar { position:relative; height:1.5rem; background:#efeae1; border-radius:4px; margin:.2rem 0 }
+  .bar .ci { position:absolute; top:0; bottom:0; background:#e0d3b8; border-radius:4px }
+  .bar .pt { position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--fg) }
+  .barrow { display:grid; grid-template-columns:9rem 1fr 7rem; gap:.7rem; align-items:center;
+            margin:.35rem 0; font-size:.86rem }
+  .barrow .lab { color:var(--dim); text-align:right }
+  .barrow .val { font-variant-numeric:tabular-nums; color:var(--dim) }
+  .words { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.8rem;
+           line-height:1.9; color:var(--dim); background:#fff; border:1px solid var(--line);
+           border-radius:6px; padding:.8rem 1rem; max-height:20rem; overflow:auto }
+  .words b { color:var(--fg); font-weight:600 }
+  .words .f { color:var(--bad); font-weight:600 }
+  .words .h { color:var(--warn); font-weight:600 }
+  .tag { font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; font-weight:700;
+         padding:.08rem .35rem; border-radius:3px; color:#fff; background:var(--neutral);
+         white-space:nowrap }
+  .tag.ok { background:var(--ok) } .tag.bad { background:var(--bad) }
+  .tag.warn { background:var(--warn) } .tag.neutral { background:#a9a49a }
+  .toggle { display:flex; gap:.4rem; flex-wrap:wrap; margin:.6rem 0 }
+  .toggle button { font:inherit; font-size:.82rem; padding:.3rem .7rem; border-radius:999px;
+                   border:1px solid var(--line); background:#fff; color:var(--dim); cursor:pointer }
+  .toggle button[aria-pressed="true"] { background:var(--fg); color:var(--bg); border-color:var(--fg) }
+  footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
+            color:var(--dim); font-size:.84rem }
+  @media (max-width:640px){ .barrow { grid-template-columns:6rem 1fr; } .barrow .val { display:none } }
+</style></head><body>
+
+<h1>Common words — sample evaluations</h1>
+<p class="lede">How many common English words can a voice say correctly? Every word is spoken
+inside one fixed sentence, transcribed by an ASR, and scored. The numbers below are
+<b>samples</b>, so each one carries a Wilson 95% interval.</p>
+
+<p class="note"><b>What this page is.</b> A worked demo of the evaluation in
+<code>apps/yoob-tts-web/wordlist/</code> of
+<a href="https://github.com/Tap-Mobile/tts-tools-generic">Tap-Mobile/tts-tools-generic</a>.
+Voice <code>w1243</code>, seed 7, ASR <code>yoob-asr-2</code>, run 2026-11-02.
+The full write-up is <code>tests/WORDLIST_EVAL_REPORT.md</code>.</p>
+
+<h2>1 &middot; The phrase, and the words</h2>
+
+<p>No word is ever spoken alone. Each one is rendered as a sentence:</p>
+<pre>Please say {word} again.      →   "Please say receipt again."</pre>
+
+<p class="lede small">A bare word is not a fair test. Measured against the live API:
+<code>Receipt.</code> comes back as <code>Recess</code> or <code>Receipts</code>, while
+<code>Please say receipt again.</code> comes back exactly, every time. The carrier gives the
+ASR a sentence to fall into — and it is how the word is spoken in use.</p>
+
+<div class="chips">
+  <div class="chip"><div class="k">frozen list</div><div class="v">2,455</div>
+    <div class="s">words, sha256 58f8a81e…</div></div>
+  <div class="chip"><div class="k">core band</div><div class="v">415</div>
+    <div class="s">function words, everyday nouns, numbers, days</div></div>
+  <div class="chip"><div class="k">hard words</div><div class="v">69</div>
+    <div class="s">flagged, force-added</div></div>
+  <div class="chip"><div class="k">field terms</div><div class="v">821</div>
+    <div class="s">medical 171 · legal 186 · computing 182 · science 167 · finance 115</div></div>
+</div>
+
+<h3>The 415 core words, in list order</h3>
+<p class="lede small">Position <i>i</i> is the <i>i</i>-th most common word. Click a word to see
+what the ASR heard. <b>Red</b> = scored as a failure, <b>amber</b> = a failure that is a
+homophone (the voice said the word; the ASR spelled it differently).</p>
+
+<div class="toggle" id="filter">
+  <button data-f="all" aria-pressed="true">all 415</button>
+  <button data-f="fail" aria-pressed="false">26 failures</button>
+  <button data-f="homo" aria-pressed="false">22 homophones</button>
+  <button data-f="hard" aria-pressed="false">hard words only</button>
+</div>
+<div class="words" id="wordgrid"></div>
+
+<h2>2 &middot; What Wilson 95% is</h2>
+
+<p>389 of 415 words passed: <b>93.7%</b>. That is a <i>sample</i>. Re-run on a different draw
+of words, or a different seed, and it would not land on 93.7% again. The Wilson score interval
+is the range of true rates that would produce a sample like this 95 times out of 100.</p>
+
+<pre>p  = k / n
+d  = 1 + z²/n
+c  = p + z²/(2n)
+s  = z · sqrt( p(1−p)/n + z²/(4n²) )
+lo = (c − s) / d        hi = (c + s) / d        z = 1.96</pre>
+
+<h3>Worked example — the core band</h3>
+<pre>k = 389, n = 415, z = 1.96
+p = 0.9373
+d = 1 + 3.8416/415          = 1.00926
+c = 0.9373 + 3.8416/830     = 0.94193
+s = 1.96 · sqrt(0.9373·0.0627/415 + 3.8416/(4·415²))
+  = 1.96 · 0.012134         = 0.023783
+lo = (0.94193 − 0.023783)/1.00926 = 0.9098   → 91.0%
+hi = (0.94193 + 0.023783)/1.00926 = 0.9569   → 95.7%</pre>
+
+<p><b>Read it as:</b> the voice is reliable on at least 91% of core words, with a point
+estimate of 93.7%. Two voices whose intervals overlap are not distinguishable by this run.</p>
+
+<h3>Why not <code>p ± 1.96·sqrt(p(1−p)/n)</code></h3>
+<p>The normal approximation fails exactly where this evaluation lives — in the small cells.
+It gives <code>0 of 10</code> an interval of <b>zero width</b>, claims certainty from ten
+trials, and runs past 100% for <code>24 of 25</code>. Wilson is not symmetric, never leaves
+<code>[0,1]</code>, and stays honest at small <i>n</i>.</p>
+
+<h3>The intervals, side by side</h3>
+<p class="lede small">Bar = Wilson 95% interval, tick = point estimate. Hover a bar for the
+exact figures.</p>
+<div id="bars"></div>
+
+<h2>3 &middot; Where WER assumes the ASR is accurate</h2>
+
+<p>WER is <code>(S + D + I) / N</code> — substitutions, deletions and insertions over the
+reference word count. It compares a reference transcript to a hypothesis transcript. In a TTS
+evaluation the hypothesis comes from an ASR, and that is where the assumption enters:</p>
+
+<p class="note warn"><b>WER treats the ASR transcript as ground truth about what the voice
+said.</b> Every substitution is charged to the TTS. The ASR is assumed to have heard correctly.
+This evaluation does not use WER — it uses a per-word pass rate — but the same assumption sits
+underneath it, and here is exactly where it breaks.</p>
+
+<table>
+<thead><tr><th>what the ASR does</th><th>WER charges it to</th><th>who is actually at fault</th></tr></thead>
+<tbody>
+<tr><td>writes a homophone (<code>their</code> → <code>there</code>)</td><td>the TTS</td>
+    <td>nobody — the voice was right</td></tr>
+<tr><td>drops a short function word (<code>a</code> → <i>nothing</i>)</td><td>the TTS</td>
+    <td>usually the ASR</td></tr>
+<tr><td>returns HTTP 400 (<code>diagnosis</code>)</td><td>the TTS, as 100% error</td>
+    <td>the pipeline</td></tr>
+<tr><td>mis-hears a rare word (<code>prognosis</code> → <code>prague</code>)</td><td>the TTS</td>
+    <td>the ASR, unless the audio is checked</td></tr>
+<tr><td>is deterministic — six passes, one answer</td><td>—</td>
+    <td>repeats cannot average any of the above away</td></tr>
+</tbody></table>
+
+<h3>The size of the assumption, measured</h3>
+<p>22 of the 26 core failures are homophones. The voice said the word; the scorer compares
+strings, not sounds, and counted a failure. Re-scoring those 22 as passes:</p>
+
+<div class="chips">
+  <div class="chip"><div class="k">as scored</div><div class="v">93.7%</div>
+    <div class="s">389/415 · Wilson 91.0–95.7%</div></div>
+  <div class="chip"><div class="k">homophones as passes</div><div class="v">99.0%</div>
+    <div class="s">411/415 · Wilson 97.5–99.6%</div></div>
+  <div class="chip"><div class="k">the gap</div><div class="v">5.3 pts</div>
+    <div class="s">the ASR assumption, in one run</div></div>
+</div>
+
+<p class="note ok"><b>The rule this demo follows:</b> read the transcript before believing a
+failure. A failure whose <code>heard</code> field is a homophone of <code>expected</code> is
+not evidence against the voice.</p>
+
+<h2>4 &middot; Sample evaluations</h2>
+
+<h3>Core band — 415 words, <code>w1243</code>, seed 7</h3>
+<pre>RUN  415 scored cases, 0 errors, 1 voice(s), seeds [7]
+
+PASS RATE PER VOICE (Wilson 95%)
+voice       cases  rate                    p vs 0.5
+w1243         415   93.7% [91.0%,95.7%]      0.0000</pre>
+
+<h3>The 26 failures, with the transcript as the evidence</h3>
+<table id="failtable">
+<thead><tr><th>word</th><th>expected</th><th>heard</th><th>transcript</th><th>class</th></tr></thead>
+<tbody></tbody></table>
+
+<h3>Medical band — 171 words, <code>w1243</code>, seed 7</h3>
+<pre>25 pass, 144 fail, 2 errors (HTTP 400)
+rate 25/169 = 14.8%   Wilson 95% [10.2%, 20.9%]</pre>
+<p class="lede small">Passing: <code>insulin amoxicillin benign renal cerebral diastolic
+otolaryngology gastroenterology neurology obstetrics efficacy laceration contusion abrasion
+fracture tendon pelvis fibula cranium maxilla bronchus diaphragm genetic allergy
+vaccination</code>. Failing: <code>prognosis</code> → <code>prague</code>,
+<code>hypertension</code> → <code>horror temptation</code>,
+<code>hypotension</code> → <code>your rotation</code>,
+<code>tachycardia</code> → <code>tardy</code>,
+<code>bradycardia</code> → <code>bradicaria</code>,
+<code>arrhythmia</code> → <code>ar rahman</code>,
+<code>myocardial</code> → <code>myosokol</code>.</p>
+<p class="note warn"><b>This band is not a voice verdict.</b> Medical vocabulary is out of
+domain for both the voice and the ASR. 15% means "neither model knows these words", not "the
+voice mispronounces them". It is reported because it is measured, and labelled because it is
+not comparable to the core band.</p>
+
+<h2>5 &middot; Reproducing</h2>
+<pre>cd apps/yoob-tts-web/wordlist
+
+python3 build_wordlist.py --out words_v1.jsonl          # frozen list, hash-checked
+python3 run_words.py --list words_v1.jsonl --band core \
+        --voices w1243 --seeds 7                        # the run above
+python3 report.py core_w1243.jsonl --csv core_w1243.csv # the report</pre>
+<p class="lede small">Cost: one word-voice-seed is one TTS render (~0.3 s of audio) plus one ASR
+pass (~1 s wall). 2,455 words × 34 voices × 3 seeds is 204,000 pairs, roughly 60–85 hours
+serial; shard 8–16 ways.</p>
+
+<h2>6 &middot; Known limits</h2>
+<ul class="lede small">
+<li>The list is hand-kept, not corpus-derived. It is stable, not authoritative.</li>
+<li>One voice, one seed, in the run shown. The seed swings a single voice by up to 3 words out
+of 10 on the hard panel (<code>h_brit_m</code>: 6/10 at seed 7, 3/10 at seed 8), so <b>one seed
+per word is not a measurement</b> — it is one sample.</li>
+<li>The scorer compares strings. Homophones fail. Section 3 is the correction; it is applied
+by hand here and not by the harness.</li>
+<li>Three <code>expected</code> fields (<code>it</code>, <code>are</code>, <code>nose</code>)
+are unmatchable as written, and are counted as failures against a voice that said the word.</li>
+<li>A 400 from the transcriber is an error, not a failure, and is left out of the denominator.</li>
+</ul>
+
+<footer>
+Source: <a href="https://github.com/Tap-Mobile/tts-tools-generic">Tap-Mobile/tts-tools-generic</a>
+&middot; <code>apps/yoob-tts-web/wordlist/</code> (list, runner, report) and
+<code>apps/yoob-tts-web/tests/WORDLIST_EVAL_REPORT.md</code> (this page's write-up).
+Carrier <code>Please say {word} again.</code> · voice <code>w1243</code> · seed 7 ·
+ASR <code>yoob-asr-2</code> · run 2026-11-02.
+</footer>
+
+<script>
+// ---- the 415 core words, in list order, with the run's outcome -------------
+const CORE = `be the to of and a in that have I
+it for not on with he as you do at
+this but his by from they we say her she
+or an will my one all would there their what
+so up out if about who get which go me
+when make can like time no just him know take
+people into year your good some could them see other
+than then now look only come its over think also
+back after use two how our work first well way
+even new want because any these give day most us
+is are was were been being has had did does
+doing am shall should may might must ought house home
+room door window table chair bed kitchen garden car bus
+train plane boat road street city town village country world
+water fire earth air sky sun moon star rain snow
+wind cloud tree flower grass animal dog cat bird fish
+horse cow sheep food bread milk cheese egg meat rice
+sugar salt coffee tea beer wine book paper pen letter
+word name number money price shop market school teacher student
+child baby man woman friend family mother father brother sister
+son daughter husband wife hand head eye ear nose mouth
+face hair arm leg foot heart body health doctor hospital
+medicine job office company business meeting phone computer screen keyboard
+music song film story game sport team ball morning afternoon
+evening night week month hour minute second today tomorrow yesterday
+holiday weekend summer winter spring autumn north south east west
+left right front side top bottom end start middle need
+find tell ask seem feel try leave call keep let
+begin help talk turn show hear play run move live
+believe hold bring happen write provide sit stand lose pay
+meet include continue set learn change lead understand watch follow
+stop create speak read allow add spend grow open walk
+win offer remember love consider appear buy wait serve die
+send expect build stay fall cut reach kill remain suggest
+raise pass sell require report decide pull last long great
+little own old big high different small large next early
+young important few public bad same able zero three four
+five six seven eight nine ten eleven twelve thirteen fourteen
+fifteen sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty
+seventy eighty ninety hundred thousand million billion monday tuesday wednesday
+thursday friday saturday sunday january february march april june july
+august september october november december`.split(/\s+/).filter(Boolean);
+
+// word -> [expected, heard, class]  (class: '' = pass)
+const OUTCOME = {
+  "a":["a","","dropped"],
+  "in":["in","it","homophone-adjacent"],
+  "it":["I T","it","expected-form error"],
+  "by":["bye","bye","homophone"],
+  "an":["an","it","homophone-adjacent"],
+  "would":["wood","what","mis-hear"],
+  "their":["there","there","homophone"],
+  "know":["no","no","homophone"],
+  "than":["then","then","homophone"],
+  "its":["it's","it's","homophone"],
+  "our":["hour","r","mis-hear"],
+  "are":["r","r","expected-form error"],
+  "were":["we're","we're","homophone"],
+  "been":["bin","bin","homophone"],
+  "ought":["ought","odd","mis-hear"],
+  "plane":["plain","plain","homophone"],
+  "sun":["son","son","homophone"],
+  "meat":["meet","meet","homophone"],
+  "eye":["i","i","homophone"],
+  "nose":["no s","no s","expected-form error"],
+  "seem":["seam","seam","homophone"],
+  "hear":["here","here","homophone"],
+  "write":["right","right","homophone"],
+  "buy":["bye","bye","homophone"],
+  "pull":["pool","pool","vowel error"],
+  "high":["hi","hi","homophone"]
+};
+const HARD = new Set(["sugar","business","wednesday","february"]);
+
+// ---- the word grid --------------------------------------------------------
+const grid = document.getElementById('wordgrid');
+let mode = 'all';
+function renderGrid(){
+  const parts = [];
+  CORE.forEach((w, i) => {
+    const o = OUTCOME[w];
+    let cls = '', title = `#${i+1}  ${w}  —  pass`;
+    if (o) {
+      const homo = o[2] === 'homophone';
+      cls = homo ? 'h' : 'f';
+      title = `#${i+1}  ${w}  —  expected "${o[0]}", heard "${o[1]}" (${o[2]})`;
+    }
+    if (mode === 'fail' && !o) return;
+    if (mode === 'homo' && !(o && o[2] === 'homophone')) return;
+    if (mode === 'hard' && !HARD.has(w)) return;
+    parts.push(`<span class="${cls}" title="${title.replace(/"/g,'&quot;')}">${w}</span>`);
+  });
+  grid.innerHTML = parts.length ? parts.join(' ') : '<i>nothing in this filter</i>';
+}
+document.querySelectorAll('#filter button').forEach(b => {
+  b.addEventListener('click', () => {
+    mode = b.dataset.f;
+    document.querySelectorAll('#filter button').forEach(x =>
+      x.setAttribute('aria-pressed', String(x === b)));
+    renderGrid();
+  });
+});
+renderGrid();
+
+// ---- the failure table ----------------------------------------------------
+const ROWS = [
+  ["a","a","(empty)","Please say again.","dropped"],
+  ["in","in","it","Please say it again.","homophone-adjacent"],
+  ["it","I T","it","Please say it again.","expected-form error"],
+  ["by","bye","bye","Please say bye again.","homophone"],
+  ["an","an","it","Please say it again.","homophone-adjacent"],
+  ["would","wood","what","Please say what again.","mis-hear"],
+  ["their","there","there","Please say there again.","homophone"],
+  ["know","no","no","Please say no again.","homophone"],
+  ["than","then","then","Please say then again.","homophone"],
+  ["its","it's","it's","Please say it's again.","homophone"],
+  ["our","hour","r","Please say R again.","mis-hear"],
+  ["are","r","r",'Please say "R" again.',"expected-form error"],
+  ["were","we're","we're","Please say we're again.","homophone"],
+  ["been","bin","bin",'Please say "bin" again.',"homophone"],
+  ["ought","ought","odd","Please say odd again.","mis-hear"],
+  ["plane","plain","plain","Please say plain again.","homophone"],
+  ["sun","son","son","Please say son again.","homophone"],
+  ["meat","meet","meet",'Please say "meet" again.',"homophone"],
+  ["eye","i","i",'Please say "I" again.',"homophone"],
+  ["nose","no s","no s","Please say no s again.","expected-form error"],
+  ["seem","seam","seam","Please say seam again.","homophone"],
+  ["hear","here","here","Please say here again.","homophone"],
+  ["write","right","right","Please say right again.","homophone"],
+  ["buy","bye","bye","Please say bye again.","homophone"],
+  ["pull","pool","pool",'Please say "pool" again.',"vowel error"],
+  ["high","hi","hi","Please say hi again.","homophone"]
+];
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+document.querySelector('#failtable tbody').innerHTML = ROWS.map(r => {
+  const tag = r[4] === 'homophone' ? 'warn'
+            : r[4] === 'vowel error' ? 'bad'
+            : r[4] === 'dropped' ? 'bad' : 'neutral';
+  return `<tr><td><code>${esc(r[0])}</code></td><td><code>${esc(r[1])}</code></td>`
+       + `<td><code>${esc(r[2]) || '<i>nothing</i>'}</code></td>`
+       + `<td>${esc(r[3])}</td>`
+       + `<td><span class="tag ${tag}">${esc(r[4])}</span></td></tr>`;
+}).join('');
+
+// ---- the interval bars ----------------------------------------------------
+// Wilson 95%, z = 1.96
+function wilson(k, n, z = 1.96){
+  if (!n) return [0,0];
+  const p = k/n, d = 1 + z*z/n, c = p + z*z/(2*n);
+  const s = z * Math.sqrt(p*(1-p)/n + z*z/(4*n*n));
+  return [(c-s)/d, (c+s)/d];
+}
+const CELLS = [
+  ["core, w1243", 389, 415],
+  ["core, homophones as passes", 411, 415],
+  ["medical, w1243", 25, 169]
+];
+document.getElementById('bars').innerHTML = CELLS.map(([lab,k,n]) => {
+  const [lo,hi] = wilson(k,n), p = k/n;
+  const pc = x => (100*x).toFixed(1) + '%';
+  return `<div class="barrow" title="${lab}: ${k}/${n} = ${pc(p)}, Wilson 95% ${pc(lo)}–${pc(hi)}">`
+       + `<div class="lab">${esc(lab)}</div>`
+       + `<div class="bar"><div class="ci" style="left:${100*lo}%;width:${100*(hi-lo)}%"></div>`
+       + `<div class="pt" style="left:${100*p}%"></div></div>`
+       + `<div class="val">${pc(p)} &nbsp;${pc(lo)}–${pc(hi)}</div></div>`;
+}).join('');
+</script>
+</body></html>
