@@ -137,7 +137,45 @@ ASR a sentence to fall into — and it is how the word is spoken in use.</p>
 case). <b>Target WER</b> counts only the word slot. The field band is where the old model fell
 apart — and where the new one improved most, from <b>38.4% to 88.5%</b> case-level.</p>
 
-<h2>2 · Two samples behind each number</h2>
+<h2>2 · The fields this voice is bought for</h2>
+
+<p>A TTS is not bought for a word list. It is bought for a field: a clinic reading back a
+discharge note, a law firm reviewing a contract by ear, a contact centre answering the phone.
+This evaluation covers <b>five</b> of those fields with real words. The table below shows what
+each one scored, old model against new, and then lists the wider taxonomy — every field the
+product is sold into — marking honestly which ones have <b>no words behind them yet</b>.</p>
+
+<h3>2.1 · The five fields with words behind them</h3>
+
+<table class="wtable" id="fieldtable">
+<thead><tr><th>field</th><th class="num">words</th><th class="num">cases</th>
+<th class="num">old case</th><th class="num">new case</th>
+<th class="num">old word</th><th class="num">new word</th></tr></thead>
+<tbody></tbody></table>
+<p class="lede small"><b>case</b> = one render of one word; each word contributes three cases
+(seeds 7, 11, 23). <b>word</b> = all three seeds exact. The word column is the harsher measure
+and the one to quote: a field at 86% word-level means roughly one word in seven is
+mis-transcribed on at least one of three renders.</p>
+
+<h3>2.2 · The wider taxonomy, and what is not yet measured</h3>
+
+<p>Fourteen fields the product is sold into. A field is <b>covered</b> only when this evaluation
+holds words for it; where a tested field is a fair proxy, that is said so, but a proxy is not
+coverage. Nothing below is extrapolated into a score.</p>
+
+<table class="wtable" id="taxonomy">
+<thead><tr><th>field</th><th>what it covers</th><th>coverage</th></tr></thead>
+<tbody></tbody></table>
+
+<p class="note warn"><b>Read the coverage column literally.</b> Five fields map onto a tested
+field and inherit its numbers only as a <i>proxy</i> — healthcare onto medical, banking onto
+finance, legal onto legal, research onto science, developer tooling onto computing. Nine fields
+— accessibility, media, conversational AI, education, automotive, government, retail,
+industrial/IoT, productivity — have <b>no words in this evaluation at all</b>. Their scores are
+unknown: not good, not bad. Extending the list to cover them is the obvious next piece of
+work.</p>
+
+<h2>3 · Two samples behind each number</h2>
 
 <p>Every number in section 1 comes from real renders. For each headline measure, two of the
 words behind it — shown for <b>both runs</b>. The play button is the new model's
@@ -155,7 +193,7 @@ and one it never gets. They illustrate; they don't re-derive. The rates come fro
 cases, not these 20 words. Every transcript shown is read straight from the two run files, so
 the page cannot disagree with the data.</p>
 
-<h2>3 · Listen to the evaluations</h2>
+<h2>4 · Listen to the evaluations</h2>
 
 <p>Every word below is the <b>seed-7 render</b>, the exact clip the ASR scored. The transcript
 shown is the transcript <i>of that clip</i> — audio and text can never disagree. The three
@@ -193,7 +231,7 @@ columns after the word show how the word fared across all three seeds
 <p class="lede small">Audio is loaded only when you press play. 2,455 clips, ~38 MB total,
 64 kbps MP3, the seed-7 render of each word.</p>
 
-<h2>4 · What Wilson 95% is</h2>
+<h2>5 · What Wilson 95% is</h2>
 
 <p>5,619 of 7,365 cases passed: <b>76.3%</b>. That is a <i>sample</i>. Re-run with different
 seeds and it would not land on 76.3% again. The Wilson score interval is the range of true
@@ -229,7 +267,7 @@ trials, and runs past 100% for <code>24 of 25</code>. Wilson is not symmetric, n
 exact figures.</p>
 <div id="bars"></div>
 
-<h2>5 · The WER of this evaluation, and where it assumes the ASR is accurate</h2>
+<h2>6 · The WER of this evaluation, and where it assumes the ASR is accurate</h2>
 
 <p>WER is <code>(S + D + I) / N</code> — substitutions, deletions and insertions over the
 reference word count. Here the reference is the carrier sentence itself
@@ -314,7 +352,7 @@ the ASR spelled it differently. Everything else is a real mishearing or a real m
 play the clip to tell which.</p>
 <div id="confusions"></div>
 
-<h2>6 · The full word grid</h2>
+<h2>7 · The full word grid</h2>
 <p class="lede small">All 2,455 words in list order. <b>Red</b> = failed seed 7,
 <b>amber</b> = failed seed 7 but the heard form is a homophone of the expected form.
 Hover for the transcript.</p>
@@ -330,6 +368,7 @@ word, MP3 64 kbps.
 </footer>
 
 <script src="data2.js"></script>
+<script src="fields2.js"></script>
 <script>
 // ---- run selector ----------------------------------------------------------
 // data2.js carries both runs. The grid below was written against the old
@@ -448,6 +487,46 @@ function sampleTable2(rows){
     + `<th colspan="2" class="newv">new model \u2014 ASR 7 / 11 / 23</th></tr></thead>`
     + `<tbody>${rows.map(sampleRow2).join("")}</tbody></table>`;
 }
+
+// ---- section 2: the fields -------------------------------------------------
+// FIELDS2 comes from fields2.js. Every rate is recomputed from the counts so
+// the page cannot drift from the run files.
+(function renderFields(){
+  const pct = (k, n) => n ? (100 * k / n).toFixed(1) + '%' : '—';
+  const delta = (a, b, n) => {
+    const d = 100 * (b - a) / n;
+    const cls = d > 0.05 ? 'up' : d < -0.05 ? 'down' : '';
+    const sign = d > 0 ? '+' : '';
+    return `<span class="${cls}">${sign}${d.toFixed(1)}</span>`;
+  };
+
+  document.querySelector('#fieldtable tbody').innerHTML = FIELDS2.tested.map(f =>
+    `<tr><td><b>${esc(f.field)}</b></td>`
+    + `<td class="num">${f.words}</td><td class="num">${f.cases.toLocaleString()}</td>`
+    + `<td class="num">${pct(f.oldCase, f.cases)}</td>`
+    + `<td class="num"><b>${pct(f.newCase, f.cases)}</b></td>`
+    + `<td class="num">${pct(f.oldWord, f.words)}</td>`
+    + `<td class="num"><b>${pct(f.newWord, f.words)}</b></td></tr>`
+    + `<tr><td colspan="7" class="lede small" style="border:0;padding-top:0">`
+    + `${esc(f.note)} &nbsp;·&nbsp; case ${delta(f.oldCase, f.newCase, f.cases)} pt, `
+    + `word ${delta(f.oldWord, f.newWord, f.words)} pt</td></tr>`
+  ).join('');
+
+  const tested = {};
+  for (const f of FIELDS2.tested) tested[f.field] = f;
+
+  document.querySelector('#taxonomy tbody').innerHTML = FIELDS2.untested.map(f => {
+    let cov;
+    if (f.maps && tested[f.maps]) {
+      const t = tested[f.maps];
+      cov = `<span class="newv">proxy</span> — via <b>${esc(f.maps)}</b>: `
+          + `${pct(t.newWord, t.words)} word, ${pct(t.newCase, t.cases)} case`;
+    } else {
+      cov = `<span class="oldv">not covered</span> — no words in this evaluation`;
+    }
+    return `<tr><td><b>${esc(f.field)}</b></td><td>${esc(f.why)}</td><td>${cov}</td></tr>`;
+  }).join('');
+})();
 
 document.getElementById('samples').innerHTML = GROUPS2.map(({g,title,num,desc,items}) => {
   let html = `<h3>${esc(title)} \u2014 ${esc(num)}</h3><p class="lede small">${desc}</p>`
