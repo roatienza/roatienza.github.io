@@ -506,7 +506,7 @@
       </p>
       <div class="hero-stats">
         <div>
-          <div class="stat-val">1,924</div>
+          <div class="stat-val">1,954</div>
           <div class="stat-label">Citations</div>
         </div>
         <div>
@@ -636,7 +636,7 @@
           A high-fidelity, photorealistic 3D retail store simulation for benchmarking embodied agents against human performance in shopping tasks. Features over 250 interactive grocery items across three store configurations, controlled via an API. Supports both VR for human interaction and a VLM-powered embodied agent. Introduces SariBench, a dataset of annotated human demonstrations across varied task difficulties. Selected as one of the "Best of ICCV" from over 12,000 global submissions — the first comprehensive retail store simulation for embodied AI agent training.
         </div>
         <div class="pub-footer">
-          <span class="cite-count">★ <span>8</span> citations</span>
+          <span class="cite-count">★ <span>9</span> citations</span>
           <a class="pub-link" href="https://sarisandbox.github.io/" target="_blank">🌐 Project Website ↗</a>
           <a class="pub-link" href="https://arxiv.org/abs/2508.00400" target="_blank">arXiv ↗</a>
           <a class="pub-link" href="https://github.com/upeee/sari-sandbox-env" target="_blank">GitHub ↗</a>
@@ -658,6 +658,7 @@
           A comprehensive survey of spatial memory efficiency for vision-based robot navigation, examining 88 references spanning 52 systems from 1989–2025 — from occupancy grids to neural implicit representations. Introduces α = M<sub>peak</sub>/M<sub>map</sub>, the ratio of peak runtime memory to saved map size, exposing the gap between published map sizes and actual deployment cost. Profiling on an NVIDIA A100 GPU reveals α spans two orders of magnitude within neural methods alone (2.3 for Point-SLAM to 215 for NICE-SLAM). Proposes a standardized evaluation protocol and an α-aware budgeting algorithm for assessing deployment feasibility on embedded platforms (8–16 GB, &lt;30 W). Accepted at the Women in Computer Vision (WiCV) Workshop at CVPR 2026.
         </div>
         <div class="pub-footer">
+          <span class="cite-count">★ <span>1</span> citation</span>
           <a class="pub-link" href="https://arxiv.org/abs/2604.16482" target="_blank">arXiv ↗</a>
           <a class="pub-link" href="https://arxiv.org/pdf/2604.16482" target="_blank">PDF ↗</a>
           <button class="expand-btn" onclick="toggleAbstract('abs-spatial', this)">Hide abstract ▴</button>
@@ -677,9 +678,50 @@
           A plug-in method that enhances object localization in vision-language transformers without retraining. RCA reweights final-layer attention by suppressing extremes and amplifying mid-level activations to let semantically relevant but subdued tokens guide predictions. Evaluated on Open Vocabulary Referring Object Detection (OV-RefOD), RCA improves FitAP in 11 out of 15 open-source VLMs, with gains up to +26.6%.
         </div>
         <div class="pub-footer">
+          <span class="cite-count">★ <span>1</span> citation</span>
           <a class="pub-link" href="https://arxiv.org/abs/2507.19891" target="_blank">arXiv ↗</a>
           <a class="pub-link" href="https://github.com/earl-juanico/rca" target="_blank">GitHub ↗</a>
           <button class="expand-btn" onclick="toggleAbstract('abs-rca2', this)">Show abstract ▾</button>
+        </div>
+      </div>
+
+      <!-- FLIP -->
+      <div class="pub-card recent" data-cat="recent cv" style="border-left: 3px solid var(--green);">
+        <div class="pub-meta">
+          <span class="pub-venue">arXiv 2026</span>
+          <span class="pub-year">2026</span>
+          <span class="pub-badge badge-recent">2026</span>
+        </div>
+        <div class="pub-title">FLIP: Final Layer Inference-Time Probing for Vision-Language Models</div>
+        <div class="pub-authors">Drandreb Earl O. Juanico, <strong>Rowel Atienza</strong></div>
+        <div class="pub-abstract" id="abs-flip">
+          A final-layer inference-time probe for testing whether a logit-facing intervention site in an open-weight vision-language model (VLM) supports structured, task-linked computation rather than generic perturbation. FLIP applies elementwise flooring to the final normalized hidden state before logit computation, leaving parameters, prompts, and decoding unchanged. On a controlled detection/counting probe, sweeping intervention strength reveals three regions: negligible change, a bounded interior regime in which detection recall improves while tolerant counting error falls, and over-suppression. Formalizes a four-criterion probe-and-sweep protocol — regime structure, grounding-proxy alignment, feature-coherence dependence, and negative-control failure — for disciplining the interpretation of intervention effects. FLIP is a validation step for intervention-based mechanistic interpretability, not a steering method.
+        </div>
+        <div class="pub-footer">
+          <span class="cite-count">★ <span>0</span> citations</span>
+          <a class="pub-link" href="https://arxiv.org/abs/2609.30993" target="_blank">arXiv ↗</a>
+          <a class="pub-link" href="https://github.com/earl-juanico/flip-qwen3vl/" target="_blank">GitHub ↗</a>
+          <button class="expand-btn" onclick="toggleAbstract('abs-flip', this)">Show abstract ▾</button>
+        </div>
+      </div>
+
+      <!-- Grocery Product Retrieval -->
+      <div class="pub-card recent" data-cat="recent cv" style="border-left: 3px solid var(--green);">
+        <div class="pub-meta">
+          <span class="pub-venue">arXiv 2026</span>
+          <span class="pub-year">2026</span>
+          <span class="pub-badge badge-recent">2026</span>
+        </div>
+        <div class="pub-title">What Matters for Grocery Product Retrieval with Open Source Vision Language Models</div>
+        <div class="pub-authors">Emmanuel G. Maminta, <strong>Rowel Atienza</strong></div>
+        <div class="pub-abstract" id="abs-grocery">
+          The first systematic zero-shot evaluation of 190 open-source VLMs on the multimodal product retrieval (MPR) task of the GroceryVision Challenge, isolating pre-training data, architecture, and input resolution. Three actionable findings: (1) Data quality trumps scale — switching from raw web-scrapes to filtered datasets delivers up to 16.6% accuracy gains, exceeding the benefit of doubling model parameters. (2) Efficient models can win — MobileCLIP-B (150M parameters) outperforms 351M counterparts trained on noisy data; introduces <em>semantic power density</em> (φ), an efficiency metric that penalizes sub-threshold accuracy. (3) A precision gap persists — state-of-the-art models achieve 94.5% Recall@5 but suffer a 17.5% drop at Recall@1, revealing that contrastive embeddings cluster categories effectively but fail to rank visually similar SKUs.
+        </div>
+        <div class="pub-footer">
+          <span class="cite-count">★ <span>0</span> citations</span>
+          <a class="pub-link" href="https://arxiv.org/abs/2605.18029" target="_blank">arXiv ↗</a>
+          <a class="pub-link" href="https://github.com/upeee/openmpr" target="_blank">GitHub ↗</a>
+          <button class="expand-btn" onclick="toggleAbstract('abs-grocery', this)">Show abstract ▾</button>
         </div>
       </div>
 
@@ -726,7 +768,7 @@
           We propose PARSeq, an approach using permuted autoregressive sequence models for scene text recognition. PARSeq learns an ensemble of internal AR language models with shared weights using Permutation Language Modeling, unifying context-free non-AR and context-aware AR inference and iterative refinement using bidirectional context. Achieves SOTA results: 91.9% accuracy on benchmarks, 96.0% when trained on real data. Deployed by NASA on the Astrobee robot aboard the International Space Station.
         </div>
         <div class="pub-footer">
-          <span class="cite-count">★ <span>468</span> citations</span>
+          <span class="cite-count">★ <span>483</span> citations</span>
           <a class="pub-link" href="https://arxiv.org/abs/2207.06966" target="_blank">arXiv ↗</a>
           <a class="pub-link" href="https://github.com/baudm/parseq" target="_blank">GitHub ↗</a>
           <button class="expand-btn" onclick="toggleAbstract('abs1', this)">Show abstract ▾</button>
@@ -745,7 +787,7 @@
           We propose ViTSTR, a single-stage STR model built on a compute and parameter-efficient Vision Transformer (ViT). Our small ViTSTR achieves 82.6% accuracy (84.2% with augmentation) at 2.4× speed up over TRBA, using only 43.4% of the parameters and 42.2% FLOPs. With data augmentation, base ViTSTR outperforms TRBA at 85.2% accuracy at 2.3× speed. Integrated into Intel OpenVINO and PaddlePaddle.
         </div>
         <div class="pub-footer">
-          <span class="cite-count">★ <span>338</span> citations</span>
+          <span class="cite-count">★ <span>345</span> citations</span>
           <a class="pub-link" href="https://arxiv.org/abs/2105.08582" target="_blank">arXiv ↗</a>
           <a class="pub-link" href="https://github.com/roatienza/deep-text-recognition-benchmark" target="_blank">GitHub ↗</a>
           <button class="expand-btn" onclick="toggleAbstract('abs2', this)">Show abstract ▾</button>
@@ -783,7 +825,7 @@
           We introduce GOO, a novel dataset annotating not just the pixel being looked at but the boundaries of the gaze object in retail environments. Addresses the gap in gaze-related datasets by providing full object-level annotation, enabling more advanced gaze object prediction research.
         </div>
         <div class="pub-footer">
-          <span class="cite-count">★ <span>80</span> citations</span>
+          <span class="cite-count">★ <span>81</span> citations</span>
           <a class="pub-link" href="https://openaccess.thecvf.com/content/CVPR2021W/GAZE/html/Tomas_GOO_A_Dataset_for_Gaze_Object_Prediction_in_Retail_Environments_CVPRW_2021_paper.html" target="_blank">CVF ↗</a>
           <button class="expand-btn" onclick="toggleAbstract('abs4', this)">Show abstract ▾</button>
         </div>
@@ -839,7 +881,7 @@
           We introduce EfficientSpeech, a lightweight text-to-speech model designed for on-device inference. The model achieves competitive speech quality while dramatically reducing compute and memory requirements, making real-time TTS practical on edge devices with limited resources.
         </div>
         <div class="pub-footer">
-          <span class="cite-count">★ <span>17</span> citations</span>
+          <span class="cite-count">★ <span>18</span> citations</span>
           <a class="pub-link" href="https://arxiv.org/abs/2305.13905" target="_blank">arXiv ↗</a>
           <a class="pub-link" href="https://github.com/roatienza/efficientspeech" target="_blank">GitHub ↗</a>
           <button class="expand-btn" onclick="toggleAbstract('abs7', this)">Show abstract ▾</button>
@@ -858,7 +900,7 @@
           We present DenseMapNet, a compact CNN for stereo disparity estimation inspired by dense networks. With only 290k parameters it runs at 30Hz+ on full-resolution color stereo images, while accuracy remains comparable to significantly larger CNN-based methods.
         </div>
         <div class="pub-footer">
-          <span class="cite-count">★ <span>41</span> citations</span>
+          <span class="cite-count">★ <span>42</span> citations</span>
           <a class="pub-link" href="https://arxiv.org/abs/1805.07499" target="_blank">arXiv ↗</a>
           <button class="expand-btn" onclick="toggleAbstract('abs8', this)">Show abstract ▾</button>
         </div>
@@ -892,7 +934,7 @@
         <div class="pub-title">Next-Best View Policy for 3D Reconstruction</div>
         <div class="pub-authors">Daryl Peralta, Joel Casimiro, Aldrin Michael Nilles, Justine Aletta Aguilar, <strong>Rowel Atienza</strong>, Rhandley Cajote</div>
         <div class="pub-footer">
-          <span class="cite-count">★ <span>107</span> citations</span>
+          <span class="cite-count">★ <span>108</span> citations</span>
           <a class="pub-link" href="https://arxiv.org/abs/2008.12664" target="_blank">arXiv ↗</a>
         </div>
       </div>
