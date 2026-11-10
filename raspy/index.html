@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raspy excited speech in yoob-tts-1 - what the markup controls</title>
+<style>
+  body{font:16px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+       max-width:960px;margin:40px auto;padding:0 20px;color:#1a1a1a}
+  h1{font-size:1.6rem;margin-bottom:.2em}
+  h2{font-size:1.15rem;margin:0 0 10px}
+  p.sub{color:#666;margin-top:0}
+  code{background:#f2f2f2;padding:2px 6px;border-radius:4px;font-size:.88em}
+  table{border-collapse:collapse;margin:14px 0;font-size:.95em}
+  th,td{border:1px solid #ddd;padding:7px 12px;text-align:left}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  td.good{background:#e6f6ec;color:#0a6b33;font-weight:600}
+  td.bad{background:#fdeaea;color:#a02020;font-weight:600}
+  .vid,.mstats,.mnote{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .vid{color:#888;font-size:.85em}
+  .vdesc{color:#888;font-weight:400;font-size:.85em}
+  .vwho{color:#888;font-weight:400;font-size:.85em;margin-left:8px}
+  .voicecard{border:1px solid #ddd;border-radius:10px;padding:18px 20px;margin:22px 0}
+  .vars{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .var{border:1px solid #eee;border-radius:8px;padding:10px 12px}
+  .varhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .vlabel{font-weight:600;font-size:.95em}
+  .hnr{font-family:ui-monospace,Menlo,monospace;font-size:.9em;color:#555}
+  .hnr.good{color:#0a6b33;font-weight:700}
+  .hnr.bad{color:#a02020;font-weight:700}
+  audio{width:100%;height:36px;margin:6px 0 2px}
+  .mnote{color:#777;font-size:.8em;margin:2px 0}
+  .mstats{color:#999;font-size:.78em;margin:2px 0 0}
+  .note{color:#666;font-size:.9em}
+</style>
+</head>
+<body>
+<h1>Raspy excited speech in <code>yoob-tts-1</code> - what the markup controls</h1>
+<p class="sub">Four voices &times; six delivery variants &times; three takes &middot; quality best &middot;
+48&nbsp;kHz WAV &middot; measured 2026-11-10 &middot; HNR = Praat harmonicity, mean of 3 takes (higher = cleaner voice)</p>
+
+<p>Emotion tags and shouting spans make the model <em>perform</em> strain - the same
+creak and subharmonics a real shouting voice has - which reads as rasp. The two
+structures behave differently, and the difference is consistent across all four
+voices: the <strong>shouting span</strong> is the harshest structure on the two
+breathy female voices (1.78 / 3.34 dB), while the <strong>plain excited tag</strong>
+is the cleanest way to get loud on the two male voices (5.02 / 5.77 dB).
+<code>pick="expressive"</code> is the wrong lever on the voices where polish is the
+problem: on w1243 it turns the cleanest excited structure (3.35 dB) into the second
+raspiest take of the whole set. Delivery instructions
+(<code>clean voice, no rasp, no strain</code>) are the one lever that flips
+per voice: they pull w1243's excited line up (3.35 &rarr; 3.23 dB mean, and the
+best instructed take is the cleanest excited clip of the four voices), but they
+cost the male voices clarity (m0886 5.77 &rarr; 4.31 dB) - the instructions
+override the voice's own bright, forward placement. The <strong>shout sound
+tag</strong> trades intensity for cleanliness everywhere: never the cleanest, never
+the worst, and the only loud marker that never drops a voice below 2.9 dB.</p>
+
+<table>
+  <tr><th>voice</th><th>excited + pick=expressive</th><th>shouting span</th><th>excited (default pick)</th><th>shout sound tag</th><th>shouting span + instructions</th><th>excited + instructions</th></tr>
+  <tr><th>Amber <span class='vid'>w1243</span><br><span class='vdesc'>breathy, intimate, hushed</span></th><td class="num good">3.49</td><td class="num bad">1.78</td><td class="num good">3.35</td><td class="num ">2.88</td><td class="num bad">1.93</td><td class="num good">3.23</td></tr><tr><th>Scarlett <span class='vid'>w0073</span><br><span class='vdesc'>sultry, velvety, breathy</span></th><td class="num good">3.86</td><td class="num good">3.34</td><td class="num good">3.86</td><td class="num ">2.97</td><td class="num ">2.58</td><td class="num good">3.35</td></tr><tr><th>David <span class='vid'>m0770</span><br><span class='vdesc'>deep, warm, gravelly</span></th><td class="num good">5.95</td><td class="num good">4.26</td><td class="num good">5.02</td><td class="num good">3.15</td><td class="num good">3.40</td><td class="num good">4.87</td></tr><tr><th>Leo <span class='vid'>m0886</span><br><span class='vdesc'>husky, soft, warm</span></th><td class="num good">5.54</td><td class="num good">4.32</td><td class="num good">5.77</td><td class="num good">3.09</td><td class="num ">2.96</td><td class="num good">4.31</td></tr>
+</table>
+<p class="note">HNR (dB), mean of 3 takes, same recipe on every clip:
+<span class="bad">red &lt; 2</span>, <span class="good">green &ge; 3</span>.
+Per-take range under each player.</p>
+
+
+  <section class="voicecard">
+    <h2>Amber <span class="vid">w1243</span>
+      <span class="vwho">Woman, mid 20s, American &middot; breathy, intimate, hushed</span></h2>
+    <div class="vars">
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + pick=expressive</span>
+          <span class="hnr good">HNR 3.49 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_pick_w1243.wav"></audio>
+        <p class="mnote">ranks takes by feeling, not polish - the docs' 'more emotional, a little less clean'</p>
+        <p class="mstats">takes 3 &middot; range 1.33&ndash;6.75 dB &middot;
+           flatness 96&times;10<sup>-5</sup> &middot; OVRL 1.91</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span</span>
+          <span class="hnr bad">HNR 1.78 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_span_w1243.wav"></audio>
+        <p class="mnote">delivery span on the whole line - the harshest structure</p>
+        <p class="mstats">takes 3 &middot; range 1.48&ndash;1.94 dB &middot;
+           flatness 128&times;10<sup>-5</sup> &middot; OVRL 2.34</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited (default pick)</span>
+          <span class="hnr good">HNR 3.35 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_tag_w1243.wav"></audio>
+        <p class="mnote">the plain tagged take - the baseline rasp</p>
+        <p class="mstats">takes 3 &middot; range 2.07&ndash;5.59 dB &middot;
+           flatness 81&times;10<sup>-5</sup> &middot; OVRL 1.79</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shout sound tag</span>
+          <span class="hnr ">HNR 2.88 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shout_sound_w1243.wav"></audio>
+        <p class="mnote">sound tag on the second clause - milder than the span</p>
+        <p class="mstats">takes 3 &middot; range 2.29&ndash;3.38 dB &middot;
+           flatness 116&times;10<sup>-5</sup> &middot; OVRL 2.35</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span + instructions</span>
+          <span class="hnr bad">HNR 1.93 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_clean_w1243.wav"></audio>
+        <p class="mnote">same span, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 1.40&ndash;2.42 dB &middot;
+           flatness 119&times;10<sup>-5</sup> &middot; OVRL 2.41</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + instructions</span>
+          <span class="hnr good">HNR 3.23 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_clean_w1243.wav"></audio>
+        <p class="mnote">same tag, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 2.56&ndash;3.81 dB &middot;
+           flatness 96&times;10<sup>-5</sup> &middot; OVRL 1.87</p>
+      </div></div>
+  </section>
+  <section class="voicecard">
+    <h2>Scarlett <span class="vid">w0073</span>
+      <span class="vwho">Woman, late 20s, American &middot; sultry, velvety, breathy</span></h2>
+    <div class="vars">
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + pick=expressive</span>
+          <span class="hnr good">HNR 3.86 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_pick_w0073.wav"></audio>
+        <p class="mnote">ranks takes by feeling, not polish - the docs' 'more emotional, a little less clean'</p>
+        <p class="mstats">takes 3 &middot; range 2.76&ndash;4.75 dB &middot;
+           flatness 86&times;10<sup>-5</sup> &middot; OVRL 2.15</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span</span>
+          <span class="hnr good">HNR 3.34 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_span_w0073.wav"></audio>
+        <p class="mnote">delivery span on the whole line - the harshest structure</p>
+        <p class="mstats">takes 3 &middot; range 3.02&ndash;3.56 dB &middot;
+           flatness 142&times;10<sup>-5</sup> &middot; OVRL 2.19</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited (default pick)</span>
+          <span class="hnr good">HNR 3.86 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_tag_w0073.wav"></audio>
+        <p class="mnote">the plain tagged take - the baseline rasp</p>
+        <p class="mstats">takes 3 &middot; range 2.76&ndash;4.75 dB &middot;
+           flatness 86&times;10<sup>-5</sup> &middot; OVRL 2.15</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shout sound tag</span>
+          <span class="hnr ">HNR 2.97 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shout_sound_w0073.wav"></audio>
+        <p class="mnote">sound tag on the second clause - milder than the span</p>
+        <p class="mstats">takes 3 &middot; range 2.60&ndash;3.19 dB &middot;
+           flatness 93&times;10<sup>-5</sup> &middot; OVRL 2.41</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span + instructions</span>
+          <span class="hnr ">HNR 2.58 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_clean_w0073.wav"></audio>
+        <p class="mnote">same span, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 1.72&ndash;3.22 dB &middot;
+           flatness 102&times;10<sup>-5</sup> &middot; OVRL 2.38</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + instructions</span>
+          <span class="hnr good">HNR 3.35 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_clean_w0073.wav"></audio>
+        <p class="mnote">same tag, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 3.07&ndash;3.62 dB &middot;
+           flatness 71&times;10<sup>-5</sup> &middot; OVRL 2.07</p>
+      </div></div>
+  </section>
+  <section class="voicecard">
+    <h2>David <span class="vid">m0770</span>
+      <span class="vwho">Man, early 30s, American &middot; deep, warm, gravelly</span></h2>
+    <div class="vars">
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + pick=expressive</span>
+          <span class="hnr good">HNR 5.95 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_pick_m0770.wav"></audio>
+        <p class="mnote">ranks takes by feeling, not polish - the docs' 'more emotional, a little less clean'</p>
+        <p class="mstats">takes 3 &middot; range 5.58&ndash;6.19 dB &middot;
+           flatness 126&times;10<sup>-5</sup> &middot; OVRL 2.34</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span</span>
+          <span class="hnr good">HNR 4.26 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_span_m0770.wav"></audio>
+        <p class="mnote">delivery span on the whole line - the harshest structure</p>
+        <p class="mstats">takes 3 &middot; range 3.66&ndash;5.10 dB &middot;
+           flatness 235&times;10<sup>-5</sup> &middot; OVRL 2.82</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited (default pick)</span>
+          <span class="hnr good">HNR 5.02 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_tag_m0770.wav"></audio>
+        <p class="mnote">the plain tagged take - the baseline rasp</p>
+        <p class="mstats">takes 3 &middot; range 4.62&ndash;5.58 dB &middot;
+           flatness 107&times;10<sup>-5</sup> &middot; OVRL 2.30</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shout sound tag</span>
+          <span class="hnr good">HNR 3.15 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shout_sound_m0770.wav"></audio>
+        <p class="mnote">sound tag on the second clause - milder than the span</p>
+        <p class="mstats">takes 3 &middot; range 2.61&ndash;3.91 dB &middot;
+           flatness 234&times;10<sup>-5</sup> &middot; OVRL 2.70</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span + instructions</span>
+          <span class="hnr good">HNR 3.40 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_clean_m0770.wav"></audio>
+        <p class="mnote">same span, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 2.02&ndash;4.17 dB &middot;
+           flatness 193&times;10<sup>-5</sup> &middot; OVRL 2.85</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + instructions</span>
+          <span class="hnr good">HNR 4.87 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_clean_m0770.wav"></audio>
+        <p class="mnote">same tag, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 3.66&ndash;6.83 dB &middot;
+           flatness 63&times;10<sup>-5</sup> &middot; OVRL 2.45</p>
+      </div></div>
+  </section>
+  <section class="voicecard">
+    <h2>Leo <span class="vid">m0886</span>
+      <span class="vwho">Man, mid 20s, American &middot; husky, soft, warm</span></h2>
+    <div class="vars">
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + pick=expressive</span>
+          <span class="hnr good">HNR 5.54 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_pick_m0886.wav"></audio>
+        <p class="mnote">ranks takes by feeling, not polish - the docs' 'more emotional, a little less clean'</p>
+        <p class="mstats">takes 3 &middot; range 4.80&ndash;6.59 dB &middot;
+           flatness 103&times;10<sup>-5</sup> &middot; OVRL 2.25</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span</span>
+          <span class="hnr good">HNR 4.32 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_span_m0886.wav"></audio>
+        <p class="mnote">delivery span on the whole line - the harshest structure</p>
+        <p class="mstats">takes 3 &middot; range 3.48&ndash;6.00 dB &middot;
+           flatness 168&times;10<sup>-5</sup> &middot; OVRL 2.92</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited (default pick)</span>
+          <span class="hnr good">HNR 5.77 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_tag_m0886.wav"></audio>
+        <p class="mnote">the plain tagged take - the baseline rasp</p>
+        <p class="mstats">takes 3 &middot; range 5.16&ndash;6.59 dB &middot;
+           flatness 131&times;10<sup>-5</sup> &middot; OVRL 2.36</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shout sound tag</span>
+          <span class="hnr good">HNR 3.09 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shout_sound_m0886.wav"></audio>
+        <p class="mnote">sound tag on the second clause - milder than the span</p>
+        <p class="mstats">takes 3 &middot; range 2.18&ndash;4.62 dB &middot;
+           flatness 88&times;10<sup>-5</sup> &middot; OVRL 2.77</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">shouting span + instructions</span>
+          <span class="hnr ">HNR 2.96 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/shouting_clean_m0886.wav"></audio>
+        <p class="mnote">same span, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 2.35&ndash;3.37 dB &middot;
+           flatness 138&times;10<sup>-5</sup> &middot; OVRL 2.58</p>
+      </div>
+      <div class="var">
+        <div class="varhead">
+          <span class="vlabel">excited + instructions</span>
+          <span class="hnr good">HNR 4.31 dB</span>
+        </div>
+        <audio controls preload="none" src="audio/excited_clean_m0886.wav"></audio>
+        <p class="mnote">same tag, delivery instructions added</p>
+        <p class="mstats">takes 3 &middot; range 3.27&ndash;5.26 dB &middot;
+           flatness 116&times;10<sup>-5</sup> &middot; OVRL 2.48</p>
+      </div></div>
+  </section>
+
+<h2>Listen for</h2>
+<ul>
+  <li><strong>w1243:</strong> <em>shouting span</em> vs <em>excited (default pick)</em> -
+      same loud line; the span is the gravel, the tag is not.</li>
+  <li><strong>w1243:</strong> <em>excited + pick=expressive</em> vs <em>excited (default pick)</em> -
+      the picker chose feeling over polish: 1.33 dB vs 2.07 dB on the seed-7 takes.</li>
+  <li><strong>m0770 / m0886:</strong> <em>excited + instructions</em> vs <em>excited (default pick)</em> -
+      the instructed takes are audibly duller; the male voices want their own placement.</li>
+  <li><strong>all voices:</strong> the <em>shout sound tag</em> - a loud burst that never
+      roughens the voice, at the cost of some intensity.</li>
+</ul>
+
+<p class="note">Markup as sent to the API - excited line:
+<code>[excited] We actually did it! We actually did it!</code> &middot; shouting line:
+<code>[shouting] We actually did it![/shouting]</code> &middot; instructions field:
+<code>clean voice, no rasp, no strain</code> &middot; seeds 7, 11, 23 (players play the seed-7 take).
+Deterministic: same seed returns byte-identical audio.
+Generated and measured by <code>scripts/raspy_demo.py</code> in yoob-tts-web;
+report: <code>reports/raspy_demo.json</code>.</p>
+</body>
+</html>
