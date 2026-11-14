@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>onit/reward — 192M RL Dry Run</title><style>body{font-family:Inter,system-ui,sans-serif;background:#0d0f12;color:#e8eaf0;max-width:1100px;margin:0 auto;padding:2rem 1.5rem;line-height:1.6}
+h1,h2{font-family:Georgia,serif;font-weight:500}h1{font-size:1.9rem}h2{margin-top:2rem;font-size:1.3rem;color:#4f9cf9}
+a{color:#4f9cf9}code{background:#1a1e25;padding:.1rem .35rem;border-radius:4px;font-size:.85em}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem}
+th,td{border:1px solid rgba(255,255,255,.12);padding:.45rem .6rem;text-align:left}
+th{background:#13161b}audio{width:220px;height:32px}
+.note{color:#f5a623;font-size:.9rem}.dim{color:#8a92a3}</style></head><body>
+<h1>onit/reward — Flow-GRPO dry run on the 192M Irodori model</h1>
+<p class="dim">Branch <a href="https://github.com/Tap-Mobile/expressive-tts/tree/onit/reward"><code>onit/reward</code></a> ·
+checkpoint <code>V12b_192M/checkpoint_final.pt</code> · 1× L40S · November 14, 2026</p>
+<p>End-to-end smoke of the RL post-training loop on the real 192M policy: LoRA r=8 on the diffusion-attn
+blocks, Euler RF sampling with SDE noise on a 2-step low-noise window (MixGRPO-style), real reward models
+(Whisper-small.en CER, WavLM-base-plus speaker cosine, audeering wav2vec2 emotion proximity), group-relative
+advantages, transition-log-prob ratio, and adaptive-KL toward a frozen reference copy. Three updates, ~16 s each.</p>
+<p class="note">Caveat: candidates at this scale are babble — CER = 1.0 for all, so the content reward is
+uninformative here; the speaker and emotion channels carried the advantage signal. This qualifies the
+mechanics, not quality.</p>
+
+<h2>Baseline samples (pre-RL base policy, 40-step runtime sampler)</h2>
+<p class="dim">Generated with the vendor <code>InferenceRuntime</code> from the same checkpoint, then scored
+with the same RewardBank used inside the RL loop. These are the reference points a post-RL run would be
+compared against.</p>
+<table><tr><th>Prompt</th><th>Cand</th><th>Len</th><th>CER</th><th>r_content</th><th>r_speaker</th><th>r_emotion</th><th>Audio</th></tr>
+
+      <tr><td>reassure01</td><td>0</td><td>3.44s</td>
+      <td>1.0000</td><td>1.0002</td>
+      <td>0.7520</td><td>0.3732</td>
+      <td><audio controls preload="none" src="reassure01_cand0.flac"></audio></td></tr>
+      <tr><td>reassure01</td><td>1</td><td>3.44s</td>
+      <td>1.0000</td><td>1.0002</td>
+      <td>0.7922</td><td>0.3707</td>
+      <td><audio controls preload="none" src="reassure01_cand1.flac"></audio></td></tr>
+      <tr><td>urgent01</td><td>0</td><td>3.8s</td>
+      <td>1.0000</td><td>1.0002</td>
+      <td>0.6962</td><td>0.2133</td>
+      <td><audio controls preload="none" src="urgent01_cand0.flac"></audio></td></tr>
+      <tr><td>urgent01</td><td>1</td><td>3.8s</td>
+      <td>1.0000</td><td>1.0002</td>
+      <td>0.6814</td><td>0.1860</td>
+      <td><audio controls preload="none" src="urgent01_cand1.flac"></audio></td></tr>
+</table>
+<p class="dim">Reference clip: first row of <code>irodori_manifest.jsonl</code> (same anchor as the dry run).</p>
+
+<h2>RL dry-run updates</h2>
+<h3>Per-candidate rewards</h3>
+<table><tr><th>Update</th><th>Prompt</th><th>Cand</th><th>CER</th><th>r_content</th><th>r_speaker</th><th>r_emotion</th></tr>
+
+      <tr><td>u0</td><td>reassure01</td><td>0</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6048</td>
+      <td>0.2822</td></tr>
+      <tr><td>u0</td><td>reassure01</td><td>1</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6496</td>
+      <td>0.3364</td></tr>
+      <tr><td>u0</td><td>urgent01</td><td>0</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6453</td>
+      <td>0.2863</td></tr>
+      <tr><td>u0</td><td>urgent01</td><td>1</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6749</td>
+      <td>0.2960</td></tr>
+      <tr><td>u1</td><td>reassure01</td><td>0</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6004</td>
+      <td>0.2863</td></tr>
+      <tr><td>u1</td><td>reassure01</td><td>1</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6502</td>
+      <td>0.3332</td></tr>
+      <tr><td>u1</td><td>urgent01</td><td>0</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6491</td>
+      <td>0.2897</td></tr>
+      <tr><td>u1</td><td>urgent01</td><td>1</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6715</td>
+      <td>0.2906</td></tr>
+      <tr><td>u2</td><td>reassure01</td><td>0</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6020</td>
+      <td>0.3040</td></tr>
+      <tr><td>u2</td><td>reassure01</td><td>1</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6492</td>
+      <td>0.3303</td></tr>
+      <tr><td>u2</td><td>urgent01</td><td>0</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6416</td>
+      <td>0.2955</td></tr>
+      <tr><td>u2</td><td>urgent01</td><td>1</td>
+      <td>1.0000</td><td>1.0002</td><td>0.6749</td>
+      <td>0.2964</td></tr>
+</table>
+<h3>Optimization telemetry</h3>
+<table><tr><th>Update</th><th>Loss</th><th>KL</th><th>β</th><th>Grad norm</th><th>Time</th></tr>
+      <tr><td>0</td><td>-0.00001</td><td>0.0000</td><td>0.0080</td><td>3.328</td><td>16.6s</td></tr>
+      <tr><td>1</td><td>-0.00358</td><td>0.0388</td><td>0.0100</td><td>3.391</td><td>16.1s</td></tr>
+      <tr><td>2</td><td>0.00035</td><td>0.0394</td><td>0.0125</td><td>3.453</td><td>15.7s</td></tr>
+</table>
+
+<h2>Config</h2>
+<pre>{
+ "updates": 3,
+ "group_size": 2,
+ "num_steps": 8,
+ "window": 2,
+ "noise_level": 0.1,
+ "lr": 1e-06,
+ "kl_beta0": 0.01,
+ "kl_target": 0.001,
+ "kl_range": [
+  0.005,
+  0.5
+ ],
+ "grad_clip": 1.0,
+ "lora_r": 8,
+ "lora_alpha": 16,
+ "seed": 20261114,
+ "w_content": 1.0,
+ "w_speaker": 0.3,
+ "w_emotion": 0.5,
+ "max_seconds": 8.0
+}</pre>
+<p class="dim">Receipts: <code>/storage/tts/rl_dryrun/onit_reward_v4/</code> · script:
+<a href="https://github.com/Tap-Mobile/expressive-tts/blob/onit/reward/training/posttrain/reward_dry_run_192m.py">reward_dry_run_192m.py</a> ·
+baseline generator: <code>gen_baseline_samples.py</code>, scorer: <code>score_baseline_samples.py</code></p>
+</body></html>
