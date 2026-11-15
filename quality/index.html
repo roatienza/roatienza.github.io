@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speech Quality Assessor — SCOREQ · UTMOSv2 · DNSMOS · WhiSQA</title><style>body{font-family:Inter,system-ui,sans-serif;background:#0d0f12;color:#e8eaf0;max-width:1250px;margin:0 auto;padding:2rem 1.5rem;line-height:1.6}
+h1,h2{font-family:Georgia,serif;font-weight:500}h1{font-size:1.9rem}h2{margin-top:2rem;font-size:1.3rem;color:#4f9cf9}
+code{background:#1a1e25;padding:.1rem .35rem;border-radius:4px;font-size:.85em}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.85rem}
+th,td{border:1px solid rgba(255,255,255,.12);padding:.4rem .5rem;text-align:left}
+th{background:#13161b}audio{width:200px;height:32px}
+.note{color:#f5a623;font-size:.9rem}.dim{color:#8a92a3}</style></head><body>
+<h1>Speech Quality Assessor — five reference-free MOS predictors on 20 training-dataset samples</h1>
+<p class="dim">November 15, 2026 · built for the <a href="https://github.com/Tap-Mobile/expressive-tts/tree/onit/reward"><code>onit/reward</code></a> naturalness channel ·
+20 samples · 48 kHz mono · machine: 1× L40S host (scorers on CPU)</p>
+
+<p>Sources scored: <b>SCOREQ</b> (NR, natural-domain, ONNX — NeurIPS 2024), <b>UTMOSv2</b>
+(sarulab-speech <code>fusion_stage3</code> fold 0 — VoiceMOS-2024 successor), <b>UTMOS22-strong</b>
+(the current reward-stack baseline), <b>DNSMOS</b> (official P.835 SIG/BAK/OVRL ONNX + P.808),
+<b>WhiSQA</b> (Whisper-encoder, single-head). All scales are 1–5 MOS; higher is better.</p>
+
+<h2>Selection</h2>
+<p>The 20 cleanest renders of the r14 champion bake-in round (arm B 200, tag-contrast "t" takes):
+lowest FireRed noise-ensemble scores from the 4,000-prompt manifest, round-robin across source
+families (max 6 per family) so the set is not twenty clones of one voice. Duration 4.5–9.3 s.</p>
+
+<h2>Scores</h2>
+<p class="dim">Sorted by UTMOS22 (descending). Click a row's player to hear the sample.</p>
+<table><tr><th>Audio</th><th>Sample</th><th>Len</th><th>Speaker</th>
+<th>UTMOS22</th><th>UTMOSv2</th><th>SCOREQ</th><th>WhiSQA</th>
+<th colspan="4">DNSMOS</th></tr>
+<tr><th colspan="4"></th><th colspan="4">1–5 MOS</th><th>SIG</th><th>BAK</th><th>OVRL</th><th>P.808</th></tr>
+<tr><td><audio controls preload="none" src="audio/rfb141345_0_t.flac"></audio></td><td>rfb141345</td><td>6.8s</td><td><code>syn:vs_21555a912a89</code></td><td>4.36</td><td>2.86</td><td>4.99</td><td>4.91</td><td>3.55</td><td>4.14</td><td><b>3.30</b></td><td>4.37</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb140779_0_t.flac"></audio></td><td>rfb140779</td><td>5.6s</td><td><code>syn:vs_09ba1f2833e0</code></td><td>4.34</td><td>2.94</td><td>5.02</td><td>4.90</td><td>3.56</td><td>4.13</td><td><b>3.34</b></td><td>4.05</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb141919_0_t.flac"></audio></td><td>rfb141919</td><td>8.8s</td><td><code>syn:vs_d57db62785a8</code></td><td>4.31</td><td>2.98</td><td>4.99</td><td>4.93</td><td>3.69</td><td>4.21</td><td><b>3.51</b></td><td>4.33</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb141839_0_t.flac"></audio></td><td>rfb141839</td><td>6.4s</td><td><code>dyn:erica:erica</code></td><td>4.29</td><td>2.98</td><td>4.88</td><td>4.94</td><td>3.66</td><td>4.24</td><td><b>3.42</b></td><td>4.06</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb140792_0_t.flac"></audio></td><td>rfb140792</td><td>5.2s</td><td><code>v8_58ca88fc1537</code></td><td>4.27</td><td>3.65</td><td>4.78</td><td>4.94</td><td>3.17</td><td>3.76</td><td><b>2.80</b></td><td>3.97</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb140561_0_t.flac"></audio></td><td>rfb140561</td><td>4.3s</td><td><code>dyn:erica:erica</code></td><td>4.27</td><td>3.07</td><td>4.60</td><td>4.92</td><td>3.46</td><td>4.09</td><td><b>3.23</b></td><td>3.62</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb142779_0_t.flac"></audio></td><td>rfb142779</td><td>2.9s</td><td><code>dyn:file:037080</code></td><td>4.23</td><td>3.47</td><td>4.37</td><td>4.87</td><td>3.16</td><td>3.82</td><td><b>2.81</b></td><td>3.95</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb140114_0_t.flac"></audio></td><td>rfb140114</td><td>4.5s</td><td><code>gt:fish_s21pro:Hannah</code></td><td>4.18</td><td>3.76</td><td>4.75</td><td>4.85</td><td>3.48</td><td>3.87</td><td><b>3.08</b></td><td>3.76</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb143564_0_t.flac"></audio></td><td>rfb143564</td><td>4.6s</td><td><code>gt:deepgram_flux:maeve</code></td><td>4.17</td><td>3.06</td><td>4.67</td><td>4.88</td><td>3.51</td><td>4.20</td><td><b>3.34</b></td><td>3.88</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb141981_0_t.flac"></audio></td><td>rfb141981</td><td>7.2s</td><td><code>gt:inworld_tts2:Elizabeth</code></td><td>4.15</td><td>3.94</td><td>4.66</td><td>4.94</td><td>3.66</td><td>4.19</td><td><b>3.46</b></td><td>4.19</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb142753_0_t.flac"></audio></td><td>rfb142753</td><td>6.7s</td><td><code>gt:inworld_tts2:Deborah</code></td><td>4.13</td><td>2.90</td><td>4.78</td><td>4.93</td><td>3.43</td><td>4.00</td><td><b>3.15</b></td><td>3.78</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb140515_0_t.flac"></audio></td><td>rfb140515</td><td>5.8s</td><td><code>dyn:erica:erica</code></td><td>4.08</td><td>3.59</td><td>4.79</td><td>4.95</td><td>3.38</td><td>4.13</td><td><b>3.16</b></td><td>3.90</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb142694_0_t.flac"></audio></td><td>rfb142694</td><td>2.1s</td><td><code>v8_93e41c0533d5</code></td><td>3.85</td><td>2.92</td><td>4.18</td><td>4.64</td><td>3.42</td><td>4.07</td><td><b>3.14</b></td><td>3.23</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb142924_0_t.flac"></audio></td><td>rfb142924</td><td>5.4s</td><td><code>syn:vs_bc0f5d644d16</code></td><td>3.77</td><td>3.19</td><td>4.95</td><td>4.88</td><td>3.49</td><td>3.76</td><td><b>3.05</b></td><td>3.88</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb141986_0_t.flac"></audio></td><td>rfb141986</td><td>6.3s</td><td><code>gt:inworld_tts2:Sophie</code></td><td>3.73</td><td>3.36</td><td>4.84</td><td>4.92</td><td>3.70</td><td>4.19</td><td><b>3.49</b></td><td>4.18</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb143144_0_t.flac"></audio></td><td>rfb143144</td><td>7.6s</td><td><code>soundgasm@2026-08-04:KissesFromLia</code></td><td>3.64</td><td>3.04</td><td>4.48</td><td>4.80</td><td>3.58</td><td>4.21</td><td><b>3.37</b></td><td>3.96</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb141067_0_t.flac"></audio></td><td>rfb141067</td><td>8.3s</td><td><code>syn:vs_4d729813f2c6</code></td><td>3.50</td><td>3.13</td><td>4.67</td><td>4.80</td><td>3.40</td><td>4.17</td><td><b>3.19</b></td><td>4.10</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb140033_0_t.flac"></audio></td><td>rfb140033</td><td>7.0s</td><td><code>syn:vs_1611d3814ec4</code></td><td>3.41</td><td>2.53</td><td>4.79</td><td>4.86</td><td>3.63</td><td>4.12</td><td><b>3.38</b></td><td>4.10</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb143452_0_t.flac"></audio></td><td>rfb143452</td><td>3.6s</td><td><code>soundgasm@2026-08-04:sabbathlynnxx</code></td><td>3.30</td><td>2.63</td><td>3.96</td><td>4.13</td><td>3.53</td><td>4.13</td><td><b>3.25</b></td><td>3.95</td></tr>
+<tr><td><audio controls preload="none" src="audio/rfb140420_0_t.flac"></audio></td><td>rfb140420</td><td>14.2s</td><td><code>gt:nvtts:ex04</code></td><td>2.24</td><td>2.29</td><td>4.58</td><td>4.75</td><td>3.19</td><td>3.20</td><td><b>2.51</b></td><td>3.16</td></tr>
+</table>
+
+<h2>Predictor agreement (Spearman ρ, n=20)</h2>
+<table><tr><th>Pair</th><th>ρ</th><th>Reading</th></tr>
+<tr><td>UTMOS22 ↔ WhiSQA</td><td>0.585</td><td>best agreement</td></tr>
+<tr><td>UTMOS22 ↔ SCOREQ</td><td>0.501</td><td>moderate</td></tr>
+<tr><td>SCOREQ ↔ WhiSQA</td><td>0.523</td><td>moderate</td></tr>
+<tr><td>SCOREQ ↔ DNSMOS P.808</td><td>0.517</td><td>moderate</td></tr>
+<tr><td>UTMOSv2 ↔ WhiSQA</td><td>0.433</td><td>moderate</td></tr>
+<tr><td>UTMOS22 ↔ UTMOSv2</td><td>0.227</td><td>weak — v2 disagrees with v1 on clean TTS audio</td></tr>
+<tr><td>UTMOSv2 ↔ SCOREQ</td><td>0.006</td><td>orthogonal — v2 is not ranking the same thing here</td></tr>
+<tr><td>UTMOS22 ↔ DNSMOS OVRL</td><td>0.161</td><td>weak</td></tr>
+<tr><td>noise-ens ↔ UTMOS22</td><td>0.102</td><td>selection gate ≠ naturalness ranking</td></tr>
+</table>
+
+<h2>Means and what they say</h2>
+<table><tr><th>Predictor</th><th>Mean</th><th>Min</th><th>Max</th></tr>
+<tr><td>UTMOS22-strong</td><td>3.910</td><td>2.241</td><td>4.357</td></tr>
+<tr><td>UTMOSv2</td><td>3.115</td><td>2.286</td><td>3.938</td></tr>
+<tr><td>SCOREQ (NR, natural)</td><td>4.686</td><td>3.959</td><td>5.018</td></tr>
+<tr><td>WhiSQA (single)</td><td>4.837</td><td>4.133</td><td>4.950</td></tr>
+<tr><td>DNSMOS OVRL (P.835)</td><td>3.198</td><td>—</td><td>—</td></tr>
+<tr><td>DNSMOS P.808</td><td>3.922</td><td>—</td><td>—</td></tr>
+</table>
+
+<p class="note">Caveats, stated plainly:</p>
+<ul class="note">
+<li>This is clean, synthetic, expressive TTS audio — the regime the 2026 Asonitis et al. study
+identifies as the hardest for reference-free MOS predictors, where single-model scores stop
+agreeing with human listeners. Treat any one column as a weak vote, not a verdict.</li>
+<li>UTMOSv2's near-zero agreement with SCOREQ (ρ = 0.006) on this set is striking. Both are
+trained on MOS data, but v2's fusion features (speaker, spectrogram, text-side channels) appear
+to weight properties orthogonal to SCOREQ's SSL-contrastive embedding on this audio. This is
+exactly why the composite-reward doctrine uses an ensemble, not a single predictor.</li>
+<li>DNSMOS was trained on noisy-telephony data; P.835 OVRL penalizes these full-bandwidth
+emotional renders (mean 3.20) while its BAK component reads 4.0+ — it is included as a
+background-artifact vote, not a naturalness vote.</li>
+<li>WhiSQA's tight 4.13–4.95 range suggests limited spread on this clean set — it rarely
+punishes anything here.</li>
+</ul>
+
+<p class="dim">Scorer code: <code>training/posttrain/mos_assessor.py</code> on the
+<code>onit/reward</code> branch of expressive-tts. Raw JSON:
+<a href="results_20.json">results_20.json</a></p>
+</body></html>

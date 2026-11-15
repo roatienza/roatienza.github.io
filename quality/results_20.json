@@ -1,0 +1,394 @@
+{
+  "schema": "onit_mosqa.v1",
+  "predictors": [
+    "SCOREQ(nr,natural,onnx)",
+    "UTMOS22-strong",
+    "UTMOSv2(1.3.1)",
+    "WhiSQA(single-head)",
+    "DNSMOS(P.835+P.808 official onnx)"
+  ],
+  "sr": 16000,
+  "selection": "20 lowest noise-ens r14 tag takes, round-robin across source families (max 6/family)",
+  "samples": [
+    {
+      "id": "rfb141345",
+      "wav": "audio/rfb141345_0_t.flac",
+      "speaker_id": "syn:vs_21555a912a89",
+      "caption": "A man is speaking: a mid-range pitch for a man. fearful, halting, audible breath, gasps. Recording: clean studio quality, full bandwidth, no background noise.",
+      "text": "<emo:nervous> why are you <ev:inhale> staring at me like that? <ev:breathing> you're making me <span:trembling> feel so anxious </span:trembling> <ev:gasp> and small.",
+      "noise_ens": 0.025,
+      "duration_s": 6.76,
+      "utmos22": 4.357,
+      "utmosv2": 2.861,
+      "scoreq_nr": 4.986,
+      "whisqa": 4.907,
+      "dnsmos": {
+        "SIG": 3.554,
+        "BAK": 4.136,
+        "OVRL": 3.301,
+        "P808_MOS": 4.367
+      }
+    },
+    {
+      "id": "rfb140779",
+      "wav": "audio/rfb140779_0_t.flac",
+      "speaker_id": "syn:vs_09ba1f2833e0",
+      "caption": "A man is speaking: a mid-range pitch for a man. surprised, audible breath. Recording: clean studio quality, full bandwidth, no background noise.",
+      "text": "<emo:shock> the house is completely empty. <ev:inhale> why would they leave everything behind without saying a single word?",
+      "noise_ens": 0.0237,
+      "duration_s": 5.6,
+      "utmos22": 4.341,
+      "utmosv2": 2.942,
+      "scoreq_nr": 5.018,
+      "whisqa": 4.897,
+      "dnsmos": {
+        "SIG": 3.564,
+        "BAK": 4.13,
+        "OVRL": 3.338,
+        "P808_MOS": 4.047
+      }
+    },
+    {
+      "id": "rfb141919",
+      "wav": "audio/rfb141919_0_t.flac",
+      "speaker_id": "syn:vs_d57db62785a8",
+      "caption": "A woman is speaking: a mid-range pitch for a woman. happy, giggling. Recording: clean studio quality, full bandwidth, no background noise.",
+      "text": "<emo:joy> seeing your face when i opened the door was the best moment of my entire year. <ev:laughing> come here and hug me.",
+      "noise_ens": 0.025,
+      "duration_s": 8.8,
+      "utmos22": 4.309,
+      "utmosv2": 2.982,
+      "scoreq_nr": 4.988,
+      "whisqa": 4.926,
+      "dnsmos": {
+        "SIG": 3.694,
+        "BAK": 4.211,
+        "OVRL": 3.509,
+        "P808_MOS": 4.335
+      }
+    },
+    {
+      "id": "rfb141839",
+      "wav": "audio/rfb141839_0_t.flac",
+      "speaker_id": "dyn:erica:erica",
+      "caption": "A woman is speaking: late thirties; American accent; a mid-range pitch for a woman. happy. Recording: studio quality, quiet background, full bandwidth.",
+      "text": "<emo:joy> ha ha ha! the jack-o-lanterns are glowing, their eerie faces watching as i weave my enchantments through the air.",
+      "noise_ens": 0.0462,
+      "duration_s": 6.36,
+      "utmos22": 4.285,
+      "utmosv2": 2.977,
+      "scoreq_nr": 4.882,
+      "whisqa": 4.941,
+      "dnsmos": {
+        "SIG": 3.661,
+        "BAK": 4.235,
+        "OVRL": 3.421,
+        "P808_MOS": 4.064
+      }
+    },
+    {
+      "id": "rfb140792",
+      "wav": "audio/rfb140792_0_t.flac",
+      "speaker_id": "v8_58ca88fc1537",
+      "caption": "A woman is speaking: older adult; American accent; a mid-range pitch for a woman. performed narration, highly animated pitch, wide swings in loudness, clear studio voice. Recording: clean studio quality, full bandwidth, no background noise.",
+      "text": "<emo:nervous> \"honestly? i was devastated at first. i felt like my dream was crumbling.\"",
+      "noise_ens": 0.0337,
+      "duration_s": 5.24,
+      "utmos22": 4.274,
+      "utmosv2": 3.652,
+      "scoreq_nr": 4.783,
+      "whisqa": 4.942,
+      "dnsmos": {
+        "SIG": 3.172,
+        "BAK": 3.763,
+        "OVRL": 2.797,
+        "P808_MOS": 3.973
+      }
+    },
+    {
+      "id": "rfb140561",
+      "wav": "audio/rfb140561_0_t.flac",
+      "speaker_id": "dyn:erica:erica",
+      "caption": "A woman is speaking: late thirties; American accent; a mid-range pitch for a woman; bright, smooth voice. angry, intense. Recording: studio quality, quiet background, full bandwidth.",
+      "text": "<emo:angry> it's outrageous. denying scientific truth is not education.",
+      "noise_ens": 0.0474,
+      "duration_s": 4.32,
+      "utmos22": 4.271,
+      "utmosv2": 3.066,
+      "scoreq_nr": 4.598,
+      "whisqa": 4.921,
+      "dnsmos": {
+        "SIG": 3.462,
+        "BAK": 4.091,
+        "OVRL": 3.231,
+        "P808_MOS": 3.622
+      }
+    },
+    {
+      "id": "rfb142779",
+      "wav": "audio/rfb142779_0_t.flac",
+      "speaker_id": "dyn:file:037080",
+      "caption": "A person is speaking. happy. Recording: studio quality, quiet background, full bandwidth.",
+      "text": "<emo:joy> this actually is kind of fun, she explained.",
+      "noise_ens": 0.0449,
+      "duration_s": 2.92,
+      "utmos22": 4.228,
+      "utmosv2": 3.47,
+      "scoreq_nr": 4.374,
+      "whisqa": 4.87,
+      "dnsmos": {
+        "SIG": 3.159,
+        "BAK": 3.824,
+        "OVRL": 2.814,
+        "P808_MOS": 3.947
+      }
+    },
+    {
+      "id": "rfb140114",
+      "wav": "audio/rfb140114_0_t.flac",
+      "speaker_id": "gt:fish_s21pro:Hannah",
+      "caption": "A woman is speaking. Recording: clean, quiet background.",
+      "text": "<emo:relief> <ev:exhale> finally. <span:low voice> the waiting is over and i can finally touch you again. </span:low voice>",
+      "noise_ens": 0.025,
+      "duration_s": 4.48,
+      "utmos22": 4.178,
+      "utmosv2": 3.761,
+      "scoreq_nr": 4.75,
+      "whisqa": 4.848,
+      "dnsmos": {
+        "SIG": 3.475,
+        "BAK": 3.868,
+        "OVRL": 3.082,
+        "P808_MOS": 3.764
+      }
+    },
+    {
+      "id": "rfb143564",
+      "wav": "audio/rfb143564_0_t.flac",
+      "speaker_id": "gt:deepgram_flux:maeve",
+      "caption": "A woman is speaking. Recording: clean, quiet background.",
+      "text": "<emo:playful> you're actually terrible at this game, but i think i'll let you win anyway.",
+      "noise_ens": 0.0262,
+      "duration_s": 4.6,
+      "utmos22": 4.169,
+      "utmosv2": 3.065,
+      "scoreq_nr": 4.668,
+      "whisqa": 4.885,
+      "dnsmos": {
+        "SIG": 3.512,
+        "BAK": 4.2,
+        "OVRL": 3.336,
+        "P808_MOS": 3.885
+      }
+    },
+    {
+      "id": "rfb141981",
+      "wav": "audio/rfb141981_0_t.flac",
+      "speaker_id": "gt:inworld_tts2:Elizabeth",
+      "caption": "A woman is speaking. Recording: clean, quiet background.",
+      "text": "<emo:playful> on the bright side, <ev:laughing> i never have to attend another mandatory team building day in my life.",
+      "noise_ens": 0.0237,
+      "duration_s": 7.16,
+      "utmos22": 4.151,
+      "utmosv2": 3.938,
+      "scoreq_nr": 4.658,
+      "whisqa": 4.942,
+      "dnsmos": {
+        "SIG": 3.662,
+        "BAK": 4.187,
+        "OVRL": 3.456,
+        "P808_MOS": 4.193
+      }
+    },
+    {
+      "id": "rfb142753",
+      "wav": "audio/rfb142753_0_t.flac",
+      "speaker_id": "gt:inworld_tts2:Deborah",
+      "caption": "A woman is speaking. Recording: clean, quiet background.",
+      "text": "<emo:excited> wake up, wake up, i just heard back and they said yes, we are really moving to italy!",
+      "noise_ens": 0.0187,
+      "duration_s": 6.68,
+      "utmos22": 4.126,
+      "utmosv2": 2.897,
+      "scoreq_nr": 4.776,
+      "whisqa": 4.93,
+      "dnsmos": {
+        "SIG": 3.426,
+        "BAK": 4.004,
+        "OVRL": 3.145,
+        "P808_MOS": 3.779
+      }
+    },
+    {
+      "id": "rfb140515",
+      "wav": "audio/rfb140515_0_t.flac",
+      "speaker_id": "dyn:erica:erica",
+      "caption": "A woman is speaking: late thirties; American accent; a mid-range pitch for a woman. surprised. Recording: studio quality, quiet background, full bandwidth.",
+      "text": "<emo:surprise> good grief! finding a vintage police badge in the basement is an unexpected treasure.",
+      "noise_ens": 0.035,
+      "duration_s": 5.84,
+      "utmos22": 4.085,
+      "utmosv2": 3.591,
+      "scoreq_nr": 4.786,
+      "whisqa": 4.95,
+      "dnsmos": {
+        "SIG": 3.378,
+        "BAK": 4.132,
+        "OVRL": 3.163,
+        "P808_MOS": 3.902
+      }
+    },
+    {
+      "id": "rfb142694",
+      "wav": "audio/rfb142694_0_t.flac",
+      "speaker_id": "v8_93e41c0533d5",
+      "caption": "A woman is speaking: mid twenties; American accent; a mid-range pitch for a woman; bright, clear, friendly voice. joy, happy. Recording: full bandwidth.",
+      "text": "<emo:joy> that's also what made me great.",
+      "noise_ens": 0.04,
+      "duration_s": 2.08,
+      "utmos22": 3.848,
+      "utmosv2": 2.923,
+      "scoreq_nr": 4.183,
+      "whisqa": 4.637,
+      "dnsmos": {
+        "SIG": 3.415,
+        "BAK": 4.068,
+        "OVRL": 3.138,
+        "P808_MOS": 3.234
+      }
+    },
+    {
+      "id": "rfb142924",
+      "wav": "audio/rfb142924_0_t.flac",
+      "speaker_id": "syn:vs_bc0f5d644d16",
+      "caption": "A man is speaking: a mid-range pitch for a man. fearful, halting, sighs. Recording: clean studio quality, full bandwidth, no background noise.",
+      "text": "<emo:nervous> we need to talk about where this relationship is going. <ev:sigh> i'm terrified that we're just drifting apart.",
+      "noise_ens": 0.025,
+      "duration_s": 5.36,
+      "utmos22": 3.769,
+      "utmosv2": 3.192,
+      "scoreq_nr": 4.949,
+      "whisqa": 4.883,
+      "dnsmos": {
+        "SIG": 3.489,
+        "BAK": 3.761,
+        "OVRL": 3.046,
+        "P808_MOS": 3.88
+      }
+    },
+    {
+      "id": "rfb141986",
+      "wav": "audio/rfb141986_0_t.flac",
+      "speaker_id": "gt:inworld_tts2:Sophie",
+      "caption": "A woman is speaking. Recording: clean, quiet background.",
+      "text": "<emo:playful> shh, keep your voice down or we are going to wake up the entire house. <ev:laughing>",
+      "noise_ens": 0.025,
+      "duration_s": 6.28,
+      "utmos22": 3.732,
+      "utmosv2": 3.363,
+      "scoreq_nr": 4.843,
+      "whisqa": 4.915,
+      "dnsmos": {
+        "SIG": 3.703,
+        "BAK": 4.193,
+        "OVRL": 3.488,
+        "P808_MOS": 4.177
+      }
+    },
+    {
+      "id": "rfb143144",
+      "wav": "audio/rfb143144_0_t.flac",
+      "speaker_id": "soundgasm@2026-08-04:KissesFromLia",
+      "caption": "A woman is speaking: young adult; a mid-range pitch for a woman; gentle voice. degrading, submissive, gasping, sighs, gasps. Recording: clean studio quality, no background noise.",
+      "text": "<emo:playful> and i promise, i'm not just saying that because your cum and your dick are both inside me right now. <ev:giggle>",
+      "noise_ens": 0.0387,
+      "duration_s": 7.56,
+      "utmos22": 3.637,
+      "utmosv2": 3.037,
+      "scoreq_nr": 4.48,
+      "whisqa": 4.799,
+      "dnsmos": {
+        "SIG": 3.581,
+        "BAK": 4.21,
+        "OVRL": 3.369,
+        "P808_MOS": 3.961
+      }
+    },
+    {
+      "id": "rfb141067",
+      "wav": "audio/rfb141067_0_t.flac",
+      "speaker_id": "syn:vs_4d729813f2c6",
+      "caption": "A woman is speaking: low-pitched for a woman. sad, pleading, very broken up, a cough. Recording: clean studio quality, full bandwidth, no background noise.",
+      "text": "<emo:hurt> <ev:crying> you broke the most sacred promise we ever made to each other, <ev:clear throat> and i don't think i can ever forgive you.",
+      "noise_ens": 0.0237,
+      "duration_s": 8.28,
+      "utmos22": 3.498,
+      "utmosv2": 3.13,
+      "scoreq_nr": 4.672,
+      "whisqa": 4.796,
+      "dnsmos": {
+        "SIG": 3.398,
+        "BAK": 4.165,
+        "OVRL": 3.19,
+        "P808_MOS": 4.098
+      }
+    },
+    {
+      "id": "rfb140033",
+      "wav": "audio/rfb140033_0_t.flac",
+      "speaker_id": "syn:vs_1611d3814ec4",
+      "caption": "A woman is speaking: high-pitched for a woman. sighs, giggling, loud projected delivery, happy. Recording: clean studio quality, full bandwidth, no background noise.",
+      "text": "<emo:relief> the plane <ev:laughing> landed safely. <span:shouting> i'm coming home </span:shouting> to you right now <emo:joy> and i'm never leaving.",
+      "noise_ens": 0.025,
+      "duration_s": 6.96,
+      "utmos22": 3.406,
+      "utmosv2": 2.531,
+      "scoreq_nr": 4.789,
+      "whisqa": 4.862,
+      "dnsmos": {
+        "SIG": 3.626,
+        "BAK": 4.124,
+        "OVRL": 3.384,
+        "P808_MOS": 4.096
+      }
+    },
+    {
+      "id": "rfb143452",
+      "wav": "audio/rfb143452_0_t.flac",
+      "speaker_id": "soundgasm@2026-08-04:sabbathlynnxx",
+      "caption": "A woman is speaking: American accent; low-pitched for a woman. comforting, loving. Recording: quiet background, limited bandwidth.",
+      "text": "<emo:sad> to the point that sometimes you just feel like giving up.",
+      "noise_ens": 0.0474,
+      "duration_s": 3.56,
+      "utmos22": 3.298,
+      "utmosv2": 2.632,
+      "scoreq_nr": 3.959,
+      "whisqa": 4.133,
+      "dnsmos": {
+        "SIG": 3.528,
+        "BAK": 4.126,
+        "OVRL": 3.253,
+        "P808_MOS": 3.954
+      }
+    },
+    {
+      "id": "rfb140420",
+      "wav": "audio/rfb140420_0_t.flac",
+      "speaker_id": "gt:nvtts:ex04",
+      "caption": "A woman is speaking. Recording: clean, quiet background.",
+      "text": "please don't text dad. mom... <ev:breathing> mom, i don't want... <ev:breathing> fine, dad doesn't know. <ev:breathing> the only person... i've been at kate's... <ev:breathing> i've been at kate's for two days, and i just didn't go home to...",
+      "noise_ens": 0.0225,
+      "duration_s": 14.16,
+      "utmos22": 2.241,
+      "utmosv2": 2.286,
+      "scoreq_nr": 4.583,
+      "whisqa": 4.752,
+      "dnsmos": {
+        "SIG": 3.187,
+        "BAK": 3.203,
+        "OVRL": 2.506,
+        "P808_MOS": 3.162
+      }
+    }
+  ]
+}
