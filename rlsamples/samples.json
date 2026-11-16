@@ -1,0 +1,247 @@
+{
+ "schema": "onit_rlsamples.v1",
+ "run": "onit_reward_v7samples",
+ "receipt": "/storage/tts/rl_dryrun/onit_reward_v7samples_v2/scaleup.json",
+ "samples": [
+  {
+   "id": "sacdb628a90e77052982",
+   "text": "<span:low voice> we spent so much time arguing about the lit",
+   "reward_mean": 0.4959,
+   "ens_votes_mean": {
+    "scoreq": 1.092,
+    "utmosv2": 1.399,
+    "utmos22": 1.265
+   },
+   "raw_first": {
+    "wer": 0.946,
+    "spk_cos": 0.614,
+    "imp_cos": 0.458,
+    "f0r": 0.0,
+    "f0c": 0.008,
+    "edb": 11.198,
+    "snr": 27.559,
+    "scoreq": 1.121,
+    "utmosv2": 1.043,
+    "utmos22": 1.256
+   },
+   "dur_before_s": 7.36,
+   "dur_after_s": 7.36
+  },
+  {
+   "id": "sa4e711fdfcc59d42234",
+   "text": "<emo:intimate> just lean back <ev:laughing> and relax. <ev:l",
+   "reward_mean": 0.441,
+   "ens_votes_mean": {
+    "scoreq": 1.13,
+    "utmosv2": 1.599,
+    "utmos22": 1.267
+   },
+   "raw_first": {
+    "wer": 1.913,
+    "spk_cos": 0.634,
+    "imp_cos": 0.458,
+    "f0r": 0.0,
+    "f0c": 0.008,
+    "edb": 11.643,
+    "snr": 27.356,
+    "scoreq": 1.073,
+    "utmosv2": 1.372,
+    "utmos22": 1.248
+   },
+   "dur_before_s": 8.6,
+   "dur_after_s": 8.6
+  },
+  {
+   "id": "saac89252f5115663779",
+   "text": "<emo:neutral> i'm at the front of the line, in the gray seda",
+   "reward_mean": 0.4964,
+   "ens_votes_mean": {
+    "scoreq": 1.125,
+    "utmosv2": 1.42,
+    "utmos22": 1.275
+   },
+   "raw_first": {
+    "wer": 0.944,
+    "spk_cos": 0.59,
+    "imp_cos": 0.366,
+    "f0r": 0.0,
+    "f0c": 0.008,
+    "edb": 11.561,
+    "snr": 27.962,
+    "scoreq": 1.12,
+    "utmosv2": 1.701,
+    "utmos22": 1.268
+   },
+   "dur_before_s": 7.84,
+   "dur_after_s": 7.84
+  },
+  {
+   "id": "sa1987e59a066251901e",
+   "text": "<emo:shock> <ev:inhale> you're the one who sent the anonymou",
+   "reward_mean": 0.4912,
+   "ens_votes_mean": {
+    "scoreq": 1.116,
+    "utmosv2": 1.406,
+    "utmos22": 1.269
+   },
+   "raw_first": {
+    "wer": 0.924,
+    "spk_cos": 0.62,
+    "imp_cos": 0.419,
+    "f0r": 0.0,
+    "f0c": 0.008,
+    "edb": 11.484,
+    "snr": 27.934,
+    "scoreq": 1.115,
+    "utmosv2": 1.739,
+    "utmos22": 1.262
+   },
+   "dur_before_s": 7.36,
+   "dur_after_s": 7.36
+  },
+  {
+   "id": "gt_v8_V8_A04516_xai_atlas",
+   "text": "<emo:surprise> wait, the wolf in the story has your voice, <",
+   "reward_mean": 0.5026,
+   "ens_votes_mean": {
+    "scoreq": 1.082,
+    "utmosv2": 1.229,
+    "utmos22": 1.268
+   },
+   "raw_first": {
+    "wer": 0.927,
+    "spk_cos": 0.595,
+    "imp_cos": 0.39,
+    "f0r": 0.0,
+    "f0c": 0.006,
+    "edb": 11.85,
+    "snr": 28.749,
+    "scoreq": 1.168,
+    "utmosv2": 0.815,
+    "utmos22": 1.262
+   },
+   "dur_before_s": 5.2,
+   "dur_after_s": 5.2
+  },
+  {
+   "id": "gt_v8_V8_B01798_inw_Victoria",
+   "text": "<emo:longing> the storm took the lights, and all i want is t",
+   "reward_mean": 0.4963,
+   "ens_votes_mean": {
+    "scoreq": 1.078,
+    "utmosv2": 1.445,
+    "utmos22": 1.268
+   },
+   "raw_first": {
+    "wer": 0.91,
+    "spk_cos": 0.645,
+    "imp_cos": 0.437,
+    "f0r": 0.0,
+    "f0c": 0.007,
+    "edb": 12.485,
+    "snr": 30.087,
+    "scoreq": 1.146,
+    "utmosv2": 1.329,
+    "utmos22": 1.259
+   },
+   "dur_before_s": 5.72,
+   "dur_after_s": 5.72
+  },
+  {
+   "id": "dyn_erica_015322_00000",
+   "text": "<emo:joy> <span:shouting> fantastic! your lab results show s",
+   "reward_mean": 0.499,
+   "ens_votes_mean": {
+    "scoreq": 1.111,
+    "utmosv2": 1.645,
+    "utmos22": 1.268
+   },
+   "raw_first": {
+    "wer": 0.818,
+    "spk_cos": 0.613,
+    "imp_cos": 0.419,
+    "f0r": 0.0,
+    "f0c": 0.008,
+    "edb": 10.926,
+    "snr": 27.43,
+    "scoreq": 1.133,
+    "utmosv2": 1.655,
+    "utmos22": 1.261
+   },
+   "dur_before_s": 7.12,
+   "dur_after_s": 7.12
+  },
+  {
+   "id": "sa31f4351294daa8f489",
+   "text": "<emo:surprise> wait, you've already credited the amount, whe",
+   "reward_mean": 0.4976,
+   "ens_votes_mean": {
+    "scoreq": 1.079,
+    "utmosv2": 1.405,
+    "utmos22": 1.262
+   },
+   "raw_first": {
+    "wer": 0.923,
+    "spk_cos": 0.602,
+    "imp_cos": 0.404,
+    "f0r": 0.0,
+    "f0c": 0.008,
+    "edb": 12.251,
+    "snr": 28.122,
+    "scoreq": 1.084,
+    "utmosv2": 1.484,
+    "utmos22": 1.246
+   },
+   "dur_before_s": 7.12,
+   "dur_after_s": 7.12
+  },
+  {
+   "id": "sa13f82dc79d9eedb7b9",
+   "text": "<emo:intimate> <ev:moaning> right there <ev:breathing> just ",
+   "reward_mean": 0.4823,
+   "ens_votes_mean": {
+    "scoreq": 1.144,
+    "utmosv2": 1.566,
+    "utmos22": 1.277
+   },
+   "raw_first": {
+    "wer": 0.81,
+    "spk_cos": 0.612,
+    "imp_cos": 0.48,
+    "f0r": 1.72,
+    "f0c": -0.011,
+    "edb": 10.834,
+    "snr": 27.667,
+    "scoreq": 1.152,
+    "utmosv2": 1.229,
+    "utmos22": 1.259
+   },
+   "dur_before_s": 6.48,
+   "dur_after_s": 6.48
+  },
+  {
+   "id": "rft2_rf201055_2",
+   "text": "<emo:disgust> was our first date just a game to see how easi",
+   "reward_mean": 0.493,
+   "ens_votes_mean": {
+    "scoreq": 1.097,
+    "utmosv2": 1.365,
+    "utmos22": 1.266
+   },
+   "raw_first": {
+    "wer": 0.94,
+    "spk_cos": 0.621,
+    "imp_cos": 0.412,
+    "f0r": 1.33,
+    "f0c": 0.002,
+    "edb": 11.897,
+    "snr": 27.972,
+    "scoreq": 1.09,
+    "utmosv2": 1.421,
+    "utmos22": 1.249
+   },
+   "dur_before_s": 7.6,
+   "dur_after_s": 7.6
+  }
+ ]
+}
