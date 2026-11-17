@@ -14,14 +14,14 @@ th{background:#13161b}audio{width:240px;height:32px}
 <p class="dim">Flow-GRPO on <code>V12b_192M</code>, frozen ensemble reward
 (SCOREQ+UTMOSv2+UTMOS22 naturalness · prosody f0/energy · clipped-WER intelligibility) ·
 12 prompts × K=16, 3 updates · lr 5e-06 · kl_target 0.01 ·
-LoRA r=8 α=16 · seed 20261117 · run <code>onit_reward_v10</code> (Nov 17, 2026).</p>
-<p class="note">v10 (Nov 17, 2026): scaled-up drift config vs v9 (lr 5e-6 vs 5e-7, kl_target 0.01 vs 0.001).
-Grad norm ~0.16 (≈23× v9's 0.007) so the policy actually moved; actual KL stayed 0.000→0.0017→0.0018, ~5× below target.
-Audio pairs verified to differ (79–93% of PCM samples changed on spot-checks).
+LoRA r=8 α=16 · seed 20261117 · run <code>onit_reward_v10b</code> (Nov 17, 2026).</p>
+<p class="note">v10b (Nov 17, 2026): rerun with the LoRA actually attached (v10 had a config bug — lora_enabled unset, so the adapter was never applied and before/after audio was identical).
+Now lora_trainable=1.589M, KL 0.000→0.0014→0.0012, gnorm 0.0086, all 6 null controls PASS.
+Audio pairs verified distinct by hash (u0≠u1≠u2 for every spot-checked prompt).
 Honest scope: no per-prompt metric dict (WER/spk/SCOREQ) in this receipt — before/after rows show group reward and
-ttsds2 spread only; term-level means are in the updates table. ⚠️ The receipt reports
-lora_trainable_params = 192,092,577 (full model, not the 1.59M of a r=8 LoRA) — treat "LoRA" claims with caution;
-the saved artifact is this receipt + wavs (no lora_final.pt was written by the scaleup script).</p>
+ttsds2 spread only; term-level means are in the updates table. Adapter saved at onit_reward_v10b/lora_final
+(1,589,248 trainable params, verified in the receipt). Reward drift u0→u2 is small (−0.005…+0.002) — 2 updates
+at KL~0.001 is a gentle nudge, not a full training run.</p>
 
 <h2>10 samples — before (u0) vs after RL (u2)</h2>
 <table><tr><th>prompt</th><th>pass</th><th>dur</th><th>stats</th><th>audio</th></tr>

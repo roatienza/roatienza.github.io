@@ -1,6 +1,6 @@
 {
  "schema": "onit_rlsamples.v1",
- "run": "onit_reward_v10",
+ "run": "onit_reward_v10b",
  "receipt": "/storage/tts/rl_dryrun/onit_reward_v10/scaleup.json",
  "samples": [
   {
