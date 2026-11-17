@@ -18,103 +18,103 @@ code: <a href="https://github.com/Tap-Mobile/expressive-tts/tree/onit/reward"><c
 <p>Each prompt shows the <b>same candidate index</b> (cand 0, same seed) sampled at update 0
 (<i>before</i>, weights untouched) and update 3 (<i>after RL</i>, after the final GRPO
 update). Raw sampler output; no reference or postfilter.</p>
-<p class="note">v8 fix (Nov 16, 2026): all earlier samples on this page were noise/mumble — the RL
-sampler integrated the rectified-flow ODE with the wrong sign (x + v·dt instead of the official
-x + v·(t_next−t)), mismatched the served CFG (zero-mask instead of zero-state uncond, no caption
-guidance), and accumulated in bf16. After those fixes the raw sampler produces clean, intelligible
-speech (Whisper transcribes the prompt verbatim). Remaining honest scope: 3 updates at lr 1e-6 with
-KL ≈ 1e-3 move the policy only slightly — expect subtle prosody/energy differences between
-before and after, not a full quality leap.</p>
+<p class="note">v9 fix (Nov 17, 2026): the v8b "after RL" samples were identical to "before" —
+the ensemble reward script's lora_raw dict lacked <code>lora_enabled: True</code>, so
+apply_lora() silently returned the bare 192M model (log showed trainable=192.09M, lora_final.pt
+empty). Fixed; this run trains a real r=8 LoRA (1,589,248 params) and all 192 u0/u2 candidate
+pairs now differ audibly (87% of PCM samples changed on spot-check). Still honest scope:
+3 updates at lr 1e-6 with KL ≈ 1e-3 move the policy only slightly — expect subtle
+prosody/energy differences between before and after, not a full quality leap.</p>
 
 <h2>10 samples — before (u0) vs after RL (u2)</h2>
 <table><tr><th>Prompt</th><th>Stage</th><th>Len</th><th>Raw first-cand stats</th><th>Audio</th></tr>
 <tr><td rowspan="2"><code>sacdb628a90e77052982</code></td>
 <td colspan="4" class="ptext">&lt;span:low voice&gt; we spent so much time arguing about the lit</td></tr>
 <tr><td>before</td><td>7.36s</td>
-<td class="dim">WER 0.28 · spk 0.76</td>
+<td class="dim">WER 0.28 · spk 0.76 · SCOREQ 3.90 · v2 2.23 · 22 2.70 · f0r 18.1</td>
 <td><audio controls preload="none" src="audio/sacdb628a90e77052982_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>7.36s</td>
-<td class="dim">reward_mean 0.597</td>
+<td class="dim">WER 0.28 · spk 0.76 · SCOREQ 3.88 · v2 2.75 · 22 2.67 · f0r 17.8</td>
 <td><audio controls preload="none" src="audio/sacdb628a90e77052982_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa4e711fdfcc59d42234</code></td>
 <td colspan="4" class="ptext">&lt;emo:intimate&gt; just lean back &lt;ev:laughing&gt; and relax. &lt;ev:l</td></tr>
 <tr><td>before</td><td>8.6s</td>
-<td class="dim">WER 0.42 · spk 0.73</td>
+<td class="dim">WER 0.42 · spk 0.73 · SCOREQ 3.57 · v2 2.40 · 22 2.55 · f0r 23.6</td>
 <td><audio controls preload="none" src="audio/sa4e711fdfcc59d42234_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>8.6s</td>
-<td class="dim">reward_mean 0.574</td>
+<td class="dim">WER 0.42 · spk 0.73 · SCOREQ 3.60 · v2 2.83 · 22 2.58 · f0r 23.6</td>
 <td><audio controls preload="none" src="audio/sa4e711fdfcc59d42234_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>saac89252f5115663779</code></td>
 <td colspan="4" class="ptext">&lt;emo:neutral&gt; i&#x27;m at the front of the line, in the gray seda</td></tr>
 <tr><td>before</td><td>7.84s</td>
-<td class="dim">WER 0.19 · spk 0.61</td>
+<td class="dim">WER 0.19 · spk 0.62 · SCOREQ 4.17 · v2 2.56 · 22 2.58 · f0r 11.7</td>
 <td><audio controls preload="none" src="audio/saac89252f5115663779_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>7.84s</td>
-<td class="dim">reward_mean 0.624</td>
+<td class="dim">WER 0.19 · spk 0.62 · SCOREQ 4.20 · v2 2.98 · 22 2.67 · f0r 11.6</td>
 <td><audio controls preload="none" src="audio/saac89252f5115663779_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa1987e59a066251901e</code></td>
 <td colspan="4" class="ptext">&lt;emo:shock&gt; &lt;ev:inhale&gt; you&#x27;re the one who sent the anonymou</td></tr>
 <tr><td>before</td><td>7.36s</td>
-<td class="dim">WER 0.34 · spk 0.70</td>
+<td class="dim">WER 0.34 · spk 0.70 · SCOREQ 3.92 · v2 1.68 · 22 2.44 · f0r 26.1</td>
 <td><audio controls preload="none" src="audio/sa1987e59a066251901e_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>7.36s</td>
-<td class="dim">reward_mean 0.583</td>
+<td class="dim">WER 0.34 · spk 0.70 · SCOREQ 3.95 · v2 2.60 · 22 2.42 · f0r 26.1</td>
 <td><audio controls preload="none" src="audio/sa1987e59a066251901e_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>gt_v8_V8_A04516_xai_atla</code></td>
 <td colspan="4" class="ptext">&lt;emo:surprise&gt; wait, the wolf in the story has your voice, &lt;</td></tr>
 <tr><td>before</td><td>5.2s</td>
-<td class="dim">WER 0.22 · spk 0.74</td>
+<td class="dim">WER 0.22 · spk 0.74 · SCOREQ 4.37 · v2 2.70 · 22 3.34 · f0r 19.1</td>
 <td><audio controls preload="none" src="audio/gt_v8_V8_A04516_xai_atlas_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>5.2s</td>
-<td class="dim">reward_mean 0.605</td>
+<td class="dim">WER 0.22 · spk 0.74 · SCOREQ 4.38 · v2 2.86 · 22 3.43 · f0r 23.2</td>
 <td><audio controls preload="none" src="audio/gt_v8_V8_A04516_xai_atlas_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>gt_v8_V8_B01798_inw_Vict</code></td>
 <td colspan="4" class="ptext">&lt;emo:longing&gt; the storm took the lights, and all i want is t</td></tr>
 <tr><td>before</td><td>5.72s</td>
-<td class="dim">WER 0.11 · spk 0.78</td>
+<td class="dim">WER 0.11 · spk 0.78 · SCOREQ 3.65 · v2 2.23 · 22 2.65 · f0r 14.8</td>
 <td><audio controls preload="none" src="audio/gt_v8_V8_B01798_inw_Victoria_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>5.72s</td>
-<td class="dim">reward_mean 0.641</td>
+<td class="dim">WER 0.11 · spk 0.78 · SCOREQ 3.63 · v2 2.23 · 22 2.67 · f0r 14.3</td>
 <td><audio controls preload="none" src="audio/gt_v8_V8_B01798_inw_Victoria_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>dyn_erica_015322_00000</code></td>
 <td colspan="4" class="ptext">&lt;emo:joy&gt; &lt;span:shouting&gt; fantastic! your lab results show s</td></tr>
 <tr><td>before</td><td>7.12s</td>
-<td class="dim">WER 0.27 · spk 0.74</td>
+<td class="dim">WER 0.27 · spk 0.73 · SCOREQ 3.19 · v2 2.06 · 22 1.43 · f0r 10.6</td>
 <td><audio controls preload="none" src="audio/dyn_erica_015322_00000_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>7.12s</td>
-<td class="dim">reward_mean 0.662</td>
+<td class="dim">WER 0.27 · spk 0.74 · SCOREQ 3.14 · v2 1.98 · 22 1.43 · f0r 8.8</td>
 <td><audio controls preload="none" src="audio/dyn_erica_015322_00000_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa31f4351294daa8f489</code></td>
 <td colspan="4" class="ptext">&lt;emo:surprise&gt; wait, you&#x27;ve already credited the amount, whe</td></tr>
 <tr><td>before</td><td>7.12s</td>
-<td class="dim">WER 0.10 · spk 0.67</td>
+<td class="dim">WER 0.10 · spk 0.67 · SCOREQ 4.15 · v2 2.10 · 22 2.99 · f0r 9.0</td>
 <td><audio controls preload="none" src="audio/sa31f4351294daa8f489_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>7.12s</td>
-<td class="dim">reward_mean 0.619</td>
+<td class="dim">WER 0.10 · spk 0.67 · SCOREQ 4.11 · v2 2.38 · 22 2.76 · f0r 17.9</td>
 <td><audio controls preload="none" src="audio/sa31f4351294daa8f489_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa13f82dc79d9eedb7b9</code></td>
 <td colspan="4" class="ptext">&lt;emo:intimate&gt; &lt;ev:moaning&gt; right there &lt;ev:breathing&gt; just </td></tr>
 <tr><td>before</td><td>6.48s</td>
-<td class="dim">WER 0.43 · spk 0.67</td>
+<td class="dim">WER 0.43 · spk 0.67 · SCOREQ 3.78 · v2 2.24 · 22 2.03 · f0r 4.8</td>
 <td><audio controls preload="none" src="audio/sa13f82dc79d9eedb7b9_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>6.48s</td>
-<td class="dim">reward_mean 0.619</td>
+<td class="dim">WER 0.43 · spk 0.67 · SCOREQ 3.79 · v2 2.16 · 22 1.97 · f0r 4.9</td>
 <td><audio controls preload="none" src="audio/sa13f82dc79d9eedb7b9_after.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>rft2_rf201055_2</code></td>
 <td colspan="4" class="ptext">&lt;emo:disgust&gt; was our first date just a game to see how easi</td></tr>
 <tr><td>before</td><td>7.6s</td>
-<td class="dim">WER 0.30 · spk 0.76</td>
+<td class="dim">WER 0.30 · spk 0.75 · SCOREQ 4.36 · v2 2.40 · 22 3.04 · f0r 25.7</td>
 <td><audio controls preload="none" src="audio/rft2_rf201055_2_before.wav"></audio></td></tr>
 <tr><td class="after">after RL</td><td>7.6s</td>
-<td class="dim">reward_mean 0.614</td>
+<td class="dim">WER 0.30 · spk 0.75 · SCOREQ 4.35 · v2 2.29 · 22 3.03 · f0r 26.0</td>
 <td><audio controls preload="none" src="audio/rft2_rf201055_2_after.wav"></audio></td></tr>
 </table>
 
 <h2>Run trajectory</h2>
 <table><tr><th>Update</th><th>Loss</th><th>KL</th><th>gnorm</th><th>speaker</th><th>intellig.</th><th>prosody</th><th>naturalness</th></tr>
-<tr><td>0</td><td>-0.00000</td><td>0.0000</td><td>0.14</td><td>0.575</td><td>0.8263</td><td>0.5482</td><td>0.4999</td></tr>
-<tr><td>1</td><td>+0.00086</td><td>0.0014</td><td>0.15</td><td>0.575</td><td>0.8262</td><td>0.5538</td><td>0.4950</td></tr>
-<tr><td>2</td><td>-0.00314</td><td>0.0013</td><td>0.14</td><td>0.575</td><td>0.8263</td><td>0.5514</td><td>0.4983</td></tr>
+<tr><td>0</td><td>-0.00000</td><td>0.0000</td><td>0.01</td><td>0.575</td><td>0.8263</td><td>0.5508</td><td>0.4985</td></tr>
+<tr><td>1</td><td>+0.00089</td><td>0.0012</td><td>0.01</td><td>0.575</td><td>0.8264</td><td>0.5513</td><td>0.4977</td></tr>
+<tr><td>2</td><td>-0.00023</td><td>0.0008</td><td>0.01</td><td>0.575</td><td>0.8264</td><td>0.5504</td><td>0.4952</td></tr>
 </table>
 <p class="dim">Null controls (clean/garbage WER, matched/impostor speaker, good/bad prosody,
 high/low ensemble, composite): all pass. Ensemble ranking control z(hi) &gt; z(lo): pass.

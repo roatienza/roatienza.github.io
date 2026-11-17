@@ -1,28 +1,28 @@
 {
  "schema": "onit_rlsamples.v1",
- "run": "onit_reward_v8b",
- "receipt": "/storage/tts/rl_dryrun/onit_reward_v8b/scaleup.json",
+ "run": "onit_reward_v9",
+ "receipt": "/storage/tts/rl_dryrun/onit_reward_v9/scaleup.json",
  "samples": [
   {
    "id": "sacdb628a90e77052982",
    "text": "<span:low voice> we spent so much time arguing about the lit",
-   "reward_mean": 0.5967,
+   "reward_mean": 0.5976,
    "ens_votes_mean": {
-    "scoreq": 3.663,
-    "utmosv2": 2.226,
-    "utmos22": 2.541
+    "scoreq": 3.671,
+    "utmosv2": 2.129,
+    "utmos22": 2.5
    },
    "raw_first": {
     "wer": 0.285,
-    "spk_cos": 0.757,
-    "imp_cos": 0.606,
-    "f0r": 16.01,
-    "f0c": 0.062,
-    "edb": 54.54,
-    "snr": 68.478,
+    "spk_cos": 0.756,
+    "imp_cos": 0.605,
+    "f0r": 18.145,
+    "f0c": 0.027,
+    "edb": 54.25,
+    "snr": 68.531,
     "scoreq": 3.898,
-    "utmosv2": 2.463,
-    "utmos22": 2.731
+    "utmosv2": 2.232,
+    "utmos22": 2.704
    },
    "dur_before_s": 7.36,
    "dur_after_s": 7.36
@@ -30,23 +30,23 @@
   {
    "id": "sa4e711fdfcc59d42234",
    "text": "<emo:intimate> just lean back <ev:laughing> and relax. <ev:l",
-   "reward_mean": 0.5737,
+   "reward_mean": 0.5761,
    "ens_votes_mean": {
-    "scoreq": 3.431,
-    "utmosv2": 2.041,
-    "utmos22": 1.996
+    "scoreq": 3.444,
+    "utmosv2": 2.034,
+    "utmos22": 2.005
    },
    "raw_first": {
     "wer": 0.423,
     "spk_cos": 0.73,
     "imp_cos": 0.566,
-    "f0r": 23.585,
-    "f0c": 0.033,
-    "edb": 57.422,
-    "snr": 65.548,
-    "scoreq": 3.562,
-    "utmosv2": 2.723,
-    "utmos22": 2.583
+    "f0r": 23.6,
+    "f0c": 0.017,
+    "edb": 57.109,
+    "snr": 65.42,
+    "scoreq": 3.574,
+    "utmosv2": 2.396,
+    "utmos22": 2.554
    },
    "dur_before_s": 8.6,
    "dur_after_s": 8.6
@@ -54,23 +54,23 @@
   {
    "id": "saac89252f5115663779",
    "text": "<emo:neutral> i'm at the front of the line, in the gray seda",
-   "reward_mean": 0.6243,
+   "reward_mean": 0.6252,
    "ens_votes_mean": {
-    "scoreq": 4.333,
-    "utmosv2": 2.771,
-    "utmos22": 2.937
+    "scoreq": 4.331,
+    "utmosv2": 2.695,
+    "utmos22": 2.954
    },
    "raw_first": {
     "wer": 0.187,
-    "spk_cos": 0.614,
-    "imp_cos": 0.464,
-    "f0r": 11.665,
-    "f0c": -0.126,
-    "edb": 67.755,
-    "snr": 74.272,
-    "scoreq": 4.21,
-    "utmosv2": 3.221,
-    "utmos22": 2.579
+    "spk_cos": 0.617,
+    "imp_cos": 0.466,
+    "f0r": 11.7,
+    "f0c": -0.131,
+    "edb": 67.921,
+    "snr": 74.344,
+    "scoreq": 4.171,
+    "utmosv2": 2.564,
+    "utmos22": 2.582
    },
    "dur_before_s": 7.84,
    "dur_after_s": 7.84
@@ -78,23 +78,23 @@
   {
    "id": "sa1987e59a066251901e",
    "text": "<emo:shock> <ev:inhale> you're the one who sent the anonymou",
-   "reward_mean": 0.583,
+   "reward_mean": 0.5847,
    "ens_votes_mean": {
-    "scoreq": 4.035,
-    "utmosv2": 2.325,
-    "utmos22": 2.504
+    "scoreq": 4.036,
+    "utmosv2": 2.203,
+    "utmos22": 2.5
    },
    "raw_first": {
     "wer": 0.343,
-    "spk_cos": 0.698,
-    "imp_cos": 0.514,
-    "f0r": 26.539,
-    "f0c": -0.117,
-    "edb": 28.493,
-    "snr": 60.761,
-    "scoreq": 3.936,
-    "utmosv2": 2.412,
-    "utmos22": 2.394
+    "spk_cos": 0.697,
+    "imp_cos": 0.513,
+    "f0r": 26.06,
+    "f0c": -0.139,
+    "edb": 27.952,
+    "snr": 61.01,
+    "scoreq": 3.92,
+    "utmosv2": 1.675,
+    "utmos22": 2.445
    },
    "dur_before_s": 7.36,
    "dur_after_s": 7.36
@@ -102,23 +102,23 @@
   {
    "id": "gt_v8_V8_A04516_xai_atlas",
    "text": "<emo:surprise> wait, the wolf in the story has your voice, <",
-   "reward_mean": 0.6049,
+   "reward_mean": 0.6071,
    "ens_votes_mean": {
-    "scoreq": 4.112,
-    "utmosv2": 2.725,
-    "utmos22": 3.238
+    "scoreq": 4.124,
+    "utmosv2": 2.639,
+    "utmos22": 3.241
    },
    "raw_first": {
     "wer": 0.219,
-    "spk_cos": 0.739,
-    "imp_cos": 0.651,
-    "f0r": 19.11,
-    "f0c": -0.248,
-    "edb": 29.331,
-    "snr": 64.83,
-    "scoreq": 4.377,
-    "utmosv2": 2.832,
-    "utmos22": 3.402
+    "spk_cos": 0.741,
+    "imp_cos": 0.656,
+    "f0r": 19.1,
+    "f0c": -0.243,
+    "edb": 29.767,
+    "snr": 64.744,
+    "scoreq": 4.373,
+    "utmosv2": 2.703,
+    "utmos22": 3.337
    },
    "dur_before_s": 5.2,
    "dur_after_s": 5.2
@@ -126,23 +126,23 @@
   {
    "id": "gt_v8_V8_B01798_inw_Victoria",
    "text": "<emo:longing> the storm took the lights, and all i want is t",
-   "reward_mean": 0.6407,
+   "reward_mean": 0.6411,
    "ens_votes_mean": {
-    "scoreq": 3.869,
-    "utmosv2": 2.382,
-    "utmos22": 2.966
+    "scoreq": 3.871,
+    "utmosv2": 2.34,
+    "utmos22": 2.976
    },
    "raw_first": {
     "wer": 0.11,
-    "spk_cos": 0.778,
+    "spk_cos": 0.777,
     "imp_cos": 0.581,
-    "f0r": 13.107,
-    "f0c": -0.178,
-    "edb": 37.617,
-    "snr": 65.46,
-    "scoreq": 3.661,
-    "utmosv2": 2.771,
-    "utmos22": 2.662
+    "f0r": 14.758,
+    "f0c": -0.176,
+    "edb": 38.645,
+    "snr": 65.44,
+    "scoreq": 3.654,
+    "utmosv2": 2.225,
+    "utmos22": 2.654
    },
    "dur_before_s": 5.72,
    "dur_after_s": 5.72
@@ -150,23 +150,23 @@
   {
    "id": "dyn_erica_015322_00000",
    "text": "<emo:joy> <span:shouting> fantastic! your lab results show s",
-   "reward_mean": 0.6625,
+   "reward_mean": 0.6524,
    "ens_votes_mean": {
-    "scoreq": 3.031,
-    "utmosv2": 2.064,
+    "scoreq": 3.035,
+    "utmosv2": 1.985,
     "utmos22": 1.391
    },
    "raw_first": {
     "wer": 0.273,
-    "spk_cos": 0.739,
-    "imp_cos": 0.509,
-    "f0r": 8.56,
-    "f0c": 0.134,
-    "edb": 64.645,
-    "snr": 69.102,
-    "scoreq": 3.184,
-    "utmosv2": 2.176,
-    "utmos22": 1.438
+    "spk_cos": 0.733,
+    "imp_cos": 0.506,
+    "f0r": 10.64,
+    "f0c": 0.13,
+    "edb": 65.165,
+    "snr": 69.561,
+    "scoreq": 3.191,
+    "utmosv2": 2.061,
+    "utmos22": 1.43
    },
    "dur_before_s": 7.12,
    "dur_after_s": 7.12
@@ -174,23 +174,23 @@
   {
    "id": "sa31f4351294daa8f489",
    "text": "<emo:surprise> wait, you've already credited the amount, whe",
-   "reward_mean": 0.6187,
+   "reward_mean": 0.628,
    "ens_votes_mean": {
-    "scoreq": 3.93,
-    "utmosv2": 2.594,
+    "scoreq": 3.927,
+    "utmosv2": 2.553,
     "utmos22": 2.788
    },
    "raw_first": {
     "wer": 0.103,
-    "spk_cos": 0.669,
-    "imp_cos": 0.557,
-    "f0r": 17.8,
-    "f0c": -0.138,
-    "edb": 70.672,
-    "snr": 67.933,
-    "scoreq": 4.164,
-    "utmosv2": 2.041,
-    "utmos22": 3.038
+    "spk_cos": 0.668,
+    "imp_cos": 0.555,
+    "f0r": 9.04,
+    "f0c": -0.176,
+    "edb": 70.684,
+    "snr": 67.991,
+    "scoreq": 4.152,
+    "utmosv2": 2.102,
+    "utmos22": 2.994
    },
    "dur_before_s": 7.12,
    "dur_after_s": 7.12
@@ -198,23 +198,23 @@
   {
    "id": "sa13f82dc79d9eedb7b9",
    "text": "<emo:intimate> <ev:moaning> right there <ev:breathing> just ",
-   "reward_mean": 0.6188,
+   "reward_mean": 0.6147,
    "ens_votes_mean": {
-    "scoreq": 3.553,
-    "utmosv2": 1.804,
-    "utmos22": 1.83
+    "scoreq": 3.552,
+    "utmosv2": 1.919,
+    "utmos22": 1.817
    },
    "raw_first": {
     "wer": 0.43,
     "spk_cos": 0.67,
-    "imp_cos": 0.485,
+    "imp_cos": 0.489,
     "f0r": 4.8,
-    "f0c": -0.221,
-    "edb": 49.129,
-    "snr": 65.374,
-    "scoreq": 3.799,
-    "utmosv2": 2.01,
-    "utmos22": 2.036
+    "f0c": -0.218,
+    "edb": 49.274,
+    "snr": 65.292,
+    "scoreq": 3.78,
+    "utmosv2": 2.242,
+    "utmos22": 2.031
    },
    "dur_before_s": 6.48,
    "dur_after_s": 6.48
@@ -222,23 +222,23 @@
   {
    "id": "rft2_rf201055_2",
    "text": "<emo:disgust> was our first date just a game to see how easi",
-   "reward_mean": 0.6139,
+   "reward_mean": 0.6154,
    "ens_votes_mean": {
-    "scoreq": 4.158,
-    "utmosv2": 2.382,
-    "utmos22": 2.798
+    "scoreq": 4.153,
+    "utmosv2": 2.345,
+    "utmos22": 2.79
    },
    "raw_first": {
     "wer": 0.305,
-    "spk_cos": 0.755,
-    "imp_cos": 0.606,
-    "f0r": 25.2,
-    "f0c": -0.142,
-    "edb": 37.862,
-    "snr": 63.41,
-    "scoreq": 4.34,
-    "utmosv2": 2.18,
-    "utmos22": 3.03
+    "spk_cos": 0.753,
+    "imp_cos": 0.605,
+    "f0r": 25.695,
+    "f0c": -0.131,
+    "edb": 38.401,
+    "snr": 63.364,
+    "scoreq": 4.364,
+    "utmosv2": 2.395,
+    "utmos22": 3.039
    },
    "dur_before_s": 7.6,
    "dur_after_s": 7.6
