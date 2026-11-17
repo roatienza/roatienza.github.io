@@ -1,121 +1,107 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RL before/after — 192M Flow-GRPO samples (v10)</title><style>
-body{font-family:Inter,system-ui,sans-serif;background:#0d0f12;color:#e8eaf0;max-width:1100px;margin:0 auto;padding:2rem 1.5rem;line-height:1.6}
+<title>Vanilla vs RL — 192M Irodori TTS samples</title><style>
+body{font-family:Inter,system-ui,sans-serif;background:#0d0f12;color:#e8eaf0;max-width:1150px;margin:0 auto;padding:2rem 1.5rem;line-height:1.6}
 h1,h2{font-family:Georgia,serif;font-weight:500}h1{font-size:1.9rem}h2{margin-top:2rem;font-size:1.3rem;color:#4f9cf9}
 a{color:#4f9cf9}code{background:#1a1e25;padding:.1rem .35rem;border-radius:4px;font-size:.85em}
 table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.85rem}
 th,td{border:1px solid rgba(255,255,255,.12);padding:.45rem .6rem;text-align:left;vertical-align:top}
 th{background:#13161b}audio{width:240px;height:32px}
-.note{color:#f5a623;font-size:.9rem}.dim{color:#8a92a3}.ptext{color:#cdd3de;font-size:.9rem}
-.after{color:#4f9cf9;font-weight:600}
+.dim{color:#8a92a3}.ptext{color:#cdd3de;font-size:.9rem}
+.van{color:#f5a623;font-weight:600}.rlrow{color:#4f9cf9;font-weight:600}
 </style></head><body>
-<h1>Before / after RL — 192M Irodori TTS</h1>
-<p class="dim">Flow-GRPO on <code>V12b_192M</code>, frozen ensemble reward
-(SCOREQ+UTMOSv2+UTMOS22 naturalness · prosody f0/energy · clipped-WER intelligibility) ·
-12 prompts × K=16, 3 updates · lr 5e-06 · kl_target 0.01 ·
-LoRA r=8 α=16 · seed 20261117 · run <code>onit_reward_v10b</code> (Nov 17, 2026).</p>
-<p class="note">v10b (Nov 17, 2026): rerun with the LoRA actually attached (v10 had a config bug — lora_enabled unset, so the adapter was never applied and before/after audio was identical).
-Now lora_trainable=1.589M, KL 0.000→0.0014→0.0012, gnorm 0.0086, all 6 null controls PASS.
-Audio pairs verified distinct by hash (u0≠u1≠u2 for every spot-checked prompt).
-Honest scope: no per-prompt metric dict (WER/spk/SCOREQ) in this receipt — before/after rows show group reward and
-ttsds2 spread only; term-level means are in the updates table. Adapter saved at onit_reward_v10b/lora_final
-(1,589,248 trainable params, verified in the receipt). Reward drift u0→u2 is small (−0.005…+0.002) — 2 updates
-at KL~0.001 is a gentle nudge, not a full training run.</p>
+<h1>Vanilla vs RL fine-tuned — 192M Irodori TTS</h1>
+<p class="dim">Same base checkpoint <code>V12b_192M</code>, same 12 prompts, same reference speaker,
+same sampler (40-step Euler RF, K=1, seed 20261117). The <span class="rlrow">RL</span> pass differs only by
+the LoRA adapter trained with Flow-GRPO on the frozen TTSDS2-style ensemble reward
+(<code>onit_reward_v10b</code>: lr 5e-6, kl_target 0.01, K=16, 3 updates, 1.59M trainable params, null controls 6/6 PASS).
+Vanilla pass rendered before the adapter was attached; RL pass after. Nov 17, 2026, run <code>onit_reward_v10c</code>.</p>
 
-<h2>10 samples — before (u0) vs after RL (u2)</h2>
-<table><tr><th>prompt</th><th>pass</th><th>dur</th><th>stats</th><th>audio</th></tr>
+<h2>Head-to-head — vanilla vs RL (12 prompts)</h2>
+<table><tr><th>prompt</th><th>pass</th><th>dur</th><th>reward</th><th>speaker</th><th>intellig</th><th>prosody</th><th>naturaln</th><th>environ</th><th>audio</th></tr>
 <tr><td rowspan="2"><code>gt_v8_V8_B01023_xai_rige</code></td>
-<td colspan="4" class="ptext">&lt;emo:tender&gt; close the book, little one, i&#x27;ll stay right her</td></tr>
-<tr><td>before (u0)</td><td>5.44s</td>
-<td class="dim">reward 0.532±0.016 · ttsds2 best 0.584 / worst 0.512</td>
-<td><audio controls preload="none" src="audio/gt_v8_V8_B01023_xai_rigel_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>5.44s</td>
-<td class="dim">reward 0.532±0.018 · ttsds2 best 0.590 / worst 0.512</td>
-<td><audio controls preload="none" src="audio/gt_v8_V8_B01023_xai_rigel_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:tender&gt; close the book, little one, i&#x27;ll stay right here until you fall asleep and the dreams take over.</td></tr>
+<tr><td class="van">vanilla</td><td>5.44s</td><td>0.6266</td><td>0.901</td><td>0.935</td><td>0.600</td><td>0.072</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/gt_v8_V8_B01023_xai_rigel_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>5.44s</td><td>0.6265</td><td>0.900</td><td>0.935</td><td>0.600</td><td>0.071</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/gt_v8_V8_B01023_xai_rigel_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa95086ea5561415d207</code></td>
-<td colspan="4" class="ptext">&lt;emo:neutral&gt; i need a loaf of bread, &lt;ev:inhale&gt; a pound of</td></tr>
-<tr><td>before (u0)</td><td>5.44s</td>
-<td class="dim">reward 0.509±0.010 · ttsds2 best 0.535 / worst 0.497</td>
-<td><audio controls preload="none" src="audio/sa95086ea5561415d207_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>5.44s</td>
-<td class="dim">reward 0.508±0.009 · ttsds2 best 0.532 / worst 0.497</td>
-<td><audio controls preload="none" src="audio/sa95086ea5561415d207_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:neutral&gt; i need a loaf of bread, &lt;ev:inhale&gt; a pound of butter and two lemons from the corner shop.</td></tr>
+<tr><td class="van">vanilla</td><td>5.44s</td><td>0.5677</td><td>0.867</td><td>0.861</td><td>0.475</td><td>0.067</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa95086ea5561415d207_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>5.44s</td><td>0.5673</td><td>0.868</td><td>0.861</td><td>0.473</td><td>0.067</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa95086ea5561415d207_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa4ffec300bcb4d64268</code></td>
-<td colspan="4" class="ptext">&lt;emo:playful&gt; stop tickling my feet while i am trying to str</td></tr>
-<tr><td>before (u0)</td><td>7.84s</td>
-<td class="dim">reward 0.542±0.026 · ttsds2 best 0.582 / worst 0.477</td>
-<td><audio controls preload="none" src="audio/sa4ffec300bcb4d64268_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>7.84s</td>
-<td class="dim">reward 0.545±0.024 · ttsds2 best 0.574 / worst 0.478</td>
-<td><audio controls preload="none" src="audio/sa4ffec300bcb4d64268_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:playful&gt; stop tickling my feet while i am trying to stretch! &lt;ev:laughing&gt; you are being completely unfair.</td></tr>
+<tr><td class="van">vanilla</td><td>7.84s</td><td>0.6289</td><td>0.899</td><td>0.859</td><td>0.692</td><td>0.066</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa4ffec300bcb4d64268_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>7.84s</td><td>0.5592</td><td>0.898</td><td>0.859</td><td>0.416</td><td>0.064</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa4ffec300bcb4d64268_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa5794de63f8ccabff34</code></td>
-<td colspan="4" class="ptext">&lt;emo:neutral&gt; i got my login details this morning. the it te</td></tr>
-<tr><td>before (u0)</td><td>6.4s</td>
-<td class="dim">reward 0.489±0.013 · ttsds2 best 0.504 / worst 0.466</td>
-<td><audio controls preload="none" src="audio/sa5794de63f8ccabff34_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>6.4s</td>
-<td class="dim">reward 0.489±0.013 · ttsds2 best 0.505 / worst 0.466</td>
-<td><audio controls preload="none" src="audio/sa5794de63f8ccabff34_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:neutral&gt; i got my login details this morning. the it team is setting up my email after lunch. &lt;ev:inhale&gt;</td></tr>
+<tr><td class="van">vanilla</td><td>6.4s</td><td>0.5595</td><td>0.830</td><td>0.850</td><td>0.495</td><td>0.063</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa5794de63f8ccabff34_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>6.4s</td><td>0.5618</td><td>0.831</td><td>0.850</td><td>0.504</td><td>0.063</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa5794de63f8ccabff34_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>rft2_rf202199_5</code></td>
-<td colspan="4" class="ptext">&lt;emo:neutral&gt; the cake is ordered for friday, and it&#x27;s a lem</td></tr>
-<tr><td>before (u0)</td><td>5.72s</td>
-<td class="dim">reward 0.499±0.029 · ttsds2 best 0.578 / worst 0.481</td>
-<td><audio controls preload="none" src="audio/rft2_rf202199_5_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>5.72s</td>
-<td class="dim">reward 0.499±0.027 · ttsds2 best 0.565 / worst 0.479</td>
-<td><audio controls preload="none" src="audio/rft2_rf202199_5_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:neutral&gt; the cake is ordered for friday, and it&#x27;s a lemon one. let&#x27;s pick it up at noon. &lt;ev:exhale&gt;</td></tr>
+<tr><td class="van">vanilla</td><td>5.72s</td><td>0.5677</td><td>0.835</td><td>0.858</td><td>0.515</td><td>0.063</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/rft2_rf202199_5_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>5.72s</td><td>0.5677</td><td>0.834</td><td>0.858</td><td>0.516</td><td>0.063</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/rft2_rf202199_5_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>b5b7581cc2eb85dc358e</code></td>
-<td colspan="4" class="ptext">&lt;emo:angry&gt; little &lt;span:tearful&gt; did they know &lt;span:shouti</td></tr>
-<tr><td>before (u0)</td><td>3.72s</td>
-<td class="dim">reward 0.438±0.011 · ttsds2 best 0.469 / worst 0.424</td>
-<td><audio controls preload="none" src="audio/b5b7581cc2eb85dc358e_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>3.72s</td>
-<td class="dim">reward 0.438±0.010 · ttsds2 best 0.466 / worst 0.426</td>
-<td><audio controls preload="none" src="audio/b5b7581cc2eb85dc358e_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:angry&gt; little &lt;span:tearful&gt; did they know &lt;span:shouting&gt; that they were fighting &lt;/span:shouting&gt; a beast. &lt;/span:tearful&gt;</td></tr>
+<tr><td class="van">vanilla</td><td>3.72s</td><td>0.5127</td><td>0.856</td><td>0.646</td><td>0.473</td><td>0.075</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/b5b7581cc2eb85dc358e_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>3.72s</td><td>0.5159</td><td>0.855</td><td>0.646</td><td>0.488</td><td>0.075</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/b5b7581cc2eb85dc358e_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa436d7323a61a593c12</code></td>
-<td colspan="4" class="ptext">&lt;emo:surprise&gt; you&#x27;re in edinburgh now, when i thought you w</td></tr>
-<tr><td>before (u0)</td><td>4.4s</td>
-<td class="dim">reward 0.511±0.015 · ttsds2 best 0.564 / worst 0.499</td>
-<td><audio controls preload="none" src="audio/sa436d7323a61a593c12_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>4.4s</td>
-<td class="dim">reward 0.511±0.015 · ttsds2 best 0.564 / worst 0.498</td>
-<td><audio controls preload="none" src="audio/sa436d7323a61a593c12_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:surprise&gt; you&#x27;re in edinburgh now, when i thought you were still in glasgow with the kids?</td></tr>
+<tr><td class="van">vanilla</td><td>4.4s</td><td>0.5876</td><td>0.872</td><td>0.910</td><td>0.489</td><td>0.079</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa436d7323a61a593c12_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>4.4s</td><td>0.5873</td><td>0.872</td><td>0.910</td><td>0.488</td><td>0.079</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa436d7323a61a593c12_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>rft2_rf203095_2</code></td>
-<td colspan="4" class="ptext">&lt;emo:shock&gt; &lt;ev:gasp&gt; stop. &lt;emo:angry&gt; you can&#x27;t just walk </td></tr>
-<tr><td>before (u0)</td><td>6.6s</td>
-<td class="dim">reward 0.524±0.023 · ttsds2 best 0.556 / worst 0.491</td>
-<td><audio controls preload="none" src="audio/rft2_rf203095_2_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>6.6s</td>
-<td class="dim">reward 0.524±0.023 · ttsds2 best 0.560 / worst 0.493</td>
-<td><audio controls preload="none" src="audio/rft2_rf203095_2_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:shock&gt; &lt;ev:gasp&gt; stop. &lt;emo:angry&gt; you can&#x27;t just walk back into my life after three years and expect me to smile.</td></tr>
+<tr><td class="van">vanilla</td><td>6.6s</td><td>0.5659</td><td>0.884</td><td>0.844</td><td>0.460</td><td>0.075</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/rft2_rf203095_2_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>6.6s</td><td>0.5661</td><td>0.885</td><td>0.844</td><td>0.460</td><td>0.075</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/rft2_rf203095_2_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sad6433f6d7b6402c1fe</code></td>
-<td colspan="4" class="ptext">&lt;emo:angry&gt; &lt;span:shouting&gt; leave this house immediately and</td></tr>
-<tr><td>before (u0)</td><td>5.2s</td>
-<td class="dim">reward 0.477±0.005 · ttsds2 best 0.488 / worst 0.467</td>
-<td><audio controls preload="none" src="audio/sad6433f6d7b6402c1fe_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>5.2s</td>
-<td class="dim">reward 0.478±0.005 · ttsds2 best 0.487 / worst 0.467</td>
-<td><audio controls preload="none" src="audio/sad6433f6d7b6402c1fe_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:angry&gt; &lt;span:shouting&gt; leave this house immediately and do not ever try to call my phone again! &lt;/span:shouting&gt;</td></tr>
+<tr><td class="van">vanilla</td><td>5.2s</td><td>0.5516</td><td>0.868</td><td>0.780</td><td>0.484</td><td>0.074</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sad6433f6d7b6402c1fe_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>5.2s</td><td>0.5514</td><td>0.868</td><td>0.780</td><td>0.484</td><td>0.074</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sad6433f6d7b6402c1fe_rl.wav"></audio></td></tr>
 <tr><td rowspan="2"><code>sa6d934ea2563704dadc</code></td>
-<td colspan="4" class="ptext">&lt;emo:tired&gt; i can barely keep my eyes open, so can we pick t</td></tr>
-<tr><td>before (u0)</td><td>6.4s</td>
-<td class="dim">reward 0.534±0.025 · ttsds2 best 0.597 / worst 0.513</td>
-<td><audio controls preload="none" src="audio/sa6d934ea2563704dadc_before.wav"></audio></td></tr>
-<tr><td class="after">after RL (u2)</td><td>6.4s</td>
-<td class="dim">reward 0.529±0.019 · ttsds2 best 0.588 / worst 0.514</td>
-<td><audio controls preload="none" src="audio/sa6d934ea2563704dadc_after.wav"></audio></td></tr>
+<td colspan="7" class="ptext">&lt;emo:tired&gt; i can barely keep my eyes open, so can we pick this up tomorrow? i&#x27;m just done for tonight.</td></tr>
+<tr><td class="van">vanilla</td><td>6.4s</td><td>0.5942</td><td>0.840</td><td>0.938</td><td>0.531</td><td>0.068</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa6d934ea2563704dadc_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>6.4s</td><td>0.5937</td><td>0.840</td><td>0.938</td><td>0.530</td><td>0.068</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/sa6d934ea2563704dadc_rl.wav"></audio></td></tr>
+<tr><td rowspan="2"><code>rft2_rf201448_6</code></td>
+<td colspan="7" class="ptext">&lt;emo:playful&gt; &lt;span:whisper&gt; you missed a spot of frosting on your lip. &lt;ev:giggle&gt; let me get that for you. &lt;/span:whisper&gt;</td></tr>
+<tr><td class="van">vanilla</td><td>5.44s</td><td>0.5414</td><td>0.898</td><td>0.651</td><td>0.547</td><td>0.069</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/rft2_rf201448_6_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>5.44s</td><td>0.5457</td><td>0.899</td><td>0.670</td><td>0.545</td><td>0.070</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/rft2_rf201448_6_rl.wav"></audio></td></tr>
+<tr><td rowspan="2"><code>dyn_erica_034100_00000</code></td>
+<td colspan="7" class="ptext">&lt;emo:sad&gt; it&#x27;s a little disappointing to see that the quality of fish isn&#x27;t the same as it used to be.</td></tr>
+<tr><td class="van">vanilla</td><td>5.96s</td><td>0.6284</td><td>0.886</td><td>0.951</td><td>0.612</td><td>0.064</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/dyn_erica_034100_00000_vanilla.wav"></audio></td></tr>
+<tr><td class="rlrow">RL</td><td>5.96s</td><td>0.6183</td><td>0.885</td><td>0.951</td><td>0.572</td><td>0.065</td><td>1.00</td>
+<td><audio controls preload="none" src="audio/dyn_erica_034100_00000_rl.wav"></audio></td></tr>
 </table>
 
-<h2>Updates</h2>
-<table><tr><th>upd</th><th>loss</th><th>KL</th><th>gnorm</th><th>speaker</th><th>intellig</th><th>prosody</th><th>naturalness</th><th>environment</th></tr>
-<tr><td>0</td><td>+0.00000</td><td>0.0000</td><td>0.01</td><td>0.571</td><td>0.8463</td><td>0.5334</td><td>0.0702</td><td>1.000</td></tr>
-<tr><td>1</td><td>-0.00167</td><td>0.0014</td><td>0.01</td><td>0.571</td><td>0.8466</td><td>0.5329</td><td>0.0704</td><td>1.000</td></tr>
-<tr><td>2</td><td>-0.00069</td><td>0.0012</td><td>0.01</td><td>0.571</td><td>0.8463</td><td>0.5313</td><td>0.0704</td><td>1.000</td></tr>
+<h2>Mean over 12 prompts</h2>
+<table><tr><th>model</th><th>reward</th><th>speaker</th><th>intellig</th><th>prosody</th><th>naturaln</th><th>environ</th></tr>
+<tr><td class="van">vanilla 192M</td><td>0.5777</td><td>0.870</td><td>0.840</td><td>0.531</td><td>0.070</td><td>1.00</td></tr>
+<tr><td class="rlrow">RL fine-tuned</td><td>0.5717</td><td>0.869</td><td>0.842</td><td>0.506</td><td>0.069</td><td>1.00</td></tr>
 </table>
 
-<p class="dim">Null controls (all 6 PASS): intelligibility clean 1.00 / garbage 0.00 · speaker matched 0.80 /
-impostor 0.20 · prosody 0.97 / 0.13 · naturalness 1.00 / 0.00 · environment 1.00 / 0.00 · composite 0.89 / 0.16.</p>
-<p class="dim">Full receipts: <a href="samples.json">samples.json</a> ·
-/storage/tmp/claude_cap_bench/v2ab/runs/V12b_192M/checkpoint_final.pt · pool /storage/tmp/pr_rl_1109/sample_rft2.train.jsonl</p>
+<p class="note">Honest scope: two GRPO updates at KL≈0.001 moved the adapter only slightly — per-prompt reward
+deltas are small (±0.07 max, prosody term dominates the swings) and means are near-flat. Audio pairs are
+bit-distinct (verified with cmp). A larger effect needs more updates / a wider KL budget.</p>
+<p class="dim">Receipt: <a href="samples.json">samples.json</a> · renders+scores /storage/tts/rl_dryrun/onit_reward_v10c_vanilla_vs_rl/receipt.json ·
+adapter onit_reward_v10b/lora_final</p>
 </body></html>

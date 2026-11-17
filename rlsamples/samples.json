@@ -1,247 +1,320 @@
 {
- "schema": "onit_rlsamples.v1",
- "run": "onit_reward_v10b",
- "receipt": "/storage/tts/rl_dryrun/onit_reward_v10b/scaleup.json",
+ "schema": "onit_rlsamples.v2",
+ "run": "onit_reward_v10c",
+ "comparison": "vanilla 192M vs 192M + RL LoRA (onit_reward_v10b)",
+ "receipt": "/storage/tts/rl_dryrun/onit_reward_v10c_vanilla_vs_rl/receipt.json",
  "samples": [
   {
    "id": "gt_v8_V8_B01023_xai_rigel",
-   "text": "<emo:tender> close the book, little one, i'll stay right her",
-   "dur_before_s": 5.44,
-   "dur_after_s": 5.44,
-   "u0": {
-    "reward_mean": 0.5325,
-    "reward_std": 0.0164,
-    "best_ttsds2": 0.5843,
-    "worst_ttsds2": 0.512
+   "text": "<emo:tender> close the book, little one, i'll stay right here until you fall asleep and the dreams take over.",
+   "vanilla": {
+    "total": 0.6266,
+    "terms": {
+     "speaker": 0.9006,
+     "intelligibility": 0.9346,
+     "prosody": 0.5995,
+     "naturalness": 0.0718,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.5308,
-    "reward_std": 0.0171,
-    "best_ttsds2": 0.5855,
-    "worst_ttsds2": 0.5116
+   "rl": {
+    "total": 0.6265,
+    "terms": {
+     "speaker": 0.9002,
+     "intelligibility": 0.9346,
+     "prosody": 0.6001,
+     "naturalness": 0.0711,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.5324,
-    "reward_std": 0.0182,
-    "best_ttsds2": 0.5896,
-    "worst_ttsds2": 0.5122
-   }
+   "dur_vanilla_s": 5.44,
+   "dur_rl_s": 5.44
   },
   {
    "id": "sa95086ea5561415d207",
-   "text": "<emo:neutral> i need a loaf of bread, <ev:inhale> a pound of",
-   "dur_before_s": 5.44,
-   "dur_after_s": 5.44,
-   "u0": {
-    "reward_mean": 0.5092,
-    "reward_std": 0.0104,
-    "best_ttsds2": 0.535,
-    "worst_ttsds2": 0.4967
+   "text": "<emo:neutral> i need a loaf of bread, <ev:inhale> a pound of butter and two lemons from the corner shop.",
+   "vanilla": {
+    "total": 0.5677,
+    "terms": {
+     "speaker": 0.8672,
+     "intelligibility": 0.8611,
+     "prosody": 0.4751,
+     "naturalness": 0.0672,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.5096,
-    "reward_std": 0.0099,
-    "best_ttsds2": 0.5365,
-    "worst_ttsds2": 0.4966
+   "rl": {
+    "total": 0.5673,
+    "terms": {
+     "speaker": 0.8675,
+     "intelligibility": 0.8611,
+     "prosody": 0.4733,
+     "naturalness": 0.0674,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.5079,
-    "reward_std": 0.0086,
-    "best_ttsds2": 0.5323,
-    "worst_ttsds2": 0.4972
-   }
+   "dur_vanilla_s": 5.44,
+   "dur_rl_s": 5.44
   },
   {
    "id": "sa4ffec300bcb4d64268",
-   "text": "<emo:playful> stop tickling my feet while i am trying to str",
-   "dur_before_s": 7.84,
-   "dur_after_s": 7.84,
-   "u0": {
-    "reward_mean": 0.5422,
-    "reward_std": 0.0264,
-    "best_ttsds2": 0.5822,
-    "worst_ttsds2": 0.4772
+   "text": "<emo:playful> stop tickling my feet while i am trying to stretch! <ev:laughing> you are being completely unfair.",
+   "vanilla": {
+    "total": 0.6289,
+    "terms": {
+     "speaker": 0.8987,
+     "intelligibility": 0.859,
+     "prosody": 0.692,
+     "naturalness": 0.0658,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.5482,
-    "reward_std": 0.0185,
-    "best_ttsds2": 0.5781,
-    "worst_ttsds2": 0.5102
+   "rl": {
+    "total": 0.5592,
+    "terms": {
+     "speaker": 0.8978,
+     "intelligibility": 0.859,
+     "prosody": 0.4158,
+     "naturalness": 0.0644,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.5446,
-    "reward_std": 0.0243,
-    "best_ttsds2": 0.574,
-    "worst_ttsds2": 0.478
-   }
+   "dur_vanilla_s": 7.84,
+   "dur_rl_s": 7.84
   },
   {
    "id": "sa5794de63f8ccabff34",
-   "text": "<emo:neutral> i got my login details this morning. the it te",
-   "dur_before_s": 6.4,
-   "dur_after_s": 6.4,
-   "u0": {
-    "reward_mean": 0.4894,
-    "reward_std": 0.0127,
-    "best_ttsds2": 0.5041,
-    "worst_ttsds2": 0.4661
+   "text": "<emo:neutral> i got my login details this morning. the it team is setting up my email after lunch. <ev:inhale>",
+   "vanilla": {
+    "total": 0.5595,
+    "terms": {
+     "speaker": 0.8303,
+     "intelligibility": 0.8497,
+     "prosody": 0.4953,
+     "naturalness": 0.0626,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.4885,
-    "reward_std": 0.0112,
-    "best_ttsds2": 0.5051,
-    "worst_ttsds2": 0.4662
+   "rl": {
+    "total": 0.5618,
+    "terms": {
+     "speaker": 0.8305,
+     "intelligibility": 0.8497,
+     "prosody": 0.5039,
+     "naturalness": 0.0629,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.4894,
-    "reward_std": 0.0126,
-    "best_ttsds2": 0.5046,
-    "worst_ttsds2": 0.4658
-   }
+   "dur_vanilla_s": 6.4,
+   "dur_rl_s": 6.4
   },
   {
    "id": "rft2_rf202199_5",
-   "text": "<emo:neutral> the cake is ordered for friday, and it's a lem",
-   "dur_before_s": 5.72,
-   "dur_after_s": 5.72,
-   "u0": {
-    "reward_mean": 0.4992,
-    "reward_std": 0.0293,
-    "best_ttsds2": 0.5777,
-    "worst_ttsds2": 0.4806
+   "text": "<emo:neutral> the cake is ordered for friday, and it's a lemon one. let's pick it up at noon. <ev:exhale>",
+   "vanilla": {
+    "total": 0.5677,
+    "terms": {
+     "speaker": 0.8348,
+     "intelligibility": 0.8582,
+     "prosody": 0.5147,
+     "naturalness": 0.0633,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.4987,
-    "reward_std": 0.0271,
-    "best_ttsds2": 0.5658,
-    "worst_ttsds2": 0.4813
+   "rl": {
+    "total": 0.5677,
+    "terms": {
+     "speaker": 0.8336,
+     "intelligibility": 0.8582,
+     "prosody": 0.5161,
+     "naturalness": 0.063,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.4988,
-    "reward_std": 0.0271,
-    "best_ttsds2": 0.5653,
-    "worst_ttsds2": 0.479
-   }
+   "dur_vanilla_s": 5.72,
+   "dur_rl_s": 5.72
   },
   {
    "id": "b5b7581cc2eb85dc358e",
-   "text": "<emo:angry> little <span:tearful> did they know <span:shouti",
-   "dur_before_s": 3.72,
-   "dur_after_s": 3.72,
-   "u0": {
-    "reward_mean": 0.4379,
-    "reward_std": 0.0109,
-    "best_ttsds2": 0.4691,
-    "worst_ttsds2": 0.4244
+   "text": "<emo:angry> little <span:tearful> did they know <span:shouting> that they were fighting </span:shouting> a beast. </span:tearful>",
+   "vanilla": {
+    "total": 0.5127,
+    "terms": {
+     "speaker": 0.8563,
+     "intelligibility": 0.6456,
+     "prosody": 0.4735,
+     "naturalness": 0.0754,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.4381,
-    "reward_std": 0.0108,
-    "best_ttsds2": 0.4706,
-    "worst_ttsds2": 0.4241
+   "rl": {
+    "total": 0.5159,
+    "terms": {
+     "speaker": 0.8553,
+     "intelligibility": 0.6456,
+     "prosody": 0.4879,
+     "naturalness": 0.0746,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.4381,
-    "reward_std": 0.0101,
-    "best_ttsds2": 0.4661,
-    "worst_ttsds2": 0.4261
-   }
+   "dur_vanilla_s": 3.72,
+   "dur_rl_s": 3.72
   },
   {
    "id": "sa436d7323a61a593c12",
-   "text": "<emo:surprise> you're in edinburgh now, when i thought you w",
-   "dur_before_s": 4.4,
-   "dur_after_s": 4.4,
-   "u0": {
-    "reward_mean": 0.5114,
-    "reward_std": 0.0147,
-    "best_ttsds2": 0.5641,
-    "worst_ttsds2": 0.4989
+   "text": "<emo:surprise> you're in edinburgh now, when i thought you were still in glasgow with the kids?",
+   "vanilla": {
+    "total": 0.5876,
+    "terms": {
+     "speaker": 0.8723,
+     "intelligibility": 0.9101,
+     "prosody": 0.4887,
+     "naturalness": 0.0791,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.5106,
-    "reward_std": 0.014,
-    "best_ttsds2": 0.5603,
-    "worst_ttsds2": 0.4981
+   "rl": {
+    "total": 0.5873,
+    "terms": {
+     "speaker": 0.8715,
+     "intelligibility": 0.9101,
+     "prosody": 0.4885,
+     "naturalness": 0.0789,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.5109,
-    "reward_std": 0.0151,
-    "best_ttsds2": 0.5639,
-    "worst_ttsds2": 0.4984
-   }
+   "dur_vanilla_s": 4.4,
+   "dur_rl_s": 4.4
   },
   {
    "id": "rft2_rf203095_2",
-   "text": "<emo:shock> <ev:gasp> stop. <emo:angry> you can't just walk ",
-   "dur_before_s": 6.6,
-   "dur_after_s": 6.6,
-   "u0": {
-    "reward_mean": 0.5238,
-    "reward_std": 0.0229,
-    "best_ttsds2": 0.5558,
-    "worst_ttsds2": 0.4911
+   "text": "<emo:shock> <ev:gasp> stop. <emo:angry> you can't just walk back into my life after three years and expect me to smile.",
+   "vanilla": {
+    "total": 0.5659,
+    "terms": {
+     "speaker": 0.8844,
+     "intelligibility": 0.8442,
+     "prosody": 0.4599,
+     "naturalness": 0.0751,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.5205,
-    "reward_std": 0.0229,
-    "best_ttsds2": 0.5661,
-    "worst_ttsds2": 0.4923
+   "rl": {
+    "total": 0.5661,
+    "terms": {
+     "speaker": 0.8852,
+     "intelligibility": 0.8442,
+     "prosody": 0.4599,
+     "naturalness": 0.0752,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.5239,
-    "reward_std": 0.0229,
-    "best_ttsds2": 0.5602,
-    "worst_ttsds2": 0.4927
-   }
+   "dur_vanilla_s": 6.6,
+   "dur_rl_s": 6.6
   },
   {
    "id": "sad6433f6d7b6402c1fe",
-   "text": "<emo:angry> <span:shouting> leave this house immediately and",
-   "dur_before_s": 5.2,
-   "dur_after_s": 5.2,
-   "u0": {
-    "reward_mean": 0.4773,
-    "reward_std": 0.0051,
-    "best_ttsds2": 0.488,
-    "worst_ttsds2": 0.4671
+   "text": "<emo:angry> <span:shouting> leave this house immediately and do not ever try to call my phone again! </span:shouting>",
+   "vanilla": {
+    "total": 0.5516,
+    "terms": {
+     "speaker": 0.868,
+     "intelligibility": 0.7799,
+     "prosody": 0.4842,
+     "naturalness": 0.0745,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.4779,
-    "reward_std": 0.0051,
-    "best_ttsds2": 0.4881,
-    "worst_ttsds2": 0.467
+   "rl": {
+    "total": 0.5514,
+    "terms": {
+     "speaker": 0.868,
+     "intelligibility": 0.7799,
+     "prosody": 0.4838,
+     "naturalness": 0.074,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.4778,
-    "reward_std": 0.0048,
-    "best_ttsds2": 0.4875,
-    "worst_ttsds2": 0.4668
-   }
+   "dur_vanilla_s": 5.2,
+   "dur_rl_s": 5.2
   },
   {
    "id": "sa6d934ea2563704dadc",
-   "text": "<emo:tired> i can barely keep my eyes open, so can we pick t",
-   "dur_before_s": 6.4,
-   "dur_after_s": 6.4,
-   "u0": {
-    "reward_mean": 0.5338,
-    "reward_std": 0.0253,
-    "best_ttsds2": 0.5966,
-    "worst_ttsds2": 0.5134
+   "text": "<emo:tired> i can barely keep my eyes open, so can we pick this up tomorrow? i'm just done for tonight.",
+   "vanilla": {
+    "total": 0.5942,
+    "terms": {
+     "speaker": 0.84,
+     "intelligibility": 0.9375,
+     "prosody": 0.5309,
+     "naturalness": 0.0682,
+     "environment": 1.0
+    }
    },
-   "u1": {
-    "reward_mean": 0.5299,
-    "reward_std": 0.0203,
-    "best_ttsds2": 0.594,
-    "worst_ttsds2": 0.5136
+   "rl": {
+    "total": 0.5937,
+    "terms": {
+     "speaker": 0.8402,
+     "intelligibility": 0.9375,
+     "prosody": 0.5296,
+     "naturalness": 0.0677,
+     "environment": 1.0
+    }
    },
-   "u2": {
-    "reward_mean": 0.5293,
-    "reward_std": 0.0193,
-    "best_ttsds2": 0.5884,
-    "worst_ttsds2": 0.5136
-   }
+   "dur_vanilla_s": 6.4,
+   "dur_rl_s": 6.4
+  },
+  {
+   "id": "rft2_rf201448_6",
+   "text": "<emo:playful> <span:whisper> you missed a spot of frosting on your lip. <ev:giggle> let me get that for you. </span:whisper>",
+   "vanilla": {
+    "total": 0.5414,
+    "terms": {
+     "speaker": 0.8984,
+     "intelligibility": 0.6514,
+     "prosody": 0.5473,
+     "naturalness": 0.0686,
+     "environment": 1.0
+    }
+   },
+   "rl": {
+    "total": 0.5457,
+    "terms": {
+     "speaker": 0.8987,
+     "intelligibility": 0.6697,
+     "prosody": 0.5446,
+     "naturalness": 0.0696,
+     "environment": 1.0
+    }
+   },
+   "dur_vanilla_s": 5.44,
+   "dur_rl_s": 5.44
+  },
+  {
+   "id": "dyn_erica_034100_00000",
+   "text": "<emo:sad> it's a little disappointing to see that the quality of fish isn't the same as it used to be.",
+   "vanilla": {
+    "total": 0.6284,
+    "terms": {
+     "speaker": 0.886,
+     "intelligibility": 0.9514,
+     "prosody": 0.6122,
+     "naturalness": 0.0639,
+     "environment": 1.0
+    }
+   },
+   "rl": {
+    "total": 0.6183,
+    "terms": {
+     "speaker": 0.885,
+     "intelligibility": 0.9514,
+     "prosody": 0.5723,
+     "naturalness": 0.0645,
+     "environment": 1.0
+    }
+   },
+   "dur_vanilla_s": 5.96,
+   "dur_rl_s": 5.96
   }
  ]
 }
