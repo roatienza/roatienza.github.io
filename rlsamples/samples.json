@@ -1,247 +1,247 @@
 {
  "schema": "onit_rlsamples.v1",
- "run": "onit_reward_v9",
- "receipt": "/storage/tts/rl_dryrun/onit_reward_v9/scaleup.json",
+ "run": "onit_reward_v10",
+ "receipt": "/storage/tts/rl_dryrun/onit_reward_v10/scaleup.json",
  "samples": [
   {
-   "id": "sacdb628a90e77052982",
-   "text": "<span:low voice> we spent so much time arguing about the lit",
-   "reward_mean": 0.5976,
-   "ens_votes_mean": {
-    "scoreq": 3.671,
-    "utmosv2": 2.129,
-    "utmos22": 2.5
+   "id": "gt_v8_V8_B01023_xai_rigel",
+   "text": "<emo:tender> close the book, little one, i'll stay right her",
+   "dur_before_s": 5.44,
+   "dur_after_s": 5.44,
+   "u0": {
+    "reward_mean": 0.5312,
+    "reward_std": 0.0171,
+    "best_ttsds2": 0.5852,
+    "worst_ttsds2": 0.5118
    },
-   "raw_first": {
-    "wer": 0.285,
-    "spk_cos": 0.756,
-    "imp_cos": 0.605,
-    "f0r": 18.145,
-    "f0c": 0.027,
-    "edb": 54.25,
-    "snr": 68.531,
-    "scoreq": 3.898,
-    "utmosv2": 2.232,
-    "utmos22": 2.704
+   "u1": {
+    "reward_mean": 0.5362,
+    "reward_std": 0.0193,
+    "best_ttsds2": 0.5873,
+    "worst_ttsds2": 0.5222
    },
-   "dur_before_s": 7.36,
-   "dur_after_s": 7.36
+   "u2": {
+    "reward_mean": 0.5317,
+    "reward_std": 0.0181,
+    "best_ttsds2": 0.5892,
+    "worst_ttsds2": 0.512
+   }
   },
   {
-   "id": "sa4e711fdfcc59d42234",
-   "text": "<emo:intimate> just lean back <ev:laughing> and relax. <ev:l",
-   "reward_mean": 0.5761,
-   "ens_votes_mean": {
-    "scoreq": 3.444,
-    "utmosv2": 2.034,
-    "utmos22": 2.005
+   "id": "sa95086ea5561415d207",
+   "text": "<emo:neutral> i need a loaf of bread, <ev:inhale> a pound of",
+   "dur_before_s": 5.44,
+   "dur_after_s": 5.44,
+   "u0": {
+    "reward_mean": 0.5099,
+    "reward_std": 0.01,
+    "best_ttsds2": 0.533,
+    "worst_ttsds2": 0.4967
    },
-   "raw_first": {
-    "wer": 0.423,
-    "spk_cos": 0.73,
-    "imp_cos": 0.566,
-    "f0r": 23.6,
-    "f0c": 0.017,
-    "edb": 57.109,
-    "snr": 65.42,
-    "scoreq": 3.574,
-    "utmosv2": 2.396,
-    "utmos22": 2.554
+   "u1": {
+    "reward_mean": 0.5108,
+    "reward_std": 0.0103,
+    "best_ttsds2": 0.5336,
+    "worst_ttsds2": 0.4955
    },
-   "dur_before_s": 8.6,
-   "dur_after_s": 8.6
+   "u2": {
+    "reward_mean": 0.5097,
+    "reward_std": 0.0099,
+    "best_ttsds2": 0.5302,
+    "worst_ttsds2": 0.4962
+   }
   },
   {
-   "id": "saac89252f5115663779",
-   "text": "<emo:neutral> i'm at the front of the line, in the gray seda",
-   "reward_mean": 0.6252,
-   "ens_votes_mean": {
-    "scoreq": 4.331,
-    "utmosv2": 2.695,
-    "utmos22": 2.954
-   },
-   "raw_first": {
-    "wer": 0.187,
-    "spk_cos": 0.617,
-    "imp_cos": 0.466,
-    "f0r": 11.7,
-    "f0c": -0.131,
-    "edb": 67.921,
-    "snr": 74.344,
-    "scoreq": 4.171,
-    "utmosv2": 2.564,
-    "utmos22": 2.582
-   },
+   "id": "sa4ffec300bcb4d64268",
+   "text": "<emo:playful> stop tickling my feet while i am trying to str",
    "dur_before_s": 7.84,
-   "dur_after_s": 7.84
+   "dur_after_s": 7.84,
+   "u0": {
+    "reward_mean": 0.5493,
+    "reward_std": 0.0199,
+    "best_ttsds2": 0.5774,
+    "worst_ttsds2": 0.5096
+   },
+   "u1": {
+    "reward_mean": 0.545,
+    "reward_std": 0.0232,
+    "best_ttsds2": 0.5732,
+    "worst_ttsds2": 0.4773
+   },
+   "u2": {
+    "reward_mean": 0.5441,
+    "reward_std": 0.0239,
+    "best_ttsds2": 0.5763,
+    "worst_ttsds2": 0.4781
+   }
   },
   {
-   "id": "sa1987e59a066251901e",
-   "text": "<emo:shock> <ev:inhale> you're the one who sent the anonymou",
-   "reward_mean": 0.5847,
-   "ens_votes_mean": {
-    "scoreq": 4.036,
-    "utmosv2": 2.203,
-    "utmos22": 2.5
+   "id": "sa5794de63f8ccabff34",
+   "text": "<emo:neutral> i got my login details this morning. the it te",
+   "dur_before_s": 6.4,
+   "dur_after_s": 6.4,
+   "u0": {
+    "reward_mean": 0.4887,
+    "reward_std": 0.012,
+    "best_ttsds2": 0.5036,
+    "worst_ttsds2": 0.4661
    },
-   "raw_first": {
-    "wer": 0.343,
-    "spk_cos": 0.697,
-    "imp_cos": 0.513,
-    "f0r": 26.06,
-    "f0c": -0.139,
-    "edb": 27.952,
-    "snr": 61.01,
-    "scoreq": 3.92,
-    "utmosv2": 1.675,
-    "utmos22": 2.445
+   "u1": {
+    "reward_mean": 0.4892,
+    "reward_std": 0.012,
+    "best_ttsds2": 0.5044,
+    "worst_ttsds2": 0.4666
    },
-   "dur_before_s": 7.36,
-   "dur_after_s": 7.36
+   "u2": {
+    "reward_mean": 0.4886,
+    "reward_std": 0.0124,
+    "best_ttsds2": 0.507,
+    "worst_ttsds2": 0.4666
+   }
   },
   {
-   "id": "gt_v8_V8_A04516_xai_atlas",
-   "text": "<emo:surprise> wait, the wolf in the story has your voice, <",
-   "reward_mean": 0.6071,
-   "ens_votes_mean": {
-    "scoreq": 4.124,
-    "utmosv2": 2.639,
-    "utmos22": 3.241
-   },
-   "raw_first": {
-    "wer": 0.219,
-    "spk_cos": 0.741,
-    "imp_cos": 0.656,
-    "f0r": 19.1,
-    "f0c": -0.243,
-    "edb": 29.767,
-    "snr": 64.744,
-    "scoreq": 4.373,
-    "utmosv2": 2.703,
-    "utmos22": 3.337
-   },
-   "dur_before_s": 5.2,
-   "dur_after_s": 5.2
-  },
-  {
-   "id": "gt_v8_V8_B01798_inw_Victoria",
-   "text": "<emo:longing> the storm took the lights, and all i want is t",
-   "reward_mean": 0.6411,
-   "ens_votes_mean": {
-    "scoreq": 3.871,
-    "utmosv2": 2.34,
-    "utmos22": 2.976
-   },
-   "raw_first": {
-    "wer": 0.11,
-    "spk_cos": 0.777,
-    "imp_cos": 0.581,
-    "f0r": 14.758,
-    "f0c": -0.176,
-    "edb": 38.645,
-    "snr": 65.44,
-    "scoreq": 3.654,
-    "utmosv2": 2.225,
-    "utmos22": 2.654
-   },
+   "id": "rft2_rf202199_5",
+   "text": "<emo:neutral> the cake is ordered for friday, and it's a lem",
    "dur_before_s": 5.72,
-   "dur_after_s": 5.72
+   "dur_after_s": 5.72,
+   "u0": {
+    "reward_mean": 0.4989,
+    "reward_std": 0.0278,
+    "best_ttsds2": 0.5708,
+    "worst_ttsds2": 0.481
+   },
+   "u1": {
+    "reward_mean": 0.4983,
+    "reward_std": 0.027,
+    "best_ttsds2": 0.5646,
+    "worst_ttsds2": 0.4808
+   },
+   "u2": {
+    "reward_mean": 0.5015,
+    "reward_std": 0.0289,
+    "best_ttsds2": 0.5671,
+    "worst_ttsds2": 0.481
+   }
   },
   {
-   "id": "dyn_erica_015322_00000",
-   "text": "<emo:joy> <span:shouting> fantastic! your lab results show s",
-   "reward_mean": 0.6524,
-   "ens_votes_mean": {
-    "scoreq": 3.035,
-    "utmosv2": 1.985,
-    "utmos22": 1.391
+   "id": "b5b7581cc2eb85dc358e",
+   "text": "<emo:angry> little <span:tearful> did they know <span:shouti",
+   "dur_before_s": 3.72,
+   "dur_after_s": 3.72,
+   "u0": {
+    "reward_mean": 0.437,
+    "reward_std": 0.008,
+    "best_ttsds2": 0.456,
+    "worst_ttsds2": 0.4255
    },
-   "raw_first": {
-    "wer": 0.273,
-    "spk_cos": 0.733,
-    "imp_cos": 0.506,
-    "f0r": 10.64,
-    "f0c": 0.13,
-    "edb": 65.165,
-    "snr": 69.561,
-    "scoreq": 3.191,
-    "utmosv2": 2.061,
-    "utmos22": 1.43
+   "u1": {
+    "reward_mean": 0.4374,
+    "reward_std": 0.0086,
+    "best_ttsds2": 0.4537,
+    "worst_ttsds2": 0.4248
    },
-   "dur_before_s": 7.12,
-   "dur_after_s": 7.12
+   "u2": {
+    "reward_mean": 0.4379,
+    "reward_std": 0.0097,
+    "best_ttsds2": 0.4645,
+    "worst_ttsds2": 0.425
+   }
   },
   {
-   "id": "sa31f4351294daa8f489",
-   "text": "<emo:surprise> wait, you've already credited the amount, whe",
-   "reward_mean": 0.628,
-   "ens_votes_mean": {
-    "scoreq": 3.927,
-    "utmosv2": 2.553,
-    "utmos22": 2.788
+   "id": "sa436d7323a61a593c12",
+   "text": "<emo:surprise> you're in edinburgh now, when i thought you w",
+   "dur_before_s": 4.4,
+   "dur_after_s": 4.4,
+   "u0": {
+    "reward_mean": 0.5108,
+    "reward_std": 0.0144,
+    "best_ttsds2": 0.5621,
+    "worst_ttsds2": 0.4985
    },
-   "raw_first": {
-    "wer": 0.103,
-    "spk_cos": 0.668,
-    "imp_cos": 0.555,
-    "f0r": 9.04,
-    "f0c": -0.176,
-    "edb": 70.684,
-    "snr": 67.991,
-    "scoreq": 4.152,
-    "utmosv2": 2.102,
-    "utmos22": 2.994
+   "u1": {
+    "reward_mean": 0.508,
+    "reward_std": 0.0048,
+    "best_ttsds2": 0.517,
+    "worst_ttsds2": 0.4989
    },
-   "dur_before_s": 7.12,
-   "dur_after_s": 7.12
+   "u2": {
+    "reward_mean": 0.5109,
+    "reward_std": 0.0141,
+    "best_ttsds2": 0.561,
+    "worst_ttsds2": 0.4985
+   }
   },
   {
-   "id": "sa13f82dc79d9eedb7b9",
-   "text": "<emo:intimate> <ev:moaning> right there <ev:breathing> just ",
-   "reward_mean": 0.6147,
-   "ens_votes_mean": {
-    "scoreq": 3.552,
-    "utmosv2": 1.919,
-    "utmos22": 1.817
+   "id": "rft2_rf203095_2",
+   "text": "<emo:shock> <ev:gasp> stop. <emo:angry> you can't just walk ",
+   "dur_before_s": 6.6,
+   "dur_after_s": 6.6,
+   "u0": {
+    "reward_mean": 0.5213,
+    "reward_std": 0.0235,
+    "best_ttsds2": 0.5562,
+    "worst_ttsds2": 0.4919
    },
-   "raw_first": {
-    "wer": 0.43,
-    "spk_cos": 0.67,
-    "imp_cos": 0.489,
-    "f0r": 4.8,
-    "f0c": -0.218,
-    "edb": 49.274,
-    "snr": 65.292,
-    "scoreq": 3.78,
-    "utmosv2": 2.242,
-    "utmos22": 2.031
+   "u1": {
+    "reward_mean": 0.5206,
+    "reward_std": 0.0223,
+    "best_ttsds2": 0.5532,
+    "worst_ttsds2": 0.4933
    },
-   "dur_before_s": 6.48,
-   "dur_after_s": 6.48
+   "u2": {
+    "reward_mean": 0.5219,
+    "reward_std": 0.0214,
+    "best_ttsds2": 0.5548,
+    "worst_ttsds2": 0.4926
+   }
   },
   {
-   "id": "rft2_rf201055_2",
-   "text": "<emo:disgust> was our first date just a game to see how easi",
-   "reward_mean": 0.6154,
-   "ens_votes_mean": {
-    "scoreq": 4.153,
-    "utmosv2": 2.345,
-    "utmos22": 2.79
+   "id": "sad6433f6d7b6402c1fe",
+   "text": "<emo:angry> <span:shouting> leave this house immediately and",
+   "dur_before_s": 5.2,
+   "dur_after_s": 5.2,
+   "u0": {
+    "reward_mean": 0.4774,
+    "reward_std": 0.004,
+    "best_ttsds2": 0.4844,
+    "worst_ttsds2": 0.4672
    },
-   "raw_first": {
-    "wer": 0.305,
-    "spk_cos": 0.753,
-    "imp_cos": 0.605,
-    "f0r": 25.695,
-    "f0c": -0.131,
-    "edb": 38.401,
-    "snr": 63.364,
-    "scoreq": 4.364,
-    "utmosv2": 2.395,
-    "utmos22": 3.039
+   "u1": {
+    "reward_mean": 0.4776,
+    "reward_std": 0.0047,
+    "best_ttsds2": 0.4881,
+    "worst_ttsds2": 0.4673
    },
-   "dur_before_s": 7.6,
-   "dur_after_s": 7.6
+   "u2": {
+    "reward_mean": 0.4777,
+    "reward_std": 0.0044,
+    "best_ttsds2": 0.4866,
+    "worst_ttsds2": 0.4682
+   }
+  },
+  {
+   "id": "sa6d934ea2563704dadc",
+   "text": "<emo:tired> i can barely keep my eyes open, so can we pick t",
+   "dur_before_s": 6.4,
+   "dur_after_s": 6.4,
+   "u0": {
+    "reward_mean": 0.535,
+    "reward_std": 0.0285,
+    "best_ttsds2": 0.6058,
+    "worst_ttsds2": 0.5139
+   },
+   "u1": {
+    "reward_mean": 0.5296,
+    "reward_std": 0.0197,
+    "best_ttsds2": 0.5906,
+    "worst_ttsds2": 0.5123
+   },
+   "u2": {
+    "reward_mean": 0.5302,
+    "reward_std": 0.0214,
+    "best_ttsds2": 0.5983,
+    "worst_ttsds2": 0.5127
+   }
   }
  ]
 }
