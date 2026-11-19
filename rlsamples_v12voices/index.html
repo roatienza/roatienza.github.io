@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Voice presets vanilla vs RL &mdash; 192M Irodori TTS</title>
+<style>
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1050px;margin:2em auto;padding:0 1em;color:#222}
+h1{font-size:1.5em} table{border-collapse:collapse;width:100%;font-size:.85em}
+td,th{border:1px solid #ddd;padding:5px 7px;text-align:center;vertical-align:top}
+td.txt{text-align:left;width:34%} .van{background:#f6f6f6;color:#666} .rl{background:#eef7ee}
+.up{color:#0a7d2c;font-weight:600} .down{color:#b02020;font-weight:600} .same{color:#888}
+audio{width:170px;height:32px}
+.note{color:#555;font-size:.9em} code{background:#f4f4f4;padding:1px 4px} .cap{color:#888;font-size:.85em}
+</style></head><body>
+<h1>Voice presets &mdash; vanilla vs RL &mdash; 192M Irodori TTS (v12 full-run adapter)</h1>
+<p class="note">Five scripted lines on the two product voice presets (<code>w1243</code> breathy/intimate
+female, <code>m0770</code> deep/gravelly male). Same line, same reference latent, same sampler &amp; seed
+&mdash; the only difference is the trained LoRA adapter. Vanilla rendered before the adapter was
+attached; RL after. Nov 19, 2026, run <code>onit_reward_v12_full</code> (30 updates, real 192M training).
+
+<p>Composite score (ttsds2-weighted): vanilla mean <b>0.6106</b> vs RL <b>0.6120</b>
+(&Delta; +0.0014); wins 2/5, losses 3/5, ties 4/5.
+Adapter: <code>onit_reward_v12_full/lora_final</code> (30 updates &times; 24 prompts, K=16, LoRA r=32, lr 3e-5, KL 0.0002 &laquo; target 0.05).</p>
+<p class="note"><b>Method note (honest).</b> The preset anchor latents for w1243/m0770 are not on this
+machine, so each voice is steered by its preset identity sentence in the caption (served-product
+grammar), the training-grammar delivery clause for the line's leading tag (<code>[excited]</code>
+&rarr; "happy, highly animated pitch", <code>[grief]</code> &rarr; "sad, very broken up",
+whisper span &rarr; "whispered throughout", etc.), and the closest-caption real reference latent from
+the irodori manifest (female: whispered/intimate clip; male: "male voice, comforting" clip &mdash; the
+only male-lead speaker in that manifest). Emotion tags are stripped from the text as in serving.
+Scores from the same RewardBank used during RL training; composite is the ttsds2-weighted sum.</p>
+<h2>Head-to-head &mdash; vanilla vs RL (5 lines)</h2>
+<table>
+<tr><th>line (tagged) &amp; caption</th><th>pass</th><th>composite</th><th>speaker</th><th>intellig.</th><th>prosody</th><th>natur.</th><th>audio</th></tr>
+
+<tr><td class="txt" rowspan="2"><b>w1243</b> [excited] we got the house! they accepted our offer an hour ago, and i haven't stopped shaking since.<br><span class="cap">A woman is speaking: mid twenties; American accent; a mid-range pitch for a woman; breathy, intimate, hushed voice. happy, highly animated pitch. Recording: studio quality, quiet background, full bandwidth.</span></td>
+<td class="van">vanilla</td><td>0.614</td>
+<td>0.874</td><td>1.000</td>
+<td>0.500</td><td>0.083</td>
+<td><audio controls preload="none" src="audio/vanilla_w1243_excited.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.614 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.875</td><td>1.000</td>
+<td>0.498</td><td>0.084</td>
+<td><audio controls preload="none" src="audio/rl_w1243_excited.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><b>m0770</b> [grief] he used to sit in that chair every morning, and now i can't walk past it without falling apart.<br><span class="cap">A man is speaking: early thirties; American accent; low-pitched for a man; deep, warm, gravelly voice. sad, very broken up. Recording: studio quality, quiet background, full bandwidth.</span></td>
+<td class="van">vanilla</td><td>0.607</td>
+<td>0.875</td><td>1.000</td>
+<td>0.481</td><td>0.071</td>
+<td><audio controls preload="none" src="audio/vanilla_m0770_grief.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.607 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.875</td><td>1.000</td>
+<td>0.481</td><td>0.070</td>
+<td><audio controls preload="none" src="audio/rl_m0770_grief.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><b>m0770</b> [intimate] [whisper] i've loved you since the first night you drove me home in the rain. [/whisper]<br><span class="cap">A man is speaking: early thirties; American accent; low-pitched for a man; deep, warm, gravelly voice. romantic, softly spoken. whispered throughout. Recording: studio quality, quiet background, full bandwidth.</span></td>
+<td class="van">vanilla</td><td>0.611</td>
+<td>0.880</td><td>1.000</td>
+<td>0.498</td><td>0.066</td>
+<td><audio controls preload="none" src="audio/vanilla_m0770_whisper.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.611 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.881</td><td>1.000</td>
+<td>0.496</td><td>0.067</td>
+<td><audio controls preload="none" src="audio/rl_m0770_whisper.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><b>m0770</b> [sad] [cry] i still keep your voicemail, i never had the heart to delete it.<br><span class="cap">A man is speaking: early thirties; American accent; low-pitched for a man; deep, warm, gravelly voice. sad, very broken up, whimpering. Recording: studio quality, quiet background, full bandwidth.</span></td>
+<td class="van">vanilla</td><td>0.606</td>
+<td>0.859</td><td>1.000</td>
+<td>0.498</td><td>0.066</td>
+<td><audio controls preload="none" src="audio/vanilla_m0770_sad_cry.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.605 <span class="same">(&plusmn;0.001)</span></td>
+<td>0.859</td><td>1.000</td>
+<td>0.497</td><td>0.066</td>
+<td><audio controls preload="none" src="audio/rl_m0770_sad_cry.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><b>m0770</b> [tender] thank you for staying with me through all of this, i mean it [cry]<br><span class="cap">A man is speaking: early thirties; American accent; low-pitched for a man; deep, warm, gravelly voice. gentle, loving, very broken up. Recording: studio quality, quiet background, full bandwidth.</span></td>
+<td class="van">vanilla</td><td>0.615</td>
+<td>0.882</td><td>1.000</td>
+<td>0.514</td><td>0.062</td>
+<td><audio controls preload="none" src="audio/vanilla_m0770_tender_cry.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.623 <span class="up">(+0.008)</span></td>
+<td>0.881</td><td>1.000</td>
+<td>0.543</td><td>0.065</td>
+<td><audio controls preload="none" src="audio/rl_m0770_tender_cry.wav"></audio></td></tr>
+</table>
+</body></html>
