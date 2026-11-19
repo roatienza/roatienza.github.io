@@ -16,6 +16,22 @@ female, <code>m0770</code> deep/gravelly male). Same line, same reference latent
 &mdash; the only difference is the trained LoRA adapter. Vanilla rendered before the adapter was
 attached; RL after. Nov 19, 2026, run <code>onit_reward_v12_full</code> (30 updates, real 192M training).
 
+<h2>Live yoob.com voices &mdash; shipped presets (w1243 / m0770)</h2>
+<p class="note">The same five lines rendered through the <b>live yoob.com API</b> with the real shipped
+presets (<code>w1243</code> Amber, <code>m0770</code> David), <code>model=yoob-tts-2</code>,
+<code>quality=best</code>, fixed <code>seed=7</code>. These are the true product voices &mdash; not a
+vanilla-vs-RL comparison and not caption-steered stand-ins. Nov 19, 2026, via
+<code>render_preset_lines.py</code> (tts-tools-generic @ <code>8cc3f1d</code>).
+Manifest: sha16 + duration per file, 48 kHz.</p>
+<table>
+<tr><th>line</th><th>voice</th><th>dur (s)</th><th>sha16</th><th>audio</th></tr>
+<tr><td class="txt">[excited] we got the house! they accepted our offer an hour ago, and i haven't stopped shaking since.</td><td>w1243 Amber</td><td>5.63</td><td><code>aa1e1ae2d7210428</code></td><td><audio controls preload="none" src="audio/excited_house_offer_w1243.wav"></audio></td></tr>
+<tr><td class="txt">[grief] he used to sit in that chair every morning, and now i can't walk past it without falling apart.</td><td>m0770 David</td><td>5.54</td><td><code>83c686c90f35f031</code></td><td><audio controls preload="none" src="audio/grief_chair_m0770.wav"></audio></td></tr>
+<tr><td class="txt">[intimate] [whisper] i've loved you since the first night you drove me home in the rain. [/whisper]</td><td>m0770 David</td><td>3.86</td><td><code>3c346f9a890dff0b</code></td><td><audio controls preload="none" src="audio/intimate_whisper_rain_m0770.wav"></audio></td></tr>
+<tr><td class="txt">[sad] [cry] i still keep your voicemail, i never had the heart to delete it.</td><td>m0770 David</td><td>4.13</td><td><code>ab10f7acbcbfe814</code></td><td><audio controls preload="none" src="audio/sad_cry_voicemail_m0770.wav"></audio></td></tr>
+<tr><td class="txt">[tender] thank you for staying with me through all of this, i mean it [cry]</td><td>m0770 David</td><td>3.46</td><td><code>5bfa71b2208dbed6</code></td><td><audio controls preload="none" src="audio/tender_cry_thanks_m0770.wav"></audio></td></tr>
+</table>
+
 <p>Composite score (ttsds2-weighted): vanilla mean <b>0.6106</b> vs RL <b>0.6120</b>
 (&Delta; +0.0014); wins 2/5, losses 3/5, ties 4/5.
 Adapter: <code>onit_reward_v12_full/lora_final</code> (30 updates &times; 24 prompts, K=16, LoRA r=32, lr 3e-5, KL 0.0002 &laquo; target 0.05).</p>
