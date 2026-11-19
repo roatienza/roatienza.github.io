@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Vanilla vs RL (v12 full run) &mdash; 192M Irodori TTS</title>
+<style>
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1000px;margin:2em auto;padding:0 1em;color:#222}
+h1{font-size:1.5em} table{border-collapse:collapse;width:100%;font-size:.85em}
+td,th{border:1px solid #ddd;padding:5px 7px;text-align:center;vertical-align:top}
+td.txt{text-align:left;width:32%} .van{background:#f6f6f6;color:#666} .rl{background:#eef7ee}
+.up{color:#0a7d2c;font-weight:600} .down{color:#b02020;font-weight:600} .same{color:#888}
+audio{width:170px;height:32px}
+.note{color:#555;font-size:.9em} code{background:#f4f4f4;padding:1px 4px}
+</style></head><body>
+<h1>Vanilla vs RL &mdash; 192M Irodori TTS (v12 full-run adapter)</h1>
+<p class="note">Same 12 prompts, same reference latent, same sampler &amp; seed &mdash; the only
+difference is the trained LoRA adapter. Vanilla rendered before the adapter was attached;
+RL after. Nov 19, 2026, run <code>onit_reward_v12_full</code> (30 updates, real 192M training).
+
+<p>Composite score (ttsds2-weighted): vanilla mean <b>0.5702</b> vs RL <b>0.5709</b>
+(&Delta; +0.0007); wins 8/12, losses 4/12, ties 7/12.
+Adapter: <code>onit_reward_v12_full/lora_final</code> (30 updates &times; 24 prompts, K=16, LoRA r=32, lr 3e-5, KL 0.0002 &laquo; target 0.05).</p>
+<h2>Head-to-head &mdash; vanilla vs RL (12 prompts)</h2>
+<table>
+<tr><th>text</th><th>pass</th><th>composite</th><th>speaker</th><th>intellig.</th><th>prosody</th><th>natur.</th><th>audio</th></tr>
+
+<tr><td class="txt" rowspan="2"><emo:tender> close the book, little one, i'll stay right here until you fall asleep and the dreams take over.</td>
+<td class="van">vanilla</td><td>0.629</td>
+<td>0.900</td><td>0.935</td>
+<td>0.609</td><td>0.072</td>
+<td><audio controls preload="none" src="audio/vanilla_gt_v8_V8_B01023_xai_rigel.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.626 <span class="down">(&minus;0.003)</span></td>
+<td>0.902</td><td>0.935</td>
+<td>0.595</td><td>0.071</td>
+<td><audio controls preload="none" src="audio/rl_gt_v8_V8_B01023_xai_rigel.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:neutral> i need a loaf of bread, <ev:inhale> a pound of butter and two lemons from the corner shop.</td>
+<td class="van">vanilla</td><td>0.568</td>
+<td>0.868</td><td>0.861</td>
+<td>0.475</td><td>0.067</td>
+<td><audio controls preload="none" src="audio/vanilla_sa95086ea5561415d207.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.568 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.868</td><td>0.861</td>
+<td>0.476</td><td>0.068</td>
+<td><audio controls preload="none" src="audio/rl_sa95086ea5561415d207.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:playful> stop tickling my feet while i am trying to stretch! <ev:laughing> you are being completely unfair.</td>
+<td class="van">vanilla</td><td>0.559</td>
+<td>0.900</td><td>0.859</td>
+<td>0.412</td><td>0.065</td>
+<td><audio controls preload="none" src="audio/vanilla_sa4ffec300bcb4d64268.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.559 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.899</td><td>0.859</td>
+<td>0.410</td><td>0.066</td>
+<td><audio controls preload="none" src="audio/rl_sa4ffec300bcb4d64268.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:neutral> i got my login details this morning. the it team is setting up my email after lunch. <ev:inhale></td>
+<td class="van">vanilla</td><td>0.560</td>
+<td>0.830</td><td>0.850</td>
+<td>0.499</td><td>0.063</td>
+<td><audio controls preload="none" src="audio/vanilla_sa5794de63f8ccabff34.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.564 <span class="up">(+0.004)</span></td>
+<td>0.829</td><td>0.850</td>
+<td>0.515</td><td>0.062</td>
+<td><audio controls preload="none" src="audio/rl_sa5794de63f8ccabff34.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:neutral> the cake is ordered for friday, and it's a lemon one. let's pick it up at noon. <ev:exhale></td>
+<td class="van">vanilla</td><td>0.568</td>
+<td>0.834</td><td>0.858</td>
+<td>0.516</td><td>0.062</td>
+<td><audio controls preload="none" src="audio/vanilla_rft2_rf202199_5.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.568 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.834</td><td>0.858</td>
+<td>0.516</td><td>0.064</td>
+<td><audio controls preload="none" src="audio/rl_rft2_rf202199_5.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:angry> little <span:tearful> did they know <span:shouting> that they were fighting </span:shouting> a beast. </span:tearful></td>
+<td class="van">vanilla</td><td>0.514</td>
+<td>0.856</td><td>0.646</td>
+<td>0.473</td><td>0.081</td>
+<td><audio controls preload="none" src="audio/vanilla_b5b7581cc2eb85dc358e.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.515 <span class="up">(+0.001)</span></td>
+<td>0.855</td><td>0.646</td>
+<td>0.487</td><td>0.074</td>
+<td><audio controls preload="none" src="audio/rl_b5b7581cc2eb85dc358e.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:surprise> you're in edinburgh now, when i thought you were still in glasgow with the kids?</td>
+<td class="van">vanilla</td><td>0.588</td>
+<td>0.872</td><td>0.910</td>
+<td>0.490</td><td>0.078</td>
+<td><audio controls preload="none" src="audio/vanilla_sa436d7323a61a593c12.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.587 <span class="same">(&plusmn;0.001)</span></td>
+<td>0.872</td><td>0.910</td>
+<td>0.487</td><td>0.079</td>
+<td><audio controls preload="none" src="audio/rl_sa436d7323a61a593c12.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:shock> <ev:gasp> stop. <emo:angry> you can't just walk back into my life after three years and expect me to smile.</td>
+<td class="van">vanilla</td><td>0.566</td>
+<td>0.885</td><td>0.844</td>
+<td>0.461</td><td>0.075</td>
+<td><audio controls preload="none" src="audio/vanilla_rft2_rf203095_2.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.567 <span class="same">(&plusmn;0.001)</span></td>
+<td>0.885</td><td>0.844</td>
+<td>0.462</td><td>0.075</td>
+<td><audio controls preload="none" src="audio/rl_rft2_rf203095_2.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:angry> <span:shouting> leave this house immediately and do not ever try to call my phone again! </span:shouting></td>
+<td class="van">vanilla</td><td>0.551</td>
+<td>0.869</td><td>0.780</td>
+<td>0.481</td><td>0.075</td>
+<td><audio controls preload="none" src="audio/vanilla_sad6433f6d7b6402c1fe.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.551 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.868</td><td>0.780</td>
+<td>0.481</td><td>0.074</td>
+<td><audio controls preload="none" src="audio/rl_sad6433f6d7b6402c1fe.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:tired> i can barely keep my eyes open, so can we pick this up tomorrow? i'm just done for tonight.</td>
+<td class="van">vanilla</td><td>0.593</td>
+<td>0.840</td><td>0.938</td>
+<td>0.528</td><td>0.068</td>
+<td><audio controls preload="none" src="audio/vanilla_sa6d934ea2563704dadc.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.594 <span class="same">(&plusmn;0.000)</span></td>
+<td>0.840</td><td>0.938</td>
+<td>0.528</td><td>0.068</td>
+<td><audio controls preload="none" src="audio/rl_sa6d934ea2563704dadc.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:playful> <span:whisper> you missed a spot of frosting on your lip. <ev:giggle> let me get that for you. </span:whisper></td>
+<td class="van">vanilla</td><td>0.540</td>
+<td>0.900</td><td>0.639</td>
+<td>0.550</td><td>0.069</td>
+<td><audio controls preload="none" src="audio/vanilla_rft2_rf201448_6.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.541 <span class="up">(+0.001)</span></td>
+<td>0.899</td><td>0.651</td>
+<td>0.545</td><td>0.068</td>
+<td><audio controls preload="none" src="audio/rl_rft2_rf201448_6.wav"></audio></td></tr>
+<tr><td class="txt" rowspan="2"><emo:sad> it's a little disappointing to see that the quality of fish isn't the same as it used to be.</td>
+<td class="van">vanilla</td><td>0.607</td>
+<td>0.886</td><td>0.951</td>
+<td>0.527</td><td>0.064</td>
+<td><audio controls preload="none" src="audio/vanilla_dyn_erica_034100_00000.wav"></audio></td></tr>
+<tr><td class="rl">RL&nbsp;v12</td><td>0.612 <span class="up">(+0.005)</span></td>
+<td>0.886</td><td>0.951</td>
+<td>0.547</td><td>0.065</td>
+<td><audio controls preload="none" src="audio/rl_dyn_erica_034100_00000.wav"></audio></td></tr>
+</table>
+<p class="note">Scores from the same RewardBank (Whisper CER, ECAPA speaker cos, UTMOS, F0/prosody) used during RL training; composite is the ttsds2-weighted sum. Environment term = 1.0 for all clean renders and is omitted.</p>
+</body></html>
