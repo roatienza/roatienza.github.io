@@ -132,4 +132,19 @@ Adapter: <code>onit_reward_v12_full/lora_final</code> (30 updates &times; 24 pro
 <td><audio controls preload="none" src="audio/rl_dyn_erica_034100_00000.wav"></audio></td></tr>
 </table>
 <p class="note">Scores from the same RewardBank (Whisper CER, ECAPA speaker cos, UTMOS, F0/prosody) used during RL training; composite is the ttsds2-weighted sum. Environment term = 1.0 for all clean renders and is omitted.</p>
+
+<h2>Live yoob.com voices &mdash; shipped presets (Amber w1243 / David m0770)</h2>
+<p class="note">Rendered Nov 19, 2026 through the <b>live API</b> with the real shipped presets
+(<code>w1243</code>/Amber, <code>m0770</code>/David), <code>model=yoob-tts-2</code>,
+<code>quality=best</code>, fixed <code>seed=7</code> &mdash; identical to what yoob.com serves.
+Source: <code>render_preset_lines.py</code> (tts-tools-generic @ 8cc3f1d), manifest sha16s below.
+</p>
+<table>
+<tr><th>voice</th><th>text</th><th>dur</th><th>sha16</th><th>audio</th></tr>
+<tr><td>Amber (w1243)</td><td class="txt">[excited] we got the house! they accepted our offer an hour ago, and i haven't stopped shaking since.</td><td>5.63s</td><td><code>aa1e1ae2d7210428</code></td><td><audio controls preload="none" src="audio/excited_house_offer_w1243.wav"></audio></td></tr>
+<tr><td>David (m0770)</td><td class="txt">[grief] he used to sit in that chair every morning, and now i can't walk past it without falling apart.</td><td>5.54s</td><td><code>83c686c90f35f031</code></td><td><audio controls preload="none" src="audio/grief_chair_m0770.wav"></audio></td></tr>
+<tr><td>David (m0770)</td><td class="txt">[intimate] [whisper] i've loved you since the first night you drove me home in the rain. [/whisper]</td><td>3.86s</td><td><code>3c346f9a890dff0b</code></td><td><audio controls preload="none" src="audio/intimate_whisper_rain_m0770.wav"></audio></td></tr>
+<tr><td>David (m0770)</td><td class="txt">[sad] [cry] i still keep your voicemail, i never had the heart to delete it.</td><td>4.13s</td><td><code>ab10f7acbcbfe814</code></td><td><audio controls preload="none" src="audio/sad_cry_voicemail_m0770.wav"></audio></td></tr>
+<tr><td>David (m0770)</td><td class="txt">[tender] thank you for staying with me through all of this, i mean it [cry]</td><td>3.46s</td><td><code>5bfa71b2208dbed6</code></td><td><audio controls preload="none" src="audio/tender_cry_thanks_m0770.wav"></audio></td></tr>
+</table>
 </body></html>
