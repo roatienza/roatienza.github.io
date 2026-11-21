@@ -1,715 +1,898 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<title>Flow-DPO before/after — 192M Irodori TTS</title>
+<title>Flow-DPO before/after — 192M Irodori TTS (tag-fixed)</title>
 <style>
-body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1080px;margin:2em auto;padding:0 1em;color:#222}
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1180px;margin:2em auto;padding:0 1em;color:#222}
 h1{font-size:1.5em} h2{margin-top:1.8em;font-size:1.15em}
-table{border-collapse:collapse;width:100%;font-size:.82em}
+table{border-collapse:collapse;width:100%;font-size:.8em}
 td,th{border:1px solid #ddd;padding:5px 7px;text-align:center;vertical-align:top}
-td.txt{text-align:left;width:30%}
+td.txt{text-align:left;width:32%}
 .rl{background:#eef7ee} .up{color:#0a7d2c;font-weight:600} .down{color:#b02020;font-weight:600} .same{color:#888}
 .dim{color:#999} .note{color:#777;font-size:.9em} code{background:#f4f4f4;padding:1px 4px}
 audio{width:170px;height:32px}
 </style></head><body>
 <h1>Flow-DPO before / after — 192M Irodori TTS</h1>
 <p class="note">Checkpoint <code>V12b_192M/checkpoint_final.pt</code> · LoRA r=32 on diffusion-attn ·
-pairs from the v13 reward-bank best-vs-worst groups (75 prompts) · same seed and 40-step sampler for
-both arms · GPU7 · November 20, 2026.
-Judge: speech-judge v14 (TTSDS2 signals + MSP-ADV + paralinguistic event bank, BT head
-<code>bt_head_v14</code>), one A/B per prompt.</p>
+75 best-vs-worst prompts from the v13 reward bank · same seed and 40-step sampler for both arms ·
+adapter = DPO v2 final (300 steps, lr 5e-5, β=10) · GPU7 · November 21, 2026.<br>
+Judge: speech-judge v14 (<code>bt_head_v14</code>), one A/B per prompt.
+<b>This render honors the tags</b>: <code>&lt;emo:*&gt;</code>, <code>&lt;ev:*&gt;</code> and
+<code>&lt;/span:*&gt;</code> are paralinguistic / event guides (trained vocab ids 416–436 / 384–405 /
+411–415), never read as text — see "tag fix" below.</p>
 
-<h2>Summary</h2>
+<h2>Tag fix — why this render differs from yesterday's</h2>
+<p>Yesterday's A/B (<code>onit_dpo_ab_v1</code>) was rendered with the en-v1 text frontend, whose tag
+regex only matched single-word tags like <code>&lt;breath&gt;</code>. The trained colon tags
+(<code>&lt;emo:tender&gt;</code>, <code>&lt;ev:laughing&gt;</code>, <code>&lt;/span:whisper&gt;</code>)
+slipped through, got their <code>:</code> rewritten to <code>,</code> and their brackets padded away, and
+were <b>pronounced as text</b> — "<code>emo,tender close the book…</code>". Every one of the 75 prompts
+carries tags, so both arms were polluted (UTMOS base 3.17 vs DPO 2.66, WER 0.30 vs 0.36, and a
+significant base win, z = 5.21) — much of it the tags being read aloud, not the adapter.</p>
+<p>Fix (2026-11-21, one line in <code>text_frontend_en.py</code>): the tag regex now round-trips
+<code>&lt;/?(emo|ev|span):…&gt;</code> verbatim, so the byte tokenizer emits the trained tag ids the
+model saw in training (1.17M tagged manifest rows). Verified: full en-v1 fixture parity (5,247 cases,
+0 mismatches) and <code>&lt;emo:tender&gt;</code> → single id 430, <code>&lt;ev:laughing&gt;</code> → 384,
+<code>&lt;/span:whisper&gt;</code> → 411.</p>
+
+<h2>Summary — 75 pairs, tags honored (tag-fixed render)</h2>
 <table>
-<tr><th></th><th>v1 (600 steps, lr 1e-4)</th><th>v2 (300 steps, lr 5e-5, final = step 300)</th></tr>
-<tr><td class="txt">speech-judge verdict</td>
-<td class="down">base 49 / DPO 26 — DPO regressed</td>
-<td class="up">DPO 41 / base 34 — slight DPO edge</td></tr>
-<tr><td class="txt">mean p(base &gt; DPO)</td><td>0.640</td><td>0.500</td></tr>
+<tr><th></th><th>old render (tags read aloud)</th><th>tag-fixed render</th></tr>
+<tr><td class="txt">speech-judge verdict (base / DPO / tie)</td>
+<td class="down">44 / 31 / 0 — base preferred, z = 5.21</td>
+<td class="same">34 / 29 / 12 — statistically a coin flip (mean p 0.524, z = 0.83)</td></tr>
+<tr><td class="txt">UTMOS base vs DPO</td><td>3.17 vs 2.66 (both degraded by spoken tag text)</td>
+<td class="up">2.88 vs 2.89 — parity</td></tr>
+<tr><td class="txt">WER base vs DPO</td><td>0.296 vs 0.355</td>
+<td class="up">0.059 vs 0.057 — parity (and 5× lower: no tag words)</td></tr>
+<tr><td class="txt">emotion-head target distance base / DPO</td><td>—</td>
+<td class="same">0.58 / 0.59 (65 evaluable pairs) — DPO holds the target emotion</td></tr>
+<tr><td class="txt">mean clip length</td><td>—</td><td class="same">6.47 s / 6.47 s</td></tr>
 </table>
-<p class="note">v1's end-of-training instability (grad norm 26.7 at step 599) materialized as an audible
-regression. v2 halves the learning rate and stops at 300 steps with snapshots every 50: the judge moves
-from a significant loss (z = 2.66, p ≈ 0.008) to a coin-flip-with-slight-DPO-edge. Treat v2 step 300 as
-the current best DPO adapter; a human A/B on the 75 pairs is the next gate.</p>
+<p class="note">With tags honored, the DPO adapter is <b>neutral on the judge</b>: it neither regresses
+(the old base-preference was largely the tag-reading artifact) nor wins. 18 pairs flipped toward DPO and
+16 toward base relative to the old render — the verdict distribution is noise around 0.5. Fulfillment
+(event-term terms) abstains on most pairs in this batch (event bank still unvalidated for v14), so
+verdicts lean on BT + UTMOS + WER + emotion distance. Next gate remains the human A/B.</p>
 
-<h2>Before / after — base vs DPO v2 (step 300)</h2>
+<h2>Before / after — base vs DPO v2 (step 300), tag-fixed</h2>
 <table>
-<tr><th>Prompt</th><th>Base (before)</th><th>DPO v2 (after)</th><th>Judge v2</th><th>p(base&gt;DPO) v2</th><th>Judge v1</th><th>p v1</th></tr>
+<tr><th>Prompt</th><th>Base (before)</th><th>DPO (after)</th><th>Judge</th><th>p(base&gt;DPO)</th>
+<th>UTMOS b/d</th><th>WER b/d</th><th>emo dist b/d</th><th>old verdict</th><th>old p</th></tr>
       <tr>
         <td class="txt"><b>&lt;emo:tender&gt; close the book, little one, i&#x27;ll stay right here until you fall asleep and the dreams take over.</b><br><span class="note">A man is speaking: gentle, loving. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/gt_v8_V8_B01023_xai_rigel__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/gt_v8_V8_B01023_xai_rigel__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.44</td>
+        <td><audio controls preload="none" src="audio/tagfix/gt_v8_V8_B01023_xai_rigel__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/gt_v8_V8_B01023_xai_rigel__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.67</td>
+        <td class="dim">0.53</td>
+        <td class="up">3.88</td><td class="down">3.79</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.58 / 0.58</td>
+        <td class="dim">a</td><td class="dim">0.67</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; stop tickling my feet while i am trying to stretch! &lt;ev:laughing&gt; you are being completely unfair.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. playful, teasing, giggling. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa4ffec300bcb4d64268__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa4ffec300bcb4d64268__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.39</td>
-        <td class="down">base</td>
-        <td class="dim">0.98</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; the cake is ordered for friday, and it&#x27;s a lemon one. let&#x27;s pick it up at noon. &lt;ev:exhale&gt;</b><br><span class="note">A man is speaking: young adult; Indian accent; a mid-range pitch for a man. sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202199_5__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202199_5__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
-        <td class="same">tie</td>
-        <td class="dim">0.41</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:angry&gt; little &lt;span:tearful&gt; did they know &lt;span:shouting&gt; that they were fighting &lt;/span:shouting&gt; a beast. &lt;/span:tearful&gt;</b><br><span class="note">A woman is speaking: over 75 years old; American accent; low-pitched for a woman. loud projected delivery, angry, intense, very broken up. Recording: quiet background, wide bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/b5b7581cc2eb85dc358e__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/b5b7581cc2eb85dc358e__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.46</td>
-        <td class="same">tie</td>
-        <td class="dim">0.49</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; &lt;span:whisper&gt; you missed a spot of frosting on your lip. &lt;ev:giggle&gt; let me get that for you. &lt;/span:whisper&gt;</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. playful, teasing, whispered passages, giggling. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf201448_6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf201448_6__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.38</td>
-        <td class="same">tie</td>
-        <td class="dim">0.47</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:sad&gt; it&#x27;s a little disappointing to see that the quality of fish isn&#x27;t the same as it used to be.</b><br><span class="note">A woman is speaking: mid twenties; American accent; a mid-range pitch for a woman. sad. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/dyn_erica_034100_00000__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/dyn_erica_034100_00000__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.47</td>
-        <td class="same">tie</td>
-        <td class="dim">0.46</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:desire&gt; &lt;span:whisper&gt; close enough to your clit that you keep thinking &lt;ev:inhale&gt; that where i&#x27;m going to touch you next is but &lt;/span:whisper&gt; &lt;ev:moaning&gt;</b><br><span class="note">A man is speaking: late forties to early fifties; a mid-range pitch for a man. sweet, tender aftercare, romantic, breathy, whispered passages, audible breath, moaning. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/35a4eb66a17e1692c7fd__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/35a4eb66a17e1692c7fd__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.19</td>
-        <td class="down">base</td>
-        <td class="dim">0.98</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:excited&gt; the music is perfect, the stars are out, &lt;ev:giggle&gt; and i am holding the most beautiful person at this party.</b><br><span class="note">A man is speaking: high-pitched for a man. happy, highly animated pitch, giggling. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa1cee8d70aa979143a6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa1cee8d70aa979143a6__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.01</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; the hospital corridor was silent, but their hearts were racing. &lt;ev:exhale&gt; they finally found each other.</b><br><span class="note">A woman is speaking: high-pitched for a woman. sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf200601_4__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf200601_4__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.37</td>
-        <td class="same">tie</td>
-        <td class="dim">0.51</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:joy&gt; the doctor says everything looks good, which is really nice to hear.</b><br><span class="note">A man is speaking: middle-aged; American accent; a mid-range pitch for a man. happy. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa3b0e479c805161ceda__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa3b0e479c805161ceda__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.77</td>
-        <td class="down">base</td>
-        <td class="dim">0.65</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:intimate&gt; we can just stay like this. &lt;span:low voice&gt; wrapped up in the sheets &lt;/span:low voice&gt; until the sun goes down.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. romantic, softly spoken. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa433ed0d5e7fec896e2__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa433ed0d5e7fec896e2__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">1.00</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:tender&gt; &lt;ev:breathing&gt; i put a note in your bag this morning, and i hope today goes really well for you.</b><br><span class="note">A man is speaking: young adult; British accent; a mid-range pitch for a man. gentle, loving, audible breaths. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa64fbac605a1e9464b4__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa64fbac605a1e9464b4__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.46</td>
-        <td class="same">tie</td>
-        <td class="dim">0.54</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:joy&gt; the campfire is crackling, the stars are out, and &lt;emo:tender&gt; i &lt;ev:exhale&gt; have you right here beside me.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. happy, gentle, loving, sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sac0b9592cf9f6a33d29__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sac0b9592cf9f6a33d29__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.67</td>
-        <td class="same">tie</td>
-        <td class="dim">0.55</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:sad&gt; watching &lt;ev:crying&gt; your train pull out of the station &lt;ev:crying&gt; took a piece of my soul with it today &lt;ev:sniff&gt; and left me empty.</b><br><span class="note">A man is speaking: low-pitched for a man. sad, very broken up. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa9a2ee81c0fc761f9fd__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa9a2ee81c0fc761f9fd__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.59</td>
-        <td class="same">tie</td>
-        <td class="dim">0.46</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:nervous&gt; maybe we should just turn around. &lt;ev:sigh&gt; this street feels too empty and the lights are flickering.</b><br><span class="note">A man is speaking: high-pitched for a man. fearful, halting, sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf203873_4__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf203873_4__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:playful&gt; stop tickling my feet while i am trying to stretch! &lt;ev:laughing&gt; you are being completely unfair.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. playful, teasing, giggling. Recording: clean studio qualit</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa4ffec300bcb4d64268__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa4ffec300bcb4d64268__dpo.flac"></audio></td>
         <td class="up">DPO</td>
         <td class="dim">0.14</td>
-        <td class="same">tie</td>
-        <td class="dim">0.56</td>
+        <td class="down">1.58</td><td class="up">1.99</td>
+        <td class="down">0.13</td><td class="up">0.00</td>
+        <td class="dim">0.40 / 0.49</td>
+        <td class="dim">a</td><td class="dim">0.98</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; okay, maybe not mad, but you know what i mean &lt;ev:chuckle&gt; &lt;ev:breathing&gt;</b><br><span class="note">A man is speaking: mid twenties; British accent; a mid-range pitch for a man. comforting, playful, teasing, giggling, audible breaths. Recording: quiet background, wide bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/8eb1c59f849a9b57786f__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/8eb1c59f849a9b57786f__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:neutral&gt; the cake is ordered for friday, and it&#x27;s a lemon one. let&#x27;s pick it up at noon. &lt;ev:exhale&gt;</b><br><span class="note">A man is speaking: young adult; Indian accent; a mid-range pitch for a man. sighs. Recording: quiet background</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202199_5__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202199_5__dpo.flac"></audio></td>
+        <td class="same">tie</td>
+        <td class="dim">0.54</td>
+        <td class="same">3.00</td><td class="same">3.00</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.82 / 0.85</td>
+        <td class="dim">b</td><td class="dim">0.41</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:angry&gt; little &lt;span:tearful&gt; did they know &lt;span:shouting&gt; that they were fighting &lt;/span:shouting&gt; a beast. &lt;/span:tearful&gt;</b><br><span class="note">A woman is speaking: over 75 years old; American accent; low-pitched for a woman. loud projected delivery, ang</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/b5b7581cc2eb85dc358e__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/b5b7581cc2eb85dc358e__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.56</td>
+        <td class="down">2.79</td><td class="up">2.87</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.78 / 0.77</td>
+        <td class="dim">a</td><td class="dim">0.49</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:playful&gt; &lt;span:whisper&gt; you missed a spot of frosting on your lip. &lt;ev:giggle&gt; let me get that for you. &lt;/span:whisper&gt;</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. playful, teasing, whispered passages, giggling. Recording:</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf201448_6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf201448_6__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.45</td>
+        <td class="down">2.20</td><td class="up">2.22</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.43 / 0.45</td>
+        <td class="dim">b</td><td class="dim">0.47</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:sad&gt; it&#x27;s a little disappointing to see that the quality of fish isn&#x27;t the same as it used to be.</b><br><span class="note">A woman is speaking: mid twenties; American accent; a mid-range pitch for a woman. sad. Recording: quiet backg</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/dyn_erica_034100_00000__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/dyn_erica_034100_00000__dpo.flac"></audio></td>
         <td class="same">tie</td>
         <td class="dim">0.52</td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
+        <td class="down">3.76</td><td class="up">3.86</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.67 / 0.69</td>
+        <td class="dim">b</td><td class="dim">0.46</td>
       </tr>
       <tr>
-        <td class="txt"><b>every single worry i had today &lt;ev:exhale&gt; &lt;span:low voice&gt; just drifted away &lt;/span:low voice&gt; the moment you wrapped your arms around my waist.</b><br><span class="note">A woman is speaking: low-pitched for a woman. sighs, softly spoken. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202679_1__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202679_1__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:desire&gt; &lt;span:whisper&gt; close enough to your clit that you keep thinking &lt;ev:inhale&gt; that where i&#x27;m going to touch you next is but &lt;/span:whisper&gt; &lt;ev:moaning&gt;</b><br><span class="note">A man is speaking: late forties to early fifties; a mid-range pitch for a man. sweet, tender aftercare, romant</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/35a4eb66a17e1692c7fd__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/35a4eb66a17e1692c7fd__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.32</td>
+        <td class="dim">0.42</td>
+        <td class="up">2.66</td><td class="down">2.58</td>
+        <td class="same">0.05</td><td class="same">0.05</td>
+        <td class="dim">0.33 / 0.34</td>
+        <td class="dim">a</td><td class="dim">0.98</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:excited&gt; the music is perfect, the stars are out, &lt;ev:giggle&gt; and i am holding the most beautiful person at this party.</b><br><span class="note">A man is speaking: high-pitched for a man. happy, highly animated pitch, giggling. Recording: clean studio qua</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa1cee8d70aa979143a6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa1cee8d70aa979143a6__dpo.flac"></audio></td>
         <td class="same">tie</td>
+        <td class="dim">0.49</td>
+        <td class="down">2.14</td><td class="up">2.22</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.72 / 0.71</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:neutral&gt; the hospital corridor was silent, but their hearts were racing. &lt;ev:exhale&gt; they finally found each other.</b><br><span class="note">A woman is speaking: high-pitched for a woman. sighs. Recording: clean studio quality, full bandwidth, no back</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf200601_4__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf200601_4__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.59</td>
+        <td class="down">2.90</td><td class="up">2.98</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.79 / 0.79</td>
+        <td class="dim">a</td><td class="dim">0.51</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:joy&gt; the doctor says everything looks good, which is really nice to hear.</b><br><span class="note">A man is speaking: middle-aged; American accent; a mid-range pitch for a man. happy. Recording: quiet backgrou</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa3b0e479c805161ceda__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa3b0e479c805161ceda__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.52</td>
+        <td class="down">3.39</td><td class="up">3.60</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.69 / 0.66</td>
+        <td class="dim">b</td><td class="dim">0.65</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:intimate&gt; we can just stay like this. &lt;span:low voice&gt; wrapped up in the sheets &lt;/span:low voice&gt; until the sun goes down.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. romantic, softly spoken. Recording: clean studio quality, </span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa433ed0d5e7fec896e2__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa433ed0d5e7fec896e2__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
         <td class="dim">0.41</td>
+        <td class="up">4.41</td><td class="down">4.37</td>
+        <td class="same">0.44</td><td class="same">0.44</td>
+        <td class="dim">— / —</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:tender&gt; &lt;ev:breathing&gt; i put a note in your bag this morning, and i hope today goes really well for you.</b><br><span class="note">A man is speaking: young adult; British accent; a mid-range pitch for a man. gentle, loving, audible breaths. </span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa64fbac605a1e9464b4__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa64fbac605a1e9464b4__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.66</td>
+        <td class="down">3.32</td><td class="up">3.45</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.53 / 0.53</td>
+        <td class="dim">b</td><td class="dim">0.54</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:joy&gt; the campfire is crackling, the stars are out, and &lt;emo:tender&gt; i &lt;ev:exhale&gt; have you right here beside me.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. happy, gentle, loving, sighs. Recording: quiet background, lim</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sac0b9592cf9f6a33d29__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sac0b9592cf9f6a33d29__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.63</td>
+        <td class="down">3.26</td><td class="up">3.38</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.34 / 0.34</td>
+        <td class="dim">a</td><td class="dim">0.55</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:sad&gt; watching &lt;ev:crying&gt; your train pull out of the station &lt;ev:crying&gt; took a piece of my soul with it today &lt;ev:sniff&gt; and left me empty.</b><br><span class="note">A man is speaking: low-pitched for a man. sad, very broken up. Recording: clean studio quality, full bandwidth</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa9a2ee81c0fc761f9fd__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa9a2ee81c0fc761f9fd__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.77</td>
+        <td class="down">1.38</td><td class="up">1.39</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.22 / 0.29</td>
+        <td class="dim">b</td><td class="dim">0.46</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:nervous&gt; maybe we should just turn around. &lt;ev:sigh&gt; this street feels too empty and the lights are flickering.</b><br><span class="note">A man is speaking: high-pitched for a man. fearful, halting, sighs. Recording: clean studio quality, full band</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf203873_4__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf203873_4__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.84</td>
+        <td class="up">2.57</td><td class="down">1.99</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">— / —</td>
+        <td class="dim">b</td><td class="dim">0.56</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:playful&gt; okay, maybe not mad, but you know what i mean &lt;ev:chuckle&gt; &lt;ev:breathing&gt;</b><br><span class="note">A man is speaking: mid twenties; British accent; a mid-range pitch for a man. comforting, playful, teasing, gi</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/8eb1c59f849a9b57786f__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/8eb1c59f849a9b57786f__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.59</td>
+        <td class="up">2.98</td><td class="down">2.94</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.32 / 0.32</td>
+        <td class="dim">a</td><td class="dim">0.50</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>every single worry i had today &lt;ev:exhale&gt; &lt;span:low voice&gt; just drifted away &lt;/span:low voice&gt; the moment you wrapped your arms around my waist.</b><br><span class="note">A woman is speaking: low-pitched for a woman. sighs, softly spoken. Recording: quiet background, limited bandw</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202679_1__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202679_1__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.57</td>
+        <td class="up">3.94</td><td class="down">3.64</td>
+        <td class="down">0.44</td><td class="up">0.33</td>
+        <td class="dim">— / —</td>
+        <td class="dim">b</td><td class="dim">0.41</td>
       </tr>
       <tr>
         <td class="txt"><b>&lt;emo:joy&gt; we are going to have a baby, &lt;ev:gasp&gt; and i have never felt this kind of happiness before.</b><br><span class="note">A woman is speaking: high-pitched for a woman. happy, gasps. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf201844_1__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf201844_1__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.55</td>
-        <td class="same">tie</td>
-        <td class="dim">0.51</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:joy&gt; i still cannot believe this is our life now. &lt;ev:laughing&gt; we actually made our wildest dreams come true, together.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. happy, giggling. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/saac4ffced1f7895c62c__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/saac4ffced1f7895c62c__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.36</td>
-        <td class="down">base</td>
-        <td class="dim">0.61</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:hurt&gt; you just stood there &lt;ev:exhale&gt; and let me walk away without saying a single word to stop me.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. sad, pleading, sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa96a11b728b5b5e9ee6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa96a11b728b5b5e9ee6__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.63</td>
-        <td class="same">tie</td>
-        <td class="dim">0.51</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:tender&gt; let me brush this stray piece of hair out of your eyes. &lt;ev:kissing&gt; there, now i can see you clearly.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. gentle, loving, kissing sounds. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa64780e4af472a37122__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa64780e4af472a37122__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.97</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; &lt;ev:giggle&gt; you are such a tease, you know that? &lt;emo:flirty&gt; come a little closer and show me what you mean.</b><br><span class="note">A woman is speaking: high-pitched for a woman. playful, teasing, giggling. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa30a7a83fddbffab082__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa30a7a83fddbffab082__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.74</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; i&#x27;ll pay the bar tab, &lt;ev:inhale&gt; and you take the taxi. that seems fair.</b><br><span class="note">A woman is speaking: middle-aged; American accent; high-pitched for a woman. audible breath. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa9acece3a6bcfeead0d__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa9acece3a6bcfeead0d__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.61</td>
-        <td class="same">tie</td>
-        <td class="dim">0.51</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:calm&gt; the campfire is finally dying down to just embers. &lt;ev:sigh&gt; we should probably think about heading inside the tent soon.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. slow and soothing, sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202056_0__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202056_0__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.54</td>
-        <td class="same">tie</td>
-        <td class="dim">0.49</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>he leaned down until his lips almost touched her ear. &lt;span:whisper&gt; you are the only thing i want. &lt;/span:whisper&gt;</b><br><span class="note">A man is speaking: a mid-range pitch for a man. whispered passages. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa0c11de326437d4fa4f__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa0c11de326437d4fa4f__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:angry&gt; stop talking &lt;ev:inhale&gt; and just leave. &lt;span:shouting&gt; get out! &lt;/span:shouting&gt;</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. angry, intense, audible breath, loud projected delivery. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa409dc36e4b5df9660e__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa409dc36e4b5df9660e__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.53</td>
-        <td class="same">tie</td>
-        <td class="dim">0.45</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:angry&gt; you don&#x27;t get to &lt;ev:laughing&gt; walk back in here and pretend. &lt;span:shouting&gt; get out &lt;/span:shouting&gt; of my sight!</b><br><span class="note">A woman is speaking: high-pitched for a woman. angry, intense, giggling, loud projected delivery. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sadd9fcf069645cce345__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sadd9fcf069645cce345__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.41</td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:fear&gt; &lt;ev:inhale&gt; help me. &lt;ev:panting&gt; i can&#x27;t get the door open and someone is coming up the stairs.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. fearful, audible breath. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sacca39b3d6317669325__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sacca39b3d6317669325__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">1.00</td>
-        <td class="same">tie</td>
-        <td class="dim">0.56</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:excited&gt; stop it, you&#x27;re making me blush! &lt;ev:giggle&gt; but please, don&#x27;t stop telling me all these sweet things.</b><br><span class="note">A woman is speaking: low-pitched for a woman. happy, highly animated pitch, giggling. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa6c61e6a4661fdee8f6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa6c61e6a4661fdee8f6__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.43</td>
-        <td class="same">tie</td>
-        <td class="dim">0.44</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:sad&gt; nothing feels real anymore &lt;ev:sigh&gt; since you walked out that door.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. sad, sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202760_6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202760_6__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.61</td>
-        <td class="same">tie</td>
-        <td class="dim">0.59</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; the battery&#x27;s at ten percent, and i&#x27;ll plug it in. if it doesn&#x27;t charge, i&#x27;ll try the other cable. &lt;ev:chuckle&gt;</b><br><span class="note">A woman is speaking: young adult; Singaporean accent; a mid-range pitch for a woman. giggling. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa41ce1cbff5d45ec5c2__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa41ce1cbff5d45ec5c2__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.47</td>
-        <td class="up">DPO</td>
-        <td class="dim">0.40</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:tender&gt; let me soothe away the exhaustion from your tired eyes. &lt;ev:kissing&gt; you have worked so hard today.</b><br><span class="note">A man is speaking: high-pitched for a man. gentle, loving, kissing sounds. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sad4adc83c9d370f42af__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sad4adc83c9d370f42af__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
-        <td class="same">tie</td>
-        <td class="dim">0.52</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;span:low voice&gt; feel the connection in the sway of hands. &lt;/span:low voice&gt;</b><br><span class="note">A man is speaking: mid twenties; low-pitched, deep for a man. softly spoken, slightly romantic. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/c0134429fe38c8f24f88__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/c0134429fe38c8f24f88__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.55</td>
-        <td class="same">tie</td>
-        <td class="dim">0.52</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:hurt&gt; it stung a little when the network told us they&#x27;d be dropping the show.</b><br><span class="note">A man is speaking: older adult; African American accent; high-pitched for a man. sad, pleading. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf203840_1__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf203840_1__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.41</td>
-        <td class="same">tie</td>
-        <td class="dim">0.48</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:angry&gt; &lt;span:shouting&gt; get out of my face before i say something &lt;ev:sigh&gt; i will actually regret! &lt;/span:shouting&gt;</b><br><span class="note">A man is speaking: low-pitched for a man. angry, intense, loud projected delivery, sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa6f08b2817807b5c4ca__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa6f08b2817807b5c4ca__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.52</td>
-        <td class="same">tie</td>
-        <td class="dim">0.51</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:hurt&gt; please don&#x27;t walk away &lt;ev:inhale&gt; &lt;ev:crying&gt; after everything we built.</b><br><span class="note">A woman is speaking: high-pitched for a woman. sad, pleading, audible breath, very broken up. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf201720_6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf201720_6__dpo.flac"></audio></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf201844_1__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf201844_1__dpo.flac"></audio></td>
         <td class="down">base</td>
         <td class="dim">0.72</td>
-        <td class="down">base</td>
-        <td class="dim">0.65</td>
+        <td class="down">1.92</td><td class="up">2.14</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.54 / 0.51</td>
+        <td class="dim">a</td><td class="dim">0.51</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:joy&gt; i&#x27;ve been &lt;ev:breathing&gt; awake since four this morning. &lt;ev:sigh&gt;</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. happy, audible breaths, sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf200143_6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf200143_6__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.52</td>
-        <td class="same">tie</td>
-        <td class="dim">0.44</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; they stood there in the dim light of the office &lt;ev:sigh&gt; wondering who would move first.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf200470_4__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf200470_4__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-        <td class="down">base</td>
-        <td class="dim">0.69</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:surprise&gt; you found the old photo! &lt;ev:laughing&gt; &lt;emo:tender&gt; i thought i&#x27;d lost that memory forever.</b><br><span class="note">A man is speaking: low-pitched for a man. surprised, giggling, gentle, loving. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sacebdad0da018e7a41e__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sacebdad0da018e7a41e__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.97</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:longing&gt; hold me tighter, &lt;ev:sigh&gt; because i never want to feel that distance between us again.</b><br><span class="note">A woman is speaking: high-pitched for a woman. needy, softly spoken, sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa6f4b0b4c36cdc56873__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa6f4b0b4c36cdc56873__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:joy&gt; i still cannot believe this is our life now. &lt;ev:laughing&gt; we actually made our wildest dreams come true, together.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. happy, giggling. Recording: clean studio quality, full bandwid</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/saac4ffced1f7895c62c__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/saac4ffced1f7895c62c__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.32</td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
+        <td class="dim">0.05</td>
+        <td class="up">3.52</td><td class="down">3.42</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.48 / 0.49</td>
+        <td class="dim">a</td><td class="dim">0.61</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:disgust&gt; it is disgusting how easily you can look me in the eye and lie.</b><br><span class="note">A man is speaking: high-pitched for a man. disgusted. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sae043b34a102d9b77b5__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sae043b34a102d9b77b5__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.67</td>
-        <td class="same">tie</td>
+        <td class="txt"><b>&lt;emo:hurt&gt; you just stood there &lt;ev:exhale&gt; and let me walk away without saying a single word to stop me.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. sad, pleading, sighs. Recording: quiet background, limited ban</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa96a11b728b5b5e9ee6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa96a11b728b5b5e9ee6__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.36</td>
+        <td class="down">3.71</td><td class="up">3.84</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.68 / 0.73</td>
+        <td class="dim">a</td><td class="dim">0.51</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:tender&gt; let me brush this stray piece of hair out of your eyes. &lt;ev:kissing&gt; there, now i can see you clearly.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. gentle, loving, kissing sounds. Recording: quiet backgroun</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa64780e4af472a37122__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa64780e4af472a37122__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.33</td>
+        <td class="down">3.55</td><td class="up">3.67</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.46 / 0.46</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:playful&gt; &lt;ev:giggle&gt; you are such a tease, you know that? &lt;emo:flirty&gt; come a little closer and show me what you mean.</b><br><span class="note">A woman is speaking: high-pitched for a woman. playful, teasing, giggling. Recording: quiet background, limite</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa30a7a83fddbffab082__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa30a7a83fddbffab082__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
         <td class="dim">0.48</td>
+        <td class="down">1.53</td><td class="up">1.62</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.98 / 0.98</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:nervous&gt; i am sitting in my car outside your house, too terrified to come up and knock on your door.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. fearful, halting. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202596_1__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202596_1__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.15</td>
+        <td class="txt"><b>&lt;emo:neutral&gt; i&#x27;ll pay the bar tab, &lt;ev:inhale&gt; and you take the taxi. that seems fair.</b><br><span class="note">A woman is speaking: middle-aged; American accent; high-pitched for a woman. audible breath. Recording: quiet </span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa9acece3a6bcfeead0d__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa9acece3a6bcfeead0d__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.69</td>
+        <td class="dim">0.54</td>
+        <td class="down">2.90</td><td class="up">2.93</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.54 / 0.53</td>
+        <td class="dim">a</td><td class="dim">0.51</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; could you take the recycling out tonight, &lt;ev:clear throat&gt; since pickup is first thing tomorrow?</b><br><span class="note">A man is speaking: young adult; Scottish accent; high-pitched for a man. a cough. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa068d1d0ee4680d5722__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa068d1d0ee4680d5722__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.21</td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:angry&gt; &lt;emo:confident&gt; &quot;we&#x27;re going to rebuild, and we&#x27;re going to do it better this time,&quot; sarah declared, squeezing jack&#x27;s hand.</b><br><span class="note">A woman is speaking: late fifties to early sixties; American accent; high-pitched for a woman; bright, clear, youthful voice. performed narration, fast, rapid-fire, clear studio voice, angry, intense. Recording: studio quality, quiet background, full bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/88f14b4813cc8548b98c__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/88f14b4813cc8548b98c__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.00</td>
+        <td class="txt"><b>&lt;emo:calm&gt; the campfire is finally dying down to just embers. &lt;ev:sigh&gt; we should probably think about heading inside the tent soon.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. slow and soothing, sighs. Recording: quiet background, lim</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202056_0__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202056_0__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.99</td>
+        <td class="dim">0.53</td>
+        <td class="down">2.82</td><td class="up">3.08</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.44 / 0.45</td>
+        <td class="dim">a</td><td class="dim">0.49</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:longing&gt; when i started this show, we were just two friends in a spare room with one microphone.</b><br><span class="note">A woman is speaking: older adult; American accent; a mid-range pitch for a woman. needy, softly spoken. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf201902_6__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf201902_6__dpo.flac"></audio></td>
+        <td class="txt"><b>he leaned down until his lips almost touched her ear. &lt;span:whisper&gt; you are the only thing i want. &lt;/span:whisper&gt;</b><br><span class="note">A man is speaking: a mid-range pitch for a man. whispered passages. Recording: quiet background, limited bandw</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa0c11de326437d4fa4f__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa0c11de326437d4fa4f__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.26</td>
-        <td class="same">tie</td>
-        <td class="dim">0.46</td>
+        <td class="dim">0.12</td>
+        <td class="down">2.32</td><td class="up">2.62</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">— / —</td>
+        <td class="dim">b</td><td class="dim">0.99</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:fear&gt; i can&#x27;t go back into that room. &lt;ev:panting&gt; i can still feel the cold draft on my neck.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. fearful, audible breaths. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa03027893330d99c8a9__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa03027893330d99c8a9__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:angry&gt; stop talking &lt;ev:inhale&gt; and just leave. &lt;span:shouting&gt; get out! &lt;/span:shouting&gt;</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. angry, intense, audible breath, loud projected delivery. R</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa409dc36e4b5df9660e__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa409dc36e4b5df9660e__dpo.flac"></audio></td>
         <td class="same">tie</td>
-        <td class="dim">0.43</td>
-        <td class="same">tie</td>
+        <td class="dim">0.60</td>
+        <td class="up">2.63</td><td class="down">2.41</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.82 / 0.86</td>
+        <td class="dim">a</td><td class="dim">0.45</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:angry&gt; you don&#x27;t get to &lt;ev:laughing&gt; walk back in here and pretend. &lt;span:shouting&gt; get out &lt;/span:shouting&gt; of my sight!</b><br><span class="note">A woman is speaking: high-pitched for a woman. angry, intense, giggling, loud projected delivery. Recording: c</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sadd9fcf069645cce345__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sadd9fcf069645cce345__dpo.flac"></audio></td>
+        <td class="down">base</td>
         <td class="dim">0.55</td>
+        <td class="up">1.34</td><td class="down">1.32</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.80 / 0.77</td>
+        <td class="dim">b</td><td class="dim">0.50</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:joy&gt; &lt;span:laughing voice&gt; we *have* to get a picture of you with that teacup. &lt;/span:laughing voice&gt;</b><br><span class="note">A woman is speaking: late twenties to early thirties; American accent; a mid-range pitch for a woman; bright, clear, friendly voice. joy, happy. Recording: studio quality, quiet background, full bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/63f45d45585bc09899ba__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/63f45d45585bc09899ba__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.35</td>
-        <td class="same">tie</td>
-        <td class="dim">0.45</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; if you do not get out of bed right now, i might have to pull you back under the covers for another hour.</b><br><span class="note">A woman is speaking: low-pitched for a woman. playful, teasing. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf201527_4__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf201527_4__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:fear&gt; &lt;ev:inhale&gt; help me. &lt;ev:panting&gt; i can&#x27;t get the door open and someone is coming up the stairs.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. fearful, audible breath. Recording: clean studio quality, full</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sacca39b3d6317669325__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sacca39b3d6317669325__dpo.flac"></audio></td>
         <td class="up">DPO</td>
         <td class="dim">0.03</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
+        <td class="down">2.94</td><td class="up">3.00</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.48 / 0.47</td>
+        <td class="dim">a</td><td class="dim">0.56</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; don&#x27;t think i didn&#x27;t see you glancing at me. &lt;ev:laughing&gt; you&#x27;re totally captivated.</b><br><span class="note">A person is speaking. playful, teasing, giggling. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa93d78e6872c95f5e4f__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa93d78e6872c95f5e4f__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.32</td>
+        <td class="txt"><b>&lt;emo:excited&gt; stop it, you&#x27;re making me blush! &lt;ev:giggle&gt; but please, don&#x27;t stop telling me all these sweet things.</b><br><span class="note">A woman is speaking: low-pitched for a woman. happy, highly animated pitch, giggling. Recording: quiet backgro</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa6c61e6a4661fdee8f6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa6c61e6a4661fdee8f6__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.99</td>
+        <td class="dim">0.58</td>
+        <td class="up">2.14</td><td class="down">1.87</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.45 / 0.47</td>
+        <td class="dim">b</td><td class="dim">0.44</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:joy&gt; he pulled her into &lt;ev:laughing&gt; a sudden spin right there on the sidewalk, ignoring the confused looks of passersby.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. happy, giggling. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sab28a33f2ee15591e09__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sab28a33f2ee15591e09__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">1.00</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:angry&gt; take your jewelry and your bags. &lt;span:shouting&gt; leave! &lt;/span:shouting&gt; i never want to see your face again.</b><br><span class="note">A person is speaking. angry, intense, loud projected delivery. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202442_4__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202442_4__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:sad&gt; nothing feels real anymore &lt;ev:sigh&gt; since you walked out that door.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. sad, sighs. Recording: clean studio quality, full bandwidth, n</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202760_6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202760_6__dpo.flac"></audio></td>
         <td class="same">tie</td>
-        <td class="dim">0.50</td>
+        <td class="dim">0.99</td>
+        <td class="up">3.65</td><td class="down">3.63</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.40 / 0.63</td>
+        <td class="dim">a</td><td class="dim">0.59</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:neutral&gt; the battery&#x27;s at ten percent, and i&#x27;ll plug it in. if it doesn&#x27;t charge, i&#x27;ll try the other cable. &lt;ev:chuckle&gt;</b><br><span class="note">A woman is speaking: young adult; Singaporean accent; a mid-range pitch for a woman. giggling. Recording: quie</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa41ce1cbff5d45ec5c2__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa41ce1cbff5d45ec5c2__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.55</td>
+        <td class="up">2.98</td><td class="down">2.97</td>
+        <td class="same">0.21</td><td class="same">0.21</td>
+        <td class="dim">0.84 / 0.85</td>
+        <td class="dim">b</td><td class="dim">0.40</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:tender&gt; let me soothe away the exhaustion from your tired eyes. &lt;ev:kissing&gt; you have worked so hard today.</b><br><span class="note">A man is speaking: high-pitched for a man. gentle, loving, kissing sounds. Recording: quiet background, limite</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sad4adc83c9d370f42af__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sad4adc83c9d370f42af__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.61</td>
+        <td class="up">2.66</td><td class="down">2.59</td>
+        <td class="up">0.00</td><td class="down">0.19</td>
+        <td class="dim">0.28 / 0.26</td>
+        <td class="dim">a</td><td class="dim">0.52</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;span:low voice&gt; feel the connection in the sway of hands. &lt;/span:low voice&gt;</b><br><span class="note">A man is speaking: mid twenties; low-pitched, deep for a man. softly spoken, slightly romantic. Recording: qui</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/c0134429fe38c8f24f88__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/c0134429fe38c8f24f88__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.39</td>
+        <td class="up">3.80</td><td class="down">3.64</td>
+        <td class="down">0.88</td><td class="up">0.75</td>
+        <td class="dim">— / —</td>
+        <td class="dim">a</td><td class="dim">0.52</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:hurt&gt; it stung a little when the network told us they&#x27;d be dropping the show.</b><br><span class="note">A man is speaking: older adult; African American accent; high-pitched for a man. sad, pleading. Recording: qui</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf203840_1__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf203840_1__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.18</td>
+        <td class="down">3.12</td><td class="up">3.23</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.60 / 0.61</td>
+        <td class="dim">b</td><td class="dim">0.48</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:angry&gt; &lt;span:shouting&gt; get out of my face before i say something &lt;ev:sigh&gt; i will actually regret! &lt;/span:shouting&gt;</b><br><span class="note">A man is speaking: low-pitched for a man. angry, intense, loud projected delivery, sighs. Recording: clean stu</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa6f08b2817807b5c4ca__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa6f08b2817807b5c4ca__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.65</td>
+        <td class="same">2.21</td><td class="same">2.21</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.84 / 0.84</td>
+        <td class="dim">b</td><td class="dim">0.51</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:hurt&gt; please don&#x27;t walk away &lt;ev:inhale&gt; &lt;ev:crying&gt; after everything we built.</b><br><span class="note">A woman is speaking: high-pitched for a woman. sad, pleading, audible breath, very broken up. Recording: clean</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf201720_6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf201720_6__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.40</td>
+        <td class="down">1.69</td><td class="up">1.81</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.46 / 0.43</td>
+        <td class="dim">a</td><td class="dim">0.65</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:joy&gt; i&#x27;ve been &lt;ev:breathing&gt; awake since four this morning. &lt;ev:sigh&gt;</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. happy, audible breaths, sighs. Recording: clean studio qua</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf200143_6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf200143_6__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.45</td>
+        <td class="up">3.73</td><td class="down">3.66</td>
+        <td class="same">0.14</td><td class="same">0.14</td>
+        <td class="dim">0.21 / 0.21</td>
+        <td class="dim">b</td><td class="dim">0.44</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:neutral&gt; they stood there in the dim light of the office &lt;ev:sigh&gt; wondering who would move first.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. sighs. Recording: clean studio quality, full bandwidth, no</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf200470_4__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf200470_4__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.54</td>
+        <td class="up">3.51</td><td class="down">3.40</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.91 / 0.91</td>
+        <td class="dim">b</td><td class="dim">0.69</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:surprise&gt; you found the old photo! &lt;ev:laughing&gt; &lt;emo:tender&gt; i thought i&#x27;d lost that memory forever.</b><br><span class="note">A man is speaking: low-pitched for a man. surprised, giggling, gentle, loving. Recording: clean studio quality</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sacebdad0da018e7a41e__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sacebdad0da018e7a41e__dpo.flac"></audio></td>
         <td class="same">tie</td>
         <td class="dim">0.49</td>
+        <td class="same">2.20</td><td class="same">2.20</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.57 / 0.56</td>
+        <td class="dim">b</td><td class="dim">0.99</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:calm&gt; the afternoon sun filtered through the sheer curtains, creating patterns of light and shadow on the hardwood floor of our living room.</b><br><span class="note">A man is speaking: low-pitched for a man. slow and soothing. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sae43b011b97226b9c77__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sae43b011b97226b9c77__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.59</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:tender&gt; i cleaned up your files while you were out, so everything should be easier to find now.</b><br><span class="note">A man is speaking: older adult; German accent; a mid-range pitch for a man. gentle, loving. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa29e1f642f1be82f3ca__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa29e1f642f1be82f3ca__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:longing&gt; hold me tighter, &lt;ev:sigh&gt; because i never want to feel that distance between us again.</b><br><span class="note">A woman is speaking: high-pitched for a woman. needy, softly spoken, sighs. Recording: quiet background, limit</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa6f4b0b4c36cdc56873__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa6f4b0b4c36cdc56873__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.22</td>
+        <td class="dim">0.23</td>
+        <td class="down">3.10</td><td class="up">3.42</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.82 / 0.83</td>
+        <td class="dim">a</td><td class="dim">0.50</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:disgust&gt; it is disgusting how easily you can look me in the eye and lie.</b><br><span class="note">A man is speaking: high-pitched for a man. disgusted. Recording: clean studio quality, full bandwidth, no back</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sae043b34a102d9b77b5__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sae043b34a102d9b77b5__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.01</td>
+        <td class="down">2.23</td><td class="up">3.10</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.83 / 0.83</td>
+        <td class="dim">b</td><td class="dim">0.48</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:nervous&gt; i am sitting in my car outside your house, too terrified to come up and knock on your door.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. fearful, halting. Recording: clean studio quality, full bandwi</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202596_1__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202596_1__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.93</td>
+        <td class="down">3.47</td><td class="up">3.94</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">— / —</td>
+        <td class="dim">a</td><td class="dim">0.69</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:neutral&gt; could you take the recycling out tonight, &lt;ev:clear throat&gt; since pickup is first thing tomorrow?</b><br><span class="note">A man is speaking: young adult; Scottish accent; high-pitched for a man. a cough. Recording: quiet background,</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa068d1d0ee4680d5722__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa068d1d0ee4680d5722__dpo.flac"></audio></td>
         <td class="same">tie</td>
-        <td class="dim">0.48</td>
+        <td class="dim">0.89</td>
+        <td class="up">3.03</td><td class="down">2.88</td>
+        <td class="same">0.31</td><td class="same">0.31</td>
+        <td class="dim">0.80 / 0.82</td>
+        <td class="dim">a</td><td class="dim">0.50</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:angry&gt; &lt;emo:confident&gt; &quot;we&#x27;re going to rebuild, and we&#x27;re going to do it better this time,&quot; sarah declared, squeezing jack&#x27;s hand.</b><br><span class="note">A woman is speaking: late fifties to early sixties; American accent; high-pitched for a woman; bright, clear, </span></td>
+        <td><audio controls preload="none" src="audio/tagfix/88f14b4813cc8548b98c__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/88f14b4813cc8548b98c__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.38</td>
+        <td class="up">3.49</td><td class="down">3.35</td>
+        <td class="same">0.11</td><td class="same">0.11</td>
+        <td class="dim">0.58 / 0.59</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:longing&gt; when i started this show, we were just two friends in a spare room with one microphone.</b><br><span class="note">A woman is speaking: older adult; American accent; a mid-range pitch for a woman. needy, softly spoken. Record</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf201902_6__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf201902_6__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.45</td>
+        <td class="down">3.43</td><td class="up">3.44</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.53 / 0.54</td>
+        <td class="dim">b</td><td class="dim">0.46</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:fear&gt; i can&#x27;t go back into that room. &lt;ev:panting&gt; i can still feel the cold draft on my neck.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. fearful, audible breaths. Recording: clean studio quality, ful</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa03027893330d99c8a9__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa03027893330d99c8a9__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">1.00</td>
+        <td class="up">3.30</td><td class="down">3.16</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.51 / 0.50</td>
+        <td class="dim">a</td><td class="dim">0.55</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:joy&gt; &lt;span:laughing voice&gt; we *have* to get a picture of you with that teacup. &lt;/span:laughing voice&gt;</b><br><span class="note">A woman is speaking: late twenties to early thirties; American accent; a mid-range pitch for a woman; bright, </span></td>
+        <td><audio controls preload="none" src="audio/tagfix/63f45d45585bc09899ba__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/63f45d45585bc09899ba__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.55</td>
+        <td class="up">1.52</td><td class="down">1.40</td>
+        <td class="same">0.64</td><td class="same">0.64</td>
+        <td class="dim">0.65 / 0.64</td>
+        <td class="dim">b</td><td class="dim">0.45</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:playful&gt; if you do not get out of bed right now, i might have to pull you back under the covers for another hour.</b><br><span class="note">A woman is speaking: low-pitched for a woman. playful, teasing. Recording: clean studio quality, full bandwidt</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf201527_4__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf201527_4__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.56</td>
+        <td class="down">2.96</td><td class="up">3.09</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.35 / 0.34</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:playful&gt; don&#x27;t think i didn&#x27;t see you glancing at me. &lt;ev:laughing&gt; you&#x27;re totally captivated.</b><br><span class="note">A person is speaking. playful, teasing, giggling. Recording: clean studio quality, full bandwidth, no backgrou</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa93d78e6872c95f5e4f__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa93d78e6872c95f5e4f__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.91</td>
+        <td class="down">3.06</td><td class="up">3.14</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.44 / 0.42</td>
+        <td class="dim">b</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:joy&gt; he pulled her into &lt;ev:laughing&gt; a sudden spin right there on the sidewalk, ignoring the confused looks of passersby.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. happy, giggling. Recording: clean studio quality, full bandwid</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sab28a33f2ee15591e09__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sab28a33f2ee15591e09__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.33</td>
+        <td class="up">3.05</td><td class="down">2.98</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.49 / 0.47</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:angry&gt; take your jewelry and your bags. &lt;span:shouting&gt; leave! &lt;/span:shouting&gt; i never want to see your face again.</b><br><span class="note">A person is speaking. angry, intense, loud projected delivery. Recording: clean studio quality, full bandwidth</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202442_4__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202442_4__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.56</td>
+        <td class="down">2.20</td><td class="up">2.39</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.86 / 0.86</td>
+        <td class="dim">b</td><td class="dim">0.49</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:calm&gt; the afternoon sun filtered through the sheer curtains, creating patterns of light and shadow on the hardwood floor of our living room.</b><br><span class="note">A man is speaking: low-pitched for a man. slow and soothing. Recording: clean studio quality, full bandwidth, </span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sae43b011b97226b9c77__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sae43b011b97226b9c77__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.35</td>
+        <td class="down">3.84</td><td class="up">3.93</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.71 / 0.72</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:tender&gt; i cleaned up your files while you were out, so everything should be easier to find now.</b><br><span class="note">A man is speaking: older adult; German accent; a mid-range pitch for a man. gentle, loving. Recording: quiet b</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa29e1f642f1be82f3ca__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa29e1f642f1be82f3ca__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.03</td>
+        <td class="up">3.44</td><td class="down">3.15</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.60 / 0.61</td>
+        <td class="dim">b</td><td class="dim">0.48</td>
       </tr>
       <tr>
         <td class="txt"><b>&lt;emo:relief&gt; finding you waiting on the porch in the middle of the night &lt;emo:joy&gt; was the exact miracle i had been praying for.</b><br><span class="note">A woman is speaking: low-pitched for a woman. sighs, happy. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa4e0083c973e74bd134__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa4e0083c973e74bd134__dpo.flac"></audio></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa4e0083c973e74bd134__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa4e0083c973e74bd134__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.39</td>
-        <td class="down">base</td>
-        <td class="dim">1.00</td>
+        <td class="dim">0.26</td>
+        <td class="down">3.03</td><td class="up">3.07</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.52 / 0.51</td>
+        <td class="dim">a</td><td class="dim">1.00</td>
       </tr>
       <tr>
         <td class="txt"><b>do you feel it too? &lt;ev:exhale&gt; this pull between us is getting too strong to ignore.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf201319_2__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf201319_2__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.02</td>
-        <td class="same">tie</td>
-        <td class="dim">0.47</td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf201319_2__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf201319_2__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.76</td>
+        <td class="up">3.48</td><td class="down">2.99</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">— / —</td>
+        <td class="dim">a</td><td class="dim">0.47</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:excited&gt; surprise! &lt;ev:laughing&gt; &lt;span:shouting&gt; happy birthday, my love &lt;/span:shouting&gt;! i hope you like the gift.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. happy, highly animated pitch, giggling, loud projected delivery. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sadc8f81ecee74e86736__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sadc8f81ecee74e86736__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:excited&gt; surprise! &lt;ev:laughing&gt; &lt;span:shouting&gt; happy birthday, my love &lt;/span:shouting&gt;! i hope you like the gift.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. happy, highly animated pitch, giggling, loud projected del</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sadc8f81ecee74e86736__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sadc8f81ecee74e86736__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.62</td>
-        <td class="same">tie</td>
-        <td class="dim">0.49</td>
+        <td class="dim">0.56</td>
+        <td class="same">1.35</td><td class="same">1.35</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.74 / 0.74</td>
+        <td class="dim">a</td><td class="dim">0.49</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; don&#x27;t act so innocent. &lt;ev:chuckle&gt; i saw you glancing at me across the room all night.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. playful, teasing, giggling. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa08c22beed1d31665e1__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa08c22beed1d31665e1__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:playful&gt; don&#x27;t act so innocent. &lt;ev:chuckle&gt; i saw you glancing at me across the room all night.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. playful, teasing, giggling. Recording: clean studio quality, f</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa08c22beed1d31665e1__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa08c22beed1d31665e1__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.97</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
+        <td class="dim">0.96</td>
+        <td class="up">3.31</td><td class="down">3.29</td>
+        <td class="up">0.00</td><td class="down">0.07</td>
+        <td class="dim">0.32 / 0.28</td>
+        <td class="dim">b</td><td class="dim">0.99</td>
       </tr>
       <tr>
         <td class="txt"><b>&lt;emo:calm&gt; the ocean waves were incredibly peaceful as we walked along the shore during the sunset.</b><br><span class="note">A man is speaking: slow and soothing. Recording: studio quality, quiet background, full bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/gt_pr_L30722_deepgram_flux_drew_deepgram_flux__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/gt_pr_L30722_deepgram_flux_drew_deepgram_flux__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.29</td>
+        <td><audio controls preload="none" src="audio/tagfix/gt_pr_L30722_deepgram_flux_drew_deepgram_flux__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/gt_pr_L30722_deepgram_flux_drew_deepgram_flux__dpo.flac"></audio></td>
         <td class="same">tie</td>
-        <td class="dim">0.55</td>
+        <td class="dim">0.05</td>
+        <td class="up">3.49</td><td class="down">3.40</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.66 / 0.65</td>
+        <td class="dim">a</td><td class="dim">0.55</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:disgust&gt; you think a few flowers &lt;ev:laughing&gt; makes up for this? &lt;span:shouting&gt; you are delusional &lt;/span:shouting&gt; if you think so.</b><br><span class="note">A man is speaking: high-pitched for a man. disgusted, giggling, loud projected delivery. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/saabc6cc07555ed12659__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/saabc6cc07555ed12659__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:disgust&gt; you think a few flowers &lt;ev:laughing&gt; makes up for this? &lt;span:shouting&gt; you are delusional &lt;/span:shouting&gt; if you think so.</b><br><span class="note">A man is speaking: high-pitched for a man. disgusted, giggling, loud projected delivery. Recording: clean stud</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/saabc6cc07555ed12659__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/saabc6cc07555ed12659__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.21</td>
-        <td class="down">base</td>
-        <td class="dim">0.99</td>
+        <td class="dim">0.37</td>
+        <td class="down">1.86</td><td class="up">1.94</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.59 / 0.57</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:surprise&gt; you found the hidden map! &lt;ev:laughing&gt; &lt;emo:playful&gt; now the real adventure finally begins for us.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. surprised, giggling, playful, teasing. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/saf1dda6b76ed64346a9__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/saf1dda6b76ed64346a9__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.21</td>
-        <td class="down">base</td>
-        <td class="dim">0.96</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:angry&gt; i wish they&#x27;d turn the lights up a bit, &lt;ev:sigh&gt; because it&#x27;s hard to read the labels.</b><br><span class="note">A woman is speaking: young adult; Indian accent; a mid-range pitch for a woman. angry, intense, sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa1eff7fa9a1a4d63299__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa1eff7fa9a1a4d63299__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:surprise&gt; you found the hidden map! &lt;ev:laughing&gt; &lt;emo:playful&gt; now the real adventure finally begins for us.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. surprised, giggling, playful, teasing. Recording: clean studio</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/saf1dda6b76ed64346a9__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/saf1dda6b76ed64346a9__dpo.flac"></audio></td>
         <td class="down">base</td>
         <td class="dim">0.92</td>
+        <td class="up">2.31</td><td class="down">2.12</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.60 / 0.57</td>
+        <td class="dim">a</td><td class="dim">0.96</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:angry&gt; i wish they&#x27;d turn the lights up a bit, &lt;ev:sigh&gt; because it&#x27;s hard to read the labels.</b><br><span class="note">A woman is speaking: young adult; Indian accent; a mid-range pitch for a woman. angry, intense, sighs. Recordi</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa1eff7fa9a1a4d63299__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa1eff7fa9a1a4d63299__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.98</td>
+        <td class="dim">0.93</td>
+        <td class="up">3.61</td><td class="down">3.60</td>
+        <td class="same">0.06</td><td class="same">0.06</td>
+        <td class="dim">0.46 / 0.46</td>
+        <td class="dim">a</td><td class="dim">0.98</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:tender&gt; you have &lt;span:low voice&gt; my whole heart, &lt;ev:sigh&gt; forever and always. &lt;/span:low voice&gt;</b><br><span class="note">A woman is speaking: high-pitched for a woman. gentle, loving, softly spoken, sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa6fd190114c73002836__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa6fd190114c73002836__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.55</td>
-        <td class="same">tie</td>
-        <td class="dim">0.46</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; &lt;ev:cough&gt; i&#x27;d like us to start with the last chapter this time.</b><br><span class="note">A woman is speaking: young adult; British accent; a mid-range pitch for a woman. a cough. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/sa9f535dbe8d9b1bc613__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa9f535dbe8d9b1bc613__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:tender&gt; you have &lt;span:low voice&gt; my whole heart, &lt;ev:sigh&gt; forever and always. &lt;/span:low voice&gt;</b><br><span class="note">A woman is speaking: high-pitched for a woman. gentle, loving, softly spoken, sighs. Recording: clean studio q</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa6fd190114c73002836__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa6fd190114c73002836__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.29</td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
+        <td class="dim">0.39</td>
+        <td class="down">3.32</td><td class="up">3.42</td>
+        <td class="same">0.88</td><td class="same">0.88</td>
+        <td class="dim">0.48 / 0.50</td>
+        <td class="dim">b</td><td class="dim">0.46</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:tired&gt; i&#x27;m too tired to follow the recipe, so i&#x27;m going to make it up as i go. &lt;ev:sigh&gt;</b><br><span class="note">A woman is speaking: young adult; American accent; high-pitched for a woman. slow, sighs. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/saec830a1d9e829b8ea7__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/saec830a1d9e829b8ea7__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.48</td>
-        <td class="same">tie</td>
-        <td class="dim">0.49</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:grief&gt; &lt;ev:crying&gt; we left our laundry spinning in the machines, but i couldn&#x27;t bear to stay and watch our lives &lt;ev:sigh&gt; wash away.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. sad, very broken up, sighs. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202276_2__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202276_2__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.75</td>
+        <td class="txt"><b>&lt;emo:neutral&gt; &lt;ev:cough&gt; i&#x27;d like us to start with the last chapter this time.</b><br><span class="note">A woman is speaking: young adult; British accent; a mid-range pitch for a woman. a cough. Recording: quiet bac</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa9f535dbe8d9b1bc613__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa9f535dbe8d9b1bc613__dpo.flac"></audio></td>
         <td class="same">tie</td>
         <td class="dim">0.51</td>
+        <td class="down">2.48</td><td class="up">2.88</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.89 / 0.89</td>
+        <td class="dim">a</td><td class="dim">0.50</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:fear&gt; stop walking. &lt;ev:breathing&gt; do you hear those footsteps behind us on the platform?</b><br><span class="note">A man is speaking: high-pitched for a man. fearful, audible breaths. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sab2e0a452a5061cb3cd__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sab2e0a452a5061cb3cd__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.41</td>
+        <td class="txt"><b>&lt;emo:tired&gt; i&#x27;m too tired to follow the recipe, so i&#x27;m going to make it up as i go. &lt;ev:sigh&gt;</b><br><span class="note">A woman is speaking: young adult; American accent; high-pitched for a woman. slow, sighs. Recording: quiet bac</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/saec830a1d9e829b8ea7__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/saec830a1d9e829b8ea7__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.03</td>
+        <td class="dim">0.45</td>
+        <td class="up">3.51</td><td class="down">3.50</td>
+        <td class="same">0.12</td><td class="same">0.12</td>
+        <td class="dim">— / —</td>
+        <td class="dim">b</td><td class="dim">0.49</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:grief&gt; &lt;ev:crying&gt; we left our laundry spinning in the machines, but i couldn&#x27;t bear to stay and watch our lives &lt;ev:sigh&gt; wash away.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. sad, very broken up, sighs. Recording: clean studio qualit</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202276_2__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202276_2__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.73</td>
+        <td class="up">3.18</td><td class="down">2.24</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.44 / 0.48</td>
+        <td class="dim">a</td><td class="dim">0.51</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:fear&gt; stop walking. &lt;ev:breathing&gt; do you hear those footsteps behind us on the platform?</b><br><span class="note">A man is speaking: high-pitched for a man. fearful, audible breaths. Recording: clean studio quality, full ban</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sab2e0a452a5061cb3cd__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sab2e0a452a5061cb3cd__dpo.flac"></audio></td>
+        <td class="same">tie</td>
+        <td class="dim">0.53</td>
+        <td class="up">2.24</td><td class="down">1.97</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.44 / 0.46</td>
+        <td class="dim">b</td><td class="dim">0.03</td>
       </tr>
       <tr>
         <td class="txt"><b>&lt;emo:intimate&gt; the steam from our coffee cups &lt;span:whisper&gt; rose in the cold kitchen &lt;/span:whisper&gt; as we shared our very first quiet secret of the day.</b><br><span class="note">A man is speaking. Recording: clean, quiet background.</span></td>
-        <td><audio controls preload="none" src="audio/rft2_rf202988_0__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/rft2_rf202988_0__dpo.flac"></audio></td>
-        <td class="up">DPO</td>
-        <td class="dim">0.35</td>
-        <td class="same">tie</td>
-        <td class="dim">0.45</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:fear&gt; i hope i answered that clearly. i get nervous about whether i gave you what you needed.</b><br><span class="note">A man is speaking: young adult; American accent; low-pitched for a man. fearful. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/saf432b83398966969d3__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/saf432b83398966969d3__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.51</td>
-        <td class="same">tie</td>
-        <td class="dim">0.50</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:longing&gt; i keep &lt;ev:sniff&gt; looking at the door, hoping you will walk through it. &lt;ev:crying&gt; my heart refuses to accept this.</b><br><span class="note">A woman is speaking: high-pitched for a woman. needy, softly spoken, very broken up. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa2beaff320a85ec695f__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa2beaff320a85ec695f__dpo.flac"></audio></td>
+        <td><audio controls preload="none" src="audio/tagfix/rft2_rf202988_0__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/rft2_rf202988_0__dpo.flac"></audio></td>
         <td class="down">base</td>
-        <td class="dim">0.67</td>
-        <td class="same">tie</td>
-        <td class="dim">0.53</td>
+        <td class="dim">0.80</td>
+        <td class="up">3.09</td><td class="down">3.02</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">— / —</td>
+        <td class="dim">b</td><td class="dim">0.45</td>
       </tr>
       <tr>
-        <td class="txt"><b>the hallway is completely empty tonight. &lt;ev:cough&gt; i think everyone else is already asleep in their rooms.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. a cough. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa4c5b03b439d3c05796__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa4c5b03b439d3c05796__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:fear&gt; i hope i answered that clearly. i get nervous about whether i gave you what you needed.</b><br><span class="note">A man is speaking: young adult; American accent; low-pitched for a man. fearful. Recording: quiet background, </span></td>
+        <td><audio controls preload="none" src="audio/tagfix/saf432b83398966969d3__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/saf432b83398966969d3__dpo.flac"></audio></td>
         <td class="same">tie</td>
-        <td class="dim">0.50</td>
-        <td class="same">tie</td>
-        <td class="dim">0.49</td>
+        <td class="dim">0.38</td>
+        <td class="down">4.08</td><td class="up">4.14</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.41 / 0.40</td>
+        <td class="dim">a</td><td class="dim">0.50</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:longing&gt; i keep &lt;ev:sniff&gt; looking at the door, hoping you will walk through it. &lt;ev:crying&gt; my heart refuses to accept this.</b><br><span class="note">A woman is speaking: high-pitched for a woman. needy, softly spoken, very broken up. Recording: clean studio q</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa2beaff320a85ec695f__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa2beaff320a85ec695f__dpo.flac"></audio></td>
+        <td class="up">DPO</td>
+        <td class="dim">0.40</td>
+        <td class="down">1.99</td><td class="up">2.00</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.68 / 0.71</td>
+        <td class="dim">a</td><td class="dim">0.53</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>the hallway is completely empty tonight. &lt;ev:cough&gt; i think everyone else is already asleep in their rooms.</b><br><span class="note">A man is speaking: a mid-range pitch for a man. a cough. Recording: clean studio quality, full bandwidth, no b</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa4c5b03b439d3c05796__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa4c5b03b439d3c05796__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.81</td>
+        <td class="down">3.10</td><td class="up">3.94</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">— / —</td>
+        <td class="dim">b</td><td class="dim">0.49</td>
       </tr>
       <tr>
         <td class="txt"><b>&lt;emo:sad&gt; we both knew this day would come, but that does not make saying goodbye any easier.</b><br><span class="note">A woman is speaking: sad. Recording: studio quality, quiet background, full bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/gt_pr_L20578_deepgram_flux_maeve_deepgram_flux__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/gt_pr_L20578_deepgram_flux_maeve_deepgram_flux__dpo.flac"></audio></td>
+        <td><audio controls preload="none" src="audio/tagfix/gt_pr_L20578_deepgram_flux_maeve_deepgram_flux__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/gt_pr_L20578_deepgram_flux_maeve_deepgram_flux__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.36</td>
-        <td class="same">tie</td>
-        <td class="dim">0.48</td>
+        <td class="dim">0.50</td>
+        <td class="up">3.24</td><td class="down">3.21</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.63 / 0.65</td>
+        <td class="dim">b</td><td class="dim">0.48</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:sad&gt; i can&#x27;t wait &lt;ev:laughing&gt; to start this adventure.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. sad, giggling. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa9847d0d6df0682c504__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa9847d0d6df0682c504__dpo.flac"></audio></td>
+        <td class="txt"><b>&lt;emo:sad&gt; i can&#x27;t wait &lt;ev:laughing&gt; to start this adventure.</b><br><span class="note">A woman is speaking: a mid-range pitch for a woman. sad, giggling. Recording: clean studio quality, full bandw</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa9847d0d6df0682c504__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa9847d0d6df0682c504__dpo.flac"></audio></td>
         <td class="up">DPO</td>
-        <td class="dim">0.37</td>
-        <td class="down">base</td>
-        <td class="dim">0.97</td>
+        <td class="dim">0.00</td>
+        <td class="up">2.31</td><td class="down">1.97</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.55 / 0.25</td>
+        <td class="dim">a</td><td class="dim">0.97</td>
       </tr>
       <tr>
-        <td class="txt"><b>&lt;emo:playful&gt; &lt;ev:cough&gt; &lt;ev:sobbing&gt; oh please, did you really think i wouldn&#x27;t be able to find out where you live?</b><br><span class="note">A woman is speaking: mid twenties; a mid-range pitch for a woman; gentle voice. tender aftercare, dominant, playful, teasing, a cough, very broken up. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/746438d5a0a5cdab051a__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/746438d5a0a5cdab051a__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.67</td>
-        <td class="down">base</td>
-        <td class="dim">0.98</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:grief&gt; my world just stopped turning &lt;ev:crying&gt; the moment you said goodbye.</b><br><span class="note">A man is speaking: high-pitched for a man. sad, very broken up. Recording: clean studio quality, full bandwidth, no background noise.</span></td>
-        <td><audio controls preload="none" src="audio/sa2204ca7b888e532de3__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/sa2204ca7b888e532de3__dpo.flac"></audio></td>
-        <td class="down">base</td>
-        <td class="dim">0.73</td>
-        <td class="down">base</td>
-        <td class="dim">0.64</td>
-      </tr>
-      <tr>
-        <td class="txt"><b>&lt;emo:neutral&gt; &lt;ev:breathing&gt; i think we should start the second season on friday, since tomorrow i&#x27;ve got the early shift.</b><br><span class="note">A man is speaking: young adult; Indian accent; high-pitched for a man. audible breaths. Recording: quiet background, limited bandwidth.</span></td>
-        <td><audio controls preload="none" src="audio/saefbb4436e32c9620ab__base.flac"></audio></td>
-        <td class="rl"><audio controls preload="none" src="audio/v2_s300/saefbb4436e32c9620ab__dpo.flac"></audio></td>
-        <td class="same">tie</td>
-        <td class="dim">0.48</td>
+        <td class="txt"><b>&lt;emo:playful&gt; &lt;ev:cough&gt; &lt;ev:sobbing&gt; oh please, did you really think i wouldn&#x27;t be able to find out where you live?</b><br><span class="note">A woman is speaking: mid twenties; a mid-range pitch for a woman; gentle voice. tender aftercare, dominant, pl</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/746438d5a0a5cdab051a__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/746438d5a0a5cdab051a__dpo.flac"></audio></td>
         <td class="down">base</td>
         <td class="dim">0.99</td>
+        <td class="up">2.41</td><td class="down">2.38</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.66 / 0.66</td>
+        <td class="dim">a</td><td class="dim">0.98</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:grief&gt; my world just stopped turning &lt;ev:crying&gt; the moment you said goodbye.</b><br><span class="note">A man is speaking: high-pitched for a man. sad, very broken up. Recording: clean studio quality, full bandwidt</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/sa2204ca7b888e532de3__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/sa2204ca7b888e532de3__dpo.flac"></audio></td>
+        <td class="down">base</td>
+        <td class="dim">0.68</td>
+        <td class="up">1.78</td><td class="down">1.42</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.41 / 0.34</td>
+        <td class="dim">b</td><td class="dim">0.64</td>
+      </tr>
+      <tr>
+        <td class="txt"><b>&lt;emo:neutral&gt; &lt;ev:breathing&gt; i think we should start the second season on friday, since tomorrow i&#x27;ve got the early shift.</b><br><span class="note">A man is speaking: young adult; Indian accent; high-pitched for a man. audible breaths. Recording: quiet backg</span></td>
+        <td><audio controls preload="none" src="audio/tagfix/saefbb4436e32c9620ab__base.flac"></audio></td>
+        <td class="rl"><audio controls preload="none" src="audio/tagfix/saefbb4436e32c9620ab__dpo.flac"></audio></td>
+        <td class="same">tie</td>
+        <td class="dim">0.78</td>
+        <td class="up">4.00</td><td class="down">3.87</td>
+        <td class="same">0.00</td><td class="same">0.00</td>
+        <td class="dim">0.89 / 0.90</td>
+        <td class="dim">a</td><td class="dim">0.99</td>
       </tr>
 </table>
-<p class="dim">"up"/green = DPO preferred, "down"/red = base preferred, "same" = near-tie (0.4–0.6).
-v1 columns kept for comparison — the same prompts judged against the 600-step adapter.</p>
+<p class="note">emo dist = MSP-ADV emotion-target distance (lower is closer to the tagged target;
+lower is better; "—" = judge abstained, e.g. no emotion tag or event-bank blindness).
+Old verdict / old p = yesterday's mangled-tags render for comparison.</p>
+
+<h2>Artifacts</h2>
+<ul class="note">
+<li>Render: <code>/storage/tts/rl_dryrun/onit_dpo_ab_tagfix/</code> (150 FLAC, render.json)</li>
+<li>Judge: <code>/storage/tts/rl_dryrun/onit_dpo_ab_tagfix/judge.json</code> (speech-judge v14, df56da82)</li>
+<li>Frontend fix: <code>vendor_vadnvw_compile_async_v6/irodori_tts/text_frontend_en.py</code> (_TAG_RE, 2026-11-21)</li>
+<li>Previous (tag-mangled) page data preserved: <code>audio/</code> and <code>audio/v2_s300/</code> below</li>
+</ul>
 </body></html>
