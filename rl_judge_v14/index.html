@@ -1,155 +1,235 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Speech-judge RL &mdash; base vs RL (v14, 192M) &mdash; Tap TTS</title>
+<title>Speech-judge RL &mdash; base vs RL on the s600n_1120 review lines &mdash; Tap TTS</title>
 <style>
 body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1080px;margin:2em auto;padding:0 1em;color:#222}
 h1{font-size:1.5em} h2{font-size:1.15em;margin-top:1.8em}
 table{border-collapse:collapse;width:100%;font-size:.85em}
 td,th{border:1px solid #ddd;padding:5px 7px;text-align:center;vertical-align:top}
-td.txt{text-align:left;width:30%} .van{background:#f6f6f6;color:#666} .rl{background:#eef7ee}
+td.txt{text-align:left;width:28%} td.rlabel{text-align:left} .van{background:#f6f6f6;color:#666} .rl{background:#eef7ee}
 .up{color:#0a7d2c;font-weight:600} .down{color:#b02020;font-weight:600} .same{color:#888}
 audio{width:190px;height:32px}
 .note{color:#555;font-size:.9em} .mini{color:#999;font-size:.8em;margin-top:3px}
+.ltxt{font-size:.85em;color:#444}
 code{background:#f4f4f4;padding:1px 4px;font-size:.95em}
 .summary td{padding:4px 10px}
 </style></head><body>
-<h1>Base vs RL &mdash; speech-judge reward (run <code>onit_reward_judge_v14_lr1e3</code>)</h1>
-<p class="note">192M RF-DiT TTS (<code>R9s1_192m</code> checkpoint, Nov 9 2026) finetuned with
-speech-judge reward &mdash; the ensemble judge from the <code>onit/speech-judge</code> branch:
-TTSDS2 composite (UTMOS included, naturalness channel off) + 0.25&times;emotion score,
-speaker/F0 compared against a fixed reference clip so no candidate self-scores.
-30 GRPO updates, LoRA r=32 &alpha;=64, lr 1e-3, KL target 0.05, K=16 candidates/update.
-A/B eval: best-of-4, 12 held-out prompts, identical seeds, judge-scored. Nov 22, 2026.</p>
+<h1>Base vs RL on the <a href="https://yoob.com/next/review/s600n_1120/">s600n_1120 review-page lines</a></h1>
+<p class="note">The 14 lines and captions from the review page (8 expressive, 6 crying/scream/sniff/yawn),
+rendered by the 192M RF-DiT TTS (<code>R9s1_192m</code>) base model and by the RL-tuned model
+(run <code>onit_reward_judge_v14_lr1e3</code>: 30 GRPO updates against the speech-judge reward,
+LoRA r=32 &alpha;=64, lr 1e-3, KL target 0.05). Best-of-4 per line, identical seeds &mdash; the only
+difference is the trained LoRA adapter. Every clip scored by the speech-judge signal bank:
+TTSDS2 composite (UTMOS included, naturalness channel off) + 0.25&times;emotion vote.
+Nov 22, 2026.</p>
 
 <h2>Summary</h2>
 <table class="summary">
-<tr><th></th><th>mean reward</th><th>wins (12 prompts)</th><th>emo</th><th>UTMOS</th><th>WER</th></tr>
-<tr><td class="van">base</td><td>0.9844</td><td rowspan="2" style="padding:8px"><b>RL 8 &ndash; 4 base</b></td>
-<td>0.606</td><td>2.85</td><td>0.002</td></tr>
-<tr><td class="rl">RL</td><td>0.9886 <span class='up'>+0.0042</span></td>
-<td>0.623</td><td>2.86</td><td>0.002</td></tr>
+<tr><th></th><th>mean reward</th><th>wins (14 lines)</th><th>emo</th><th>UTMOS</th><th>WER</th></tr>
+<tr><td class="van">base</td><td>0.8861</td>
+<td rowspan="2" style="padding:8px"><b>RL 7 &ndash; 4 base</b><br>3 tie</td>
+<td>0.574</td><td>3.15</td><td>0.224</td></tr>
+<tr><td class="rl">RL</td><td>0.8891 <span class="up">+0.0030</span></td>
+<td>0.590</td><td>2.93</td><td>0.224</td></tr>
 </table>
-<p class="note">Each row is one held-out prompt: the base render vs the RL render of the same
-text, caption tags and seed &mdash; the only difference is the trained LoRA adapter
-(<code>/storage/tts/rl_dryrun/onit_reward_judge_v14_lr1e3/lora_final</code>).
-Comp (TTSDS2 composite) is shown too, but the reward that RL optimized also includes
-the 0.25&times;emotion term, which is why reward can move while comp stays flat.</p>
 
-<h2>Prompt-by-prompt A/B</h2>
+<h2>Speech-judge ranking</h2>
+<p class="note">All 14 lines ranked by the RL render's judge reward (the score RL optimized).
+Delta is RL vs base on the same line.</p>
 <table>
-<tr><th style="width:30%">text</th><th>side</th><th>reward</th><th>comp</th><th>emo</th><th>UTMOS</th><th>WER</th><th>listen</th></tr>
-<tr><td class="txt" rowspan="2">#0 &mdash; &lt;emo:joy&gt; i never imagined i could feel this much pure happi
-<div class="mini"><span class="down">base wins</span> &middot; prompt <code>gt_pr_L39417_rime_coda_lawton_rime_coda</code></div></td>
-<td class="van">base</td><td>0.9245</td><td>0.833</td>
-<td>0.365</td><td>3.62</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p0_c3.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>0.9147 <span class="down">-0.0098</span></td>
-<td>0.833</td><td>0.325 <span class="down">-0.039</span></td>
-<td>3.58 <span class="down">-0.040</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p0_c3.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#1 &mdash; &lt;emo:flirty&gt; &lt;ev:giggle&gt; &lt;span:whisper&gt; you better come back
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>sad99d00dce893cf3da1</code></div></td>
-<td class="van">base</td><td>1.0073</td><td>0.833</td>
-<td>0.696</td><td>1.99</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p1_c1.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>1.0140 <span class="up">+0.0067</span></td>
-<td>0.833</td><td>0.723 <span class="up">+0.027</span></td>
-<td>2.11 <span class="up">+0.126</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p1_c3.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#2 &mdash; &lt;emo:shock&gt; &lt;ev:inhale&gt; &lt;span:shouting&gt; wait, you recorded m
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>rft2_rf201105_7</code></div></td>
-<td class="van">base</td><td>0.9104</td><td>0.833</td>
-<td>0.308</td><td>2.25</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p2_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>0.9184 <span class="up">+0.0080</span></td>
-<td>0.833</td><td>0.340 <span class="up">+0.032</span></td>
-<td>2.34 <span class="up">+0.090</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p2_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#3 &mdash; &lt;emo:disgust&gt; &lt;span:low voice&gt; my mouth must seem so large o
-<div class="mini"><span class="down">base wins</span> &middot; prompt <code>2e093f9369a6723b7554</code></div></td>
-<td class="van">base</td><td>1.0255</td><td>0.833</td>
-<td>0.769</td><td>3.44</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p3_c1.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>1.0225 <span class="down">-0.0030</span></td>
-<td>0.833</td><td>0.757 <span class="down">-0.012</span></td>
-<td>3.45 <span class="up">+0.012</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p3_c1.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#4 &mdash; &lt;emo:joy&gt; the doctor says everything looks good, which is re
-<div class="mini"><span class="down">base wins</span> &middot; prompt <code>sa3b0e479c805161ceda</code></div></td>
-<td class="van">base</td><td>1.0175</td><td>0.833</td>
-<td>0.737</td><td>3.41</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p4_c1.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>1.0100 <span class="down">-0.0075</span></td>
-<td>0.833</td><td>0.707 <span class="down">-0.030</span></td>
-<td>3.04 <span class="down">-0.365</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p4_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#5 &mdash; &lt;emo:playful&gt; &lt;ev:exhale&gt; &lt;span:whisper&gt; splash, splash, tak
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>safd2d51cfb130b68035</code></div></td>
-<td class="van">base</td><td>0.9017</td><td>0.827</td>
-<td>0.298</td><td>2.41</td><td>0.028</td>
-<td><audio controls preload="none" src="audio/base_p5_c1.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>0.9089 <span class="up">+0.0072</span></td>
-<td>0.827</td><td>0.327 <span class="up">+0.029</span></td>
-<td>2.82 <span class="up">+0.415</span></td><td>0.028</td>
-<td><audio controls preload="none" src="audio/rl_p5_c1.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#6 &mdash; &lt;emo:intimate&gt; &lt;ev:lip smack&gt; &lt;span:whisper&gt; lie here with m
-<div class="mini"><span class="down">base wins</span> &middot; prompt <code>sa6a21a40d7e6a7b9a0f</code></div></td>
-<td class="van">base</td><td>1.0468</td><td>0.833</td>
-<td>0.854</td><td>1.93</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p6_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>1.0453 <span class="down">-0.0015</span></td>
-<td>0.833</td><td>0.848 <span class="down">-0.006</span></td>
-<td>1.85 <span class="down">-0.080</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p6_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#7 &mdash; &lt;emo:excited&gt; hold me tight. &lt;ev:laughing&gt; i never want to s
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>saa88d0d8a0892a7a1cd</code></div></td>
-<td class="van">base</td><td>0.9766</td><td>0.833</td>
-<td>0.573</td><td>2.46</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p7_c3.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>0.9775 <span class="up">+0.0009</span></td>
-<td>0.833</td><td>0.577 <span class="up">+0.004</span></td>
-<td>2.87 <span class="up">+0.406</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p7_c0.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#8 &mdash; &lt;emo:surprise&gt; &lt;ev:chuckle&gt; you&#x27;ve been keeping a secret. &lt;e
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>saf644d563c2c6e0862a</code></div></td>
-<td class="van">base</td><td>1.0130</td><td>0.833</td>
-<td>0.719</td><td>3.19</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p8_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>1.0260 <span class="up">+0.0130</span></td>
-<td>0.833</td><td>0.770 <span class="up">+0.052</span></td>
-<td>2.88 <span class="down">-0.304</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p8_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#9 &mdash; &lt;emo:calm&gt; i&#x27;m calling about my internet connection. it&#x27;s be
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>rft2_rf202674_4</code></div></td>
-<td class="van">base</td><td>0.9928</td><td>0.833</td>
-<td>0.638</td><td>3.86</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p9_c0.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>1.0067 <span class="up">+0.0139</span></td>
-<td>0.833</td><td>0.693 <span class="up">+0.055</span></td>
-<td>3.56 <span class="down">-0.306</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p9_c0.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#10 &mdash; &lt;emo:excited&gt; &lt;ev:gasp&gt; &lt;span:shouting&gt; guess what, guess wh
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>sa5c9b2d01f01523430d</code></div></td>
-<td class="van">base</td><td>0.9597</td><td>0.833</td>
-<td>0.505</td><td>1.65</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p10_c3.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>0.9748 <span class="up">+0.0151</span></td>
-<td>0.833</td><td>0.566 <span class="up">+0.060</span></td>
-<td>1.56 <span class="down">-0.088</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p10_c3.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#11 &mdash; &lt;emo:longing&gt; the scent of your skin, even now, is still &lt;ev
-<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>sad00c87bfb1fee3a242</code></div></td>
-<td class="van">base</td><td>1.0372</td><td>0.833</td>
-<td>0.815</td><td>3.96</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p11_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL</td><td>1.0448 <span class="up">+0.0076</span></td>
-<td>0.833</td><td>0.846 <span class="up">+0.031</span></td>
-<td>4.21 <span class="up">+0.242</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p11_c2.mp3"></audio></td></tr>
+<tr><th>#</th><th>line</th><th>category</th><th>reward (RL)</th><th>vs base</th><th>winner</th></tr>
+<tr><td>#11</td><td class="rlabel">m0499__dev_long_005 (expressive)</td>
+<td>expressive</td>
+<td>0.8243</td><td><span class="same">&plusmn;0.0000</span></td><td><span class="same">tie</span></td></tr>
+<tr><td>#13</td><td class="rlabel">cb17_m (crying)</td>
+<td>crying</td>
+<td>0.7778</td><td><span class="up">+0.0185</span></td><td><span class="up">RL wins</span></td></tr>
+<tr><td>#6</td><td class="rlabel">cb07_m (crying)</td>
+<td>crying</td>
+<td>0.9358</td><td><span class="up">+0.0122</span></td><td><span class="up">RL wins</span></td></tr>
+<tr><td>#4</td><td class="rlabel">cb01_m (crying)</td>
+<td>crying</td>
+<td>0.9398</td><td><span class="up">+0.0027</span></td><td><span class="up">RL wins</span></td></tr>
+<tr><td>#1</td><td class="rlabel">cb21_m (crying)</td>
+<td>crying</td>
+<td>0.9969</td><td><span class="up">+0.0083</span></td><td><span class="up">RL wins</span></td></tr>
+<tr><td>#8</td><td class="rlabel">m0020__dev_dense_002 (expressive)</td>
+<td>expressive</td>
+<td>0.9121</td><td><span class="down">-0.0155</span></td><td><span class="down">base wins</span></td></tr>
+<tr><td>#2</td><td class="rlabel">m0165__dev_emotion_019 (expressive)</td>
+<td>expressive</td>
+<td>0.9857</td><td><span class="same">&plusmn;0.0000</span></td><td><span class="down">base wins</span></td></tr>
+<tr><td>#14</td><td class="rlabel">w0110__dev_event_end_001 (expressive)</td>
+<td>expressive</td>
+<td>0.7381</td><td><span class="same">&plusmn;0.0000</span></td><td><span class="same">tie</span></td></tr>
+<tr><td>#5</td><td class="rlabel">w0266__dev_long_016 (expressive)</td>
+<td>expressive</td>
+<td>0.9387</td><td><span class="down">-0.0035</span></td><td><span class="down">base wins</span></td></tr>
+<tr><td>#3</td><td class="rlabel">cb01_w (crying)</td>
+<td>crying</td>
+<td>0.9735</td><td><span class="up">+0.0131</span></td><td><span class="up">RL wins</span></td></tr>
+<tr><td>#7</td><td class="rlabel">cb02_m (crying)</td>
+<td>crying</td>
+<td>0.9217</td><td><span class="up">+0.0071</span></td><td><span class="up">RL wins</span></td></tr>
+<tr><td>#10</td><td class="rlabel">cb35_m (scream)</td>
+<td>scream</td>
+<td>0.8458</td><td><span class="down">-0.0071</span></td><td><span class="down">base wins</span></td></tr>
+<tr><td>#9</td><td class="rlabel">cb25_m (sniff)</td>
+<td>sniff</td>
+<td>0.8639</td><td><span class="up">+0.0062</span></td><td><span class="up">RL wins</span></td></tr>
+<tr><td>#12</td><td class="rlabel">cb31_m (yawn)</td>
+<td>yawn</td>
+<td>0.7929</td><td><span class="same">&plusmn;0.0000</span></td><td><span class="same">tie</span></td></tr>
 </table>
 
-<p class="note">Generated from <code>/storage/tts/rl_dryrun/judge_v14_eval/ab_eval.json</code>
-(run <code>onit_reward_judge_v14_lr1e3</code>, commits 5c4a9dac / 478e6e19 / 6962e038 on
-<code>onit/reward</code> of expressive-tts).</p>
+<h2>Line-by-line A/B &mdash; listen</h2>
+<table>
+<tr><th style="width:28%">line</th><th>side</th><th>reward</th><th>comp</th><th>emo</th><th>UTMOS</th><th>WER</th><th>listen</th></tr>
+<tr><td class="txt" rowspan="2">#11 &mdash; m0499__dev_long_005 (expressive)<br>
+<span class="ltxt">[relief] the surgery took six hours, and i spent every minute of it in a plastic chair, counting ceiling tiles. when the surgeon finally walked out and smiled, my knees gave out [crying] and my brother had to catch me. she&#x27;s awake now, and she&#x27;s already complaining about the hospital food.</span>
+<div class="mini"><span class="same">tie</span></div></td>
+<td class="van">base</td><td>0.8243</td><td>0.824</td>
+<td>&mdash;</td><td>3.06</td><td>0.041</td>
+<td><audio controls preload="none" src="audio/base_p0_c0.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.8243 <span class="same">&plusmn;0.0000</span></td>
+<td>0.824</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>2.70 <span class="down">-0.37</span></td><td>0.041</td>
+<td><audio controls preload="none" src="audio/rl_p0_c0.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#13 &mdash; cb17_m (crying)<br>
+<span class="ltxt">[relief] you&#x27;re home, you&#x27;re actually home. [cry] i thought i&#x27;d lost you for good.</span>
+<div class="mini"><span class="up">RL wins</span></div></td>
+<td class="van">base</td><td>0.7593</td><td>0.759</td>
+<td>&mdash;</td><td>2.41</td><td>0.333</td>
+<td><audio controls preload="none" src="audio/base_p1_c0.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.7778 <span class="up">+0.0185</span></td>
+<td>0.778</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>1.49 <span class="down">-0.92</span></td><td>0.250</td>
+<td><audio controls preload="none" src="audio/rl_p1_c0.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#6 &mdash; cb07_m (crying)<br>
+<span class="ltxt">[longing] it&#x27;s been three winters without you, [cry] and i still buy the tea you liked.</span>
+<div class="mini"><span class="up">RL wins</span></div></td>
+<td class="van">base</td><td>0.9236</td><td>0.754</td>
+<td>0.679</td><td>3.51</td><td>0.357</td>
+<td><audio controls preload="none" src="audio/base_p2_c0.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9358 <span class="up">+0.0122</span></td>
+<td>0.770</td><td>0.664 <span class="down">-0.015</span></td>
+<td>3.58 <span class="up">+0.07</span></td><td>0.286</td>
+<td><audio controls preload="none" src="audio/rl_p2_c0.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#4 &mdash; cb01_m (crying)<br>
+<span class="ltxt">[sad] [cry] i still keep your voicemail, i never had the heart to delete it.</span>
+<div class="mini"><span class="up">RL wins</span></div></td>
+<td class="van">base</td><td>0.9371</td><td>0.799</td>
+<td>0.552</td><td>3.44</td><td>0.154</td>
+<td><audio controls preload="none" src="audio/base_p3_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9398 <span class="up">+0.0027</span></td>
+<td>0.799</td><td>0.563 <span class="up">+0.011</span></td>
+<td>1.46 <span class="down">-1.98</span></td><td>0.154</td>
+<td><audio controls preload="none" src="audio/rl_p3_c3.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#1 &mdash; cb21_m (crying)<br>
+<span class="ltxt">[hurt] i guess i was never really enough for you, was i [cry]</span>
+<div class="mini"><span class="up">RL wins</span></div></td>
+<td class="van">base</td><td>0.9886</td><td>0.813</td>
+<td>0.702</td><td>2.06</td><td>0.091</td>
+<td><audio controls preload="none" src="audio/base_p4_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9969 <span class="up">+0.0083</span></td>
+<td>0.793</td><td>0.816 <span class="up">+0.114</span></td>
+<td>2.59 <span class="up">+0.53</span></td><td>0.182</td>
+<td><audio controls preload="none" src="audio/rl_p4_c1.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#8 &mdash; m0020__dev_dense_002 (expressive)<br>
+<span class="ltxt">[sad] [sniff] his old voicemail was still on my phone, and [tearful] i played it fourteen times before i could stop. [/tearful]</span>
+<div class="mini"><span class="down">base wins</span></div></td>
+<td class="van">base</td><td>0.9276</td><td>0.772</td>
+<td>0.624</td><td>3.78</td><td>0.278</td>
+<td><audio controls preload="none" src="audio/base_p5_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9121 <span class="down">-0.0155</span></td>
+<td>0.759</td><td>0.611 <span class="down">-0.013</span></td>
+<td>3.57 <span class="down">-0.21</span></td><td>0.333</td>
+<td><audio controls preload="none" src="audio/rl_p5_c2.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#2 &mdash; m0165__dev_emotion_019 (expressive)<br>
+<span class="ltxt">[desire] i&#x27;ve been thinking about you all day, about your voice, your laugh, the way you stand in a doorway.</span>
+<div class="mini"><span class="down">base wins</span></div></td>
+<td class="van">base</td><td>0.9860</td><td>0.822</td>
+<td>0.657</td><td>3.73</td><td>0.053</td>
+<td><audio controls preload="none" src="audio/base_p6_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9857 <span class="same">&plusmn;0.0000</span></td>
+<td>0.822</td><td>0.656 <span class="down">-0.001</span></td>
+<td>3.39 <span class="down">-0.34</span></td><td>0.053</td>
+<td><audio controls preload="none" src="audio/rl_p6_c2.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#14 &mdash; w0110__dev_event_end_001 (expressive)<br>
+<span class="ltxt">[tired] good night, i&#x27;ll talk to you tomorrow. [yawn]</span>
+<div class="mini"><span class="same">tie</span></div></td>
+<td class="van">base</td><td>0.7381</td><td>0.738</td>
+<td>&mdash;</td><td>2.95</td><td>0.429</td>
+<td><audio controls preload="none" src="audio/base_p7_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.7381 <span class="same">&plusmn;0.0000</span></td>
+<td>0.738</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>3.53 <span class="up">+0.57</span></td><td>0.429</td>
+<td><audio controls preload="none" src="audio/rl_p7_c1.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#5 &mdash; w0266__dev_long_016 (expressive)<br>
+<span class="ltxt">[fear] i woke up at three in the morning and the whole house was dark. the hallway light was out, and i could hear something shuffling downstairs. i grabbed my phone, [inhale] held it like a weapon, and crept to the landing. it turned out to be the dog, stuck in the laundry basket.</span>
+<div class="mini"><span class="down">base wins</span></div></td>
+<td class="van">base</td><td>0.9422</td><td>0.825</td>
+<td>0.470</td><td>3.15</td><td>0.038</td>
+<td><audio controls preload="none" src="audio/base_p8_c3.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9387 <span class="down">-0.0035</span></td>
+<td>0.825</td><td>0.456 <span class="down">-0.014</span></td>
+<td>2.95 <span class="down">-0.20</span></td><td>0.038</td>
+<td><audio controls preload="none" src="audio/rl_p8_c1.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#3 &mdash; cb01_w (crying)<br>
+<span class="ltxt">[sad] [cry] i still keep your voicemail, i never had the heart to delete it.</span>
+<div class="mini"><span class="up">RL wins</span></div></td>
+<td class="van">base</td><td>0.9604</td><td>0.799</td>
+<td>0.645</td><td>2.99</td><td>0.154</td>
+<td><audio controls preload="none" src="audio/base_p9_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9735 <span class="up">+0.0131</span></td>
+<td>0.799</td><td>0.698 <span class="up">+0.053</span></td>
+<td>3.16 <span class="up">+0.17</span></td><td>0.154</td>
+<td><audio controls preload="none" src="audio/rl_p9_c2.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#7 &mdash; cb02_m (crying)<br>
+<span class="ltxt">[grief] [cry] the nurse said it was peaceful, but i wasn&#x27;t there to hold his hand.</span>
+<div class="mini"><span class="up">RL wins</span></div></td>
+<td class="van">base</td><td>0.9146</td><td>0.802</td>
+<td>0.452</td><td>3.46</td><td>0.143</td>
+<td><audio controls preload="none" src="audio/base_p10_c3.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9217 <span class="up">+0.0071</span></td>
+<td>0.802</td><td>0.480 <span class="up">+0.028</span></td>
+<td>3.12 <span class="down">-0.34</span></td><td>0.143</td>
+<td><audio controls preload="none" src="audio/rl_p10_c3.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#10 &mdash; cb35_m (scream)<br>
+<span class="ltxt">[fear] [scream] something just ran across the kitchen floor!</span>
+<div class="mini"><span class="down">base wins</span></div></td>
+<td class="van">base</td><td>0.8529</td><td>0.738</td>
+<td>0.459</td><td>3.14</td><td>0.429</td>
+<td><audio controls preload="none" src="audio/base_p11_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.8458 <span class="down">-0.0071</span></td>
+<td>0.738</td><td>0.431 <span class="down">-0.029</span></td>
+<td>3.43 <span class="up">+0.29</span></td><td>0.429</td>
+<td><audio controls preload="none" src="audio/rl_p11_c0.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#9 &mdash; cb25_m (sniff)<br>
+<span class="ltxt">[sad] [sniff] sorry, give me a second, it&#x27;s just been a long week.</span>
+<div class="mini"><span class="up">RL wins</span></div></td>
+<td class="van">base</td><td>0.8577</td><td>0.732</td>
+<td>0.501</td><td>3.09</td><td>0.455</td>
+<td><audio controls preload="none" src="audio/base_p12_c3.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.8639 <span class="up">+0.0062</span></td>
+<td>0.732</td><td>0.526 <span class="up">+0.025</span></td>
+<td>2.97 <span class="down">-0.13</span></td><td>0.455</td>
+<td><audio controls preload="none" src="audio/rl_p12_c3.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#12 &mdash; cb31_m (yawn)<br>
+<span class="ltxt">[tired] [yawn] sorry, i&#x27;m awake, i promise, keep telling me about your day.</span>
+<div class="mini"><span class="same">tie</span></div></td>
+<td class="van">base</td><td>0.7929</td><td>0.793</td>
+<td>&mdash;</td><td>3.32</td><td>0.182</td>
+<td><audio controls preload="none" src="audio/base_p13_c1.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.7929 <span class="same">&plusmn;0.0000</span></td>
+<td>0.793</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>3.14 <span class="down">-0.18</span></td><td>0.182</td>
+<td><audio controls preload="none" src="audio/rl_p13_c1.mp3"></audio></td></tr>
+</table>
+
+<p class="note">Generated from <code>/storage/tts/rl_dryrun/judge_v14_eval_s600n/ab_eval_s600n.json</code>;
+lines and captions from the gate prompts behind the s600n_1120 review page.
+Eval script: <code>training/posttrain/reward_judge_rl_ab_eval_s600n.py</code> on
+<code>onit/reward</code> of expressive-tts.</p>
 </body></html>
