@@ -7,7 +7,7 @@ body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1080px;margi
 h1{font-size:1.5em} h2{font-size:1.15em;margin-top:1.8em}
 table{border-collapse:collapse;width:100%;font-size:.85em}
 td,th{border:1px solid #ddd;padding:5px 7px;text-align:center;vertical-align:top}
-td.txt{text-align:left;width:30%} .van{background:#f6f6f6;color:#666} .rl{background:#eef7ee}
+td.txt{text-align:left;width:30%} .chip{display:inline-block;background:#eef;padding:0 5px;border:1px solid #ccd;border-radius:8px;font-size:0.8em;color:#335;margin:1px 2px} .van{background:#f6f6f6;color:#666} .rl{background:#eef7ee}
 .up{color:#0a7d2c;font-weight:600} .down{color:#b02020;font-weight:600} .same{color:#888}
 audio{width:190px;height:32px}
 .note{color:#555;font-size:.9em} .mini{color:#999;font-size:.8em;margin-top:3px}
@@ -57,7 +57,7 @@ Nov 22, 2026.</p>
 <h2>Line-by-line A/B</h2>
 <table>
 <tr><th style="width:30%">text</th><th>side</th><th>reward</th><th>comp</th><th>emo</th><th>UTMOS</th><th>WER</th><th>listen</th></tr>
-<tr><td class="txt" rowspan="2">#0 &mdash; [relief] the surgery took six hours, and i spent every minute of it in a plastic chair, counting ceiling tiles. when the surgeon finally walked out and smiled, my knees gave out [crying] and my brother had to catch me. she&#x27;s awake now, and she&#x27;s already complaining about the hospital food.
+<tr><td class="txt" rowspan="2">#0 &mdash; <span class="chip">relief</span>  the surgery took six hours, and i spent every minute of it in a plastic chair, counting ceiling tiles. when the surgeon finally walked out and smiled, my knees gave out  <span class="chip">crying</span>  and my brother had to catch me. she&#x27;s awake now, and she&#x27;s already complaining about the hospital food.
 <div class="mini"><span class="up">RL wins</span> &middot; prompt <code>m0499__dev_long_005</code></div></td>
 <td class="van">base</td><td>0.8288</td><td>0.829</td>
 <td>&mdash;</td><td>3.19</td><td>0.020</td>
@@ -66,7 +66,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
 <td>2.93 <span class="down">-0.261</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p0_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#1 &mdash; [relief] you&#x27;re home, you&#x27;re actually home. [cry] i thought i&#x27;d lost you for good.
+<tr><td class="txt" rowspan="2">#1 &mdash; <span class="chip">relief</span>  you&#x27;re home, you&#x27;re actually home.  <span class="chip">cry</span>  i thought i&#x27;d lost you for good.
 <div class="mini"><span class="same">tie</span> &middot; prompt <code>cb17_m</code></div></td>
 <td class="van">base</td><td>0.8333</td><td>0.833</td>
 <td>&mdash;</td><td>2.77</td><td>0.000</td>
@@ -75,7 +75,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
 <td>2.89 <span class="up">+0.111</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p1_c0.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#2 &mdash; [longing] it&#x27;s been three winters without you, [cry] and i still buy the tea you liked.
+<tr><td class="txt" rowspan="2">#2 &mdash; <span class="chip">longing</span>  it&#x27;s been three winters without you,  <span class="chip">cry</span>  and i still buy the tea you liked.
 <div class="mini"><span class="down">base wins</span> &middot; prompt <code>cb07_m</code></div></td>
 <td class="van">base</td><td>1.0239</td><td>0.833</td>
 <td>0.762</td><td>4.17</td><td>0.000</td>
@@ -84,7 +84,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.746 <span class="down">-0.016</span></td>
 <td>3.75 <span class="down">-0.423</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p2_c1.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#3 &mdash; [sad] [cry] i still keep your voicemail, i never had the heart to delete it.
+<tr><td class="txt" rowspan="2">#3 &mdash; <span class="chip">sad</span>   <span class="chip">cry</span>  i still keep your voicemail, i never had the heart to delete it.
 <div class="mini"><span class="same">tie</span> &middot; prompt <code>cb01_m</code></div></td>
 <td class="van">base</td><td>1.0012</td><td>0.833</td>
 <td>0.671</td><td>3.65</td><td>0.000</td>
@@ -93,7 +93,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.673 <span class="up">+0.002</span></td>
 <td>3.81 <span class="up">+0.159</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p3_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#4 &mdash; [hurt] i guess i was never really enough for you, was i [cry]
+<tr><td class="txt" rowspan="2">#4 &mdash; <span class="chip">hurt</span>  i guess i was never really enough for you, was i  <span class="chip">cry</span>
 <div class="mini"><span class="down">base wins</span> &middot; prompt <code>cb21_m</code></div></td>
 <td class="van">base</td><td>1.0322</td><td>0.833</td>
 <td>0.795</td><td>3.48</td><td>0.000</td>
@@ -102,7 +102,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.791 <span class="down">-0.005</span></td>
 <td>3.46 <span class="down">-0.017</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p4_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#5 &mdash; [sad] [sniff] his old voicemail was still on my phone, and [tearful] i played it fourteen times before i could stop. [/tearful]
+<tr><td class="txt" rowspan="2">#5 &mdash; <span class="chip">sad</span>   <span class="chip">sniff</span>  his old voicemail was still on my phone, and  <span class="chip">tearful</span>  i played it fourteen times before i could stop. [/tearful]
 <div class="mini"><span class="down">base wins</span> &middot; prompt <code>m0020__dev_dense_002</code></div></td>
 <td class="van">base</td><td>1.0081</td><td>0.821</td>
 <td>0.749</td><td>3.55</td><td>0.056</td>
@@ -111,7 +111,7 @@ Nov 22, 2026.</p>
 <td>0.821</td><td>0.740 <span class="down">-0.009</span></td>
 <td>3.36 <span class="down">-0.193</span></td><td>0.056</td>
 <td><audio controls preload="none" src="audio/rl_p5_c0.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#6 &mdash; [desire] i&#x27;ve been thinking about you all day, about your voice, your laugh, the way you stand in a doorway.
+<tr><td class="txt" rowspan="2">#6 &mdash; <span class="chip">desire</span>  i&#x27;ve been thinking about you all day, about your voice, your laugh, the way you stand in a doorway.
 <div class="mini"><span class="up">RL wins</span> &middot; prompt <code>m0165__dev_emotion_019</code></div></td>
 <td class="van">base</td><td>0.9915</td><td>0.833</td>
 <td>0.633</td><td>3.97</td><td>0.000</td>
@@ -120,7 +120,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.643 <span class="up">+0.010</span></td>
 <td>3.61 <span class="down">-0.356</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p6_c0.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#7 &mdash; [tired] good night, i&#x27;ll talk to you tomorrow. [yawn]
+<tr><td class="txt" rowspan="2">#7 &mdash; <span class="chip">tired</span>  good night, i&#x27;ll talk to you tomorrow.  <span class="chip">yawn</span>
 <div class="mini"><span class="same">tie</span> &middot; prompt <code>w0110__dev_event_end_001</code></div></td>
 <td class="van">base</td><td>0.7698</td><td>0.770</td>
 <td>&mdash;</td><td>3.12</td><td>0.286</td>
@@ -129,7 +129,7 @@ Nov 22, 2026.</p>
 <td>0.770</td><td>&mdash; <span class="same">&mdash;</span></td>
 <td>3.02 <span class="down">-0.095</span></td><td>0.286</td>
 <td><audio controls preload="none" src="audio/rl_p7_c0.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#8 &mdash; [fear] i woke up at three in the morning and the whole house was dark. the hallway light was out, and i could hear something shuffling downstairs. i grabbed my phone, [inhale] held it like a weapon, and crept to the landing. it turned out to be the dog, stuck in the laundry basket.
+<tr><td class="txt" rowspan="2">#8 &mdash; <span class="chip">fear</span>  i woke up at three in the morning and the whole house was dark. the hallway light was out, and i could hear something shuffling downstairs. i grabbed my phone,  <span class="chip">inhale</span>  held it like a weapon, and crept to the landing. it turned out to be the dog, stuck in the laundry basket.
 <div class="mini"><span class="down">base wins</span> &middot; prompt <code>w0266__dev_long_016</code></div></td>
 <td class="van">base</td><td>0.9471</td><td>0.829</td>
 <td>0.472</td><td>3.08</td><td>0.019</td>
@@ -138,7 +138,7 @@ Nov 22, 2026.</p>
 <td>0.829</td><td>0.470 <span class="down">-0.002</span></td>
 <td>3.31 <span class="up">+0.235</span></td><td>0.019</td>
 <td><audio controls preload="none" src="audio/rl_p8_c3.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#9 &mdash; [sad] [cry] i still keep your voicemail, i never had the heart to delete it.
+<tr><td class="txt" rowspan="2">#9 &mdash; <span class="chip">sad</span>   <span class="chip">cry</span>  i still keep your voicemail, i never had the heart to delete it.
 <div class="mini"><span class="down">base wins</span> &middot; prompt <code>cb01_w</code></div></td>
 <td class="van">base</td><td>1.0057</td><td>0.833</td>
 <td>0.690</td><td>3.18</td><td>0.000</td>
@@ -147,7 +147,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.670 <span class="down">-0.019</span></td>
 <td>2.87 <span class="down">-0.311</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p9_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#10 &mdash; [grief] [cry] the nurse said it was peaceful, but i wasn&#x27;t there to hold his hand.
+<tr><td class="txt" rowspan="2">#10 &mdash; <span class="chip">grief</span>   <span class="chip">cry</span>  the nurse said it was peaceful, but i wasn&#x27;t there to hold his hand.
 <div class="mini"><span class="up">RL wins</span> &middot; prompt <code>cb02_m</code></div></td>
 <td class="van">base</td><td>0.9953</td><td>0.833</td>
 <td>0.648</td><td>3.04</td><td>0.000</td>
@@ -156,7 +156,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.657 <span class="up">+0.009</span></td>
 <td>3.34 <span class="up">+0.301</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p10_c1.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#11 &mdash; [fear] [scream] something just ran across the kitchen floor!
+<tr><td class="txt" rowspan="2">#11 &mdash; <span class="chip">fear</span>   <span class="chip">scream</span>  something just ran across the kitchen floor!
 <div class="mini"><span class="up">RL wins</span> &middot; prompt <code>cb35_m</code></div></td>
 <td class="van">base</td><td>0.9442</td><td>0.833</td>
 <td>0.444</td><td>3.26</td><td>0.000</td>
@@ -165,7 +165,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.463 <span class="up">+0.020</span></td>
 <td>3.30 <span class="up">+0.042</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p11_c1.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#12 &mdash; [sad] [sniff] sorry, give me a second, it&#x27;s just been a long week.
+<tr><td class="txt" rowspan="2">#12 &mdash; <span class="chip">sad</span>   <span class="chip">sniff</span>  sorry, give me a second, it&#x27;s just been a long week.
 <div class="mini"><span class="up">RL wins</span> &middot; prompt <code>cb25_m</code></div></td>
 <td class="van">base</td><td>0.9747</td><td>0.833</td>
 <td>0.565</td><td>2.78</td><td>0.000</td>
@@ -174,7 +174,7 @@ Nov 22, 2026.</p>
 <td>0.833</td><td>0.615 <span class="up">+0.049</span></td>
 <td>3.07 <span class="up">+0.293</span></td><td>0.000</td>
 <td><audio controls preload="none" src="audio/rl_p12_c2.mp3"></audio></td></tr>
-<tr><td class="txt" rowspan="2">#13 &mdash; [tired] [yawn] sorry, i&#x27;m awake, i promise, keep telling me about your day.
+<tr><td class="txt" rowspan="2">#13 &mdash; <span class="chip">tired</span>   <span class="chip">yawn</span>  sorry, i&#x27;m awake, i promise, keep telling me about your day.
 <div class="mini"><span class="same">tie</span> &middot; prompt <code>cb31_m</code></div></td>
 <td class="van">base</td><td>0.8333</td><td>0.833</td>
 <td>&mdash;</td><td>3.31</td><td>0.000</td>
