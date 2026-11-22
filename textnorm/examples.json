@@ -1,0 +1,221 @@
+{
+ "generated": "2026-11-22",
+ "commit": "786f7a8c",
+ "total": 46,
+ "groups": [
+  {
+   "group": "Abbreviations & context disambiguation",
+   "cases": [
+    {
+     "input": "Turn left at Joseph St.",
+     "output": "turn left at joseph street"
+    },
+    {
+     "input": "St. Joseph was from Nazareth",
+     "output": "saint joseph was from nazareth"
+    },
+    {
+     "input": "Dr. Lee lives on Oak Dr.",
+     "output": "doctor lee lives on oak drive"
+    },
+    {
+     "input": "Mr. Smith called Mrs. Lee at 5 p.m.",
+     "output": "mister smith called missus lee at five p m"
+    },
+    {
+     "input": "Meet me at the ATM, brb",
+     "output": "meet me at the a t m, be right back"
+    },
+    {
+     "input": "Send the report to HR by EOB",
+     "output": "send the report to h r by end of business day"
+    },
+    {
+     "input": "The patient's HR was 72 bpm",
+     "output": "the patient's heart rate was seventy two bpm"
+    },
+    {
+     "input": "Indianapolis, IN 46032",
+     "output": "indianapolis, indiana forty six thousand and thirty two"
+    },
+    {
+     "input": "In 2026 we ship.",
+     "output": "in twenty twenty six we ship."
+    },
+    {
+     "input": "Chapter IV, vol. II, p. 12",
+     "output": "chapter iv, volume ii, page twelve"
+    },
+    {
+     "input": "The ML model runs on our GPU",
+     "output": "the ml model runs on our g p u"
+    }
+   ]
+  },
+  {
+   "group": "Currencies",
+   "cases": [
+    {
+     "input": "$1,234.56",
+     "output": "one thousand two hundred and thirty four dollars and fifty six cents"
+    },
+    {
+     "input": "Mr. Smith paid $1,234.56 for a 5 km trip.",
+     "output": "mister smith paid one thousand two hundred and thirty four dollars and fifty six cents for a five kilometers trip."
+    },
+    {
+     "input": "It costs 1200 GBP.",
+     "output": "it costs one thousand two hundred pounds."
+    },
+    {
+     "input": "3.5 million EUR",
+     "output": "three point five million euros"
+    },
+    {
+     "input": "Revenue grew 25% to 1.2B dollars.",
+     "output": "revenue grew twenty five percent to one point two billion dollars."
+    },
+    {
+     "input": "Net income was $250B.",
+     "output": "net income was two hundred and fifty billion dollars."
+    },
+    {
+     "input": "Q1 2026 revenue was 3.5 billion USD.",
+     "output": "first quarter twenty twenty six revenue was three point five billion dollars."
+    }
+   ]
+  },
+  {
+   "group": "Numbers, years & magnitudes",
+   "cases": [
+    {
+     "input": "The year 2026 marks 250 years since 1776.",
+     "output": "the year twenty twenty six marks two hundred and fifty years since seventeen seventy six."
+    },
+    {
+     "input": "The 1960s were wild.",
+     "output": "the nineteen sixties were wild."
+    },
+    {
+     "input": "He got 21st place with 98.6.",
+     "output": "he got twenty first place with ninety eight point six."
+    },
+    {
+     "input": "I have 3/4 of the cake and 1/2 a cup.",
+     "output": "i have three quarters of the cake and one half a cup."
+    },
+    {
+     "input": "A 3M parameter model with 12B tokens.",
+     "output": "a three million parameter model with twelve billion tokens."
+    },
+    {
+     "input": "Revenue grew 25% to 1.2B",
+     "output": "revenue grew twenty five percent to one point two billion"
+    },
+    {
+     "input": "Room 12b is on floor #42.",
+     "output": "room twelve b is on floor number forty two."
+    },
+    {
+     "input": "Pages 12-15. The score was 2-1 at 90+3.",
+     "output": "pages twelve to fifteen. the score was two to one at ninety plus three."
+    },
+    {
+     "input": "ZIP 90210.",
+     "output": "zip ninety thousand two hundred and ten."
+    },
+    {
+     "input": "Call +1 (555) 123-4567 or email a@b.com.",
+     "output": "call plus one five five five one two three four five six seven or email a at b dot com."
+    }
+   ]
+  },
+  {
+   "group": "Dates & times",
+   "cases": [
+    {
+     "input": "The meeting is at 9:30 a.m. on 2026-11-22.",
+     "output": "the meeting is at nine thirty a m on november twenty second, twenty twenty six."
+    },
+    {
+     "input": "04/03/2025 was a Friday.",
+     "output": "april third, twenty twenty five was a friday."
+    },
+    {
+     "input": "18.06.2025 (European order)",
+     "output": "june eighteenth, twenty twenty five (european order)"
+    },
+    {
+     "input": "The 24/7 hotline opens at 7:05 p.m.",
+     "output": "the twenty four seven hotline opens at seven oh five p m."
+    },
+    {
+     "input": "Ending in 4412",
+     "output": "ending in four four one two"
+    }
+   ]
+  },
+  {
+   "group": "Units & measurements",
+   "cases": [
+    {
+     "input": "It weighed 5 kg and cost 10 per cent more.",
+     "output": "it weighed five kilograms and cost ten per cent more."
+    },
+    {
+     "input": "The temp dropped to -5\u00b0C, about 23\u00b0F.",
+     "output": "the temp dropped to minus five degrees celsius, about twenty three degrees fahrenheit."
+    },
+    {
+     "input": "A 5 km trip at 100km/h and 100 mph.",
+     "output": "a five kilometers trip at one hundred kilometers per hour and one hundred miles per hour."
+    },
+    {
+     "input": "2.5MB file, 500GB drive, 3.5GHz cpu",
+     "output": "two point five megabytes file, five hundred gigabytes drive, three point five gigahertz cpu"
+    },
+    {
+     "input": "A 60s clip at 60fps, 4K video, 8K TV",
+     "output": "a sixty seconds clip at sixty frames per second, four kay video, eight kay t v"
+    },
+    {
+     "input": "100 Mbps down, 40 kbps up",
+     "output": "one hundred megabits per second down, forty kilobits per second up"
+    }
+   ]
+  },
+  {
+   "group": "Tech & versions",
+   "cases": [
+    {
+     "input": "Version 2.0.1 shipped in Q1 2026; try v12.5.",
+     "output": "version two point zero point one shipped in first quarter twenty twenty six; try version twelve point five."
+    },
+    {
+     "input": "The API returns JSON over HTTP.",
+     "output": "the a p i returns json over h t t p."
+    },
+    {
+     "input": "Download the PDF at https://x.io/y",
+     "output": "download the p d f at x dot io slash y"
+    },
+    {
+     "input": "COVID-19, USB-C, Wi-Fi, GPT-4, iPhone 15.",
+     "output": "covid-nineteen, u s b c, wi-fi, g p t four, iphone fifteen."
+    },
+    {
+     "input": "It was 98.6 exactly. Pi is 3.14159.",
+     "output": "it was ninety eight point six exactly. pi is three point one four one five nine."
+    },
+    {
+     "input": "WWII ended in 1945; WWI was earlier.",
+     "output": "world war two ended in nineteen forty five; world war one was earlier."
+    },
+    {
+     "input": "Windows 10, kernel 6.5.7",
+     "output": "windows ten, kernel six point five point seven"
+    }
+   ]
+  }
+ ]
+}
