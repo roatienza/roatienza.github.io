@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speech-judge RL &mdash; base vs RL (v14, 192M) &mdash; Tap TTS</title>
+<style>
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1080px;margin:2em auto;padding:0 1em;color:#222}
+h1{font-size:1.5em} h2{font-size:1.15em;margin-top:1.8em}
+table{border-collapse:collapse;width:100%;font-size:.85em}
+td,th{border:1px solid #ddd;padding:5px 7px;text-align:center;vertical-align:top}
+td.txt{text-align:left;width:30%} .van{background:#f6f6f6;color:#666} .rl{background:#eef7ee}
+.up{color:#0a7d2c;font-weight:600} .down{color:#b02020;font-weight:600} .same{color:#888}
+audio{width:190px;height:32px}
+.note{color:#555;font-size:.9em} .mini{color:#999;font-size:.8em;margin-top:3px}
+code{background:#f4f4f4;padding:1px 4px;font-size:.95em}
+.summary td{padding:4px 10px}
+</style></head><body>
+<h1>Base vs RL &mdash; speech-judge reward (run <code>onit_reward_judge_v14_lr1e3</code>)</h1>
+<p class="note">192M RF-DiT TTS (<code>R9s1_192m</code> checkpoint, Nov 9 2026) finetuned with
+speech-judge reward &mdash; the ensemble judge from the <code>onit/speech-judge</code> branch:
+TTSDS2 composite (UTMOS included, naturalness channel off) + 0.25&times;emotion score,
+speaker/F0 compared against a fixed reference clip so no candidate self-scores.
+30 GRPO updates, LoRA r=32 &alpha;=64, lr 1e-3, KL target 0.05, K=16 candidates/update.
+A/B eval: best-of-4, 12 held-out prompts, identical seeds, judge-scored. Nov 22, 2026.</p>
+
+<h2>Summary</h2>
+<table class="summary">
+<tr><th></th><th>mean reward</th><th>wins (12 prompts)</th><th>emo</th><th>UTMOS</th><th>WER</th></tr>
+<tr><td class="van">base</td><td>0.9844</td><td rowspan="2" style="padding:8px"><b>RL 8 &ndash; 4 base</b></td>
+<td>0.606</td><td>2.85</td><td>0.002</td></tr>
+<tr><td class="rl">RL</td><td>0.9886 <span class='up'>+0.0042</span></td>
+<td>0.623</td><td>2.86</td><td>0.002</td></tr>
+</table>
+<p class="note">Each row is one held-out prompt: the base render vs the RL render of the same
+text, caption tags and seed &mdash; the only difference is the trained LoRA adapter
+(<code>/storage/tts/rl_dryrun/onit_reward_judge_v14_lr1e3/lora_final</code>).
+Comp (TTSDS2 composite) is shown too, but the reward that RL optimized also includes
+the 0.25&times;emotion term, which is why reward can move while comp stays flat.</p>
+
+<h2>Prompt-by-prompt A/B</h2>
+<table>
+<tr><th style="width:30%">text</th><th>side</th><th>reward</th><th>comp</th><th>emo</th><th>UTMOS</th><th>WER</th><th>listen</th></tr>
+<tr><td class="txt" rowspan="2">#0 &mdash; &lt;emo:joy&gt; i never imagined i could feel this much pure happi
+<div class="mini"><span class="down">base wins</span> &middot; prompt <code>gt_pr_L39417_rime_coda_lawton_rime_coda</code></div></td>
+<td class="van">base</td><td>0.9245</td><td>0.833</td>
+<td>0.365</td><td>3.62</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p0_c3.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9147 <span class="down">-0.0098</span></td>
+<td>0.833</td><td>0.325 <span class="down">-0.039</span></td>
+<td>3.58 <span class="down">-0.040</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p0_c3.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#1 &mdash; &lt;emo:flirty&gt; &lt;ev:giggle&gt; &lt;span:whisper&gt; you better come back
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>sad99d00dce893cf3da1</code></div></td>
+<td class="van">base</td><td>1.0073</td><td>0.833</td>
+<td>0.696</td><td>1.99</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p1_c1.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>1.0140 <span class="up">+0.0067</span></td>
+<td>0.833</td><td>0.723 <span class="up">+0.027</span></td>
+<td>2.11 <span class="up">+0.126</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p1_c3.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#2 &mdash; &lt;emo:shock&gt; &lt;ev:inhale&gt; &lt;span:shouting&gt; wait, you recorded m
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>rft2_rf201105_7</code></div></td>
+<td class="van">base</td><td>0.9104</td><td>0.833</td>
+<td>0.308</td><td>2.25</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p2_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9184 <span class="up">+0.0080</span></td>
+<td>0.833</td><td>0.340 <span class="up">+0.032</span></td>
+<td>2.34 <span class="up">+0.090</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p2_c2.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#3 &mdash; &lt;emo:disgust&gt; &lt;span:low voice&gt; my mouth must seem so large o
+<div class="mini"><span class="down">base wins</span> &middot; prompt <code>2e093f9369a6723b7554</code></div></td>
+<td class="van">base</td><td>1.0255</td><td>0.833</td>
+<td>0.769</td><td>3.44</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p3_c1.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>1.0225 <span class="down">-0.0030</span></td>
+<td>0.833</td><td>0.757 <span class="down">-0.012</span></td>
+<td>3.45 <span class="up">+0.012</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p3_c1.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#4 &mdash; &lt;emo:joy&gt; the doctor says everything looks good, which is re
+<div class="mini"><span class="down">base wins</span> &middot; prompt <code>sa3b0e479c805161ceda</code></div></td>
+<td class="van">base</td><td>1.0175</td><td>0.833</td>
+<td>0.737</td><td>3.41</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p4_c1.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>1.0100 <span class="down">-0.0075</span></td>
+<td>0.833</td><td>0.707 <span class="down">-0.030</span></td>
+<td>3.04 <span class="down">-0.365</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p4_c2.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#5 &mdash; &lt;emo:playful&gt; &lt;ev:exhale&gt; &lt;span:whisper&gt; splash, splash, tak
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>safd2d51cfb130b68035</code></div></td>
+<td class="van">base</td><td>0.9017</td><td>0.827</td>
+<td>0.298</td><td>2.41</td><td>0.028</td>
+<td><audio controls preload="none" src="audio/base_p5_c1.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9089 <span class="up">+0.0072</span></td>
+<td>0.827</td><td>0.327 <span class="up">+0.029</span></td>
+<td>2.82 <span class="up">+0.415</span></td><td>0.028</td>
+<td><audio controls preload="none" src="audio/rl_p5_c1.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#6 &mdash; &lt;emo:intimate&gt; &lt;ev:lip smack&gt; &lt;span:whisper&gt; lie here with m
+<div class="mini"><span class="down">base wins</span> &middot; prompt <code>sa6a21a40d7e6a7b9a0f</code></div></td>
+<td class="van">base</td><td>1.0468</td><td>0.833</td>
+<td>0.854</td><td>1.93</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p6_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>1.0453 <span class="down">-0.0015</span></td>
+<td>0.833</td><td>0.848 <span class="down">-0.006</span></td>
+<td>1.85 <span class="down">-0.080</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p6_c2.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#7 &mdash; &lt;emo:excited&gt; hold me tight. &lt;ev:laughing&gt; i never want to s
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>saa88d0d8a0892a7a1cd</code></div></td>
+<td class="van">base</td><td>0.9766</td><td>0.833</td>
+<td>0.573</td><td>2.46</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p7_c3.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9775 <span class="up">+0.0009</span></td>
+<td>0.833</td><td>0.577 <span class="up">+0.004</span></td>
+<td>2.87 <span class="up">+0.406</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p7_c0.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#8 &mdash; &lt;emo:surprise&gt; &lt;ev:chuckle&gt; you&#x27;ve been keeping a secret. &lt;e
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>saf644d563c2c6e0862a</code></div></td>
+<td class="van">base</td><td>1.0130</td><td>0.833</td>
+<td>0.719</td><td>3.19</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p8_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>1.0260 <span class="up">+0.0130</span></td>
+<td>0.833</td><td>0.770 <span class="up">+0.052</span></td>
+<td>2.88 <span class="down">-0.304</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p8_c2.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#9 &mdash; &lt;emo:calm&gt; i&#x27;m calling about my internet connection. it&#x27;s be
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>rft2_rf202674_4</code></div></td>
+<td class="van">base</td><td>0.9928</td><td>0.833</td>
+<td>0.638</td><td>3.86</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p9_c0.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>1.0067 <span class="up">+0.0139</span></td>
+<td>0.833</td><td>0.693 <span class="up">+0.055</span></td>
+<td>3.56 <span class="down">-0.306</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p9_c0.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#10 &mdash; &lt;emo:excited&gt; &lt;ev:gasp&gt; &lt;span:shouting&gt; guess what, guess wh
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>sa5c9b2d01f01523430d</code></div></td>
+<td class="van">base</td><td>0.9597</td><td>0.833</td>
+<td>0.505</td><td>1.65</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p10_c3.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>0.9748 <span class="up">+0.0151</span></td>
+<td>0.833</td><td>0.566 <span class="up">+0.060</span></td>
+<td>1.56 <span class="down">-0.088</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p10_c3.mp3"></audio></td></tr>
+<tr><td class="txt" rowspan="2">#11 &mdash; &lt;emo:longing&gt; the scent of your skin, even now, is still &lt;ev
+<div class="mini"><span class="up">RL wins</span> &middot; prompt <code>sad00c87bfb1fee3a242</code></div></td>
+<td class="van">base</td><td>1.0372</td><td>0.833</td>
+<td>0.815</td><td>3.96</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_p11_c2.mp3"></audio></td></tr>
+<tr><td class="rl">RL</td><td>1.0448 <span class="up">+0.0076</span></td>
+<td>0.833</td><td>0.846 <span class="up">+0.031</span></td>
+<td>4.21 <span class="up">+0.242</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_p11_c2.mp3"></audio></td></tr>
+</table>
+
+<p class="note">Generated from <code>/storage/tts/rl_dryrun/judge_v14_eval/ab_eval.json</code>
+(run <code>onit_reward_judge_v14_lr1e3</code>, commits 5c4a9dac / 478e6e19 / 6962e038 on
+<code>onit/reward</code> of expressive-tts).</p>
+</body></html>
