@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yoob TTS pronunciation fixes — before vs after (4B and 192M)</title>
+<style>
+ body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1080px;margin:2rem auto;padding:0 1rem;color:#1a1a1a;line-height:1.45}
+ h1{font-size:1.5rem} h2{font-size:1.15rem;margin-top:2rem} .muted{color:#666;font-size:.9rem}
+ table{border-collapse:collapse;width:100%;font-size:.9rem;margin:.5rem 0}
+ th,td{border:1px solid #ddd;padding:.4rem .5rem;text-align:left;vertical-align:top}
+ th{background:#f5f5f5}
+ audio{width:230px;height:32px}
+ .ok{color:#0a7d28;font-weight:600}.bad{color:#b3261e;font-weight:600}
+ .p{font-size:.75rem;color:#555}
+ .card{background:#f8f9fb;border:1px solid #e3e6ee;border-radius:8px;padding:.8rem 1rem;margin:.8rem 0}
+ code{background:#eef;font-size:.85em}
+ .tag{display:inline-block;padding:.1rem .45rem;border-radius:4px;font-size:.75rem;background:#e8f0fe;color:#1a56db;margin-right:.3rem}
+</style>
+</head>
+<body>
+<h1>Yoob TTS — mispronunciations before vs after the pronunciation fixes</h1>
+<p class="muted">Same script, same voices, same seed. Rendered through the production request path
+(<code>POST /v1/audio/speech</code>). Scored by the phone gate (wav2vec2-lv-60-espeak-cv-ft forced alignment of the
+target word span against its CMUdict/espeak readings; a take passes at PER ≤ 0.20).</p>
+
+<div class="card">
+<b>The fixes being demonstrated</b> (all server-side, no model retrain):
+<span class="tag">1. text normalization (TN)</span><span class="tag">2. respelling dictionaries</span><span class="tag">3. homograph rules</span><span class="tag">4. best-of-8 word-guard picks</span>
+<ul>
+<li><b>4B</b> (tts4b_s2hi5000_champ, 16-step 10+2 AB2 sampler): dictionary v5k2 (2,489 measured entries),
+sentence-start <i>Read → Reed</i> rule, <i>going live → laiv</i> adjective rule, TurboCTC word guard.</li>
+<li><b>192M</b> (sd4_e1000, 12 steps, caption CFG 0, tag contrast 5, best-of-8): dictionary dict192 v3 (833 entries) + textnorm.</li>
+<li>Full recipe: <code>onit/reward</code> branch, <code>training/posttrain/speech_judge/LIVE_RENDER_PATH.md</code>.</li>
+</ul>
+</div>
+
+<h2>1. Measured defect → fix pairs (4B, 2026-11-25 morning lane vs live 11-26 lane)</h2>
+<p class="muted">Each clip is the target word in a carrier sentence, seed 7, voice m0770 / w1243.
+"Pass" = both voices said right (phone gate, PER ≤ 0.20).</p>
+<table>
+<tr><th>Case</th><th>Before — clip</th><th>After — clip</th><th>Phone-gate result</th></tr>
+<tr id="earrows"></tr>
+</table>
+<div id="earsum"></div>
+
+<h2>2. Fresh A/B — 16-line script on both models (rendered 2026-11-26)</h2>
+<p class="muted">Four arms: 4B before (11-25 config: dict v3, no rules) / 4B after (live) /
+192M before (dict off, TN on) / 192M after (live, dict192 v3). Same seed per line.</p>
+<div id="grid"></div>
+
+<h2>3. Gate summary</h2>
+<div id="summary"></div>
+
+<h2>4. How it works</h2>
+<p>The model input is repaired, the customer's text is untouched: textnorm → dictionary respelling (model text only,
+tags never touched) → homograph rules → synthesis with best-of-8 takes picked by the word guard. Any word can be
+added to the dictionary by the measured pipeline (8-take respelling search, phone gate 8/8, PER ≤ 0.12) — that is
+how the demo words were fixed, and how any future miss gets fixed.</p>
+<p class="muted">Sources: pron1125 worktree (<code>pgate.py</code> phone gate), live lanes :8773 (4B) / :8792 (192M),
+before lanes rebuilt from the 11-25 configs. Data: <a href="scores.json">scores.json</a>, <a href="ear_scores.json">ear_scores.json</a>.</p>
+
+<script>
+const S = {
+ s01:{t:"Please read the alerts on the leaderboard.",w:"read"},
+ s02:{t:"Read the report before the meeting.",w:"read"},
+ s03:{t:"I read the report yesterday.",w:"read"},
+ s04:{t:"We are going live in five minutes.",w:"live"},
+ s05:{t:"We live in Berlin with two roommates.",w:"live"},
+ s06:{t:"Welcome to Yoob, the voice platform for developers.",w:"Yoob"},
+ s07:{t:"She will lead the meeting, then replace the lead pipe.",w:"lead"},
+ s08:{t:"He plays bass in the band down the street.",w:"bass"},
+ s09:{t:"He wound the clock before the wound healed.",w:"wound"},
+ s10:{t:"They flew to Edinburgh last night.",w:"Edinburgh"},
+ s11:{t:"Add a splash of Worcestershire sauce.",w:"Worc."},
+ s12:{t:"We played basketball after work.",w:"basketball"},
+ s13:{t:"The soundtrack of that movie is amazing.",w:"soundtrack"},
+ s14:{t:"Send me a screenshot of the error.",w:"screenshot"},
+ s15:{t:"It takes a lot of willpower to stop.",w:"willpower"},
+ s16:{t:"Sean will join the standup this morning.",w:"Sean"}
+};
+const EAR = [
+ {w:"Read", c:"{w} the report before the meeting.", q:'"Read" opens the sentence — said "reed", not "red"?'},
+ {w:"Yoob", c:"Welcome to {w}, the voice platform…", q:'"Yoob" said "yube", not "yob"?'},
+ {w:"alerts", c:"Please read the {w} on the leaderboard.", q:'"alerts" said "uh-LERTS", not "uh-LORks"?'},
+ {w:"live", c:"We are going {w} in five minutes.", q:'"going live" said "lyve", not "live" like "give"?'},
+ {w:"basketball", c:"We played {w} after work.", q:'"basketball" said right?'},
+ {w:"soundtrack", c:"The {w} of that movie is amazing.", q:'"soundtrack" said right?'},
+ {w:"willpower", c:"It takes a lot of {w} to stop.", q:'"willpower" said right (not "willow-power")?'},
+ {w:"screenshot", c:"Send me a {w} of the error.", q:'"screenshot" said right?'},
+ {w:"marry", c:"Will you {w} me?", q:'"marry" (control — said right before and after).'}
+];
+function aud(f){return `<audio controls preload="none" src="audio/${f}"></audio>`}
+function per(x){return x<=0.20?`<span class="ok">right</span>`:`<span class="bad">wrong</span>`}
+// section 1: historical ear A/B (4B lane)
+let h1="";
+for(const e of EAR){
+  h1+=`<tr><td><b>${e.w}</b><br><span class="p">${e.c.replace("{w}","—")}</span></td>`;
+  for(const tag of ["before","after"]){
+    h1+=`<td>${aud(`ear_${tag}_${e.w.toLowerCase()}_m0770.wav`)}<br>${aud(`ear_${tag}_${e.w.toLowerCase()}_w1243.wav`)}</td>`;
+  }
+  h1+=`</tr>`;
+}
+document.getElementById("earrows").outerHTML=h1;
+fetch("ear_summary.json").then(r=>r.json()).then(rs=>{
+  let s="<table><tr><th>word</th><th>wanted</th><th>before heard</th><th>after heard</th><th>gate (before → after)</th></tr>";
+  for(const r of rs){
+    const ok=(r.ap===r.at);
+    s+=`<tr><td><b>${r.w}</b></td><td>/${r.want}/</td><td class="p">/${r.bh.join("/ · /")}/</td><td class="p">/${r.ah.join("/ · /")}/</td>`+
+       `<td><span class="${r.bp===r.bt?'bad':'p'}">${r.bp}/${r.bt}</span> → <span class="${ok?'ok':'bad'}">${r.ap}/${r.at}</span></td></tr>`;
+  }
+  s+="</table>";
+  document.getElementById("earsum").innerHTML=s;
+});
+// section 2: fresh grid
+fetch("scores.json").then(r=>r.json()).then(rows=>{
+  let h="";
+  for(const r of rows){
+    const s=S[r.id]||{t:r.text,w:r.word};
+    h+=`<div class="card"><b>${s.t}</b> <span class="tag">${s.w}</span>
+    <table><tr><th></th><th>4B before</th><th>4B after</th><th>192M before</th><th>192M after</th></tr>
+    <tr><td><b>clip</b></td><td>${aud(r.id+"_4b_before.wav")}</td><td>${aud(r.id+"_4b_after.wav")}</td>
+    <td>${aud(r.id+"_192_before.wav")}</td><td>${aud(r.id+"_192_after.wav")}</td></tr>
+    <tr><td><b>gate</b></td><td>${per(r.b4)} <span class="p">/${r.b4h}</span></td><td>${per(r.a4)} <span class="p">/${r.a4h}</span></td>
+    <td>${per(r.b192)} <span class="p">/${r.b192h}</span></td><td>${per(r.a192)} <span class="p">/${r.a192h}</span></td></tr></table></div>`;
+  }
+  document.getElementById("grid").innerHTML=h;
+  const tot=(f)=>rows.reduce((a,r)=>a+(f(r)<=0.20?1:0),0);
+  document.getElementById("summary").innerHTML=
+   `<table><tr><th>Arm</th><th>lines right (of ${rows.length})</th></tr>
+   <tr><td>4B before</td><td>${tot(r=>r.b4)}</td></tr><tr><td><b>4B after</b></td><td><b>${tot(r=>r.a4)}</b></td></tr>
+   <tr><td>192M before (dict off)</td><td>${tot(r=>r.b192)}</td></tr><tr><td><b>192M after</b></td><td><b>${tot(r=>r.a192)}</b></td></tr></table>`;
+});
+</script>
+</body>
+</html>
