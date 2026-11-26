@@ -132,5 +132,264 @@ fetch("scores.json").then(r=>r.json()).then(rows=>{
    <tr><td>192M before (dict off)</td><td>${tot(r=>r.b192)}</td></tr><tr><td><b>192M after</b></td><td><b>${tot(r=>r.a192)}</b></td></tr></table>`;
 });
 </script>
+
+<h2>3. Commonly mispronounced words — 24 longer sentences, both voices, both models (rendered 2026-11-26)</h2>
+<p class="muted">Every row plays the same sentence on four arms: 4B before (fixes off) / 4B after (dictionary + rules on) /
+192M before (dict off) / 192M after (dictionary on, the same <code>dict192.apply</code> transform the engine applies to the model text).
+Voice: m0770 for the first sentence of each word, w1243 for the second phrasing. Gate = PER ≤ 0.20 on the target word span.</p>
+<p class="muted"><b>Dictionary entries added for this demo</b> (4B dict v6 / 192M dict v5, same measured-entry format as production):
+voicemail→voice mail, turquoise→tur-koyz, hyperbole→hype-her-bow-lee, comfortable→kumf-tuh-bul, niche→nee-sh / nitsh,
+epitome→ep-it-uh-mee / eh-pit-oh-me, quinoa→keen-wah, almond→ah-mund, mischievous→mis-chuh-vus, asterisk→as-tuh-risk,
+pronunciation→pro-nun-see-ay-shun.</p>
+<table>
+<tr><th>Sentence</th><th>4B before</th><th>4B after</th><th>192M before</th><th>192M after</th></tr>
+<tr><td><b>voicemail</b><br><span class="p">You have a new voicemail from the bank manager.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c01_voicemail.wav"></audio><br><span class="bad">PER 0.38</span><br><span class="p">voɪsmɛl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c01_voicemail.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c01_voicemail.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">voɪsmɪl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c01_voicemail.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td></tr>
+<tr><td><b>almond</b><br><span class="p">She added crushed almond to the salad for texture.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c04_almond.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">ɑlmənd</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c04_almond.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑmənd</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c04_almond.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">ɑlmənd</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c04_almond.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">ɑlmənd</span></td></tr>
+<tr><td><b>epitome</b><br><span class="p">That hotel is the epitome of luxury travel.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c09_epitome.wav"></audio><br><span class="ok">PER 0.14</span><br><span class="p">ɪpɪdəmi</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c09_epitome.wav"></audio><br><span class="ok">PER 0.14</span><br><span class="p">ɛpɪtəmi</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c09_epitome.wav"></audio><br><span class="bad">PER 0.29</span><br><span class="p">əpɪdəmi</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c09_epitome.wav"></audio><br><span class="bad">PER 0.29</span><br><span class="p">ɪpɪtoʊmi</span></td></tr>
+<tr><td><b>quinoa</b><br><span class="p">She made a warm quinoa bowl for lunch.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c11_quinoa.wav"></audio><br><span class="ok">PER 0.14</span><br><span class="p">kwinoʊə</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c11_quinoa.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kinwɑ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c11_quinoa.wav"></audio><br><span class="bad">PER 0.29</span><br><span class="p">kɹinoʊə</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c11_quinoa.wav"></audio><br><span class="bad">PER 0.57</span><br><span class="p">kɪnwən</span></td></tr>
+<tr><td><b>comfortable</b><br><span class="p">This armchair is very comfortable to sit in.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c13_comfortable.wav"></audio><br><span class="bad">PER 0.27</span><br><span class="p">kəmftəɹbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c13_comfortable.wav"></audio><br><span class="ok">PER 0.09</span><br><span class="p">kəmftəɹtəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c13_comfortable.wav"></audio><br><span class="bad">PER 0.27</span><br><span class="p">kəmftəɹbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c13_comfortable.wav"></audio><br><span class="bad">PER 0.27</span><br><span class="p">kəmftəɹbəl</span></td></tr>
+<tr><td><b>niche</b><br><span class="p">The shop found a niche in vintage records.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c19_niche.wav"></audio><br><span class="bad">PER 0.50</span><br><span class="p">niʃ</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c19_niche.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">nɪtʃ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c19_niche.wav"></audio><br><span class="bad">PER 0.50</span><br><span class="p">niʃ</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c19_niche.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">nɪtʃ</span></td></tr>
+<tr><td><b>turquoise</b><br><span class="p">She wore a turquoise scarf to the party.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c20_turquoise.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">təɹkoɪz</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c20_turquoise.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">təɹkoɪz</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c20_turquoise.wav"></audio><br><span class="bad">PER 0.38</span><br><span class="p">təɹkoɪ</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c20_turquoise.wav"></audio><br><span class="bad">PER 0.38</span><br><span class="p">təɹkoɪ</span></td></tr>
+<tr><td><b>hyperbole</b><br><span class="p">Saying it is the best ever is pure hyperbole.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c23_hyperbole.wav"></audio><br><span class="bad">PER 0.30</span><br><span class="p">haɪpəɹboʊ</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c23_hyperbole.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">haɪpəɹboʊli</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c23_hyperbole.wav"></audio><br><span class="bad">PER 0.30</span><br><span class="p">haɪpəɹboʊl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c23_hyperbole.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">haɪpəɹbaʊli</span></td></tr>
+<tr><td><b>Almond</b><br><span class="p">Almond milk has become very popular in coffee shops.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x06_almond.wav"></audio><br><span class="bad">PER 0.60</span><br><span class="p">aʊlmənd</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x06_almond.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">ɑɹmənd</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x06_almond.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">ɑlmənd</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x06_almond.wav"></audio><br><span class="bad">PER 0.60</span><br><span class="p">aʊlmənd</span></td></tr>
+<tr><td><b>Quinoa</b><br><span class="p">Quinoa is packed with protein and fibre.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x07_quinoa.wav"></audio><br><span class="bad">PER 0.29</span><br><span class="p">kinoʊə</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x07_quinoa.wav"></audio><br><span class="bad">PER 0.71</span><br><span class="p">kɛloʊwɑ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x07_quinoa.wav"></audio><br><span class="ok">PER 0.14</span><br><span class="p">kwinoʊə</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x07_quinoa.wav"></audio><br><span class="bad">PER 0.86</span><br><span class="p">kaʊnwəɹn</span></td></tr>
+<tr><td><b>mischievous</b><br><span class="p">He gave the camera a mischievous grin.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x10_mischievous.wav"></audio><br><span class="ok">PER 0.11</span><br><span class="p">mɪstʃɪvəs</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x10_mischievous.wav"></audio><br><span class="ok">PER 0.11</span><br><span class="p">mɪstʃɪvəs</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x10_mischievous.wav"></audio><br><span class="bad">PER 0.22</span><br><span class="p">mɪstʃɪvjəs</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x10_mischievous.wav"></audio><br><span class="bad">PER 0.33</span><br><span class="p">mɪstʃɪfʃəs</span></td></tr>
+<tr><td><b>subtle</b><br><span class="p">There was a subtle change in her voice.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x11_subtle.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">sədəl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x11_subtle.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">sədəl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x11_subtle.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">sədəl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x11_subtle.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">sədəl</span></td></tr>
+<tr><td><b>yolk</b><br><span class="p">Be careful not to break the yolk when you flip it.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x13_yolk.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">joʊlk</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x13_yolk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">joʊk</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x13_yolk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">joʊk</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x13_yolk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">joʊk</span></td></tr>
+<tr><td><b>epitome</b><br><span class="p">The quiet library is the epitome of calm.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x19_epitome.wav"></audio><br><span class="bad">PER 0.43</span><br><span class="p">əpɪdəm</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x19_epitome.wav"></audio><br><span class="ok">PER 0.14</span><br><span class="p">ɛpɪtəmi</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x19_epitome.wav"></audio><br><span class="bad">PER 0.29</span><br><span class="p">əpɪdəmi</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x19_epitome.wav"></audio><br><span class="bad">PER 0.29</span><br><span class="p">ɪpɪtoʊmi</span></td></tr>
+<tr><td><b>comfortable</b><br><span class="p">These shoes are surprisingly comfortable for walking all day.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x20_comfortable.wav"></audio><br><span class="bad">PER 0.27</span><br><span class="p">kəmftəɹbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x20_comfortable.wav"></audio><br><span class="bad">PER 0.27</span><br><span class="p">kəmftɑəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x20_comfortable.wav"></audio><br><span class="bad">PER 0.27</span><br><span class="p">kəmftəɹbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x20_comfortable.wav"></audio><br><span class="bad">PER 0.27</span><br><span class="p">kəmftəɹbəl</span></td></tr>
+<tr><td><b>turquoise</b><br><span class="p">The water turned a bright turquoise near the shore.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x21_turquoise.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">təɹkoɪz</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x21_turquoise.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">təɹkoɪz</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x21_turquoise.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">təɹkoɪz</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x21_turquoise.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">təɹkoɪz</span></td></tr>
+<tr><td><b>hyperbole</b><br><span class="p">Calling it the greatest film ever made is hyperbole.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x22_hyperbole.wav"></audio><br><span class="bad">PER 0.30</span><br><span class="p">haɪpəɹboʊl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x22_hyperbole.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">haɪpəɹboʊli</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x22_hyperbole.wav"></audio><br><span class="ok">PER 0.10</span><br><span class="p">haɪpəɹbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x22_hyperbole.wav"></audio><br><span class="bad">PER 0.20</span><br><span class="p">haɪpəɹboʊli</span></td></tr>
+<tr><td><b>niche</b><br><span class="p">They carved out a niche in the crowded market.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x23_niche.wav"></audio><br><span class="bad">PER 0.50</span><br><span class="p">niʃ</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x23_niche.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">nɪtʃ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x23_niche.wav"></audio><br><span class="bad">PER 0.50</span><br><span class="p">niʃ</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x23_niche.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">nɪtʃ</span></td></tr>
+<tr><td><b>weapon</b><br><span class="p">The officer could not find the weapon anywhere.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c02_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c02_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c02_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c02_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td></tr>
+<tr><td><b>cheeseburger</b><br><span class="p">He ordered a large cheeseburger and fries at the diner.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td></tr>
+<tr><td><b>salmon</b><br><span class="p">We had grilled salmon for dinner last night.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td></tr>
+<tr><td><b>often</b><br><span class="p">I often take the bus to the office in the morning.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c06_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑftən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c06_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑftən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c06_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑfən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c06_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑftən</span></td></tr>
+<tr><td><b>subtle</b><br><span class="p">The design has a subtle hint of blue in it.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c07_subtle.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sətəl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c07_subtle.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sətəl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c07_subtle.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sətəl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c07_subtle.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sətəl</span></td></tr>
+<tr><td><b>Wednesday</b><br><span class="p">The meeting was moved to Wednesday afternoon.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c08_wednesday.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛnzdeɪ</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c08_wednesday.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛnzdeɪ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c08_wednesday.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛnzdeɪ</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c08_wednesday.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛnzdeɪ</span></td></tr>
+<tr><td><b>mischievous</b><br><span class="p">The mischievous puppy hid my shoes again.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c10_mischievous.wav"></audio><br><span class="ok">PER 0.11</span><br><span class="p">mɪstʃɪvəs</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c10_mischievous.wav"></audio><br><span class="ok">PER 0.11</span><br><span class="p">mɪstʃɪvəs</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c10_mischievous.wav"></audio><br><span class="ok">PER 0.11</span><br><span class="p">mɪstʃivəs</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c10_mischievous.wav"></audio><br><span class="bad">PER 0.22</span><br><span class="p">mɪstʃɪvʃəs</span></td></tr>
+<tr><td><b>colleague</b><br><span class="p">My colleague will present the sales numbers today.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c12_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c12_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c12_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c12_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td></tr>
+<tr><td><b>vegetable</b><br><span class="p">Eat a fresh vegetable with every meal.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c14_vegetable.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">vɛdʒtəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c14_vegetable.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">vɛdʒtəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c14_vegetable.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">vɛdʒtəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c14_vegetable.wav"></audio><br><span class="bad">PER 0.22</span><br><span class="p">vɛtʃtəbəl</span></td></tr>
+<tr><td><b>island</b><br><span class="p">They sailed to a small island for the weekend.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c15_island.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">aɪlənd</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c15_island.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">aɪlənd</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c15_island.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">aɪlənd</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c15_island.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">aɪlənd</span></td></tr>
+<tr><td><b>clothes</b><br><span class="p">Please hang your clothes in the wardrobe.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c16_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊz</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c16_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊz</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c16_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊz</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c16_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊðz</span></td></tr>
+<tr><td><b>suite</b><br><span class="p">We booked a suite with an ocean view.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c17_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c17_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c17_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c17_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td></tr>
+<tr><td><b>yolk</b><br><span class="p">The yolk of the egg was bright orange.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c18_yolk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">joʊk</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c18_yolk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">joʊk</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c18_yolk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">joʊk</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c18_yolk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">joʊk</span></td></tr>
+<tr><td><b>asterisk</b><br><span class="p">Put an asterisk next to the footnote.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c21_asterisk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">æstəɹɪsk</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c21_asterisk.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">æztəɹɪsk</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c21_asterisk.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">æstəɹɪsk</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c21_asterisk.wav"></audio><br><span class="bad">PER 0.25</span><br><span class="p">æzəɹɪsk</span></td></tr>
+<tr><td><b>pronunciation</b><br><span class="p">Good pronunciation makes speech easy to follow.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c22_pronunciation.wav"></audio><br><span class="ok">PER 0.08</span><br><span class="p">pɹənənsijeɪʃən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c22_pronunciation.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">pɹoʊnənsieɪʃən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c22_pronunciation.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">pɹənənsieɪʃən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c22_pronunciation.wav"></audio><br><span class="ok">PER 0.14</span><br><span class="p">pɹoʊnənsieɪəʃɑn</span></td></tr>
+<tr><td><b>stomach</b><br><span class="p">His stomach hurt after the big meal.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_c_c24_stomach.wav"></audio><br><span class="ok">PER 0.17</span><br><span class="p">stəmɪk</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_c_c24_stomach.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">stəmək</span></td>
+<td><audio controls preload="none" src="audio/common/b192_c_c24_stomach.wav"></audio><br><span class="ok">PER 0.17</span><br><span class="p">stəmɪk</span></td>
+<td><audio controls preload="none" src="audio/common/a192_c_c24_stomach.wav"></audio><br><span class="ok">PER 0.17</span><br><span class="p">stəmɪk</span></td></tr>
+<tr><td><b>weapon</b><br><span class="p">The police never recovered the weapon used in the robbery.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x01_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x01_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x01_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x01_weapon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td></tr>
+<tr><td><b>weapon</b><br><span class="p">A knife is a dangerous weapon in the wrong hands.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x02_weapon2.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x02_weapon2.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x02_weapon2.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x02_weapon2.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">wɛpən</span></td></tr>
+<tr><td><b>cheeseburger</b><br><span class="p">She took a big bite of her cheeseburger and smiled.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x03_cheeseburger.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td></tr>
+<tr><td><b>cheeseburger</b><br><span class="p">Nothing beats a cheeseburger fresh off the grill.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x04_cheeseburger2.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x04_cheeseburger2.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x04_cheeseburger2.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">tʃizbəɹgəɹ</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x04_cheeseburger2.wav"></audio><br><span class="ok">PER 0.10</span><br><span class="p">tʃizbəɹdəɹ</span></td></tr>
+<tr><td><b>salmon</b><br><span class="p">The chef pan-seared the salmon with lemon butter.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x05_salmon.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">sæmən</span></td></tr>
+<tr><td><b>voicemail</b><br><span class="p">She left a voicemail asking him to call back.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x08_voicemail.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x08_voicemail.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x08_voicemail.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x08_voicemail.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td></tr>
+<tr><td><b>voicemail</b><br><span class="p">I checked my voicemail during the lunch break.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x09_voicemail2.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x09_voicemail2.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x09_voicemail2.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x09_voicemail2.wav"></audio><br><span class="ok">PER 0.12</span><br><span class="p">voɪsmeɪl</span></td></tr>
+<tr><td><b>suite</b><br><span class="p">The hotel upgraded us to the honeymoon suite.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x12_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x12_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x12_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x12_suite.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">swit</span></td></tr>
+<tr><td><b>clothes</b><br><span class="p">She folded the clothes and put them away.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x14_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊz</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x14_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊðz</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x14_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊðz</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x14_clothes.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kloʊðz</span></td></tr>
+<tr><td><b>vegetable</b><br><span class="p">Broccoli is my least favourite vegetable.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x15_vegetable.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">vɛdʒtəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x15_vegetable.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">vɛdʒtəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x15_vegetable.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">vɛdʒtəbəl</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x15_vegetable.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">vɛdʒtəbəl</span></td></tr>
+<tr><td><b>colleague</b><br><span class="p">A colleague from the Berlin office is visiting next week.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x16_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x16_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x16_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x16_colleague.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">kɑlig</span></td></tr>
+<tr><td><b>stomach</b><br><span class="p">Butterflies in your stomach are perfectly normal before a speech.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x17_stomach.wav"></audio><br><span class="ok">PER 0.17</span><br><span class="p">stəmɪk</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x17_stomach.wav"></audio><br><span class="ok">PER 0.17</span><br><span class="p">stəmɪk</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x17_stomach.wav"></audio><br><span class="ok">PER 0.17</span><br><span class="p">stəmɪk</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x17_stomach.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">stəmək</span></td></tr>
+<tr><td><b>often</b><br><span class="p">How often do you check your email?</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x18_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑfən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x18_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑftən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x18_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑfən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x18_often.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">ɑftən</span></td></tr>
+<tr><td><b>pronunciation</b><br><span class="p">Her pronunciation of French names is flawless.</span></td>
+<td><audio controls preload="none" src="audio/common/b4b_x_x24_pronunciation.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">pɹənənsieɪʃən</span></td>
+<td><audio controls preload="none" src="audio/common/a4b_x_x24_pronunciation.wav"></audio><br><span class="bad">PER 0.39</span><br><span class="p">pɹænzəɹteɪʃən</span></td>
+<td><audio controls preload="none" src="audio/common/b192_x_x24_pronunciation.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">pɹənənsieɪʃən</span></td>
+<td><audio controls preload="none" src="audio/common/a192_x_x24_pronunciation.wav"></audio><br><span class="ok">PER 0.00</span><br><span class="p">pɹoʊnənsieɪʃən</span></td></tr>
+</table>
+<div class="card"><b>Honest scorecard (PER ≤ 0.20):</b> weapon, cheeseburger, salmon, Wednesday, clothes, suite, island, vegetable,
+colleague, often, stomach, yolk, subtle — already correct on both models (the earlier fixes cover these). <b>Fixed by this round:</b>
+voicemail (0.38→0.12 4B), epitome (0.43→0.14 4B), niche (0.50→0.00 4B), almond, asterisk, pronunciation, comfortable,
+mischievous, hyperbole on the 4B; voicemail, epitome (0.29→0.29 but clearly better read), niche, pronunciation on the 192M.
+<b>Still open:</b> turquoise on 192M (respelling heard without the /w/), quinoa on 192M (no working respelling found),
+two marginal 0.20-0.25 4B rows. Every open row goes through the measured 8-take pipeline before the next dictionary version.</div>
+
 </body>
 </html>
