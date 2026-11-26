@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Speech-judge RL &mdash; before vs after (v15 full-FT, 192M) &mdash; Tap TTS</title>
+<title>Speech-judge RL &mdash; before vs after on the live request path &mdash; Tap TTS</title>
 <style>
 body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:1080px;margin:2em auto;padding:0 1em;color:#222}
 h1{font-size:1.5em} h2{font-size:1.15em;margin-top:1.8em}
@@ -14,176 +14,165 @@ audio{width:190px;height:32px}
 code{background:#f4f4f4;padding:1px 4px;font-size:.95em}
 </style></head><body>
 <p><a href="/">&larr; all demos</a></p>
-<h1>Before vs after RL &mdash; speech-judge reward (v15 full fine-tune, live 192M)</h1>
-<p class="note">The LIVE served 192M (sd4_e1000, before) vs the same model after 30 updates of
-Flow-GRPO full fine-tuning against the speech-judge reward (after; run
-<code>onit_reward_judge_v15_fullft_g8</code>, group size 8, lr 1e-6, all 192M weights).
-Same 14 s600n review-page lines, same seeds, best-of-4 by the judge reward; square-bracket
-tags converted to the trained &lt;emo:/ev:&gt; form before rendering. Reward = TTSDS2
-composite + 0.25&times;emotion. Nov 26, 2026.</p>
+<h1>Before vs after RL &mdash; rendered on the live yoob.com request path</h1>
+<p class="note">This page re-does the A/B with <b>exactly the served pipeline</b> (this is what earlier
+renders got wrong): the live serving engine code with the served profile &mdash; text normalizer,
+[tag] resolver, caption <code>rec_map</code>, dict192 respelling, 12-step sway sampler,
+caption-guidance 0 / tag-contrast 5, best-of-8 takes picked by the TurboCTC word check + ECAPA,
+pause trimmer. Both arms use the same seeds (424200&ndash;424213), direction off for
+determinism. Before = the live 192M (<code>sd4_e1000</code>, 1,000 self-distill steps on the
+Cs14 192M &mdash; served since 11-02; <b>not</b> R9s1, which never shipped). After = the same
+model after 30 Flow-GRPO updates (full fine-tune, group size 8, lr 1e-6) against the
+speech-judge reward. Reward = TTSDS2 composite + 0.25&times;emotion. Nov 26, 2026.</p>
 
 <h2>Summary</h2>
-<table class="summary">
-<tr><th></th><th>mean reward</th><th>wins (14 lines)</th><th>emo</th><th>UTMOS</th><th>WER</th></tr>
-<tr><td class="van">base (live)</td><td>0.8195</td><td rowspan="2" style="padding:8px"><b>RL 1 &ndash; 0 base &middot; 13 ties</b></td>
-<td>0.903 <span class="note">(1 lines)</span></td><td>3.04</td><td>0.135</td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8211 <span class="up">+0.0016</span></td>
-<td>0.902 <span class="note">(1 lines)</span></td><td>3.12</td><td>0.127</td></tr>
-</table>
-
-<h2>Speech-judge ranking (by RL reward)</h2>
 <table>
-<tr><th>#</th><th style="width:26%">line</th><th>RL reward</th><th>base reward</th><th>winner</th><th>listen (RL clip)</th></tr>
-<tr><td>1</td><td class="txt">m0020__dev_dense_002</td><td>0.9971</td><td>0.9973 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p5_c2.mp3"></audio></td></tr>
-<tr><td>2</td><td class="txt">m0165__dev_emotion_019</td><td>0.8333</td><td>0.8333 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p6_c0.mp3"></audio></td></tr>
-<tr><td>3</td><td class="txt">w0110__dev_event_end_001</td><td>0.8333</td><td>0.8333 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p7_c3.mp3"></audio></td></tr>
-<tr><td>4</td><td class="txt">cb35_m</td><td>0.8333</td><td>0.8333 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p11_c1.mp3"></audio></td></tr>
-<tr><td>5</td><td class="txt">cb25_m</td><td>0.8333</td><td>0.8333 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p12_c2.mp3"></audio></td></tr>
-<tr><td>6</td><td class="txt">cb31_m</td><td>0.8333</td><td>0.8333 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p13_c2.mp3"></audio></td></tr>
-<tr><td>7</td><td class="txt">cb02_m</td><td>0.8175</td><td>0.8175 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p10_c2.mp3"></audio></td></tr>
-<tr><td>8</td><td class="txt">cb01_m</td><td>0.8162</td><td>0.8162 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p3_c0.mp3"></audio></td></tr>
-<tr><td>9</td><td class="txt">cb01_w</td><td>0.8162</td><td>0.8162 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p9_c3.mp3"></audio></td></tr>
-<tr><td>10</td><td class="txt">cb17_m</td><td>0.7963</td><td>0.7963 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p1_c2.mp3"></audio></td></tr>
-<tr><td>11</td><td class="txt">cb21_m</td><td>0.7929</td><td>0.7929 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p4_c0.mp3"></audio></td></tr>
-<tr><td>12</td><td class="txt">cb07_m</td><td>0.7857</td><td>0.7857 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p2_c2.mp3"></audio></td></tr>
-<tr><td>13</td><td class="txt">w0266__dev_long_016</td><td>0.7735</td><td>0.7735 <span class="same">&plusmn;0.000</span></td><td><span class="same">tie</span></td><td><audio controls preload="none" src="audio/rl_p8_c1.mp3"></audio></td></tr>
-<tr><td>14</td><td class="txt">m0499__dev_long_005</td><td>0.7336</td><td>0.7109 <span class="up">+0.0227</span></td><td><span class="up">RL wins</span></td><td><audio controls preload="none" src="audio/rl_p0_c3.mp3"></audio></td></tr>
+<tr><th></th><th>mean reward</th><th>wins (14 lines)</th><th>UTMOS</th><th>WER</th></tr>
+<tr><td class="van">base (live 192M, live path)</td><td>0.8434</td>
+<td rowspan="2" style="padding:8px"><b>RL 0 &ndash; 1 base &middot; 13 ties</b></td>
+<td>3.92</td><td>0.005</td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8433 <span class="down">-0.0001</span></td>
+<td>3.88</td><td>0.005</td></tr>
 </table>
 
 <h2>Line-by-line A/B</h2>
 <table>
 <tr><th style="width:30%">text</th><th>side</th><th>reward</th><th>comp</th><th>emo</th><th>UTMOS</th><th>WER</th><th>listen</th></tr>
 <tr><td class="txt" rowspan="2">#0 &mdash; the surgery took six hours, and i spent every minute of it in a plastic chair, counting ceiling tiles. when the surgeon finally walked out and smiled, my knees gave out  <span class="chip">crying</span>  and my brother had to catch me. she&#x27;s awake now, and she&#x27;s already complaining about the hospital food.
-<div class="mini"><span class="up">RL wins</span> &middot; line <code>m0499__dev_long_005</code></div></td>
-<td class="van">base (live 192M)</td><td>0.7109</td><td>0.711</td>
-<td>&mdash;</td><td>1.88</td><td>0.551</td>
-<td><audio controls preload="none" src="audio/base_p0_c0.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.7336 <span class="up">+0.0227</span></td>
-<td>0.734</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>2.80 <span class="up">+0.919</span></td><td>0.449</td>
-<td><audio controls preload="none" src="audio/rl_p0_c3.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>m0499__dev_long_005</code> &middot; seed 424210</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>3.77</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_m0499__dev_long_005.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>3.74 <span class="down">-0.030</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_m0499__dev_long_005.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#1 &mdash; you&#x27;re home, you&#x27;re actually home.  <span class="chip">cry</span>  i thought i&#x27;d lost you for good.
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb17_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.7963</td><td>0.796</td>
-<td>&mdash;</td><td>2.50</td><td>0.167</td>
-<td><audio controls preload="none" src="audio/base_p1_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.7963 <span class="same">&plusmn;0.000</span></td>
-<td>0.796</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>2.44 <span class="down">-0.064</span></td><td>0.167</td>
-<td><audio controls preload="none" src="audio/rl_p1_c2.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb17_m</code> &middot; seed 424211</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>3.67</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb17_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>3.65 <span class="down">-0.012</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb17_m.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#2 &mdash; it&#x27;s been three winters without you,  <span class="chip">cry</span>  and i still buy the tea you liked.
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb07_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.7857</td><td>0.786</td>
-<td>&mdash;</td><td>3.63</td><td>0.214</td>
-<td><audio controls preload="none" src="audio/base_p2_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.7857 <span class="same">&plusmn;0.000</span></td>
-<td>0.786</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.63 <span class="up">+0.003</span></td><td>0.214</td>
-<td><audio controls preload="none" src="audio/rl_p2_c2.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb07_m</code> &middot; seed 424212</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>3.03</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb07_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>3.06 <span class="up">+0.038</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb07_m.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#3 &mdash; <span class="chip">cry</span>  i still keep your voicemail, i never had the heart to delete it.
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb01_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8162</td><td>0.816</td>
-<td>&mdash;</td><td>3.05</td><td>0.077</td>
-<td><audio controls preload="none" src="audio/base_p3_c0.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8162 <span class="same">&plusmn;0.000</span></td>
-<td>0.816</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.05 <span class="up">+0.001</span></td><td>0.077</td>
-<td><audio controls preload="none" src="audio/rl_p3_c0.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb01_m</code> &middot; seed 424213</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>4.10</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb01_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>3.85 <span class="down">-0.249</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb01_m.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#4 &mdash; i guess i was never really enough for you, was i  <span class="chip">cry</span>
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb21_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.7929</td><td>0.793</td>
-<td>&mdash;</td><td>2.92</td><td>0.182</td>
-<td><audio controls preload="none" src="audio/base_p4_c0.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.7929 <span class="same">&plusmn;0.000</span></td>
-<td>0.793</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>2.92 <span class="down">-0.003</span></td><td>0.182</td>
-<td><audio controls preload="none" src="audio/rl_p4_c0.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb21_m</code> &middot; seed 424214</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>3.36</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb21_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>3.34 <span class="down">-0.017</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb21_m.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#5 &mdash; <span class="chip">sniff</span>  his old voicemail was still on my phone, and  <span class="chip">tearful</span>  i played it fourteen times before i could stop. [/tearful]
-<div class="mini"><span class="same">tie</span> &middot; line <code>m0020__dev_dense_002</code></div></td>
-<td class="van">base (live 192M)</td><td>0.9973</td><td>0.772</td>
-<td>0.903</td><td>3.68</td><td>0.278</td>
-<td><audio controls preload="none" src="audio/base_p5_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.9971 <span class="same">&plusmn;0.000</span></td>
-<td>0.772</td><td>0.902 <span class="down">-0.001</span></td>
-<td>3.65 <span class="down">-0.030</span></td><td>0.278</td>
-<td><audio controls preload="none" src="audio/rl_p5_c2.mp3"></audio></td></tr>
+<div class="mini"><span class="down">base wins</span> &middot; line <code>m0020__dev_dense_002</code> &middot; seed 424215</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.9785</td><td>0.821</td>
+<td>0.630</td><td>4.20</td><td>0.056</td>
+<td><audio controls preload="none" src="audio/base_m0020__dev_dense_002.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.9769 <span class="down">-0.0016</span></td>
+<td>0.821</td><td>0.624 <span class="down">-0.007</span></td>
+<td>4.16 <span class="down">-0.043</span></td><td>0.056</td>
+<td><audio controls preload="none" src="audio/rl_m0020__dev_dense_002.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#6 &mdash; i&#x27;ve been thinking about you all day, about your voice, your laugh, the way you stand in a doorway.
-<div class="mini"><span class="same">tie</span> &middot; line <code>m0165__dev_emotion_019</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8333</td><td>0.833</td>
-<td>&mdash;</td><td>3.26</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p6_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<div class="mini"><span class="same">tie</span> &middot; line <code>m0165__dev_emotion_019</code> &middot; seed 424216</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>4.44</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_m0165__dev_emotion_019.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
 <td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.12 <span class="down">-0.143</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p6_c0.mp3"></audio></td></tr>
+<td>4.44 <span class="down">-0.003</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_m0165__dev_emotion_019.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#7 &mdash; good night, i&#x27;ll talk to you tomorrow.  <span class="chip">yawn</span>
-<div class="mini"><span class="same">tie</span> &middot; line <code>w0110__dev_event_end_001</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8333</td><td>0.833</td>
-<td>&mdash;</td><td>1.51</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p7_c3.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<div class="mini"><span class="same">tie</span> &middot; line <code>w0110__dev_event_end_001</code> &middot; seed 424217</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>3.94</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_w0110__dev_event_end_001.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
 <td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>1.51 <span class="down">-0.001</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p7_c3.mp3"></audio></td></tr>
+<td>3.89 <span class="down">-0.052</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_w0110__dev_event_end_001.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#8 &mdash; i woke up at three in the morning and the whole house was dark. the hallway light was out, and i could hear something shuffling downstairs. i grabbed my phone, held it like a weapon, and crept to the landing. it turned out to be the dog, stuck in the laundry basket.
-<div class="mini"><span class="same">tie</span> &middot; line <code>w0266__dev_long_016</code></div></td>
-<td class="van">base (live 192M)</td><td>0.7735</td><td>0.773</td>
-<td>&mdash;</td><td>2.57</td><td>0.269</td>
-<td><audio controls preload="none" src="audio/base_p8_c1.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.7735 <span class="same">&plusmn;0.000</span></td>
-<td>0.773</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>2.93 <span class="up">+0.364</span></td><td>0.269</td>
-<td><audio controls preload="none" src="audio/rl_p8_c1.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>w0266__dev_long_016</code> &middot; seed 424218</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8291</td><td>0.829</td>
+<td>&mdash;</td><td>4.32</td><td>0.019</td>
+<td><audio controls preload="none" src="audio/base_w0266__dev_long_016.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8291 <span class="same">&plusmn;0.000</span></td>
+<td>0.829</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>4.36 <span class="up">+0.041</span></td><td>0.019</td>
+<td><audio controls preload="none" src="audio/rl_w0266__dev_long_016.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#9 &mdash; <span class="chip">cry</span>  i still keep your voicemail, i never had the heart to delete it.
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb01_w</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8162</td><td>0.816</td>
-<td>&mdash;</td><td>3.67</td><td>0.077</td>
-<td><audio controls preload="none" src="audio/base_p9_c3.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8162 <span class="same">&plusmn;0.000</span></td>
-<td>0.816</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.68 <span class="up">+0.011</span></td><td>0.077</td>
-<td><audio controls preload="none" src="audio/rl_p9_c3.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb01_w</code> &middot; seed 424219</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>4.30</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb01_w.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>4.27 <span class="down">-0.031</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb01_w.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#10 &mdash; <span class="chip">cry</span>  the nurse said it was peaceful, but i wasn&#x27;t there to hold his hand.
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb02_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8175</td><td>0.818</td>
-<td>&mdash;</td><td>3.50</td><td>0.071</td>
-<td><audio controls preload="none" src="audio/base_p10_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8175 <span class="same">&plusmn;0.000</span></td>
-<td>0.818</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.52 <span class="up">+0.022</span></td><td>0.071</td>
-<td><audio controls preload="none" src="audio/rl_p10_c2.mp3"></audio></td></tr>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb02_m</code> &middot; seed 424220</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>4.41</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb02_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
+<td>4.40 <span class="down">-0.008</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb02_m.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#11 &mdash; <span class="chip">scream</span>  something just ran across the kitchen floor!
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb35_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8333</td><td>0.833</td>
-<td>&mdash;</td><td>3.41</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p11_c1.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb35_m</code> &middot; seed 424221</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>3.55</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb35_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
 <td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.42 <span class="up">+0.006</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p11_c1.mp3"></audio></td></tr>
+<td>3.43 <span class="down">-0.118</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb35_m.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#12 &mdash; <span class="chip">sniff</span>  sorry, give me a second, it&#x27;s just been a long week.
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb25_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8333</td><td>0.833</td>
-<td>&mdash;</td><td>3.25</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p12_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb25_m</code> &middot; seed 424222</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>4.12</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb25_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
 <td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.26 <span class="up">+0.014</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p12_c2.mp3"></audio></td></tr>
+<td>4.11 <span class="down">-0.009</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb25_m.mp3"></audio></td></tr>
 <tr><td class="txt" rowspan="2">#13 &mdash; <span class="chip">yawn</span>  sorry, i&#x27;m awake, i promise, keep telling me about your day.
-<div class="mini"><span class="same">tie</span> &middot; line <code>cb31_m</code></div></td>
-<td class="van">base (live 192M)</td><td>0.8333</td><td>0.833</td>
-<td>&mdash;</td><td>3.69</td><td>0.000</td>
-<td><audio controls preload="none" src="audio/base_p13_c2.mp3"></audio></td></tr>
-<tr><td class="rl">RL (full-FT)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
+<div class="mini"><span class="same">tie</span> &middot; line <code>cb31_m</code> &middot; seed 424223</div></td>
+<td class="van">base (sd4_e1000, live path)</td><td>0.8333</td><td>0.833</td>
+<td>&mdash;</td><td>3.71</td><td>0.000</td>
+<td><audio controls preload="none" src="audio/base_cb31_m.mp3"></audio></td></tr>
+<tr><td class="rl">RL (full-FT, live path)</td><td>0.8333 <span class="same">&plusmn;0.000</span></td>
 <td>0.833</td><td>&mdash; <span class="same">&mdash;</span></td>
-<td>3.72 <span class="up">+0.025</span></td><td>0.000</td>
-<td><audio controls preload="none" src="audio/rl_p13_c2.mp3"></audio></td></tr>
+<td>3.65 <span class="down">-0.056</span></td><td>0.000</td>
+<td><audio controls preload="none" src="audio/rl_cb31_m.mp3"></audio></td></tr>
 </table>
 
-<p class="note">Generated from <code>/storage/tts/rl_dryrun/judge_v15_fullft_g8_eval/ab_eval_v15.json</code>;
-script <code>training/posttrain/reward_judge_rl_ab_eval_v15_fullft.py</code> on
-<code>wt_speech_judge</code>. Training-side note: the 30-update run&rsquo;s reward terms were
-flat (comp 0.789, emo 0.584 from u0 to u29, KL &le; 0.0008), so the tuned checkpoint was
-expected to land close to the live model &mdash; this page measures exactly how close.</p>
+<p class="note">Generated from <code>/storage/tts/rl_dryrun/live_path_eval/ab_eval_live_path.json</code>.
+Both arms rendered through the actual serving engine (<code>serving/tts/engine.py</code> with the
+deployed env: <code>TTS_CKPT</code>/<code>TTS_STEPS=12</code> from <code>run/model.env</code>,
+<code>TTS_CFG_CAP=0</code>/<code>TTS_CFG_TAG=5</code>/<code>TTS_N_BEST=8</code> from the unit
+drop-ins), scored with the same judge bank used as the RL reward. The RL run&rsquo;s training
+reward was flat throughout (comp 0.789, emo 0.584, KL &le; 0.0008), so the tuned checkpoint
+lands indistinguishable from the live model here too. Note: the API serves
+<code>quality=best</code> requests for catalog voices on the 4B pro lane; the 192M lane this
+page measures is the <code>fast</code>/custom-caption path.</p>
 </body></html>
