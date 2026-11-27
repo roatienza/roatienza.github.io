@@ -103,17 +103,14 @@ the model needs a respelling fed to it. <b>Before</b> = the raw word. <b>After</
 <td><audio controls preload="none" src="audio/w1w2/w2_anemone_4b_after.wav"></audio><br><span class="ok">PER 0.12 &ldquo;ænɛmoʊni&rdquo;</span></td>
 <td><audio controls preload="none" src="audio/w1w2/w2_anemone_192_before.wav"></audio><br><span class="bad">PER 0.38 &ldquo;ænɪmoʊn&rdquo;</span></td>
 <td><audio controls preload="none" src="audio/w1w2/w2_anemone_192_after.wav"></audio><br><span class="ok">PER 0.12 &ldquo;ɛnɛmoʊni&rdquo;</span></td></tr>
-<tr><td><b>epitome &rarr; eh-pit-o-mee</b><br><span class="p">He was the epitome of calm. (w1243)</span></td>
-<td><audio controls preload="none" src="audio/w1w2/w2_epitome_4b_before.wav"></audio><br><span class="bad">PER 0.57 &ldquo;əpɪbdəm&rdquo;</span></td>
-<td><audio controls preload="none" src="audio/w1w2/w2_epitome_4b_after.wav"></audio><br><span class="ok">PER 0.00 &ldquo;eɪpɪtoʊmi&rdquo;</span></td>
-<td><audio controls preload="none" src="audio/w1w2/w2_epitome_192_before.wav"></audio><br><span class="bad">PER 0.43 &ldquo;əpædəmi&rdquo;</span></td>
-<td><audio controls preload="none" src="audio/w1w2/w2_epitome_192_after.wav"></audio><br><span class="ok">PER 0.00 &ldquo;eɪpɪtoʊmi&rdquo;</span></td></tr>
 </table>
 <div class="card"><b>Honest accounting:</b> of the 24 W2 probe words, several v1 respellings did <b>not</b>
 survive measurement on both models (sean&rarr;&ldquo;shoo&rdquo;, nasa&rightarrow;&ldquo;nay-jer&rdquo; on the 4B, colonel&rightarrow;&ldquo;k&aelig;nəl&rdquo;,
-turquoise, gauge, sergeant, regatta worse) &mdash; exactly why the lexicon gates entries as
+turquoise, gauge, sergeant, regatta worse; and epitome &mdash; its original &ldquo;PER 0.00&rdquo;
+was an artifact of scoring the respelling against itself; re-scored against the true
+/&#618;p&#618;t&#601;mi/, all corrected variants land PER 0.25&ndash;0.57) &mdash; exactly why the lexicon gates entries as
 <code>draft</code> until they pass, and why respellings are mined per model, not assumed.
-The five rows above are the entries that cleared the gate on both engines; the failing ones stay
+The four rows above are the entries that cleared the gate on both engines; the failing ones stay
 draft in <code>lexicon_v1.yaml</code> and are re-mined. This is the same measured-entry path the
 4B/192M dictionaries use, generalized to any word list &mdash; no retraining, no GPU at serving time.</div>
 
