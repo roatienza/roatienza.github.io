@@ -114,5 +114,82 @@ The four rows above are the entries that cleared the gate on both engines; the f
 draft in <code>lexicon_v1.yaml</code> and are re-mined. This is the same measured-entry path the
 4B/192M dictionaries use, generalized to any word list &mdash; no retraining, no GPU at serving time.</div>
 
+<h2>8. Benchmark &mdash; how W1/W2 progress is measured (2026-11-27)</h2>
+<div class="card">
+32 cases (12 W1 text-normalization + 20 W2 lexicon words), four arms:
+<b>before</b> = raw text, normalization off, fixes-off lanes (4B :8812 / 192M :8811);
+<b>after</b> = the same carrier through the production <code>textnorm.normalize()</code>
+frontend (W1 + W2 composed). 4 takes &times; 2 voices per case, fixed seed.
+Scored by the phone gate (wav2vec2-espeak phone-span PER &le; 0.20 on every take).
+Tool: <code>tools/pron/w1w2_bench.py</code>; methodology in
+<code>docs/PRONUNCIATION_PLAN_20261126.md</code> &sect;5.
+</div>
+<table><tr><th></th><th>4B before</th><th>4B after</th><th>192M before</th><th>192M after</th></tr>
+<tr><td><b>W1 pass rate</b></td><td class="ok">1.00</td><td class="ok">0.96</td><td class="ok">1.00</td><td class="ok">1.00</td></tr>
+<tr><td><b>W2 pass rate</b></td><td>0.78</td><td>0.62</td><td>0.64</td><td>0.68</td></tr>
+</table>
+<p class="p">*The W2 gain is modest by design: the benchmark's honest accounting flipped nine
+v1 respellings to <code>keep_plain</code> (the plain spelling already reads right, and the
+respell measured worse), so the shipped lexicon only respells measured wins. Progress is tracked
+as the after-column pass rate plus the shrinking draft list.</p>
+
+<h3>New W1 examples (bench renders, voice m0770)</h3>
+<table><tr><th>input (raw &rarr; normalized)</th><th>4B before (raw)</th><th>4B after</th><th>192M before</th><th>192M after</th></tr>
+<tr><td><b>v2.4.1</b><br><span class="p">We shipped version v2.4.1 today.<br>&rarr; vee two point four point one</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_version_bm0.wav"></audio><br><span class="ok">PER 0.09 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_version_am0.wav"></audio><br><span class="bad">PER 0.15 (3/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_version_bm0.wav"></audio><br><span class="ok">PER 0.10 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_version_am0.wav"></audio><br><span class="ok">PER 0.11 (4/4 takes)</span></td></tr><tr><td><b>1998 to 2024</b><br><span class="p">Sales grew from 1998 to 2024.<br>&rarr; nineteen ninety-eight to twenty twenty-four</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_range_bm0.wav"></audio><br><span class="ok">PER 0.14 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_range_am0.wav"></audio><br><span class="ok">PER 0.15 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_range_bm0.wav"></audio><br><span class="ok">PER 0.14 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_range_am0.wav"></audio><br><span class="ok">PER 0.14 (4/4 takes)</span></td></tr><tr><td><b>3.14159</b><br><span class="p">Pi is roughly 3.14159.<br>&rarr; three point one four one five nine</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_decimal_bm0.wav"></audio><br><span class="ok">PER 0.06 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_decimal_am0.wav"></audio><br><span class="ok">PER 0.08 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_decimal_bm0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_decimal_am0.wav"></audio><br><span class="ok">PER 0.08 (4/4 takes)</span></td></tr><tr><td><b>+1-800-555-0142</b><br><span class="p">Call support on +1-800-555-0142 now.<br>&rarr; plus one, eight zero zero, five five five, zero one four two</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_phone_bm0.wav"></audio><br><span class="ok">PER 0.15 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_phone_am0.wav"></audio><br><span class="ok">PER 0.15 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_phone_bm0.wav"></audio><br><span class="ok">PER 0.18 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_phone_am0.wav"></audio><br><span class="ok">PER 0.16 (4/4 takes)</span></td></tr><tr><td><b>3rd</b><br><span class="p">We finished in 3rd place this year.<br>&rarr; third</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_ordinal_bm0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_ordinal_am0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_ordinal_bm0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_ordinal_am0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td></tr><tr><td><b>37.5%</b><br><span class="p">Adoption grew 37.5% this quarter.<br>&rarr; thirty-seven point five percent</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_percent_bm0.wav"></audio><br><span class="ok">PER 0.08 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_percent_am0.wav"></audio><br><span class="ok">PER 0.09 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_percent_bm0.wav"></audio><br><span class="ok">PER 0.08 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_percent_am0.wav"></audio><br><span class="ok">PER 0.08 (4/4 takes)</span></td></tr><tr><td><b>1,250</b><br><span class="p">We shipped 1,250 units last quarter.<br>&rarr; one thousand two hundred fifty</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_big_num_bm0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_big_num_am0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_big_num_bm0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w1_big_num_am0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td></tr>
+</table>
+
+<h3>W2 rows refreshed against the 11-27 bench</h3>
+<table><tr><th>word</th><th>4B before (plain)</th><th>4B after (lexicon)</th><th>192M before</th><th>192M after</th></tr>
+<tr><td><b>Damien &rarr; Day-mee-en</b><br><span class="p">Damien will call you back.</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_damien_bm0.wav"></audio><br><span class="ok">PER 0.14 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_damien_am0.wav"></audio><br><span class="ok">PER 0.07 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_damien_bm0.wav"></audio><br><span class="ok">PER 0.14 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_damien_am0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td></tr><tr><td><b>debris &rarr; duh-bree</b><br><span class="p">Clear the debris after the storm.</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_debris_bm0.wav"></audio><br><span class="ok">PER 0.20 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_debris_am0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_debris_bm0.wav"></audio><br><span class="ok">PER 0.20 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_debris_am0.wav"></audio><br><span class="ok">PER 0.10 (4/4 takes)</span></td></tr><tr><td><b>liaison &rarr; lee-ay-zon</b><br><span class="p">She acted as the liaison.</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_liaison_bm0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_liaison_am0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_liaison_bm0.wav"></audio><br><span class="ok">PER 0.04 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_liaison_am0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td></tr><tr><td><b>subtle &rarr; subtle (kept plain, 11-27 bench)</b><br><span class="p">There was a subtle change in her voice.</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_subtle_bm0.wav"></audio><br><span class="ok">PER 0.20 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_subtle_am0.wav"></audio><br><span class="ok">PER 0.10 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_subtle_bm0.wav"></audio><br><span class="ok">PER 0.15 (4/4 takes)</span></td><td><audio controls preload="none" src="audio/bench/bench_w2_subtle_am0.wav"></audio><br><span class="ok">PER 0.00 (4/4 takes)</span></td></tr>
+</table>
+
+<h3>Full 32-case bench table</h3>
+<pre style="font-size:.72rem;overflow-x:auto"># W1+W2 benchmark
+
+takes=4/case, seed=1125, pass = every take PER <= 0.2
+
+| case | ws | 4B before | 4B after | 192 before | 192 after |
+|---|---|---|---|---|---|
+| iso_date | W1 | 0.13 (4/4) | 0.11 (4/4) | 0.12 (4/4) | 0.13 (4/4) |
+| time | W1 | 0.00 (4/4) | 0.05 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
+| currency | W1 | 0.08 (4/4) | 0.08 (4/4) | 0.09 (4/4) | 0.08 (4/4) |
+| email | W1 | 0.10 (4/4) | 0.09 (3/4) | 0.10 (4/4) | 0.03 (4/4) |
+| url | W1 | 0.07 (4/4) | 0.07 (4/4) | 0.07 (4/4) | 0.07 (4/4) |
+| phone | W1 | 0.15 (4/4) | 0.15 (4/4) | 0.18 (4/4) | 0.16 (4/4) |
+| ordinal | W1 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
+| percent | W1 | 0.08 (4/4) | 0.09 (4/4) | 0.08 (4/4) | 0.08 (4/4) |
+| big_num | W1 | 0.04 (4/4) | 0.04 (4/4) | 0.04 (4/4) | 0.04 (4/4) |
+| version | W1 | 0.09 (4/4) | 0.15 (3/4) | 0.10 (4/4) | 0.11 (4/4) |
+| range | W1 | 0.14 (4/4) | 0.15 (4/4) | 0.14 (4/4) | 0.14 (4/4) |
+| decimal | W1 | 0.06 (4/4) | 0.08 (4/4) | 0.04 (4/4) | 0.08 (4/4) |
+| choir | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
+| debris | W2 | 0.20 (4/4) | 0.00 (4/4) | 0.20 (4/4) | 0.10 (4/4) |
+| quinoa | W2 | 0.21 (3/4) | 0.50 (0/4) | 0.25 (2/4) | 0.79 (0/4) |
+| colonel | W2 | 0.00 (4/4) | 0.25 (2/4) | 0.00 (4/4) | 0.21 (3/4) |
+| sergeant | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.12 (3/4) |
+| hyperbole | W2 | 0.15 (3/4) | 0.20 (4/4) | 0.10 (4/4) | 0.15 (4/4) |
+| isthmus | W2 | 0.20 (4/4) | 0.20 (4/4) | 0.20 (4/4) | 0.15 (4/4) |
+| salmon | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
+| yacht | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.33 (1/4) | 0.00 (4/4) |
+| subtle | W2 | 0.20 (4/4) | 0.10 (4/4) | 0.15 (4/4) | 0.00 (4/4) |
+| turquoise | W2 | 0.28 (0/4) | 0.28 (0/4) | 0.28 (0/4) | 0.56 (0/4) |
+| queue | W2 | 0.08 (3/4) | 0.33 (0/4) | 0.33 (0/4) | 0.33 (0/4) |
+| sean | W2 | 0.00 (4/4) | 0.67 (0/4) | 0.00 (4/4) | 0.00 (4/4) |
+| damien | W2 | 0.14 (4/4) | 0.07 (4/4) | 0.14 (4/4) | 0.04 (4/4) |
+| nasa | W2 | 0.25 (1/4) | 0.44 (0/4) | 0.25 (0/4) | 0.00 (4/4) |
+| regatta | W2 | 0.21 (3/4) | 0.25 (2/4) | 0.50 (0/4) | 0.42 (0/4) |
+| liaison | W2 | 0.04 (4/4) | 0.00 (4/4) | 0.04 (4/4) | 0.00 (4/4) |
+| poignant | W2 | 0.34 (0/4) | 0.53 (0/4) | 0.25 (0/4) | 0.47 (0/4) |
+| gauge | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
+| epitome | W2 | 0.25 (1/4) | 0.21 (2/4) | 0.36 (0/4) | 0.71 (0/4) |
+
+## Pass rate by workstream (mean of case pass shares)
+
+| workstream | before_4b | before_192 | after_4b | after_192 |
+|---|---|---|---|---|
+| W1 | 1.00 | 1.00 | 0.96 | 1.00 |
+| W2 | 0.78 | 0.64 | 0.62 | 0.68 |
+</pre>
+
 </body>
 </html>
