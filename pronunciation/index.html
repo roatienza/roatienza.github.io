@@ -144,52 +144,63 @@ as the after-column pass rate plus the shrinking draft list.</p>
 </table>
 
 <h3>Full 32-case bench table</h3>
-<pre style="font-size:.72rem;overflow-x:auto"># W1+W2 benchmark
-
-takes=4/case, seed=1125, pass = every take PER <= 0.2
-
-| case | ws | 4B before | 4B after | 192 before | 192 after |
-|---|---|---|---|---|---|
-| iso_date | W1 | 0.13 (4/4) | 0.11 (4/4) | 0.12 (4/4) | 0.13 (4/4) |
-| time | W1 | 0.00 (4/4) | 0.05 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
-| currency | W1 | 0.08 (4/4) | 0.08 (4/4) | 0.09 (4/4) | 0.08 (4/4) |
-| email | W1 | 0.10 (4/4) | 0.09 (3/4) | 0.10 (4/4) | 0.03 (4/4) |
-| url | W1 | 0.07 (4/4) | 0.07 (4/4) | 0.07 (4/4) | 0.07 (4/4) |
-| phone | W1 | 0.15 (4/4) | 0.15 (4/4) | 0.18 (4/4) | 0.16 (4/4) |
-| ordinal | W1 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
-| percent | W1 | 0.08 (4/4) | 0.09 (4/4) | 0.08 (4/4) | 0.08 (4/4) |
-| big_num | W1 | 0.04 (4/4) | 0.04 (4/4) | 0.04 (4/4) | 0.04 (4/4) |
-| version | W1 | 0.09 (4/4) | 0.15 (3/4) | 0.10 (4/4) | 0.11 (4/4) |
-| range | W1 | 0.14 (4/4) | 0.15 (4/4) | 0.14 (4/4) | 0.14 (4/4) |
-| decimal | W1 | 0.06 (4/4) | 0.08 (4/4) | 0.04 (4/4) | 0.08 (4/4) |
-| choir | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
-| debris | W2 | 0.20 (4/4) | 0.00 (4/4) | 0.20 (4/4) | 0.10 (4/4) |
-| quinoa | W2 | 0.21 (3/4) | 0.50 (0/4) | 0.25 (2/4) | 0.79 (0/4) |
-| colonel | W2 | 0.00 (4/4) | 0.25 (2/4) | 0.00 (4/4) | 0.21 (3/4) |
-| sergeant | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.12 (3/4) |
-| hyperbole | W2 | 0.15 (3/4) | 0.20 (4/4) | 0.10 (4/4) | 0.15 (4/4) |
-| isthmus | W2 | 0.20 (4/4) | 0.20 (4/4) | 0.20 (4/4) | 0.15 (4/4) |
-| salmon | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
-| yacht | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.33 (1/4) | 0.00 (4/4) |
-| subtle | W2 | 0.20 (4/4) | 0.10 (4/4) | 0.15 (4/4) | 0.00 (4/4) |
-| turquoise | W2 | 0.28 (0/4) | 0.28 (0/4) | 0.28 (0/4) | 0.56 (0/4) |
-| queue | W2 | 0.08 (3/4) | 0.33 (0/4) | 0.33 (0/4) | 0.33 (0/4) |
-| sean | W2 | 0.00 (4/4) | 0.67 (0/4) | 0.00 (4/4) | 0.00 (4/4) |
-| damien | W2 | 0.14 (4/4) | 0.07 (4/4) | 0.14 (4/4) | 0.04 (4/4) |
-| nasa | W2 | 0.25 (1/4) | 0.44 (0/4) | 0.25 (0/4) | 0.00 (4/4) |
-| regatta | W2 | 0.21 (3/4) | 0.25 (2/4) | 0.50 (0/4) | 0.42 (0/4) |
-| liaison | W2 | 0.04 (4/4) | 0.00 (4/4) | 0.04 (4/4) | 0.00 (4/4) |
-| poignant | W2 | 0.34 (0/4) | 0.53 (0/4) | 0.25 (0/4) | 0.47 (0/4) |
-| gauge | W2 | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) | 0.00 (4/4) |
-| epitome | W2 | 0.25 (1/4) | 0.21 (2/4) | 0.36 (0/4) | 0.71 (0/4) |
-
-## Pass rate by workstream (mean of case pass shares)
-
-| workstream | before_4b | before_192 | after_4b | after_192 |
-|---|---|---|---|---|
-| W1 | 1.00 | 1.00 | 0.96 | 1.00 |
-| W2 | 0.78 | 0.64 | 0.62 | 0.68 |
-</pre>
+<h3>Full bench table &mdash; corrected buckets (baseline 2026-11-28)</h3>
+<div class="card"><b>Bucket rules (fix over the 11-27 table, documented in plan &sect;5.1):</b> keep_plain/draft lexicon entries send <i>identical text</i> on both lanes, so their before/after deltas are render variance, not a workstream effect (worst: <code>sean</code> +0.67 meanPER on unchanged text). They move to a CONTROL bucket scored once (4B before lane) and never enter a workstream score. W2 is scored only on the 7 reviewed respelled entries; W1 on all 12 carriers.</div>
+<table><tr><th>case</th><th>bucket</th><th>4B before</th><th>4B after</th><th>192M before</th><th>192M after</th></tr>
+<tr><td><b>big_num</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>currency</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>decimal</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>email</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>iso_date</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>ordinal</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>percent</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>phone</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>range</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>time</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>url</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>version</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>choir</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>damien</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>debris</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>isthmus</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>liaison</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>subtle</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>yacht</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>colonel</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>epitome</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>gauge</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>hyperbole</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>nasa</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>poignant</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>queue</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>quinoa</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>regatta</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>salmon</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>sean</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>sergeant</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>turquoise</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+</table>
+<h3>Workstream scores (progress = after column)</h3>
+<table><tr><th>workstream</th><th>4B before &rarr; after</th><th>192M before &rarr; after</th><th>role</th></tr>
+<tr><td><b>W1</b> (12 carriers)</td><td>1.00 &rarr; 0.96 (meanPER 0.08 &rarr; 0.09)</td><td>1.00 &rarr; 1.00 (meanPER 0.08 &rarr; 0.08)</td><td>determinism: engines that cannot self-normalize; one code path for serving + training</td></tr>
+<tr><td><b>W2</b> (7 respelled)</td><td>1.00 &rarr; 1.00 (meanPER 0.11 &rarr; 0.05)</td><td>0.89 &rarr; 1.00 (meanPER 0.15 &rarr; 0.04)</td><td>accuracy: measured only where it changes text</td></tr></table>
+<h3>CONTROL bucket (same text both lanes &mdash; pure lane variance)</h3>
+<table><tr><th>case</th><th>status</th><th>meanPER 4B (pass)</th><th>lane delta after&minus;before</th></tr>
+<tr><td>colonel</td><td>keep_plain</td><td>0.00 (4/4)</td><td>+0.25</td></tr>
+<tr><td>epitome</td><td>draft</td><td>0.25 (1/4)</td><td>-0.04</td></tr>
+<tr><td>gauge</td><td>keep_plain</td><td>0.00 (4/4)</td><td>+0.00</td></tr>
+<tr><td>hyperbole</td><td>keep_plain</td><td>0.15 (3/4)</td><td>+0.05</td></tr>
+<tr><td>nasa</td><td>draft</td><td>0.25 (1/4)</td><td>+0.19</td></tr>
+<tr><td>poignant</td><td>keep_plain</td><td>0.34 (0/4)</td><td>+0.19</td></tr>
+<tr><td>queue</td><td>keep_plain</td><td>0.08 (3/4)</td><td>+0.25</td></tr>
+<tr><td>quinoa</td><td>draft</td><td>0.21 (3/4)</td><td>+0.29</td></tr>
+<tr><td>regatta</td><td>draft</td><td>0.21 (3/4)</td><td>+0.04</td></tr>
+<tr><td>salmon</td><td>keep_plain</td><td>0.00 (4/4)</td><td>+0.00</td></tr>
+<tr><td>sean</td><td>keep_plain</td><td>0.00 (4/4)</td><td>+0.67</td></tr>
+<tr><td>sergeant</td><td>keep_plain</td><td>0.00 (4/4)</td><td>+0.00</td></tr>
+<tr><td>turquoise</td><td>keep_plain</td><td>0.28 (0/4)</td><td>+0.00</td></tr>
+</table>
+<p class="p">Lane deltas on <i>identical</i> text reach +0.67 PER &mdash; that is the noise floor any future before/after comparison must clear. Baseline logged at <code>benchmarks/w1w2/2026-11-28_baseline.{json,csv,md}</code> (branch <code>onit/pronunciation</code>).</p>
 
 </body>
 </html>
