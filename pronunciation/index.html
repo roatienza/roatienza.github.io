@@ -11,7 +11,7 @@
  th,td{border:1px solid #ddd;padding:.4rem .5rem;text-align:left;vertical-align:top}
  th{background:#f5f5f5}
  audio{width:230px;height:32px}
- .ok{color:#0a7d28;font-weight:600}.bad{color:#b3261e;font-weight:600}
+ .ok{color:#0a7d28;font-weight:600}.bad{color:#b3261e;font-weight:600}.warn{color:#b45309;font-weight:600}.fail{color:#b3261e;font-weight:600}
  .p{font-size:.75rem;color:#555}
  .card{background:#f8f9fb;border:1px solid #e3e6ee;border-radius:8px;padding:.8rem 1rem;margin:.8rem 0}
  code{background:#eef;font-size:.85em}
@@ -145,41 +145,41 @@ as the after-column pass rate plus the shrinking draft list.</p>
 
 <h3>Full 32-case bench table</h3>
 <h3>Full bench table &mdash; corrected buckets (baseline 2026-11-28)</h3>
-<div class="card"><b>Bucket rules (fix over the 11-27 table, documented in plan &sect;5.1):</b> keep_plain/draft lexicon entries send <i>identical text</i> on both lanes, so their before/after deltas are render variance, not a workstream effect (worst: <code>sean</code> +0.67 meanPER on unchanged text). They move to a CONTROL bucket scored once (4B before lane) and never enter a workstream score. W2 is scored only on the 7 reviewed respelled entries; W1 on all 12 carriers.</div>
 <table><tr><th>case</th><th>bucket</th><th>4B before</th><th>4B after</th><th>192M before</th><th>192M after</th></tr>
-<tr><td><b>big_num</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>currency</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>decimal</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>email</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>iso_date</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>ordinal</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>percent</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>phone</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>range</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>time</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>url</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>version</b></td><td><span class="tag">W1</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>choir</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>damien</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>debris</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>isthmus</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>liaison</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>subtle</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>yacht</b></td><td><span class="tag">W2</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>colonel</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>epitome</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>gauge</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>hyperbole</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>nasa</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>poignant</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>queue</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>quinoa</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>regatta</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>salmon</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>sean</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>sergeant</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
-<tr><td><b>turquoise</b></td><td><span class="tag">CONTROL</span></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td><b>big_num</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.04</td><td class="ok">1.00 / 0.04</td><td class="ok">1.00 / 0.04</td><td class="ok">1.00 / 0.04</td></tr>
+<tr><td><b>choir</b></td><td><span class="tag">W2</span></td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>colonel</b></td><td><span class="tag">CONTROL</span></td><td class="ok">1.00 / 0.00</td><td class="warn">0.50 / 0.25</td><td class="ok">1.00 / 0.00</td><td class="warn">0.75 / 0.21</td></tr>
+<tr><td><b>currency</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.08</td><td class="ok">1.00 / 0.08</td><td class="ok">1.00 / 0.09</td><td class="ok">1.00 / 0.08</td></tr>
+<tr><td><b>damien</b></td><td><span class="tag">W2</span></td><td class="ok">1.00 / 0.14</td><td class="ok">1.00 / 0.07</td><td class="ok">1.00 / 0.14</td><td class="ok">1.00 / 0.04</td></tr>
+<tr><td><b>debris</b></td><td><span class="tag">W2</span></td><td class="ok">1.00 / 0.20</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.20</td><td class="ok">1.00 / 0.10</td></tr>
+<tr><td><b>decimal</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.06</td><td class="ok">1.00 / 0.08</td><td class="ok">1.00 / 0.04</td><td class="ok">1.00 / 0.08</td></tr>
+<tr><td><b>email</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.10</td><td class="warn">0.75 / 0.09</td><td class="ok">1.00 / 0.10</td><td class="ok">1.00 / 0.03</td></tr>
+<tr><td><b>epitome</b></td><td><span class="tag">CONTROL</span></td><td class="fail">0.25 / 0.25</td><td class="warn">0.50 / 0.21</td><td class="fail">0.00 / 0.36</td><td class="fail">0.00 / 0.71</td></tr>
+<tr><td><b>gauge</b></td><td><span class="tag">CONTROL</span></td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>hyperbole</b></td><td><span class="tag">CONTROL</span></td><td class="warn">0.75 / 0.15</td><td class="ok">1.00 / 0.20</td><td class="ok">1.00 / 0.10</td><td class="ok">1.00 / 0.15</td></tr>
+<tr><td><b>iso_date</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.13</td><td class="ok">1.00 / 0.11</td><td class="ok">1.00 / 0.12</td><td class="ok">1.00 / 0.13</td></tr>
+<tr><td><b>isthmus</b></td><td><span class="tag">W2</span></td><td class="ok">1.00 / 0.20</td><td class="ok">1.00 / 0.20</td><td class="ok">1.00 / 0.20</td><td class="ok">1.00 / 0.15</td></tr>
+<tr><td><b>liaison</b></td><td><span class="tag">W2</span></td><td class="ok">1.00 / 0.04</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.04</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>nasa</b></td><td><span class="tag">CONTROL</span></td><td class="fail">0.25 / 0.25</td><td class="fail">0.00 / 0.44</td><td class="fail">0.00 / 0.25</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>ordinal</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>percent</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.08</td><td class="ok">1.00 / 0.09</td><td class="ok">1.00 / 0.08</td><td class="ok">1.00 / 0.08</td></tr>
+<tr><td><b>phone</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.15</td><td class="ok">1.00 / 0.15</td><td class="ok">1.00 / 0.18</td><td class="ok">1.00 / 0.16</td></tr>
+<tr><td><b>poignant</b></td><td><span class="tag">CONTROL</span></td><td class="fail">0.00 / 0.34</td><td class="fail">0.00 / 0.53</td><td class="fail">0.00 / 0.25</td><td class="fail">0.00 / 0.47</td></tr>
+<tr><td><b>queue</b></td><td><span class="tag">CONTROL</span></td><td class="warn">0.75 / 0.08</td><td class="fail">0.00 / 0.33</td><td class="fail">0.00 / 0.33</td><td class="fail">0.00 / 0.33</td></tr>
+<tr><td><b>quinoa</b></td><td><span class="tag">CONTROL</span></td><td class="warn">0.75 / 0.21</td><td class="fail">0.00 / 0.50</td><td class="warn">0.50 / 0.25</td><td class="fail">0.00 / 0.79</td></tr>
+<tr><td><b>range</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.14</td><td class="ok">1.00 / 0.15</td><td class="ok">1.00 / 0.14</td><td class="ok">1.00 / 0.14</td></tr>
+<tr><td><b>regatta</b></td><td><span class="tag">CONTROL</span></td><td class="warn">0.75 / 0.21</td><td class="warn">0.50 / 0.25</td><td class="fail">0.00 / 0.50</td><td class="fail">0.00 / 0.42</td></tr>
+<tr><td><b>salmon</b></td><td><span class="tag">CONTROL</span></td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>sean</b></td><td><span class="tag">CONTROL</span></td><td class="ok">1.00 / 0.00</td><td class="fail">0.00 / 0.67</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>sergeant</b></td><td><span class="tag">CONTROL</span></td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="warn">0.75 / 0.12</td></tr>
+<tr><td><b>subtle</b></td><td><span class="tag">W2</span></td><td class="ok">1.00 / 0.20</td><td class="ok">1.00 / 0.10</td><td class="ok">1.00 / 0.15</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>time</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.05</td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td></tr>
+<tr><td><b>turquoise</b></td><td><span class="tag">CONTROL</span></td><td class="fail">0.00 / 0.28</td><td class="fail">0.00 / 0.28</td><td class="fail">0.00 / 0.28</td><td class="fail">0.00 / 0.56</td></tr>
+<tr><td><b>url</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.07</td><td class="ok">1.00 / 0.07</td><td class="ok">1.00 / 0.07</td><td class="ok">1.00 / 0.07</td></tr>
+<tr><td><b>version</b></td><td><span class="tag">W1</span></td><td class="ok">1.00 / 0.09</td><td class="warn">0.75 / 0.15</td><td class="ok">1.00 / 0.10</td><td class="ok">1.00 / 0.11</td></tr>
+<tr><td><b>yacht</b></td><td><span class="tag">W2</span></td><td class="ok">1.00 / 0.00</td><td class="ok">1.00 / 0.00</td><td class="fail">0.25 / 0.33</td><td class="ok">1.00 / 0.00</td></tr>
 </table>
+<p class="p">Cells are pass_share / meanPER over 4 takes &times; 2 voices; green = every take under the gate (PER &le; 0.20). CONTROL rows send identical text in before/after, so their deltas are render variance, not a workstream effect.</p>
 <h3>Workstream scores (progress = after column)</h3>
 <table><tr><th>workstream</th><th>4B before &rarr; after</th><th>192M before &rarr; after</th><th>role</th></tr>
 <tr><td><b>W1</b> (12 carriers)</td><td>1.00 &rarr; 0.96 (meanPER 0.08 &rarr; 0.09)</td><td>1.00 &rarr; 1.00 (meanPER 0.08 &rarr; 0.08)</td><td>determinism: engines that cannot self-normalize; one code path for serving + training</td></tr>
